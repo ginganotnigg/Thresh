@@ -1,10 +1,11 @@
-import { Router } from 'express';
-import { getTests, getTestById, submitTest } from '../controllers/main_controller.js';
+const express = require('express');
+const { getTests, getTestById, submitTest, getTestVersions } = require('../controllers/main_controller.js');
 
-const router = Router();
+const router = express.Router();
 
-router.get('/', getTests);
-router.get('/id', getTestById);
-router.post('/id/submit', submitTest);
+router.get('/list', getTests);
+router.get('/get/:id', getTestById);
+router.post('/submit/:id', submitTest);
+router.get('/version/:id', getTestVersions);
 
-export default router;
+module.exports = router;
