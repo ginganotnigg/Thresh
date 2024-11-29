@@ -1,11 +1,33 @@
 const express = require('express');
-const { getTests, getTestById, submitTest, getTestVersions } = require('../controllers/main_controller.js');
+const {
+    createTest,
+    deleteTest,
+    updateTest,
+    getTestById,
+    getTestVersions,
+    getTests,
+    submitTest,
+    getQuestions,
+    createQuestion,
+    updateQuestion,
+    deleteQuestion,
+} = require('../controllers/main_controller');
 
 const router = express.Router();
 
-router.get('/list', getTests);
-router.get('/get/:id', getTestById);
-router.post('/submit/:id', submitTest);
-router.get('/version/:id', getTestVersions);
+// Test routes
+router.post('/test/create', createTest);
+router.post('/test/delete/:id', deleteTest);
+router.post('/test/update/:id', updateTest);
+router.get('/test/get/:id', getTestById);
+router.get('/test/version/:id', getTestVersions);
+router.get('/test/list', getTests);
+router.post('/test/submit', submitTest);
+
+// Question routes
+router.get('/question/list/:id', getQuestions);
+router.post('/question/create', createQuestion);
+router.post('/question/update/:id', updateQuestion);
+router.post('/question/delete/:id', deleteQuestion);
 
 module.exports = router;
