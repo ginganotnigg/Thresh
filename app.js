@@ -1,9 +1,12 @@
 require("dotenv").config();
 const express = require("express");
-const { json } = require("body-parser");
 const Routers = require("./routers/main_router.js");
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+const createDatabaseIfNotExists = require("./utils/db-init.js");
+createDatabaseIfNotExists();
+
 const sequelize = require("./utils/database");
 
 sequelize
