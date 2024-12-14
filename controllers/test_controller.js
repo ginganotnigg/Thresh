@@ -37,10 +37,11 @@ const updateTest = async (req, res, next) => {
     return res.status(404).json({ message: "Test not found" });
   }
   const newVersion = await testVersionService.getLatestVersion(testId);
-  await testVersionService.create({ 
-    testId, 
-    versionNumber: newVersion.versionNumber + 1, 
-    userId: updateData.BMID });
+  await testVersionService.create({
+    testId,
+    versionNumber: newVersion.versionNumber + 1,
+    userId: updateData.BMID
+  });
   const newTest = await testService.update(testId, updateData);
   await testService.create(newTest);
   res.json({ message: "Test updated", newTest });
@@ -102,6 +103,36 @@ const submitTest = async (req, res, next) => {
       score: submission.score,
       totalQuestions: totalQuestions,
     },
+  });
+};
+
+const getTestAnswersOfAttempt = async (req, res, next) => {
+  const testId = req.params.testId;
+  const attemptId = req.params.attemptId;
+
+  const submission = await submissionService.findByID(attemptId);
+
+  if (!submission) {
+    return res.status(404).json({ message: "Submission not found" });
+  }
+
+  const testVersion = await testVersionService.findByID(submission.testVersionID);
+  const test = await testService.findByTestId(testVersion.testID);
+
+  const questions = await testService.getQuestionsByTestId(test.ID);
+
+  const answers = submission.answers.map((answer, index) => ({
+    question: questions[index].content,
+    answer: answer,
+    correctAnswer: questions[index].correctAnswer,
+  }));
+
+  res.json({
+    test: {
+      title: test.title,
+      description: test.description,
+    },
+    answers,
   });
 };
 

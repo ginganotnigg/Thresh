@@ -12,4 +12,7 @@ router.get('/versions/:id', testController.getTestVersions);
 router.get('/attempts/:id', testController.getTestAttempts);
 router.post('/submit/:id', testController.submitTest);
 
+
+router.get('/:testId/answers/:attemptId/data', testController.getTestAttempts);
+
 module.exports = router;
