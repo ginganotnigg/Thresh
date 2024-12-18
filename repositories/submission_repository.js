@@ -1,5 +1,5 @@
 const BaseRepository = require('./base_repository');
-const Submission = require('../models/submission');
+const Submission = require('../models/attempt');
 
 class SubmissionRepository extends BaseRepository {
   constructor() {

@@ -1,10 +1,10 @@
 const sequelize = require("../utils/database");
 const { DataTypes } = require("sequelize");
-const User = require("./user");
 
 const Test = sequelize.define("Test", {
   ID: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
     primaryKey: true,
   },
   company: {
@@ -16,28 +16,20 @@ const Test = sequelize.define("Test", {
     allowNull: false,
   },
   description: {
-    type: DataTypes.TEXT,
-    allowNull: true,
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   minutesToAnswer: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  tags: {
-    type: DataTypes.JSON,
-    allowNull: true,
-  },
-  answersCount: {
-    type: DataTypes.INTEGER,
+  difficulty: {
+    type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: 0,
   },
-  BMID: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: User,
-      key: "ID",
-    },
+  answerCount: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
 });
 

@@ -1,7 +1,6 @@
 const sequelize = require("../utils/database");
 const { DataTypes } = require("sequelize");
-const User = require("./user");
-const TestVersion = require("./test_version");
+const Test = require("./test");
 
 const Question = sequelize.define("Question", {
   ID: {
@@ -9,14 +8,14 @@ const Question = sequelize.define("Question", {
     autoIncrement: true,
     primaryKey: true,
   },
-  testVersionID: {
+  testId: {
     type: DataTypes.INTEGER,
     references: {
-      model: TestVersion,
+      model: Test,
       key: "ID",
     },
   },
-  content: {
+  text: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -24,14 +23,14 @@ const Question = sequelize.define("Question", {
     type: DataTypes.JSON,
     allowNull: false,
   },
+  points: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   correctAnswer: {
     type: DataTypes.INTEGER,
     allowNull: false,
-  },
-  score: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
+  }
 }, {
   timestamps: false // Disable createdAt and updatedAt
 });

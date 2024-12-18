@@ -1,117 +1,129 @@
 const testService = require('../services/test_service');
-const testVersionService = require('../services/testVersion_service');
 const submissionService = require('../services/submission_service');
-const User = require('../models/user');
 
-// List all tests
-const getTests = async (req, res, next) => {
-  const result = await testService.getAll();
-  res.json(result);
+// Get paginated list of tests
+const getTests = async (req, res) => {
+  const tests = await testService.getAll();
+  res.json(tests);
 };
 
-// Get test by ID
-const getTestById = async (req, res, next) => {
-  const test = await testService.findByTestId(req.params.id);
-  if (!test) return res.status(404).json({ message: 'Test not found' });
+// Get suggested tags
+const getSuggestedTags = async (req, res) => {
+  const suggestedTags = await testService.getSuggestedTags();
+  res.json(suggestedTags);
+};
+
+// Get filtered list of tests
+const getFilteredTests = async (req, res) => {
+  const { minMinute, maxMinute, difficulty, tags, searchName } = req.query;
+  const filteredTests = await testService.getFilteredTests({
+    minMinute,
+    maxMinute,
+    difficulty,
+    tags,
+    searchName,
+  });
+  res.json(filteredTests);
+};
+
+// Get test attempts (page or data)
+const getTestAttempts = async (req, res) => {
+  const testId = req.params.testId;
+  const attempts = await testService.getTestAttempts(testId);
+  res.json(attempts);
+};
+
+const getTestDetails = async (req, res) => {
+  const { testId } = req.params;
+  const test = await testService.getTestDetails(testId);
   res.json(test);
+}
+
+// Get attempt page
+const getAttemptPage = async (req, res) => {
+  const { testId, attemptId } = req.params;
+  const attemptPage = await testService.getAttemptPage(testId, attemptId);
+  res.json(attemptPage);
+}
+
+// Get paginated attempt details
+const getAttemptDetails = async (req, res) => {
+  const { testId, attemptId } = req.params;
+  const attemptDetails = await testService.getAttemptDetails(testId, attemptId);
+  res.json(attemptDetails);
 };
 
-// Create a test
-const createTest = async (req, res, next) => {
-  const { title, description, BMID, isActive } = req.body;
+// Get test answers (data)
+const getTestAnswers = async (req, res) => {
+  const { testId, attemptId } = req.params;
+  const testAnswers = await submissionService.getTestAnswers(testId, attemptId);
+  res.json(testAnswers);
+};
 
-  if (!title || !BMID) {
-    return res.status(400).json({ message: "Title and BMID are required" });
-  }
+// Get TestDo page data
+const getQuestions = async (req, res) => {
+  const { testId } = req.params;
+  const testPage = await testService.getQuestions(testId);
+  res.json(testPage);
+};
+
+// Submit test answers
+const submitTest = async (req, res) => {
+  const { testId } = req.params;
+  const { choices } = req.body;
+
+  const result = await testService.submit({ testId, choices });
+  res.json({
+    message: "Test submitted successfully",
+    result,
+  });
+};
+
+// Create a new test
+const createTest = async (req, res) => {
+  const { title, description, BMID, isActive } = req.body;
+  if (!title || !BMID) return res.status(400).json({ message: "Title and BMID are required" });
+
   const test = await testService.create({ title, description, BMID, isActive });
   res.status(201).json({ message: "Test created", testId: test.ID });
 };
 
-// Update a test
-const updateTest = async (req, res, next) => {
-  const testId = req.params.id;
+// Update an existing test
+const updateTest = async (req, res) => {
+  const { testId } = req.params;
   const updateData = req.body;
-  const test = await testService.findByTestId(testId);
 
-  if (!test) {
-    return res.status(404).json({ message: "Test not found" });
-  }
-  const newVersion = await testVersionService.getLatestVersion(testId);
-  await testVersionService.create({ 
-    testId, 
-    versionNumber: newVersion.versionNumber + 1, 
-    userId: updateData.BMID });
-  const newTest = await testService.update(testId, updateData);
-  await testService.create(newTest);
-  res.json({ message: "Test updated", newTest });
+  const updatedTest = await testService.updateTest(testId, updateData);
+  res.json({ message: "Test updated successfully", updatedTest });
 };
 
 // Delete a test
-const deleteTest = async (req, res, next) => {
-  const testId = req.params.id;
-  const test = await testService.findByTestId(testId);
-
-  if (!test) {
-    return res.status(404).json({ message: "Test not found" });
-  }
-  await testService.delete(id);
-  res.json({ message: "Test updated", test });
+const deleteTest = async (req, res) => {
+  const { testId } = req.params;
+  await testService.deleteTest(testId);
+  res.json({ message: "Test deleted successfully" });
 };
 
-// Get test versions
-const getTestVersions = async (req, res, next) => {
-  const testID = req.params.id;
-
-  const testWithVersions = await testVersionService.getVersionsByTestId(testID);
-
-  if (!testWithVersions) {
-    return res.status(404).json({ message: "Test not found" });
-  }
-
-  res.json(testWithVersions);
-}
-
-const getTestAttempts = async (req, res, next) => {
-  const testVersionID = req.params.id;
-
-  const submissions = await submissionService.findByTestVersionID(testVersionID);
-
-  const attempts = submissions.map(submission => ({
-    id: submission.ID,
-    grade: submission.score,
-    status: submission.score !== null ? "Finished" : "In Progress",
-    submittedAt: submission.createdAt ? submission.createdAt.toISOString() : null,
-  }));
-
-  // Return the response
-  res.json({ attempts });
-};
-
-// Submit test answers
-const submitTest = async (req, res, next) => {
-  const testId = req.params.id;
-  const { userID, answers } = req.body;
-  const { score, totalQuestions } = await testService.calculateScore(testId, answers);
-
-  const submission = await testService.submit({ testId, userID, score });
-  res.status(201).json({
-    message: "Test submitted successfully",
-    submission: {
-      testVersionID: submission.testVersionID,
-      userID: submission.candidateID,
-      score: submission.score,
-      totalQuestions: totalQuestions,
-    },
-  });
+// Get versions of a test
+const getTestVersions = async (req, res) => {
+  const { testId } = req.params;
+  const versions = await testService.getTestVersions(testId);
+  res.json(versions);
 };
 
 module.exports = {
   getTests,
-  getTestById,
+  getSuggestedTags,
+  getTestDetails,
+  getFilteredTests,
+  getTestAttempts,
+  getAttemptPage,
+  getAttemptDetails,
+  getTestAnswers,
+  getQuestions,
+  submitTest,
   createTest,
   updateTest,
   deleteTest,
   getTestVersions,
-  getTestAttempts,
-  submitTest,
 };
