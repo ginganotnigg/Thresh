@@ -1,5 +1,4 @@
 const testService = require('../services/test_service');
-const submissionService = require('../services/submission_service');
 
 // Get paginated list of tests
 const getTests = async (req, res) => {
@@ -12,6 +11,12 @@ const getSuggestedTags = async (req, res) => {
   const suggestedTags = await testService.getSuggestedTags();
   res.json(suggestedTags);
 };
+
+const getTestById = async (req, res) => {
+  const { testId } = req.params;
+  const test = await testService.findByTestId(testId);
+  res.json(test);
+}
 
 // Get filtered list of tests
 const getFilteredTests = async (req, res) => {
@@ -53,13 +58,6 @@ const getAttemptDetails = async (req, res) => {
   res.json(attemptDetails);
 };
 
-// Get test answers (data)
-const getTestAnswers = async (req, res) => {
-  const { testId, attemptId } = req.params;
-  const testAnswers = await submissionService.getTestAnswers(testId, attemptId);
-  res.json(testAnswers);
-};
-
 // Get TestDo page data
 const getQuestions = async (req, res) => {
   const { testId } = req.params;
@@ -81,10 +79,10 @@ const submitTest = async (req, res) => {
 
 // Create a new test
 const createTest = async (req, res) => {
-  const { title, description, BMID, isActive } = req.body;
-  if (!title || !BMID) return res.status(400).json({ message: "Title and BMID are required" });
+  const testData = req.body;
+  if (testData.length < 5) return res.status(400).json({ message: "Missing fields" });
 
-  const test = await testService.create({ title, description, BMID, isActive });
+  const test = await testService.createTest(testData);
   res.status(201).json({ message: "Test created", testId: test.ID });
 };
 
@@ -104,12 +102,42 @@ const deleteTest = async (req, res) => {
   res.json({ message: "Test deleted successfully" });
 };
 
-// Get versions of a test
-const getTestVersions = async (req, res) => {
+const createQuestion = async (req, res) => {
   const { testId } = req.params;
-  const versions = await testService.getTestVersions(testId);
-  res.json(versions);
-};
+  const { question } = req.body;
+
+  const newQuestion = await testService.addQuestion(testId, question);
+  res.status(201).json({ message: "Question created", question: newQuestion });
+}
+
+const updateQuestion = async (req, res) => {
+  const { testId } = req.params;
+  const { questionId } = req.query;
+  const updateData = req.body;
+
+  const updatedQuestion = await testService.updateQuestion(testId, questionId, updateData);
+  res.json({ message: "Question updated successfully", updatedQuestion });
+}
+
+const deleteQuestion = async (req, res) => {
+  const { testId } = req.params;
+  const { questionId } = req.query;
+
+  await testService.deleteQuestion(testId, questionId);
+  res.json({ message: "Question deleted successfully" });
+}
+
+const getAllAttempts = async (req, res) => {
+  const { testId } = req.params;
+  const attempts = await testService.getAttemptsByTestId(testId);
+  res.json(attempts);
+}
+
+const getCandidateAttempts = async (req, res) => {
+  const { candidateId } = req.params;
+  const attempts = await testService.getCandidateAttempts(candidateId);
+  res.json(attempts);
+}
 
 module.exports = {
   getTests,
@@ -119,11 +147,15 @@ module.exports = {
   getTestAttempts,
   getAttemptPage,
   getAttemptDetails,
-  getTestAnswers,
   getQuestions,
   submitTest,
   createTest,
   updateTest,
   deleteTest,
-  getTestVersions,
+  createQuestion,
+  updateQuestion,
+  deleteQuestion,
+  getTestById,
+  getAllAttempts,
+  getCandidateAttempts,
 };

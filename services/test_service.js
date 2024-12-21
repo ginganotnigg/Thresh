@@ -1,4 +1,3 @@
-const TestRepository = require('../repositories/test_repository');
 const BaseService = require('./base_service');
 const Test = require('../models/test');
 const Attempt = require('../models/attempt');
@@ -6,41 +5,89 @@ const TestTag = require('../models/test_tag');
 const Test_TestTag = require('../models/test_testtag');
 const Question = require('../models/question');
 const { Op, Sequelize } = require('sequelize');
-const e = require('express');
+const express = require('express');
 
 class TestService extends BaseService {
   constructor() {
-    super(TestRepository);
+    super(Test);
   }
 
   async findByTestId(testId) {
-    return await this.repository.findByTestId(testId);
+    const test = await this.model.findByPk(testId);
+    const totalScore = await this.getTotalScore(testId);
+    return {
+      testName: test.title,
+      minutesToAnswer: test.minutesToAnswer,
+      difficulty: test.difficulty,
+      totalPoints: totalScore
+    };
   }
 
-  async getVersionsByTestId(testId) {
-    return await this.repository.getVersionsByTestId(testId);
-  }
-
-  async create(testData) {
+  async createTest(testData) {
     const test = await Test.create({
+      company: testData.company,
       title: testData.title,
       description: testData.description,
-      BMID: testData.BMID,
-      isActive: testData.isActive || true,
+      minutesToAnswer: testData.minutesToAnswer,
+      difficulty: testData.difficulty,
+      answerCount: 0,
     });
     return test;
   }
 
-  async update(id, data) {
-    const record = await this.repository.findByTestId(id);
+  async updateTest(id, data) {
+    const record = await this.findByTestId(id);
     if (!record) throw new Error(`${this.model.name} not found`);
     return await record.update(data);
   }
 
-  async delete(id) {
-    const record = await this.repository.findByTestId(id);
+  async deleteTest(id) {
+    const record = await this.findByTestId(id);
     if (!record) throw new Error(`${this.model.name} not found`);
     return await record.destroy();
+  }
+
+  async addQuestion(testId, questionData) {
+    const question = await Question.create({
+      testId: testId,
+      text: questionData.text,
+      options: questionData.options,
+      points: questionData.points,
+      correctAnswer: questionData.correctAnswer
+    });
+    return question;
+  }
+
+  async updateQuestion(testId, questionId) {
+    const question = await Question.findOne({
+      where: {
+        ID: questionId,
+        testId: testId
+      }
+    });
+
+    if (!question) {
+      throw new Error("Question not found");
+    }
+
+    const updatedQuestion = await question.update(data);
+    return updatedQuestion;
+  }
+
+  async deleteQuestion(testId, questionId) {
+    const question = await Question.findOne({
+      where: {
+        ID: questionId,
+        testId: testId
+      }
+    });
+
+    if (!question) {
+      throw new Error("Question not found");
+    }
+
+    await question.destroy();
+    return { message: "Question deleted successfully" };
   }
 
   async submit(attemptData) {
@@ -56,7 +103,7 @@ class TestService extends BaseService {
     let status = 'Incomplete';
 
     if (!attemptData.choices.includes(-1)) {
-      status = 'Complete';
+      status = 'Completed';
       questions.forEach((question, index) => {
         if (attemptData.choices[index] === question.correctAnswer) {
           score += question.points;
@@ -145,7 +192,13 @@ class TestService extends BaseService {
       filteredTests = tests;
     }
 
-    return { page: 1, perPage: 20, totalPage: 1, data: filteredTests };
+    // Pagination logic
+    const perPage = 20;
+    const totalTests = filteredTests.length;
+    const totalPages = Math.ceil(totalTests / perPage);
+    const paginatedTests = filteredTests.slice((page - 1) * perPage, page * perPage);
+
+    return { page: paginatedTests, perPage: perPage, totalPage: totalPages, data: filteredTests };
   };
 
   async getSuggestedTags() {
@@ -175,18 +228,41 @@ class TestService extends BaseService {
     };
   };
 
+  async getQuestionsWithCandidateChoice(testId, attemptId) {
+    const attempt = await Attempt.findByPk(attemptId, {
+      attributes: ["choices"],
+    });
+    if (!attempt) {
+      throw new Error("Attempt not found");
+    }
+    const questions = await Question.findAll({
+      where: { testId },
+    });
+
+    const questionsWithCandidateChoice = questions.map((question, index) => ({
+      question: question.text,
+      options: question.options,
+      correctAnswer: question.correctAnswer,
+      chosenAnswer: attempt.choices[index] !== undefined ? attempt.choices[index] : null,
+      score: question.points
+    }));
+
+    return questionsWithCandidateChoice;
+  }
+
   async getTestAttempts(testId) {
     const attempts = await Attempt.findAll({
       where: { testId },
       attributes: ["ID", "score", "status", "createdAt"],
     });
 
-    return {
-      page: 1,
-      perPage: 20,
-      totalPage: 1,
-      data: attempts,
-    };
+    // Pagination logic
+    const perPage = 20;
+    const totalTests = filteredTests.length;
+    const totalPages = Math.ceil(totalTests / perPage);
+    const paginatedTests = filteredTests.slice((page - 1) * perPage, page * perPage);
+
+    return { page: paginatedTests, perPage: perPage, totalPage: totalPages, data: attempts };
   };
 
   async getTotalScore(testId) {
@@ -235,6 +311,25 @@ class TestService extends BaseService {
     };
   }
 
+  async getAttemptsByTestId(testId) {
+    const attempts = await Attempt.findAll({
+      where: { testId },
+      attributes: ["score", "candidateId", "createdAt", "status", "choices"],
+    });
+
+    const attemptList = attempts.map(attempt => {
+      const totalQuestions = attempt.choices.length;
+      const perCent = attempt.choices.filter(c => c !== -1).length / totalQuestions * 100;
+      return {
+        candidateId: attempt.candidateId,
+        createAt: attempt.createdAt,
+        completeness: perCent,
+        score: attempt.score,
+      };
+    });
+    return attemptList;
+  }
+
   async getAttemptDetails(testId, attemptId) {
     const attempt = await Attempt.findByPk(attemptId, {
       where: { testId },
@@ -245,13 +340,53 @@ class TestService extends BaseService {
       throw new Error("Attempt not found");
     }
 
-    return {
-      page: 1,
-      perPage: 20,
-      totalPage: 1,
-      data: attempt,
-    };
+    // Pagination logic
+    const perPage = 20;
+    const totalTests = filteredTests.length;
+    const totalPages = Math.ceil(totalTests / perPage);
+    const paginatedTests = filteredTests.slice((page - 1) * perPage, page * perPage);
+
+    return { page: paginatedTests, perPage: perPage, totalPage: totalPages, data: attempt };
+  }
+
+  async getCandidateAttempts(candidateId) {
+    const attempts = await Attempt.findAll({
+      where: { candidateId },
+      attributes: ["ID", "testId", "score", "status", "createdAt"]
+    });
+
+    const testsMap = {};
+    for (let attempt of attempts) {
+      const testId = attempt.testId;
+      if (!testsMap[testId]) {
+        const test = await Test.findByPk(testId, {
+          attributes: ["ID", "title", "description"]
+        });
+        if (test) {
+          testsMap[testId] = {
+            testId: test.ID,
+            title: test.title,
+            description: test.description,
+            attempts: []
+          };
+        }
+      }
+      const questionsWithCandidateChoice = await this.getQuestionsWithCandidateChoice(testId, attempt.ID);
+      if (testsMap[testId]) {
+        testsMap[testId].attempts.push({
+          ID: attempt.ID,
+          score: attempt.score,
+          status: attempt.status,
+          answer: questionsWithCandidateChoice,
+          createdAt: attempt.createdAt
+        });
+      }
+    }
+
+    const tests = Object.values(testsMap);
+    return tests;
   }
 }
+
 testService = new TestService();
 module.exports = testService;

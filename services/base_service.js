@@ -1,26 +1,30 @@
 class BaseService {
-  constructor(repository) {
-    this.repository = repository;
+  constructor(model) {
+    this.model = model;
   }
 
   async getById(id) {
-    return await this.repository.findById(id);
+    return await this.model.findByPk(id);
   }
 
   async getAll() {
-    return await this.repository.findAll();
+    return await this.model.findAll();
   }
 
   async create(data) {
-    return await this.repository.create(data);
+    return await this.model.create(data);
   }
 
   async update(id, data) {
-    return await this.repository.update(id, data);
+    const record = await this.getById(id);
+    if (!record) throw new Error(`${this.model.name} not found`);
+    return await record.update(data);
   }
 
   async delete(id) {
-    return await this.repository.delete(id);
+    const record = await this.getById(id);
+    if (!record) throw new Error(`${this.model.name} not found`);
+    return await record.destroy();
   }
 }
 

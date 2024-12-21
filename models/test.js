@@ -1,5 +1,6 @@
 const sequelize = require("../utils/database");
 const { DataTypes } = require("sequelize");
+const Question = require("./question");
 
 const Test = sequelize.define("Test", {
   ID: {
@@ -31,6 +32,12 @@ const Test = sequelize.define("Test", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+}, {
+  hooks: {
+    beforeDestroy: async (test, options) => {
+      await Question.destroy({ where: { testId: test.ID } });
+    }
+  }
 });
 
 module.exports = Test;
