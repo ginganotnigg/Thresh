@@ -31,8 +31,6 @@ const Question = sequelize.define("Question", {
     type: DataTypes.INTEGER,
     allowNull: false,
   }
-}, {
-  timestamps: false // Disable createdAt and updatedAt
 });
 
 module.exports = Question;

@@ -8,7 +8,7 @@ const Test = sequelize.define("Test", {
     autoIncrement: true,
     primaryKey: true,
   },
-  company: {
+  companyId: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -26,7 +26,7 @@ const Test = sequelize.define("Test", {
   },
   difficulty: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   answerCount: {
     type: DataTypes.STRING,

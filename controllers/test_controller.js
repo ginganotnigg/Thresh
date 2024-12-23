@@ -68,9 +68,9 @@ const getQuestions = async (req, res) => {
 // Submit test answers
 const submitTest = async (req, res) => {
   const { testId } = req.params;
-  const { choices } = req.body;
+  const { answers } = req.body;
 
-  const result = await testService.submit({ testId, choices });
+  const result = await testService.submit({ testId, answers });
   res.json({
     message: "Test submitted successfully",
     result,
@@ -80,7 +80,7 @@ const submitTest = async (req, res) => {
 // Create a new test
 const createTest = async (req, res) => {
   const testData = req.body;
-  if (testData.length < 5) return res.status(400).json({ message: "Missing fields" });
+  if (testData.length < 4) return res.status(400).json({ message: "Missing fields" });
 
   const test = await testService.createTest(testData);
   res.status(201).json({ message: "Test created", testId: test.ID });
@@ -104,15 +104,14 @@ const deleteTest = async (req, res) => {
 
 const createQuestion = async (req, res) => {
   const { testId } = req.params;
-  const { question } = req.body;
+  const question = req.body;
 
   const newQuestion = await testService.addQuestion(testId, question);
   res.status(201).json({ message: "Question created", question: newQuestion });
 }
 
 const updateQuestion = async (req, res) => {
-  const { testId } = req.params;
-  const { questionId } = req.query;
+  const { testId, questionId } = req.params;
   const updateData = req.body;
 
   const updatedQuestion = await testService.updateQuestion(testId, questionId, updateData);
@@ -120,8 +119,7 @@ const updateQuestion = async (req, res) => {
 }
 
 const deleteQuestion = async (req, res) => {
-  const { testId } = req.params;
-  const { questionId } = req.query;
+  const { testId, questionId } = req.params;
 
   await testService.deleteQuestion(testId, questionId);
   res.json({ message: "Question deleted successfully" });
