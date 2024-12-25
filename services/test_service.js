@@ -40,34 +40,47 @@ class TestService extends BaseService {
   }
 
   async deleteTest(id) {
-    return await this.delete(id);
-  }
-
-  async addQuestion(testId, questionData) {
-    const question = await Question.create({
-      testId: testId,
-      text: questionData.text,
-      options: questionData.options,
-      points: questionData.points,
-      correctAnswer: questionData.correctAnswer
-    });
-    return question;
-  }
-
-  async updateQuestion(testId, questionId, data) {
-    const question = await Question.findOne({
-      where: {
-        ID: questionId,
-        testId: testId
-      }
+    await Question.destroy({
+      where: { testId: id }
     });
 
-    if (!question) {
-      throw new Error("Question not found");
-    }
+    await this.delete(id);
+    return { message: "Test and associated questions deleted successfully" };
+  }
 
-    const updated = await question.update(data);
-    return updated;
+  async addMultipleQuestions(testId, questionsData) {
+    const questions = await Promise.all(
+      questionsData.map(questionData => {
+        return Question.create({
+          testId: testId,
+          text: questionData.text,
+          options: questionData.options,
+          points: questionData.points,
+          correctAnswer: questionData.correctAnswer
+        });
+      })
+    );
+    return questions;
+  }
+
+  async updateMultipleQuestions(testId, questionsData) {
+    const updatedQuestions = await Promise.all(
+      questionsData.map(async questionData => {
+        const question = await Question.findOne({
+          where: {
+            ID: questionData.ID,
+            testId: testId
+          }
+        });
+
+        if (!question) {
+          throw new Error(`Question with ID ${questionData.ID} not found`);
+        }
+
+        return await question.update(questionData);
+      })
+    );
+    return updatedQuestions;
   }
 
   async deleteQuestion(testId, questionId) {
@@ -354,13 +367,14 @@ class TestService extends BaseService {
   async getAttemptsByTestId(testId) {
     const attempts = await Attempt.findAll({
       where: { testId },
-      attributes: ["score", "candidateId", "createdAt", "status", "choices"],
+      attributes: ["ID", "score", "candidateId", "createdAt", "status", "choices"],
     });
 
     const attemptList = attempts.map(attempt => {
       const totalQuestions = attempt.choices.length;
       const perCent = attempt.choices.filter(c => c !== -1).length / totalQuestions * 100;
       return {
+        attemptId: attempt.ID,
         candidateId: attempt.candidateId,
         createAt: attempt.createdAt,
         completeness: perCent,
@@ -417,6 +431,28 @@ class TestService extends BaseService {
 
     const tests = Object.values(testsMap);
     return tests;
+  }
+
+  async getAttemptDetails(candidateId, attemptId) {
+    console.log(candidateId, attemptId);
+    const attempt = await Attempt.findByPk(attemptId, {
+      attributes: ["ID", "candidateId", "testId", "score", "status", "createdAt"],
+    });
+
+    if (!attempt || attempt.candidateId != candidateId) {
+      throw new Error("Attempt not found");
+    }
+
+    const questionsWithCandidateChoice = await this.getQuestionsWithCandidateChoice(attempt.testId, attempt.ID);
+
+    return {
+      ID: attempt.ID,
+      testId: attempt.testId,
+      score: attempt.score,
+      status: attempt.status,
+      answer: questionsWithCandidateChoice,
+      createdAt: attempt.createdAt
+    };
   }
 }
 

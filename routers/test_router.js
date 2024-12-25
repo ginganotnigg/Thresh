@@ -16,11 +16,11 @@ router.post('/create', testController.createTest);
 router.put('/:testId/edit/detail', testController.updateTest);
 router.delete('/:testId', testController.deleteTest);
 router.post('/:testId/create/question', testController.createQuestion);
-router.put('/:testId/edit/question/:questionId', testController.updateQuestion);
+router.put('/:testId/edit/question', testController.updateQuestion);
 router.delete('/:testId/question/:questionId', testController.deleteQuestion);
 router.get('/:testId/submission/page', testController.getAllAttempts);
 router.get('/:testId/submission/overview', testController.getTestById);
-router.get('/:candidateId/submission/detail', testController.getCandidateAttempts);
+router.get('/:candidateId/submission/:attemptId/detail', testController.getCandidateAttempts);
 router.get('/:testId/question', testController.getQuestions);
 
 module.exports = router;

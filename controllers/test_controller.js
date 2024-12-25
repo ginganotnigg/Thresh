@@ -104,17 +104,17 @@ const deleteTest = async (req, res) => {
 
 const createQuestion = async (req, res) => {
   const { testId } = req.params;
-  const question = req.body;
+  const { questions } = req.body;
 
-  const newQuestion = await testService.addQuestion(testId, question);
+  const newQuestion = await testService.addMultipleQuestions(testId, questions);
   res.status(201).json({ message: "Question created", question: newQuestion });
 }
 
 const updateQuestion = async (req, res) => {
-  const { testId, questionId } = req.params;
-  const updateData = req.body;
+  const { testId } = req.params;
+  const { questions } = req.body;
 
-  const updatedQuestion = await testService.updateQuestion(testId, questionId, updateData);
+  const updatedQuestion = await testService.updateMultipleQuestions(testId, questions);
   res.json({ message: "Question updated successfully", updatedQuestion });
 }
 
@@ -132,8 +132,8 @@ const getAllAttempts = async (req, res) => {
 }
 
 const getCandidateAttempts = async (req, res) => {
-  const { candidateId } = req.params;
-  const attempts = await testService.getCandidateAttempts(candidateId);
+  const { candidateId, attemptId } = req.params;
+  const attempts = await testService.getAttemptDetails(candidateId, attemptId);
   res.json(attempts);
 }
 
