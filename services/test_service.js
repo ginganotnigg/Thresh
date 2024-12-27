@@ -195,7 +195,7 @@ class TestService extends BaseService {
     };
 
     const tests = await Test.findAll(query);
-    const filteredTests = [];
+    let filteredTests = [];
     if (tags && tags.length > 0) {
       for (const test of tests) {
         const tagNames = await this.getTagNames(test.ID);
