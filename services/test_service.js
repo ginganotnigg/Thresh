@@ -23,15 +23,28 @@ class TestService extends BaseService {
     };
   }
 
-  async createTest(testData) {
+  async createTest(testDetails) {
     const test = await Test.create({
-      companyId: testData.companyId,
-      title: testData.title,
-      description: testData.description,
-      minutesToAnswer: testData.minutesToAnswer,
-      difficulty: testData.difficulty || 'Easy',
+      companyId: testDetails.companyId,
+      title: testDetails.title,
+      description: testDetails.description,
+      minutesToAnswer: testDetails.minutesToAnswer,
+      difficulty: testDetails.difficulty || 'Easy',
       answerCount: 0,
     });
+    const tags = testDetails.tags;
+    if (tags && tags.length > 0) {
+      const tagInstances = await Promise.all(
+        tags.map(tag => TestTag.findOrCreate({ where: { name: tag } }))
+      );
+
+      const tagIds = tagInstances.map(([tagInstance]) => tagInstance.ID);
+
+      await Promise.all(
+        tagIds.map(tagId => Test_TestTag.create({ testId: test.ID, tagId }))
+      );
+    }
+
     return test;
   }
 
