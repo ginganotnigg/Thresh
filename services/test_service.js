@@ -182,7 +182,7 @@ class TestService extends BaseService {
       where: { testId: testId },
     });
     return {
-      id: test.ID,
+      ID: test.ID,
       companyId: test.companyId, // Assuming companyId maps to 'companyId'
       title: test.title,
       description: test.description,
@@ -257,11 +257,11 @@ class TestService extends BaseService {
     });
 
     const questionsWithDetails = questions.map((question) => ({
-      id: question.ID,
+      ID: question.ID,
       text: question.text,
       points: question.points,
       choices: question.options.map((option, optionIndex) => ({
-        id: `${optionIndex}`,
+        ID: `${optionIndex}`,
         text: option,
       })),
       correctAnswer: question.correctAnswer,
@@ -285,7 +285,7 @@ class TestService extends BaseService {
     });
 
     const questionsWithCandidateChoice = questions.map((question, index) => ({
-      id: question.ID,
+      ID: question.ID,
       question: question.text,
       options: question.options,
       correctAnswer: question.correctAnswer,
@@ -308,11 +308,11 @@ class TestService extends BaseService {
     });
 
     const questionsWithDetails = questions.map((question, index) => ({
-      id: question.ID,
+      ID: question.ID,
       text: question.text,
       points: question.points,
       choices: question.options.map((option, optionIndex) => ({
-        id: `${optionIndex}`,
+        ID: `${optionIndex}`,
         text: option,
         isChoosen: attempt.choices[index] === optionIndex,
         isCorrect: optionIndex === question.correctAnswer,
