@@ -24,14 +24,6 @@ class TestService extends BaseService {
   }
 
   async createTest(testDetails) {
-    const test = await Test.create({
-      companyId: testDetails.companyId,
-      title: testDetails.title,
-      description: testDetails.description,
-      minutesToAnswer: testDetails.minutesToAnswer,
-      difficulty: testDetails.difficulty || 'Easy',
-      answerCount: 0,
-    });
     const tags = testDetails.tags;
     if (tags && tags.length > 0) {
       const tagInstances = await Promise.all(
@@ -44,7 +36,15 @@ class TestService extends BaseService {
         tagIds.map(tagId => Test_TestTag.create({ testId: test.ID, tagId }))
       );
     }
-
+    const test = await Test.create({
+      companyId: testDetails.companyId,
+      title: testDetails.title,
+      description: testDetails.description,
+      minutesToAnswer: testDetails.minutesToAnswer,
+      difficulty: testDetails.difficulty || 'Easy',
+      tags: testDetails.tags,
+      answerCount: 0,
+    });
     return test;
   }
 
@@ -209,7 +209,7 @@ class TestService extends BaseService {
 
     const tests = await Test.findAll(query);
     let filteredTests = [];
-    if (tags && tags.length > 0) {
+    if (tags && tags instanceof Array && tags.length > 0) {
       for (const test of tests) {
         const tagNames = await this.getTagNames(test.ID);
         if (tags.some(tag => tagNames.includes(tag))) {
@@ -226,6 +226,11 @@ class TestService extends BaseService {
     const totalTests = filteredTests.length;
     const totalPages = Math.ceil(totalTests / perPage);
     const paginatedTests = filteredTests.slice((page - 1) * perPage, page * perPage);
+
+    for (const test of paginatedTests) {
+      const tagNames = await this.getTagNames(test.ID);
+      test.dataValues.tags = tagNames;
+    }
 
     return { page: page, perPage: perPage, totalPage: totalPages, data: paginatedTests };
   };
