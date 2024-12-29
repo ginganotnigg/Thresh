@@ -54,7 +54,9 @@ const getAttemptPage = async (req, res) => {
 // Get paginated attempt details
 const getAttemptDetails = async (req, res) => {
   const { testId, attemptId } = req.params;
-  const attemptDetails = await testService.getAttemptDetails(testId, attemptId);
+  const { page = 1, perPage = 20 } = req.query; // Default values if not provided
+
+  const attemptDetails = await testService.getAttemptDetails(testId, attemptId, parseInt(page), parseInt(perPage));
   res.json(attemptDetails);
 };
 
@@ -133,7 +135,7 @@ const getAllAttempts = async (req, res) => {
 
 const getCandidateAttempts = async (req, res) => {
   const { candidateId, attemptId } = req.params;
-  const attempts = await testService.getAttemptDetails(candidateId, attemptId);
+  const attempts = await testService.getCandidateAttemptDetails(candidateId, attemptId);
   res.json(attempts);
 }
 

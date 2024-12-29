@@ -127,7 +127,6 @@ class TestService extends BaseService {
       const question = questions.find((q, index) => index == answer.questionId);
       if (question) {
         const choiceIndex = parseInt(answer.choiceId);
-        console.log(choiceIndex);
         if (choiceIndex !== -1) {
           choices[questions.indexOf(question)] = choiceIndex;
           if (choiceIndex === question.correctAnswer) {
@@ -300,6 +299,7 @@ class TestService extends BaseService {
     const attempt = await Attempt.findByPk(attemptId, {
       attributes: ["choices"],
     });
+    console.log(attemptId);
     if (!attempt) {
       throw new Error("Attempt not found");
     }
@@ -404,7 +404,6 @@ class TestService extends BaseService {
 
   async getAttemptDetails(testId, attemptId, page = 1, perPage = 20) {
     const questions = await this.getQuestionsDetails(testId, attemptId);
-
     // Pagination logic
     const totalQuestions = questions.length;
     const totalPages = Math.ceil(totalQuestions / perPage);
@@ -451,8 +450,7 @@ class TestService extends BaseService {
     return tests;
   }
 
-  async getAttemptDetails(candidateId, attemptId) {
-    console.log(candidateId, attemptId);
+  async getCandidateAttemptDetails(candidateId, attemptId) {
     const attempt = await Attempt.findByPk(attemptId, {
       attributes: ["ID", "candidateId", "testId", "score", "status", "createdAt"],
     });
