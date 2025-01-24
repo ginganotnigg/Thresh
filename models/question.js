@@ -30,7 +30,9 @@ const Question = sequelize.define("Question", {
   correctAnswer: {
     type: DataTypes.INTEGER,
     allowNull: false,
-  }
+  },
+}, {
+  timestamps: false
 });
 
 module.exports = Question;

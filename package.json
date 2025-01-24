@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "concurrently \"nodemon app.js\" \"node seed-data.js\" ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -17,6 +17,7 @@
     "sequelize": "^6.37.5"
   },
   "devDependencies": {
+    "concurrently": "^9.1.2",
     "sequelize-cli": "^6.6.2"
   }
 }

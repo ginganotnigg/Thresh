@@ -12,7 +12,7 @@ const TestTag = sequelize.define("TestTag", {
     allowNull: false,
   },
 }, {
-  timestamps: false // Disable createdAt and updatedAt
+  timestamps: false,
 });
 
 module.exports = TestTag;

@@ -19,6 +19,8 @@ const TestVersion = sequelize.define("TestVersion", {
     type: DataTypes.STRING,
     allowNull: false,
   }
+}, {
+  timestamps: false
 });
 
 module.exports = TestVersion;

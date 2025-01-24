@@ -4,6 +4,11 @@ const Test = require("./test");
 const TestTag = require("./test_tag");
 
 const Test_TestTag = sequelize.define("Test_TestTag", {
+  ID: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
   testId: {
     type: DataTypes.INTEGER,
     references: {
@@ -19,8 +24,9 @@ const Test_TestTag = sequelize.define("Test_TestTag", {
     }
   }
 }, {
-  timestamps: false // Disable createdAt and updatedAt
+  timestamps: false
 });
+
 
 // Define associations
 Test.belongsToMany(TestTag, { through: "Test_TestTag", as: "tags", foreignKey: "testId" });

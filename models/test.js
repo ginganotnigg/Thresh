@@ -31,6 +31,8 @@ const Test = sequelize.define("Test", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+}, {
+  timestamps: false
 });
 
 module.exports = Test;

@@ -31,6 +31,8 @@ const Attempt = sequelize.define("Attempt", {
     type: DataTypes.JSON,
     allowNull: false,
   },
+}, {
+  timestamps: false
 });
 
 module.exports = Attempt;
