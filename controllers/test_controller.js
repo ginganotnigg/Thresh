@@ -12,29 +12,25 @@ const getSuggestedTags = async (req, res) => {
   res.json(suggestedTags);
 };
 
-const getTestById = async (req, res) => {
-  const { testId } = req.params;
-  const test = await testService.findByTestId(testId);
-  res.json(test);
-}
-
 // Get filtered list of tests
 const getFilteredTests = async (req, res) => {
-  const { minMinute, maxMinute, difficulty, tags, searchName } = req.query;
+  const { minMinute, maxMinute, difficulty, tags, searchName, page = 1, perPage = 20 } = req.query;
   const filteredTests = await testService.getFilteredTests({
     minMinute,
     maxMinute,
     difficulty,
     tags,
     searchName,
-  });
+  }, parseInt(page), parseInt(perPage));
   res.json(filteredTests);
 };
 
 // Get test attempts (page or data)
 const getTestAttempts = async (req, res) => {
   const testId = req.params.testId;
-  const attempts = await testService.getTestAttempts(testId);
+  const { page = 1, perPage = 20 } = req.query; // Default values if not provided
+
+  const attempts = await testService.getTestAttempts(testId, parseInt(page), parseInt(perPage));
   res.json(attempts);
 };
 
@@ -93,8 +89,16 @@ const updateTest = async (req, res) => {
   const { testId } = req.params;
   const updateData = req.body;
 
-  const updatedTest = await testService.updateTest(testId, updateData);
-  res.json({ message: "Test updated successfully", updatedTest });
+  try {
+    const updatedTest = await testService.updateTest(testId, updateData);
+    res.json({ message: "Test updated successfully", updatedTest });
+  } catch (error) {
+    if (error.statusCode === 400) {
+      res.status(400).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
 };
 
 // Delete a test
@@ -131,6 +135,12 @@ const getAllAttempts = async (req, res) => {
   const { testId } = req.params;
   const attempts = await testService.getAttemptsByTestId(testId);
   res.json(attempts);
+}
+
+const getTestById = async (req, res) => {
+  const { testId } = req.params;
+  const test = await testService.findByTestId(testId);
+  res.json(test);
 }
 
 const getCandidateAttempts = async (req, res) => {

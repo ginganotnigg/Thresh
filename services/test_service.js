@@ -12,16 +12,110 @@ class TestService extends BaseService {
     super(Test);
   }
 
-  async findByTestId(testId) {
-    const test = await this.model.findByPk(testId);
-    const totalScore = await this.getTotalScore(testId);
-    return {
-      testName: test.title,
-      minutesToAnswer: test.minutesToAnswer,
-      difficulty: test.difficulty,
-      totalPoints: totalScore
-    };
+  /// Helpers
+
+  async getTotalScore(testId) {
+    const totalScore = await Question.sum('points', {
+      where: { testId }
+    });
+    return totalScore;
   }
+
+  async getTotalQuestions(testId) {
+    return await Question.count({
+      where: { testId }
+    });
+  }
+
+  async getQuestionsWithCandidateChoice(testId, attemptId) {
+    const attempt = await Attempt.findByPk(attemptId, {
+      attributes: ["choices"],
+    });
+    if (!attempt) {
+      throw new Error("Attempt not found");
+    }
+    const questions = await Question.findAll({
+      where: { testId },
+    });
+
+    const questionsWithCandidateChoice = questions.map((question, index) => ({
+      ID: question.ID,
+      question: question.text,
+      options: question.options,
+      correctAnswer: question.correctAnswer,
+      chosenAnswer: attempt.choices[index] !== undefined ? attempt.choices[index] : null,
+      score: question.points
+    }));
+
+    return questionsWithCandidateChoice;
+  }
+
+  async getQuestionsDetails(testId, attemptId) {
+    const attempt = await Attempt.findByPk(attemptId, {
+      attributes: ["choices"],
+    });
+    console.log(attemptId);
+    if (!attempt) {
+      throw new Error("Attempt not found");
+    }
+    const questions = await Question.findAll({
+      where: { testId },
+    });
+
+    const questionsWithDetails = questions.map((question, index) => ({
+      ID: question.ID,
+      text: question.text,
+      points: question.points,
+      choices: question.options.map((option, optionIndex) => ({
+        ID: `${optionIndex}`,
+        text: option,
+        isChoosen: attempt.choices[index] === optionIndex,
+        isCorrect: optionIndex === question.correctAnswer,
+      })),
+    }));
+
+    return questionsWithDetails;
+  }
+
+  async getCandidateAttempts(candidateId) {
+    const attempts = await Attempt.findAll({
+      where: { candidateId },
+      attributes: ["ID", "testId", "score", "status", "createdAt"]
+    });
+
+    const testsMap = {};
+    for (let attempt of attempts) {
+      const testId = attempt.testId;
+      if (!testsMap[testId]) {
+        const test = await Test.findByPk(testId, {
+          attributes: ["ID", "title", "description"]
+        });
+        if (test) {
+          testsMap[testId] = {
+            testId: test.ID,
+            title: test.title,
+            description: test.description,
+            attempts: []
+          };
+        }
+      }
+      const questionsWithCandidateChoice = await this.getQuestionsWithCandidateChoice(testId, attempt.ID);
+      if (testsMap[testId]) {
+        testsMap[testId].attempts.push({
+          ID: attempt.ID,
+          score: attempt.score,
+          status: attempt.status,
+          answer: questionsWithCandidateChoice,
+          createdAt: attempt.createdAt
+        });
+      }
+    }
+
+    const tests = Object.values(testsMap);
+    return tests;
+  }
+
+  /// Business Manager API
 
   async createTest(testDetails) {
     const tags = testDetails.tags;
@@ -49,6 +143,17 @@ class TestService extends BaseService {
   }
 
   async updateTest(id, data) {
+    // Check if any attempts exist for the test
+    const attemptsExist = await Attempt.count({
+      where: { testId: id }
+    });
+
+    if (attemptsExist > 0) {
+      const error = new Error("Cannot update test because attempts exist for this test");
+      error.statusCode = 400;
+      throw error;
+    }
+
     return await this.update(id, data);
   }
 
@@ -112,48 +217,89 @@ class TestService extends BaseService {
     return { message: "Question deleted successfully" };
   }
 
-  async submit(attemptData) {
-    const { testId, answers } = attemptData;
+  async getAttemptsByTestId(testId) {
+    const attempts = await Attempt.findAll({
+      where: { testId },
+      attributes: ["ID", "score", "candidateId", "createdAt", "status", "choices"],
+    });
+
+    const attemptList = attempts.map(attempt => {
+      const totalQuestions = attempt.choices.length;
+      const perCent = attempt.choices.filter(c => c !== -1).length / totalQuestions * 100;
+      return {
+        attemptId: attempt.ID,
+        candidateId: attempt.candidateId,
+        createAt: attempt.createdAt,
+        completeness: perCent,
+        score: attempt.score,
+      };
+    });
+    return attemptList;
+  }
+
+  async findByTestId(testId) {
+    const test = await this.model.findByPk(testId);
+    const totalScore = await this.getTotalScore(testId);
+    return {
+      testName: test.title,
+      minutesToAnswer: test.minutesToAnswer,
+      difficulty: test.difficulty,
+      totalPoints: totalScore
+    };
+  }
+
+  async getCandidateAttemptDetails(candidateId, attemptId) {
+    const attempt = await Attempt.findByPk(attemptId, {
+      attributes: ["ID", "candidateId", "testId", "score", "status", "createdAt"],
+    });
+
+    if (!attempt || attempt.candidateId != candidateId) {
+      throw new Error("Attempt not found");
+    }
+
+    const questionsWithCandidateChoice = await this.getQuestionsWithCandidateChoice(attempt.testId, attempt.ID);
+
+    return {
+      ID: attempt.ID,
+      testId: attempt.testId,
+      score: attempt.score,
+      status: attempt.status,
+      answer: questionsWithCandidateChoice,
+      createdAt: attempt.createdAt
+    };
+  }
+
+  /// Both roles API
+
+  async getQuestions(testId) {
+    const test = await Test.findByPk(testId);
+    if (!test) {
+      throw new Error("Test not found");
+    }
 
     const questions = await Question.findAll({
       where: { testId },
+      attributes: ["ID", "text", "options", "points", "correctAnswer"],
     });
 
-    let score = 0;
-    let status = 'InProgress';
-    const choices = new Array(questions.length).fill(-1);
+    const questionsWithDetails = questions.map((question) => ({
+      ID: question.ID,
+      text: question.text,
+      points: question.points,
+      choices: question.options.map((option, optionIndex) => ({
+        ID: `${optionIndex}`,
+        text: option,
+      })),
+      correctAnswer: question.correctAnswer,
+    }));
 
-    answers.forEach(answer => {
-      const question = questions.find((q, index) => index == answer.questionId);
-      if (question) {
-        const choiceIndex = parseInt(answer.choiceId);
-        if (choiceIndex !== -1) {
-          choices[questions.indexOf(question)] = choiceIndex;
-          if (choiceIndex === question.correctAnswer) {
-            score += question.points;
-          }
-        }
-      }
-    });
+    return {
+      title: test.title,
+      questions: questionsWithDetails,
+    };
+  };
 
-    if (!choices.includes(-1)) {
-      status = 'Finished';
-    }
-
-    const attempt = await Attempt.create({
-      testId: parseInt(testId),
-      candidateId: 201,
-      choices: choices,
-      score: score,
-      status: status,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    });
-
-    await Test.increment('answerCount', { where: { ID: testId } });
-
-    return attempt;
-  }
+  /// Candidate API
 
   async getTagNames(testId) {
     const testTags = await Test_TestTag.findAll({
@@ -171,27 +317,15 @@ class TestService extends BaseService {
     return tags.map(tag => tag.name);
   }
 
-  async getTestDetails(testId) {
-    const test = await Test.findByPk(testId);
-    if (!test) throw new Error("Test not found");
-
-    const tagNames = await this.getTagNames(testId);
-
-    const highestScore = await Attempt.max("score", {
-      where: { testId: testId },
+  async getSuggestedTags() {
+    const tags = await TestTag.findAll({
+      attributes: ['name'],
+      order: Sequelize.literal('RAND()'), // Random order
+      limit: 5,
     });
-    return {
-      ID: test.ID,
-      companyId: test.companyId, // Assuming companyId maps to 'companyId'
-      title: test.title,
-      description: test.description,
-      minutesToAnswer: test.minutesToAnswer,
-      tags: tagNames, // Extract tag names
-      answerCount: test.answerCount,
-      highestScore: highestScore || 0, // Default to 0 if no attempts
-      createdAt: test.createdAt,
-    };
-  }
+
+    return { suggestedTags: tags.map((tag) => tag.name) };
+  };
 
   async getFilteredTests({ minMinute, maxMinute, difficulty, tags, searchName }, page = 1, perPage = 20) {
     const query = {
@@ -234,92 +368,26 @@ class TestService extends BaseService {
     return { page: page, perPage: perPage, totalPage: totalPages, data: paginatedTests };
   };
 
-  async getSuggestedTags() {
-    const tags = await TestTag.findAll({
-      attributes: ['name'],
-      order: Sequelize.literal('RAND()'), // Random order
-      limit: 5,
-    });
-
-    return { suggestedTags: tags.map((tag) => tag.name) };
-  };
-
-  async getQuestions(testId) {
+  async getTestDetails(testId) {
     const test = await Test.findByPk(testId);
-    if (!test) {
-      throw new Error("Test not found");
-    }
+    if (!test) throw new Error("Test not found");
 
-    const questions = await Question.findAll({
-      where: { testId },
-      attributes: ["ID", "text", "options", "points", "correctAnswer"],
+    const tagNames = await this.getTagNames(testId);
+
+    const highestScore = await Attempt.max("score", {
+      where: { testId: testId },
     });
-
-    const questionsWithDetails = questions.map((question) => ({
-      ID: question.ID,
-      text: question.text,
-      points: question.points,
-      choices: question.options.map((option, optionIndex) => ({
-        ID: `${optionIndex}`,
-        text: option,
-      })),
-      correctAnswer: question.correctAnswer,
-    }));
-
     return {
+      ID: test.ID,
+      companyId: test.companyId, // Assuming companyId maps to 'companyId'
       title: test.title,
-      questions: questionsWithDetails,
+      description: test.description,
+      minutesToAnswer: test.minutesToAnswer,
+      tags: tagNames, // Extract tag names
+      answerCount: test.answerCount,
+      highestScore: highestScore || 0, // Default to 0 if no attempts
+      createdAt: test.createdAt,
     };
-  };
-
-  async getQuestionsWithCandidateChoice(testId, attemptId) {
-    const attempt = await Attempt.findByPk(attemptId, {
-      attributes: ["choices"],
-    });
-    if (!attempt) {
-      throw new Error("Attempt not found");
-    }
-    const questions = await Question.findAll({
-      where: { testId },
-    });
-
-    const questionsWithCandidateChoice = questions.map((question, index) => ({
-      ID: question.ID,
-      question: question.text,
-      options: question.options,
-      correctAnswer: question.correctAnswer,
-      chosenAnswer: attempt.choices[index] !== undefined ? attempt.choices[index] : null,
-      score: question.points
-    }));
-
-    return questionsWithCandidateChoice;
-  }
-
-  async getQuestionsDetails(testId, attemptId) {
-    const attempt = await Attempt.findByPk(attemptId, {
-      attributes: ["choices"],
-    });
-    console.log(attemptId);
-    if (!attempt) {
-      throw new Error("Attempt not found");
-    }
-    const questions = await Question.findAll({
-      where: { testId },
-    });
-
-    const questionsWithDetails = questions.map((question, index) => ({
-      ID: question.ID,
-      text: question.text,
-      points: question.points,
-      choices: question.options.map((option, optionIndex) => ({
-        ID: `${optionIndex}`,
-        text: option,
-        isChoosen: attempt.choices[index] === optionIndex,
-        isCorrect: optionIndex === question.correctAnswer,
-      })),
-    }));
-
-    return questionsWithDetails;
   }
 
   async getTestAttempts(testId, page = 1, perPage = 20) {
@@ -335,19 +403,6 @@ class TestService extends BaseService {
 
     return { page: page, perPage: perPage, totalPage: totalPages, data: paginatedAttempts };
   };
-
-  async getTotalScore(testId) {
-    const totalScore = await Question.sum('points', {
-      where: { testId }
-    });
-    return totalScore;
-  }
-
-  async getTotalQuestions(testId) {
-    return await Question.count({
-      where: { testId }
-    });
-  }
 
   async getAttemptPage(testId, attemptId) {
     const test = await Test.findByPk(testId, {
@@ -382,26 +437,6 @@ class TestService extends BaseService {
     };
   }
 
-  async getAttemptsByTestId(testId) {
-    const attempts = await Attempt.findAll({
-      where: { testId },
-      attributes: ["ID", "score", "candidateId", "createdAt", "status", "choices"],
-    });
-
-    const attemptList = attempts.map(attempt => {
-      const totalQuestions = attempt.choices.length;
-      const perCent = attempt.choices.filter(c => c !== -1).length / totalQuestions * 100;
-      return {
-        attemptId: attempt.ID,
-        candidateId: attempt.candidateId,
-        createAt: attempt.createdAt,
-        completeness: perCent,
-        score: attempt.score,
-      };
-    });
-    return attemptList;
-  }
-
   async getAttemptDetails(testId, attemptId, page = 1, perPage = 20) {
     const questions = await this.getQuestionsDetails(testId, attemptId);
     // Pagination logic
@@ -412,63 +447,47 @@ class TestService extends BaseService {
     return { page: page, perPage: perPage, totalPage: totalPages, data: paginatedQuestions };
   }
 
-  async getCandidateAttempts(candidateId) {
-    const attempts = await Attempt.findAll({
-      where: { candidateId },
-      attributes: ["ID", "testId", "score", "status", "createdAt"]
+  async submit(attemptData) {
+    const { testId, answers } = attemptData;
+
+    const questions = await Question.findAll({
+      where: { testId },
     });
 
-    const testsMap = {};
-    for (let attempt of attempts) {
-      const testId = attempt.testId;
-      if (!testsMap[testId]) {
-        const test = await Test.findByPk(testId, {
-          attributes: ["ID", "title", "description"]
-        });
-        if (test) {
-          testsMap[testId] = {
-            testId: test.ID,
-            title: test.title,
-            description: test.description,
-            attempts: []
-          };
+    let score = 0;
+    let status = 'InProgress';
+    const choices = new Array(questions.length).fill(-1);
+
+    answers.forEach(answer => {
+      const question = questions.find((q, index) => index == answer.questionId);
+      if (question) {
+        const choiceIndex = parseInt(answer.choiceId);
+        if (choiceIndex !== -1) {
+          choices[questions.indexOf(question)] = choiceIndex;
+          if (choiceIndex === question.correctAnswer) {
+            score += question.points;
+          }
         }
       }
-      const questionsWithCandidateChoice = await this.getQuestionsWithCandidateChoice(testId, attempt.ID);
-      if (testsMap[testId]) {
-        testsMap[testId].attempts.push({
-          ID: attempt.ID,
-          score: attempt.score,
-          status: attempt.status,
-          answer: questionsWithCandidateChoice,
-          createdAt: attempt.createdAt
-        });
-      }
-    }
-
-    const tests = Object.values(testsMap);
-    return tests;
-  }
-
-  async getCandidateAttemptDetails(candidateId, attemptId) {
-    const attempt = await Attempt.findByPk(attemptId, {
-      attributes: ["ID", "candidateId", "testId", "score", "status", "createdAt"],
     });
 
-    if (!attempt || attempt.candidateId != candidateId) {
-      throw new Error("Attempt not found");
+    if (!choices.includes(-1)) {
+      status = 'Finished';
     }
 
-    const questionsWithCandidateChoice = await this.getQuestionsWithCandidateChoice(attempt.testId, attempt.ID);
+    const attempt = await Attempt.create({
+      testId: parseInt(testId),
+      candidateId: 201,
+      choices: choices,
+      score: score,
+      status: status,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
 
-    return {
-      ID: attempt.ID,
-      testId: attempt.testId,
-      score: attempt.score,
-      status: attempt.status,
-      answer: questionsWithCandidateChoice,
-      createdAt: attempt.createdAt
-    };
+    await Test.increment('answerCount', { where: { ID: testId } });
+
+    return attempt;
   }
 }
 
