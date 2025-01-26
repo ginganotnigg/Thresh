@@ -1,26 +1,18 @@
 const sequelize = require("../utils/database");
 const { DataTypes } = require("sequelize");
-const Test = require("./test");
 
-const TestVersion = sequelize.define("TestVersion", {
+const Tag = sequelize.define("Tag", {
   ID: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },
-  testID: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: Test,
-      key: "ID",
-    },
-  },
-  versionNumber: {
+  name: {
     type: DataTypes.STRING,
     allowNull: false,
-  }
+  },
 }, {
   timestamps: false,
 });
 
-module.exports = TestVersion;
+module.exports = Tag;

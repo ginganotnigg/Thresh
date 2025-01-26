@@ -31,6 +31,18 @@ const Test = sequelize.define("Test", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: new Date(), // Automatically set to the current date
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: new Date(), // Automatically set to the current date
+  },
+}, {
+  timestamps: false,
 });
 
 module.exports = Test;

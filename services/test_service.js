@@ -1,8 +1,8 @@
 const BaseService = require('./base_service');
 const Test = require('../models/test');
 const Attempt = require('../models/attempt');
-const TestTag = require('../models/test_tag');
-const Test_TestTag = require('../models/test_testtag');
+const Tag = require('../models/tag');
+const Test_Tag = require('../models/test_tag');
 const Question = require('../models/question');
 const { Op, Sequelize } = require('sequelize');
 const express = require('express');
@@ -39,7 +39,7 @@ class TestService extends BaseService {
     });
 
     const questionsWithCandidateChoice = questions.map((question, index) => ({
-      ID: question.ID,
+      ID: `${question.ID}`,
       question: question.text,
       options: question.options,
       correctAnswer: question.correctAnswer,
@@ -51,19 +51,23 @@ class TestService extends BaseService {
   }
 
   async getQuestionsDetails(testId, attemptId) {
-    const attempt = await Attempt.findByPk(attemptId, {
-      attributes: ["choices"],
+    const attempt = await Attempt.findOne({
+      where: {
+        ID: attemptId,
+        testId: testId
+      },
+      attributes: ["ID", "score", "status", "choices"],
     });
-    console.log(attemptId);
     if (!attempt) {
-      throw new Error("Attempt not found");
+      throw new Error("Attempt not found or does not belong to the specified test");
     }
+
     const questions = await Question.findAll({
       where: { testId },
     });
 
     const questionsWithDetails = questions.map((question, index) => ({
-      ID: question.ID,
+      ID: `${question.ID}`,
       text: question.text,
       points: question.points,
       choices: question.options.map((option, optionIndex) => ({
@@ -92,7 +96,7 @@ class TestService extends BaseService {
         });
         if (test) {
           testsMap[testId] = {
-            testId: test.ID,
+            testId: `${test.ID}`,
             title: test.title,
             description: test.description,
             attempts: []
@@ -102,7 +106,7 @@ class TestService extends BaseService {
       const questionsWithCandidateChoice = await this.getQuestionsWithCandidateChoice(testId, attempt.ID);
       if (testsMap[testId]) {
         testsMap[testId].attempts.push({
-          ID: attempt.ID,
+          ID: `${attempt.ID}`,
           score: attempt.score,
           status: attempt.status,
           answer: questionsWithCandidateChoice,
@@ -121,13 +125,13 @@ class TestService extends BaseService {
     const tags = testDetails.tags;
     if (tags && tags.length > 0) {
       const tagInstances = await Promise.all(
-        tags.map(tag => TestTag.findOrCreate({ where: { name: tag } }))
+        tags.map(tag => Tag.findOrCreate({ where: { name: tag } }))
       );
 
       const tagIds = tagInstances.map(([tagInstance]) => tagInstance.ID);
 
       await Promise.all(
-        tagIds.map(tagId => Test_TestTag.create({ testId: test.ID, tagId }))
+        tagIds.map(tagId => Test_Tag.create({ testId: test.ID, tagId }))
       );
     }
     const test = await Test.create({
@@ -227,7 +231,7 @@ class TestService extends BaseService {
       const totalQuestions = attempt.choices.length;
       const perCent = attempt.choices.filter(c => c !== -1).length / totalQuestions * 100;
       return {
-        attemptId: attempt.ID,
+        attemptId: `${attempt.ID}`,
         candidateId: attempt.candidateId,
         createAt: attempt.createdAt,
         completeness: perCent,
@@ -249,18 +253,22 @@ class TestService extends BaseService {
   }
 
   async getCandidateAttemptDetails(candidateId, attemptId) {
-    const attempt = await Attempt.findByPk(attemptId, {
+    const attempt = await Attempt.findOne({
+      where: {
+        ID: attemptId,
+        candidateId: candidateId
+      },
       attributes: ["ID", "candidateId", "testId", "score", "status", "createdAt"],
     });
 
-    if (!attempt || attempt.candidateId != candidateId) {
-      throw new Error("Attempt not found");
+    if (!attempt) {
+      throw new Error("Attempt not found or does not belong to the specified candidate");
     }
 
     const questionsWithCandidateChoice = await this.getQuestionsWithCandidateChoice(attempt.testId, attempt.ID);
 
     return {
-      ID: attempt.ID,
+      ID: `${attempt.ID}`,
       testId: attempt.testId,
       score: attempt.score,
       status: attempt.status,
@@ -283,7 +291,7 @@ class TestService extends BaseService {
     });
 
     const questionsWithDetails = questions.map((question) => ({
-      ID: question.ID,
+      ID: `${question.ID}`,
       text: question.text,
       points: question.points,
       choices: question.options.map((option, optionIndex) => ({
@@ -302,14 +310,14 @@ class TestService extends BaseService {
   /// Candidate API
 
   async getTagNames(testId) {
-    const testTags = await Test_TestTag.findAll({
+    const Tags = await Test_Tag.findAll({
       where: { testId },
       attributes: ['tagId']
     });
 
-    const tagIds = testTags.map(testTag => testTag.tagId);
+    const tagIds = Tags.map(Tag => Tag.tagId);
 
-    const tags = await TestTag.findAll({
+    const tags = await Tag.findAll({
       where: { ID: { [Op.in]: tagIds } },
       attributes: ['name']
     });
@@ -318,7 +326,7 @@ class TestService extends BaseService {
   }
 
   async getSuggestedTags() {
-    const tags = await TestTag.findAll({
+    const tags = await Tag.findAll({
       attributes: ['name'],
       order: Sequelize.literal('RAND()'), // Random order
       limit: 5,
@@ -346,7 +354,6 @@ class TestService extends BaseService {
       for (const test of tests) {
         const tagNames = await this.getTagNames(test.ID);
         if (tags.some(tag => tagNames.includes(tag))) {
-          test.dataValues.tags = tagNames;
           filteredTests.push(test);
         }
       }
@@ -363,6 +370,7 @@ class TestService extends BaseService {
     for (const test of paginatedTests) {
       const tagNames = await this.getTagNames(test.ID);
       test.dataValues.tags = tagNames;
+      test.dataValues.ID = `${test.dataValues.ID}`;
     }
 
     return { page: page, perPage: perPage, totalPage: totalPages, data: paginatedTests };
@@ -373,13 +381,13 @@ class TestService extends BaseService {
     if (!test) throw new Error("Test not found");
 
     const tagNames = await this.getTagNames(testId);
-
     const highestScore = await Attempt.max("score", {
       where: { testId: testId },
     });
+
     return {
-      ID: test.ID,
-      companyId: test.companyId, // Assuming companyId maps to 'companyId'
+      ID: `${test.ID}`,
+      companyId: test.companyId,
       title: test.title,
       description: test.description,
       minutesToAnswer: test.minutesToAnswer,
@@ -401,10 +409,25 @@ class TestService extends BaseService {
     const totalPages = Math.ceil(totalAttempts / perPage);
     const paginatedAttempts = attempts.slice((page - 1) * perPage, page * perPage);
 
+    for (const attempt of paginatedAttempts) {
+      attempt.dataValues.ID = `${attempt.dataValues.ID}`;
+    }
+
     return { page: page, perPage: perPage, totalPage: totalPages, data: paginatedAttempts };
   };
 
   async getAttemptPage(testId, attemptId) {
+    const attempt = await Attempt.findOne({
+      where: {
+        ID: attemptId,
+        testId: testId
+      },
+      attributes: ["ID", "score", "status", "choices"],
+    });
+    if (!attempt) {
+      throw new Error("Attempt not found or does not belong to the specified test");
+    }
+
     const test = await Test.findByPk(testId, {
       attributes: ["ID", "companyId", "title"]
     });
@@ -413,21 +436,11 @@ class TestService extends BaseService {
     }
 
     const tagNames = await this.getTagNames(testId);
-
     const totalScore = await this.getTotalScore(testId);
-
     const totalQuestions = await this.getTotalQuestions(testId);
 
-    const attempt = await Attempt.findByPk(attemptId, {
-      where: { testId },
-      attributes: ["ID", "score", "status", "choices"],
-    });
-    if (!attempt) {
-      throw new Error("Attempt not found");
-    }
-
     return {
-      id: attempt.ID,
+      id: `${attempt.ID}`,
       companyId: test.companyId,
       title: test.title,
       tags: tagNames,
@@ -474,9 +487,12 @@ class TestService extends BaseService {
     if (!choices.includes(-1)) {
       status = 'Finished';
     }
+    else {
+      score = 0;  // Reset score if not all questions answered
+    }
 
     const attempt = await Attempt.create({
-      testId: parseInt(testId),
+      testId: testId,
       candidateId: 201,
       choices: choices,
       score: score,

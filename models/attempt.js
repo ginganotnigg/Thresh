@@ -31,6 +31,18 @@ const Attempt = sequelize.define("Attempt", {
     type: DataTypes.JSON,
     allowNull: false,
   },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: new Date(), // Automatically set to the current date
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: new Date(), // Automatically set to the current date
+  },
+}, {
+  timestamps: false,
 });
 
 module.exports = Attempt;
