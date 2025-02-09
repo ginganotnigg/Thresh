@@ -25,4 +25,7 @@ router.get('/:testId/submission/overview', tryCatch(testController.getTestById))
 router.get('/:candidateId/submission/:attemptId/detail', tryCatch(testController.getCandidateAttempts));
 router.get('/:testId/question', tryCatch(testController.getQuestions));
 
+//xtodo: remove below line
+router.get('/sendKafka', tryCatch(testController.sendKafka));
+
 module.exports = router;

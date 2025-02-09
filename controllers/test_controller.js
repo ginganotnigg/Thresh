@@ -1,4 +1,26 @@
+const Question = require('../models/question');
 const testService = require('../services/test_service');
+const { produce } = require('../kafka/questions.js');
+
+//xtodo: remove this func
+const sendKafka = async (req, res) => {
+  const question = new Question({
+    ID: "Q#0001",
+    testId: "T#0001",
+    question: "What is the capital of France?",
+    options: ["Paris", "Berlin", "London", "Madrid"],
+    answer: "Paris",
+    difficulty: "Easy",
+    minute: 1,
+    tags: ["Geography", "Europe"],
+  });
+
+  // produce(question);
+  await produce(question);
+
+  res.json({ message: "Question sent to Kafka" });
+};
+
 
 // Get paginated list of tests
 const getTests = async (req, res) => {
@@ -169,4 +191,5 @@ module.exports = {
   getTestById,
   getAllAttempts,
   getCandidateAttempts,
+  sendKafka,
 };
