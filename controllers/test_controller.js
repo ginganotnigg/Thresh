@@ -67,8 +67,9 @@ const getQuestions = async (req, res) => {
 const submitTest = async (req, res) => {
   const { testId } = req.params;
   const { answers } = req.body;
+  const candidateId = req.headers['x-user-id'] || 'C#0T001';
 
-  const result = await testService.submit({ testId, answers });
+  const result = await testService.submit(candidateId, { testId, answers });
   res.json({
     message: "Test submitted successfully",
     result,

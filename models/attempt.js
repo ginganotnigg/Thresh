@@ -16,7 +16,7 @@ const Attempt = sequelize.define("Attempt", {
     },
   },
   candidateId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   score: {

@@ -13,6 +13,14 @@ class TestService extends BaseService {
 
 	/// Helpers
 
+	shuffleArray(array) {
+		for (let i = array.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[array[i], array[j]] = [array[j], array[i]];
+		}
+		return array;
+	}
+
 	async getTotalScore(testId) {
 		const totalScore = await Question.sum('points', {
 			where: { testId }
@@ -289,16 +297,20 @@ class TestService extends BaseService {
 			attributes: ["ID", "text", "options", "points", "correctAnswer"],
 		});
 
-		const questionsWithDetails = questions.map((question) => ({
-			ID: `${question.ID}`,
-			text: question.text,
-			points: question.points,
-			choices: question.options.map((option, optionIndex) => ({
+		const questionsWithDetails = questions.map((question) => {
+			const optionsWithIds = question.options.map((option, optionIndex) => ({
 				ID: `${optionIndex}`,
 				text: option,
-			})),
-			correctAnswer: question.correctAnswer,
-		}));
+			}));
+			const shuffledOptions = this.shuffleArray(optionsWithIds);
+			return {
+				ID: `${question.ID}`,
+				text: question.text,
+				points: question.points,
+				choices: shuffledOptions,
+				correctAnswer: question.correctAnswer,
+			};
+		});
 
 		return {
 			title: test.title,
@@ -459,7 +471,7 @@ class TestService extends BaseService {
 		return { page: page, perPage: perPage, totalPage: totalPages, data: paginatedQuestions };
 	}
 
-	async submit(attemptData) {
+	async submit(userId, attemptData) {
 		const { testId, answers } = attemptData;
 
 		const questions = await Question.findAll({
@@ -467,7 +479,7 @@ class TestService extends BaseService {
 		});
 
 		let score = 0;
-		let status = 'InProgress';
+		let status = 'Incomplete';
 		const choices = new Array(questions.length).fill(-1);
 
 		answers.forEach(answer => {
@@ -486,13 +498,10 @@ class TestService extends BaseService {
 		if (!choices.includes(-1)) {
 			status = 'Finished';
 		}
-		else {
-			score = 0;  // Reset score if not all questions answered
-		}
 
 		const attempt = await Attempt.create({
 			testId: testId,
-			candidateId: 201,
+			candidateId: userId,
 			choices: choices,
 			score: score,
 			status: status,
