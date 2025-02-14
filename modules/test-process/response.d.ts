@@ -1,6 +1,6 @@
 import { Test } from "../../types/model";
 
-export interface TestProcess {
+export interface TestProcessResponse {
 	test: Omit<Test, "answerCount">;
 	questions: {
 		ID: number;
@@ -12,9 +12,4 @@ export interface TestProcess {
 		points: number;
 		chosenOption: number | null;
 	}[];
-}
-
-export interface Option {
-	questionID: number;
-	optionID: number;
 }

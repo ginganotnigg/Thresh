@@ -3,9 +3,10 @@
  * @typedef {import('../../types/model').Test} Test
  * @typedef {import('../../types/model').Question} Question
  * @typedef {import('../../types/model').Attempt} Attempt
- * @typedef {import('./type').TestProcess} TestProcess
+ * @typedef {import('./response').TestProcessResponse} TestProcess
  */
 
+const cron = require('node-cron');
 const Attempt = require('../../models/attempt');
 const Question = require('../../models/question');
 const Test = require('../../models/test');
@@ -17,6 +18,14 @@ const ATTEMPT_STATUS = require('../../utils/const').ATTEMPT_STATUS;
  * 
  */
 class TestProcessService {
+
+	constructor() {
+		// Evaluate all test processes every minute
+		cron.schedule('*/1 * * * *', () => {
+			this.#evaluateAllTestProcess();
+		});
+	}
+
 	/** 
 	 * @description Get the previous test process of a candidate or create a new one if not exists or expired
 	 * @param {string} testId
@@ -165,24 +174,48 @@ class TestProcessService {
 		}
 		/** @type {Attempt} */
 		const typedAttempt = attempt.toJSON();
-		const questions = await Question.findAll({
-			where: { testId: testId },
-			order: [['ID', 'ASC']],
-			attributes: ['ID', 'correctAnswer', 'points'],
-		});
-		let totalScore = 0;
-		questions.forEach((question, index) => {
-			/** @type {Question} */
-			const typedQuestion = question.toJSON();
-			if (typedQuestion.correctAnswer === typedAttempt.choices[index]) {
-				totalScore += typedQuestion.points;
-			}
-		});
-		await Attempt.update(
-			{ score: totalScore, status: ATTEMPT_STATUS.COMPLETED, updatedAt: new Date() },
-			{ where: { ID: typedAttempt.ID } }
-		);
+		await evaluateTestAttempt(typedAttempt, testId);
 	}
+
+	/**
+	 * @description Evaluate all test processes that are completed
+	 */
+	async #evaluateAllTestProcess() {
+		const attempts = await Attempt.findAll({
+			where: {
+				status: ATTEMPT_STATUS.IN_PROGRESS,
+			},
+		});
+		attempts.forEach(async (attempt) => {
+			/** @type {Attempt} */
+			const typedAttempt = attempt.toJSON();
+			await evaluateTestAttempt(typedAttempt, String(typedAttempt.testId));
+		});
+	}
+}
+
+/**
+ * @param {Attempt} typedAttempt
+ * @param {string} testId
+ */
+async function evaluateTestAttempt(typedAttempt, testId) {
+	const questions = await Question.findAll({
+		where: { testId: testId },
+		order: [['ID', 'ASC']],
+		attributes: ['ID', 'correctAnswer', 'points'],
+	});
+	let totalScore = 0;
+	questions.forEach((question, index) => {
+		/** @type {Question} */
+		const typedQuestion = question.toJSON();
+		if (typedQuestion.correctAnswer === typedAttempt.choices[index]) {
+			totalScore += typedQuestion.points;
+		}
+	});
+	await Attempt.update(
+		{ score: totalScore, status: ATTEMPT_STATUS.COMPLETED, updatedAt: new Date() },
+		{ where: { ID: typedAttempt.ID } }
+	);
 }
 
 module.exports = new TestProcessService();
