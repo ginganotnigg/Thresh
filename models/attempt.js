@@ -1,48 +1,57 @@
-const sequelize = require("../utils/database");
+const sequelize = require("../utils/database/database");
 const { DataTypes } = require("sequelize");
 const Test = require("./test");
 
+/**
+ * @typedef {import('./model').Attempt} AttemptAttributes
+ */
+
+/**
+ * @typedef {import('sequelize').Model<AttemptAttributes>} AttemptInstance
+ */
+
+/** @type {import('sequelize').ModelCtor<AttemptInstance>} */
 const Attempt = sequelize.define("Attempt", {
-  ID: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  },
-  testId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: Test,
-      key: "ID",
-    },
-  },
-  candidateId: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  score: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  status: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  choices: {
-    type: DataTypes.JSON,
-    allowNull: false,
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: new Date(), // Automatically set to the current date
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: new Date(), // Automatically set to the current date
-  },
+	ID: {
+		type: DataTypes.INTEGER,
+		autoIncrement: true,
+		primaryKey: true,
+	},
+	testId: {
+		type: DataTypes.INTEGER,
+		references: {
+			model: Test,
+			key: "ID",
+		},
+	},
+	candidateId: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
+	score: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+	},
+	status: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
+	choices: {
+		type: DataTypes.JSON,
+		allowNull: false,
+	},
+	createdAt: {
+		type: DataTypes.DATE,
+		allowNull: false,
+		defaultValue: new Date(), // Automatically set to the current date
+	},
+	updatedAt: {
+		type: DataTypes.DATE,
+		allowNull: false,
+		defaultValue: new Date(), // Automatically set to the current date
+	},
 }, {
-  timestamps: false,
+	timestamps: false,
 });
 
 module.exports = Attempt;

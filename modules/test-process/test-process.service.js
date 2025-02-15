@@ -1,8 +1,8 @@
 // @ts-check
 /**
- * @typedef {import('../../types/model').Test} Test
- * @typedef {import('../../types/model').Question} Question
- * @typedef {import('../../types/model').Attempt} Attempt
+ * @typedef {import('../../models/model').Test} Test
+ * @typedef {import('../../models/model').Question} Question
+ * @typedef {import('../../models/model').Attempt} Attempt
  * @typedef {import('./response').TestProcessResponse} TestProcess
  */
 
@@ -150,12 +150,13 @@ class TestProcessService {
 		const questionsLength = await Question.count({
 			where: { testId: testId },
 		});
+
 		const choices = [];
 		for (let i = 0; i < questionsLength; i++) {
 			choices.push(-1);
 		}
 		await Attempt.create({
-			testId: testId,
+			testId: +testId,
 			candidateId: candidateId,
 			choices: choices,
 			score: 0,

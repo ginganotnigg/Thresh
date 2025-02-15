@@ -1,5 +1,6 @@
 require("dotenv").config();
-const sequelize = require("./utils/database");
+const sequelize = require("./utils/database/database");
+require('./utils/database/association')();
 
 const express = require("express");
 const http = require("http");
@@ -8,7 +9,8 @@ const app = express();
 // const winston = require('winston');
 
 sequelize
-	.sync() // Set force: true to drop and recreate tables on every sync
+	.sync({ alter: true }) // Set force: true to drop and recreate tables on every sync
+	// .sync({ force: true }) // Set force: true to drop and recreate tables on every sync
 	.then(() => {
 		console.log("Database & tables created!");
 	})

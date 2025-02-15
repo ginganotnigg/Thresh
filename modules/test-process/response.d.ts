@@ -1,4 +1,4 @@
-import { Test } from "../../types/model";
+import { Test } from "../../models/model";
 
 export interface TestProcessResponse {
 	test: Omit<Test, "answerCount">;

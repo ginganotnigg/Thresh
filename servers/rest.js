@@ -2,10 +2,8 @@
  * @typedef {import('express').Express} Express
  */
 
-const http = require('http');
 const express = require('express');
 const Routers = require("../routers/main_router.js");
-const PORT = process.env.PORT || 8080;
 
 /**
  * @param {Express} app 

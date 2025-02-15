@@ -1,38 +1,47 @@
-const sequelize = require("../utils/database");
+const sequelize = require("../utils/database/database");
 const { DataTypes } = require("sequelize");
 const Test = require("./test");
 
+/**
+ * @typedef {import('./model').Question} QuestionAttributes
+ */
+
+/**
+ * @typedef {import('sequelize').Model<QuestionAttributes>} QuestionInstance
+ */
+
+/** @type {import('sequelize').ModelCtor<QuestionInstance>} */
 const Question = sequelize.define("Question", {
-  ID: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  },
-  testId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: Test,
-      key: "ID",
-    },
-  },
-  text: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  options: {
-    type: DataTypes.JSON,
-    allowNull: false,
-  },
-  points: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  correctAnswer: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
+	ID: {
+		type: DataTypes.INTEGER,
+		autoIncrement: true,
+		primaryKey: true,
+	},
+	testId: {
+		type: DataTypes.INTEGER,
+		references: {
+			model: Test,
+			key: "ID",
+		},
+	},
+	text: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
+	options: {
+		type: DataTypes.JSON,
+		allowNull: false,
+	},
+	points: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+	},
+	correctAnswer: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+	},
 }, {
-  timestamps: false
+	timestamps: false
 });
 
 module.exports = Question;

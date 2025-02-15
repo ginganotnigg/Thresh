@@ -1,6 +1,15 @@
-const sequelize = require("../utils/database");
+const sequelize = require("../utils/database/database");
 const { DataTypes } = require("sequelize");
 
+/**
+ * @typedef {import('./model').Test} TestAttributes
+ */
+
+/**
+ * @typedef {import('sequelize').Model<TestAttributes>} TestInstance
+ */
+
+/** @type {import('sequelize').ModelCtor<TestInstance>} */
 const Test = sequelize.define("Test", {
 	ID: {
 		type: DataTypes.INTEGER,

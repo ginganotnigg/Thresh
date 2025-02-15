@@ -1,18 +1,18 @@
-const sequelize = require("../utils/database");
+const sequelize = require("../utils/database/database");
 const { DataTypes } = require("sequelize");
 
 const Tag = sequelize.define("Tag", {
-  ID: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
+	ID: {
+		type: DataTypes.INTEGER,
+		autoIncrement: true,
+		primaryKey: true,
+	},
+	name: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
 }, {
-  timestamps: false,
+	timestamps: false,
 });
 
 module.exports = Tag;

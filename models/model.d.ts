@@ -5,7 +5,7 @@ export interface Attempt {
 	score: number;
 	status: string;
 	choices: number[];
-	createdAt: Date;
+	createdAt?: Date;
 	updatedAt?: Date;
 }
 
@@ -16,8 +16,6 @@ export interface Question {
 	options: string[];
 	points: number;
 	correctAnswer: number;
-	createdAt?: Date;
-	updatedAt?: Date;
 }
 
 export interface Test {

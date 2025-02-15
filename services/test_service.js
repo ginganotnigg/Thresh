@@ -438,7 +438,7 @@ class TestService extends BaseService {
 		if (!attempt) {
 			throw new Error("Attempt not found");
 		}
-		const test = attempt.test;
+		const test = attempt.toJSON().Test;
 		const tagNames = await this.getTagNames(test.ID);
 		const totalScore = await this.getTotalScore(test.ID);
 		const totalQuestions = await this.getTotalQuestions(test.ID);
