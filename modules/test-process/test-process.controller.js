@@ -5,19 +5,24 @@
 const service = require('./test-process.service');
 const { socketErrorHandler } = require('../../servers/helpers/handle-error');
 
-async function startTest(data) {
+async function getCurrentAttempt(data) {
 	const { testId, candidateId } = data;
-	await service.getTestProcess(testId, candidateId);
+	return await service.getCurrentTestProcess(testId, candidateId);
+}
+
+async function startNewTest(data) {
+	const { testId, candidateId } = data;
+	return await service.startNewTestProcess(testId, candidateId);
 }
 
 async function answerQuestion(data) {
 	const { testId, candidateId, questionId, optionId } = data;
-	await service.answerQuestion(testId, candidateId, questionId, optionId);
+	return await service.answerQuestion(testId, candidateId, questionId, optionId);
 }
 
-async function finishTest(data) {
+async function submit(data) {
 	const { testId, candidateId } = data;
-	await service.finishTest(testId, candidateId);
+	return await service.evaluateTestProcess(testId, candidateId);
 }
 
 /**
@@ -31,8 +36,9 @@ module.exports = (namespace) => {
 			console.log(`Client disconnected: ${socket.id}`);
 		});
 
-		socket.on('start', socketErrorHandler(startTest));
+		socket.on('current', socketErrorHandler(getCurrentAttempt));
+		socket.on('new', socketErrorHandler(startNewTest));
 		socket.on('answer', socketErrorHandler(answerQuestion));
-		socket.on('finish', socketErrorHandler(finishTest));
+		socket.on('submit', socketErrorHandler(submit));
 	})
 }

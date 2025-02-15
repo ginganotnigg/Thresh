@@ -8,7 +8,7 @@ const app = express();
 // const winston = require('winston');
 
 sequelize
-	.sync({ force: true }) // Set force: true to drop and recreate tables on every sync
+	.sync() // Set force: true to drop and recreate tables on every sync
 	.then(() => {
 		console.log("Database & tables created!");
 	})

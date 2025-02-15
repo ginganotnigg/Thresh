@@ -16,6 +16,7 @@ module.exports = (app) => {
 	app.use(express.json());
 
 	// API routes
+	app.get('/ping', (req, res) => { res.send('pong'); });
 	app.use('/api', Routers);
 
 	// Error-handling middleware

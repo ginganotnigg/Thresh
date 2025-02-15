@@ -58,6 +58,7 @@ class TestService extends BaseService {
 	}
 
 	async getQuestionsDetails(testId, attemptId) {
+		// todo: Remove testId from the query. It is not needed
 		const attempt = await Attempt.findOne({
 			where: {
 				ID: attemptId,
