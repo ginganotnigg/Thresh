@@ -57,21 +57,20 @@ class TestService extends BaseService {
 		return questionsWithCandidateChoice;
 	}
 
-	async getQuestionsDetails(testId, attemptId) {
-		// todo: Remove testId from the query. It is not needed
-		const attempt = await Attempt.findOne({
-			where: {
-				ID: attemptId,
-				testId: testId
+	async getQuestionsDetails(attemptId) {
+		const attempt = await Attempt.findByPk(attemptId, {
+			include: {
+				model: Test,
+				attributes: ["ID"]
 			},
 			attributes: ["ID", "score", "status", "choices"],
 		});
-		if (!attempt) {
-			throw new Error("Attempt not found or does not belong to the specified test");
+		if (attempt == null) {
+			throw new Error("Attempt not found");
 		}
 
 		const questions = await Question.findAll({
-			where: { testId },
+			where: { testId: attempt.test.ID }
 		});
 
 		const questionsWithDetails = questions.map((question, index) => ({
@@ -428,28 +427,21 @@ class TestService extends BaseService {
 		return { page: page, perPage: perPage, totalPage: totalPages, data: paginatedAttempts };
 	};
 
-	async getAttemptPage(testId, attemptId) {
-		const attempt = await Attempt.findOne({
-			where: {
-				ID: attemptId,
-				testId: testId
+	async getAttemptPage(attemptId) {
+		const attempt = await Attempt.findByPk(attemptId, {
+			include: {
+				model: Test,
+				attributes: ["ID", "companyId", "title"]
 			},
 			attributes: ["ID", "score", "status", "choices"],
 		});
 		if (!attempt) {
-			throw new Error("Attempt not found or does not belong to the specified test");
+			throw new Error("Attempt not found");
 		}
-
-		const test = await Test.findByPk(testId, {
-			attributes: ["ID", "companyId", "title"]
-		});
-		if (!test) {
-			throw new Error("Test not found");
-		}
-
-		const tagNames = await this.getTagNames(testId);
-		const totalScore = await this.getTotalScore(testId);
-		const totalQuestions = await this.getTotalQuestions(testId);
+		const test = attempt.test;
+		const tagNames = await this.getTagNames(test.ID);
+		const totalScore = await this.getTotalScore(test.ID);
+		const totalQuestions = await this.getTotalQuestions(test.ID);
 
 		return {
 			id: `${attempt.ID}`,
@@ -462,8 +454,8 @@ class TestService extends BaseService {
 		};
 	}
 
-	async getAttemptDetails(testId, attemptId, page = 1, perPage = 20) {
-		const questions = await this.getQuestionsDetails(testId, attemptId);
+	async getAttemptDetails(attemptId, page = 1, perPage = 20) {
+		const questions = await this.getQuestionsDetails(attemptId);
 		// Pagination logic
 		const totalQuestions = questions.length;
 		const totalPages = Math.ceil(totalQuestions / perPage);
