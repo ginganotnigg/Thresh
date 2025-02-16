@@ -59,18 +59,16 @@ class TestService extends BaseService {
 
 	async getQuestionsDetails(attemptId) {
 		const attempt = await Attempt.findByPk(attemptId, {
-			include: {
-				model: Test,
-				attributes: ["ID"]
-			},
-			attributes: ["ID", "score", "status", "choices"],
+			attributes: ["ID", "score", "status", "choices", "testId"],
 		});
 		if (attempt == null) {
 			throw new Error("Attempt not found");
 		}
 
+		console.log(attempt.get());
+		console.log(attempt.toJSON());
 		const questions = await Question.findAll({
-			where: { testId: attempt.test.ID }
+			where: { testId: attempt.get().testId }
 		});
 
 		const questionsWithDetails = questions.map((question, index) => ({

@@ -1,26 +1,34 @@
 const Role = {
-    UNKNOWN: 0,
-    CANDIDATE: 1,
-    BUSINESS_MANAGER: 2,
+	UNKNOWN: 0,
+	CANDIDATE: 1,
+	BUSINESS_MANAGER: 2,
 };
 
+const noAuth = Boolean(process.env.NO_AUTH) ?? false;
+console.log(process.env.NO_AUTH);
+console.log(noAuth);
+
 const authorize = (requiredRole) => {
-    return (req, res, next) => {
-        const roleId = parseInt(req.headers['x-role-id'], 10);
+	return (req, res, next) => {
+		if (noAuth === true) {
+			return next();
+		}
 
-        if (isNaN(roleId)) {
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
+		const roleId = parseInt(req.headers['x-role-id'], 10);
 
-        if (roleId != requiredRole) {
-            return res.status(403).json({ message: 'Forbidden' });
-        }
+		if (isNaN(roleId)) {
+			return res.status(401).json({ message: 'Unauthorized' });
+		}
 
-        next();
-    };
+		if (roleId != requiredRole) {
+			return res.status(403).json({ message: 'Forbidden' });
+		}
+
+		next();
+	};
 };
 
 module.exports = {
-    authorize,
-    Role
+	authorize,
+	Role
 };
