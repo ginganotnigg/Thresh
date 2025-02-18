@@ -1,6 +1,7 @@
 require("dotenv").config();
 const sequelize = require("./utils/database/database");
 require('./utils/database/association')();
+const cors = require('cors');
 
 const express = require("express");
 const http = require("http");
@@ -31,6 +32,10 @@ sequelize
 //     new winston.transports.File({ filename: 'error.log' })
 //   ]
 // });
+
+app.use(cors({
+	origin: process.env.CORS_ORIGIN || '*',
+}));
 
 const httpServer = http.createServer(app);
 const PORT = process.env.PORT || 8080;

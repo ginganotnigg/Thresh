@@ -1,7 +1,23 @@
-import { Test } from "../../models/model";
+export interface CurrentAttemptResponse {
+	ID: string;
+	score: number | null;
+	status: string;
+	createdAt: string;
+	endDate: string;
+}
 
-export interface TestProcessResponse {
-	test: Omit<Test, "answerCount">;
+export interface CurrentAttemptDetailResponse {
+	ID: string;
+	test: {
+		ID?: number;
+		companyId: string;
+		title: string;
+		description: string;
+		minutesToAnswer: number;
+		difficulty?: string;
+		createdAt?: Date;
+		updatedAt?: Date;
+	};
 	questions: {
 		ID: number;
 		text: string;
@@ -10,6 +26,7 @@ export interface TestProcessResponse {
 			text: string;
 		}[];
 		points: number;
-		chosenOption: number | null;
 	}[];
+	startedAt: Date;
+	endedAt: Date;
 }

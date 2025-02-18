@@ -13,6 +13,7 @@ const sequelize = new Sequelize(
 		host: process.env.DB_HOST,
 		port: process.env.DB_PORT,
 		dialect: "mysql",
+		logging: false,
 		define: {
 			timestamps: false, // Tắt createdAt và updatedAt cho toàn bộ bảng
 		},
