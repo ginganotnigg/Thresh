@@ -1,43 +1,49 @@
-const tryCatch = require('../../routers/helpers/error_handler');
-const service = require('./test-process.service');
+// @ts-check
 
-// Todo: extract candidateId from request
+/**
+ * @typedef {import('express').Router} Router
+ */
+
+const { tryCatchRouterWarpper: tryCatchRouterFactory } = require('../../utils/factory/router.factory');
+
 const candidateId = "C#0T001";
 
-// TestAttempt
+/**
+ * @param {Router} router 
+ * @param {import('./commands/command')} command 
+ * @param {import('./queries/query')} query 
+ */
+function controller(router, command, query) {
+	tryCatchRouterFactory(router, "get", '/tests/:testId/current', async (req, res, next) => {
+		const { testId } = req.params;
+		const current = await query.getInProgressAttemptSmall({ testId, candidateId });
+		return res.json(current);
+	});
 
-async function getOngoingTest(req, res) {
-	const { testId } = req.params;
-	const current = await service.getOngoingTest(testId, candidateId);
-	return res.json(current);
+	tryCatchRouterFactory(router, "post", '/tests/:testId/current/new', async (req, res, next) => {
+		const { testId } = req.params;
+		await command.startNew({ testId, candidateId });
+		return res.status(201).end();
+	});
+
+	tryCatchRouterFactory(router, "get", '/tests/:testId/current/do', async (req, res, next) => {
+		const { testId } = req.params;
+		const attemptDetail = await query.getInProgressAttemptToDo({ testId, candidateId });
+		return res.json(attemptDetail);
+	});
+
+	tryCatchRouterFactory(router, "post", '/tests/:testId/current/answer', async (req, res, next) => {
+		const { testId } = req.params;
+		const { questionId, optionId } = req.body;
+		await command.answer({ testId, candidateId, questionId, optionId });
+		return res.status(201).end();
+	});
+
+	tryCatchRouterFactory(router, "post", '/tests/:testId/current/submit', async (req, res, next) => {
+		const { testId } = req.params;
+		await command.submit({ testId, candidateId });
+		return res.status(201).end();
+	});
 }
 
-async function postStartNew(req, res) {
-	const { testId } = req.params;
-	await service.startNew(testId, candidateId);
-	return res.status(201).end();
-}
-
-// TestDo
-
-async function getOngoingTestToDo(req, res) {
-	const { testId } = req.params;
-	const attemptDetail = await service.getOngoingTestToDo(testId, candidateId);
-	return res.json(attemptDetail);
-}
-
-async function postSubmit(req, res) {
-	const { testId } = req.params;
-	const { answers } = req.body;
-	await service.submit(testId, candidateId, answers);
-	return res.status(201).end();
-}
-
-const router = require('express').Router();
-
-router.get('/:testId/current/', tryCatch(getOngoingTest));
-router.post('/:testId/current/new', tryCatch(postStartNew));
-router.get('/:testId/current/do', tryCatch(getOngoingTestToDo));
-router.post('/:testId/current/submit', tryCatch(postSubmit));
-
-module.exports = router;
+module.exports = controller;

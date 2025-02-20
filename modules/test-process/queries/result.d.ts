@@ -1,22 +1,20 @@
-export interface CurrentAttemptResponse {
+export type CurrentAttemptSmallResult = {
 	ID: string;
-	score: number | null;
-	status: string;
-	createdAt: string;
-	endDate: string;
+	startedAt: Date;
+	endedAt: Date;
 }
 
-export interface CurrentAttemptDetailResponse {
+export type CurrentAttemptDetailResult = {
 	ID: string;
 	test: {
-		ID?: number;
+		ID: string;
 		companyId: string;
 		title: string;
 		description: string;
 		minutesToAnswer: number;
-		difficulty?: string;
-		createdAt?: Date;
-		updatedAt?: Date;
+		difficulty: string;
+		createdAt: Date;
+		updatedAt: Date;
 	};
 	questions: {
 		ID: number;

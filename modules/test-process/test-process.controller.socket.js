@@ -1,17 +1,19 @@
+// @ts-check
+
 /**
  * @typedef { import('socket.io').Namespace } Namespace
  */
 
-const service = require('./test-process.service');
 
 // Todo: extract candidateId from request
-
 const candidateId = "C#0T001";
 
 /**
- * @param {Namespace} namespace 
+ * @param {Namespace} namespace
+ * @param {import('./commands/command')} command 
+ * @param {import('./queries/query')} query 
  */
-module.exports = (namespace) => {
+function controller(namespace, command, query) {
 	namespace.on('connection', (socket) => {
 		console.log(`Client connected: ${socket.id}`);
 
@@ -19,22 +21,33 @@ module.exports = (namespace) => {
 			console.log(`Client disconnected: ${socket.id}`);
 		});
 
-		socket.on('register-process', async (testId) => {
-			const attempt = await service.getOngoingTest(testId, candidateId);
-			if (!attempt) {
+		// Client side
+
+		socket.on('register', async (testId) => {
+			const inprogressAttempt = await query.getInProgressAttemptSmall({ testId, candidateId });
+			if (inprogressAttempt == null) {
 				return;
 			}
-			await socket.join(attempt.ID);
+			await socket.join(inprogressAttempt.ID);
 		});
+	});
 
-		service.onTestProcessEvaluated((attemptId) => {
-			namespace.to(attemptId).emit('timeout');
-			console.log(`Test process evaluated: ${attemptId}`);
-		});
+	// Server side
 
-		service.onTestProcessSync((attemptId, timeLeft) => {
-			namespace.to(attemptId).emit('sync', timeLeft);
-			console.log(`Test process sync: ${attemptId}`);
-		});
-	})
+	command.onTestProcessEvaluated = (attemptId) => {
+		namespace.to(attemptId).emit('timeout');
+		console.log(`Test process evaluated: ${attemptId}`);
+	}
+
+	command.onTestProcessSyncTime = (attemptId, timeLeft) => {
+		namespace.to(attemptId).emit('sync', timeLeft);
+		console.log(`Test process sync: ${attemptId} - ${timeLeft}`);
+	}
+
+	command.onTestProcessAnswered = (attemptId, choices) => {
+		namespace.to(attemptId).emit('answered', choices);
+		console.log(`Test process answered: ${attemptId} - ${choices}`);
+	}
 }
+
+module.exports = controller;

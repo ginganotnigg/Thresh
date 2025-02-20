@@ -1,18 +1,19 @@
+// @ts-check
+
 /**
  * @typedef {import('http').Server} HttpServer
  */
 
-const { Server } = require('socket.io');
-const testProcessSocket = require('../modules/test-process/test-process.controller.socket');
-const validate = require('./middlewares/validaton.mdw');
+const { Server: IoServer } = require('socket.io');
 
 /**
  * @param {HttpServer} httpServer 
  */
 module.exports = (httpServer) => {
-	const ioServer = new Server(httpServer, {
+	const ioServer = new IoServer(httpServer, {
 		cors: { origin: '*' }
 	});
 
-	testProcessSocket(ioServer.of('/test-process'));
+	console.log('SOCKET server initialized');
+	return ioServer;
 }
