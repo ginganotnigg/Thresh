@@ -1,3 +1,5 @@
+// @ts-check
+
 const testService = require('../services/test_service');
 
 // Get paginated list of tests

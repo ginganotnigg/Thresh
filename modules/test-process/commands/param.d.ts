@@ -1,16 +1,5 @@
-export type StartNewAttemptParam = {
-	testId: string;
-	candidateId: string;
-}
-
 export type AnswerAttemptParam = {
 	testId: string;
-	candidateId: string;
-	questionId: number;
+	questionId: string;
 	optionId: number;
-}
-
-export type SubmitAttemptParam = {
-	testId: string;
-	candidateId: string;
 }

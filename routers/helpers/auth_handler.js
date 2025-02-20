@@ -5,8 +5,7 @@ const Role = {
 };
 
 const noAuth = Boolean(process.env.NO_AUTH) ?? false;
-console.log(process.env.NO_AUTH);
-console.log(noAuth);
+console.log("No authentication: " + noAuth);
 
 const authorize = (requiredRole) => {
 	return (req, res, next) => {

@@ -27,7 +27,7 @@ const Question = sequelize.define("Question", {
 		type: DataTypes.INTEGER,
 		allowNull: false,
 	},
-	correctAnswer: {
+	correctOption: {
 		type: DataTypes.INTEGER,
 		allowNull: false,
 	},

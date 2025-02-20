@@ -2,6 +2,7 @@
 
 
 const Attempt = require("../../../models/attempt");
+const AttemptQuestions = require("../../../models/attempt_questions");
 const Question = require("../../../models/question");
 const Test = require("../../../models/test");
 const { ATTEMPT_STATUS } = require("../../../utils/const");
@@ -13,21 +14,22 @@ class CommandAttempt {
 	 * @param {string} candidateId
 	 */
 	async createAttemptForCandidate(testId, candidateId) {
-		const questionsLength = await Question.count({
+		const questions = await Question.findAll({
 			where: { testId: testId },
 		});
-		const choices = [];
-		for (let i = 0; i < questionsLength; i++) {
-			choices.push(-1);
-		}
 		await Attempt.create({
 			testId: +testId,
 			candidateId: candidateId,
-			choices: choices,
 			score: 0,
 			status: ATTEMPT_STATUS.IN_PROGRESS,
 			createdAt: new Date(),
-			updatedAt: new Date()
+			updatedAt: new Date(),
+			AttemptQuestions: questions.map((question) => ({
+				questionId: question.get("ID"),
+				chosenOption: -1,
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			}))
 		});
 		await Test.increment('answerCount', { where: { ID: testId } });
 	}
@@ -50,16 +52,22 @@ class CommandAttempt {
 
 	/**
 	 * @param {string} attemptId 
-	 * @param {number[]} choices 
+	 * @param {string} questionId
+	 * @param {number} optionId
 	 */
-	async updateChoices(attemptId, choices) {
-		await Attempt.update(
+	async updateChoices(attemptId, questionId, optionId) {
+		await AttemptQuestions.update(
 			{
-				choices: choices,
+				chosenOption: optionId,
 				updatedAt: new Date()
 			},
-			{ where: { ID: attemptId } }
-		)
+			{
+				where: {
+					attemptId: attemptId,
+					questionId: questionId
+				}
+			}
+		);
 	}
 }
 

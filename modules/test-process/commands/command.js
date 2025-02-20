@@ -2,8 +2,7 @@
 /**
  * @typedef {import('./model').AttemptModel} AttemptModel
  * @typedef {import('./param').AnswerAttemptParam} AnswerAttemptParam
- * @typedef {import('./param').SubmitAttemptParam} SubmitAttemptParam
- * @typedef {import('./param').StartNewAttemptParam} StartNewAttemptParam
+ * @typedef {import('./cast').AttemptChoiceCast} AttemptChoiceCast
  * @typedef {import('sequelize').Model} Model
  * 
  * @callback onTestProcessEvaluated
@@ -17,7 +16,7 @@
  * 
  * @callback onTestProcessAnswered
  * @param {string} attemptId
- * @param {number[]} choices
+ * @param {AttemptChoiceCast[]} choices
  * @returns {void}
  */
 
@@ -25,7 +24,7 @@ const schedule = require('node-schedule');
 const Attempt = require('../../../models/attempt');
 const Question = require('../../../models/question');
 const Test = require('../../../models/test');
-const QueryAttempt = require('./retriver.repo');
+const RetriverAttempt = require('./retriver.repo');
 const CommandAttempt = require('./write.repo');
 const ATTEMPT_STATUS = require('../../../utils/const').ATTEMPT_STATUS;
 
@@ -33,7 +32,7 @@ const SYNC_TIME = 5000; // 5 seconds
 
 class TestProcessCommand {
 	constructor() {
-		this.retriver = new QueryAttempt();
+		this.retriver = new RetriverAttempt();
 		this.command = new CommandAttempt();
 		/** @type {onTestProcessEvaluated} */
 		this.onTestProcessEvaluated = (attemptId) => { };
@@ -61,13 +60,20 @@ class TestProcessCommand {
 	 * @fires onTestProcessEvaluated
 	 */
 	async #evaluateTestAttempt(attempt) {
-		const questions = await this.retriver.getQuestionsOfTestASC(attempt.testId);
+		const questions = await this.retriver.getQuestionsOfTest(attempt.testId);
+		if (questions.length !== attempt.AttemptQuestions.length) {
+			throw new Error('Questions and choices are not matched');
+		}
+		const sortedAttemptQuestions = attempt.AttemptQuestions.sort((a, b) => +a.ID - +b.ID);
+		const sortedQuestions = questions.sort((a, b) => +a.ID - +b.ID);
 		let totalScore = 0;
-		questions.forEach((question, index) => {
-			if (question.correctAnswer === attempt.choices[index]) {
+		for (let i = 0; i < questions.length; i++) {
+			const question = sortedQuestions[i];
+			const attemptQuestion = sortedAttemptQuestions[i];
+			if (question.correctOption === attemptQuestion.chosenOption) {
 				totalScore += question.points;
 			}
-		});
+		}
 		await this.command.updateScore(attempt.ID, totalScore);
 		this.onTestProcessEvaluated(attempt.ID);
 	}
@@ -79,14 +85,16 @@ class TestProcessCommand {
 	 */
 	async #setAttemptLive(attempt) {
 		const endDate = new Date(attempt.createdAt.getTime() + attempt.Test.minutesToAnswer * 60 * 1000);
-		const timeLeft = endDate.getTime() - new Date().getTime();
 
 		// Set sync interval
 		const interval = setInterval(async () => {
+			const timeLeft = await this.retriver.getTimeLeft(attempt.ID);
 			if (timeLeft <= 0) {
 				clearInterval(interval);
+				this.onTestProcessSyncTime = () => { };
+				return;
 			}
-			this.onTestProcessSyncTime.call(attempt.ID, timeLeft);
+			this.onTestProcessSyncTime(attempt.ID, timeLeft);
 		}, SYNC_TIME);
 
 		// Schedule evaluation
@@ -107,11 +115,11 @@ class TestProcessCommand {
 
 	/**
 	 * Quit the previous test process of a candidate (if any) and re-create a new currently In Progress attempt
-	 * @param {StartNewAttemptParam} param 
+	 * @param {string} testId
+	 * @param {string} candidateId
 	 * @returns {Promise<void>}
 	 */
-	async startNew(param) {
-		const { testId, candidateId } = param;
+	async startNew(testId, candidateId) {
 		// Find previous attempt and evaluate it if it exists
 		const previousAttempt = await this.retriver.getInprogressOfCandidate(testId, candidateId);
 		if (previousAttempt != null) {
@@ -126,25 +134,25 @@ class TestProcessCommand {
 	}
 
 	/**
+	 * @param {string} candidateId
 	 * @param {AnswerAttemptParam} param
 	 */
-	async answer(param) {
-		const { testId, candidateId, questionId, optionId } = param;
+	async answer(param, candidateId) {
+		const { testId, questionId, optionId } = param;
 		const attempt = await this.retriver.getInprogressOfCandidate(testId, candidateId);
 		if (attempt == null) {
 			throw new Error('Attempt to answer is not found');
 		}
-		const choices = [...attempt.choices];
-		choices[+questionId] = +optionId;
-		await this.command.updateChoices(attempt.ID, choices);
+		await this.command.updateChoices(attempt.ID, questionId, optionId);
+		const choices = await this.retriver.getChoicesOfAttempt(attempt.ID);
 		this.onTestProcessAnswered(attempt.ID, choices);
 	}
 
 	/**
-	 * @param {SubmitAttemptParam} param
+	 * @param {string} testId
+	 * @param {string} candidateId
 	 */
-	async submit(param) {
-		const { testId, candidateId } = param;
+	async submit(testId, candidateId) {
 		const attempt = await this.retriver.getInprogressOfCandidate(testId, candidateId);
 		if (attempt == null) {
 			throw new Error('Attempt to submit is not found');

@@ -4,7 +4,6 @@
  * @typedef { import('socket.io').Namespace } Namespace
  */
 
-
 // Todo: extract candidateId from request
 const candidateId = "C#0T001";
 
@@ -24,7 +23,7 @@ function controller(namespace, command, query) {
 		// Client side
 
 		socket.on('register', async (testId) => {
-			const inprogressAttempt = await query.getInProgressAttemptSmall({ testId, candidateId });
+			const inprogressAttempt = await query.getInProgressAttemptSmall(testId, candidateId);
 			if (inprogressAttempt == null) {
 				return;
 			}

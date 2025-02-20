@@ -24,6 +24,7 @@ export type CurrentAttemptDetailResult = {
 			text: string;
 		}[];
 		points: number;
+		chosenOption: number;
 	}[];
 	startedAt: Date;
 	endedAt: Date;

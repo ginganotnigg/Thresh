@@ -3,24 +3,24 @@
  * @typedef {import('sequelize').Model} Model
  * @typedef {import('./result').CurrentAttemptSmallResult} CurrentAttemptSmallResult
  * @typedef {import('./result').CurrentAttemptDetailResult} CurrentAttemptDetailResult
- * @typedef {import('./cast').CurrentAttemptDetailCast} CurrentAttemptDetailData
- * @typedef {import('./param').SingleAttemptParam} SingleAttemptParam
+ * @typedef {import('./cast').CurrentAttemptDetailCast} CurrentAttemptDetailCast
  */
 
 const Attempt = require('../../../models/attempt');
 const Question = require('../../../models/question');
 const Test = require('../../../models/test');
+const AttemptQuestions = require('../../../models/attempt_questions');
 const ATTEMPT_STATUS = require('../../../utils/const').ATTEMPT_STATUS;
 
 class TestProcessQuery {
 
 	/**
 	 * Check if there is an In Progress attempt of a candidate for a test
-	 * @param {SingleAttemptParam} param
+	 * @param {string} testId
+	 * @param {string} candidateId
 	 * @returns {Promise<boolean>}
 	 */
-	async hasInProgressAttempt(param) {
-		const { testId, candidateId } = param;
+	async hasInProgressAttempt(testId, candidateId) {
 		const attempt = await Attempt.findOne({
 			where: {
 				testId: testId,
@@ -34,11 +34,11 @@ class TestProcessQuery {
 
 	/**
 	 * Get the currently In Progress attempt of a candidate (small display)
-	 * @param {SingleAttemptParam} param 
+	 * @param {string} testId
+	 * @param {string} candidateId
 	 * @returns {Promise<CurrentAttemptSmallResult | null>} 
 	 */
-	async getInProgressAttemptSmall(param) {
-		const { testId, candidateId } = param;
+	async getInProgressAttemptSmall(testId, candidateId) {
 		const attempt = await Attempt.findOne({
 			where: {
 				testId: testId,
@@ -68,11 +68,11 @@ class TestProcessQuery {
 
 	/**
 	 * Return the currently In Progress attempt of a candidate in detail for doing the test
-	 * @param {SingleAttemptParam} param
+	 * @param {string} testId
+	 * @param {string} candidateId
 	 * @returns {Promise<CurrentAttemptDetailResult>}
 	 */
-	async getInProgressAttemptToDo(param) {
-		const { testId, candidateId } = param
+	async getInProgressAttemptDetailToDo(testId, candidateId) {
 		const attempt = await Attempt.findOne({
 			where: {
 				testId: testId,
@@ -80,19 +80,25 @@ class TestProcessQuery {
 				status: ATTEMPT_STATUS.IN_PROGRESS,
 			},
 			attributes: { exclude: ["score"] },
-			include: [{
-				model: Test,
-				attributes: { exclude: ['answerCount'] },
-				include: [{
-					model: Question,
-					attributes: { exclude: ['correctAnswer'] },
-				}]
-			}]
+			include: [
+				{
+					model: Test,
+					attributes: { exclude: ['answerCount'] },
+				},
+				{
+					model: AttemptQuestions,
+					attributes: ['chosenOption'],
+					include: [{
+						model: Question,
+						attributes: { exclude: ['correctOption'] },
+					}]
+				}
+			]
 		});
 		if (attempt == null) {
 			throw new Error('Attempt not found');
 		}
-		/** @type {CurrentAttemptDetailData} */
+		/** @type {CurrentAttemptDetailCast} */
 		const typedData = attempt.toJSON();
 		const endedAt = new Date(typedData.createdAt.getTime() + typedData.Test.minutesToAnswer * 60 * 1000);
 		return {
@@ -100,16 +106,17 @@ class TestProcessQuery {
 			test: {
 				...typedData.Test
 			},
-			questions: typedData.Test.Questions.map((question, index) => {
-				const optionsWithId = question.options.map((option, index) => {
+			questions: typedData.AttemptQuestions.map((aq) => {
+				const optionsWithId = aq.Question.options.map((option, index) => {
 					return {
 						ID: index,
 						text: option,
 					};
 				});
 				return {
-					...question,
-					options: optionsWithId
+					...aq.Question,
+					options: optionsWithId,
+					chosenOption: aq.chosenOption,
 				};
 			}),
 			startedAt: typedData.createdAt,

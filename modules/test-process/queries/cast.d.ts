@@ -3,7 +3,6 @@ export type CurrentAttemptDetailCast = {
 	testId: string;
 	candidateId: string;
 	status: string;
-	choices: number[];
 	createdAt: Date;
 	updatedAt: Date;
 	Test: {
@@ -15,12 +14,16 @@ export type CurrentAttemptDetailCast = {
 		difficulty: string;
 		createdAt: Date;
 		updatedAt: Date;
-		Questions: {
-			ID: number;
-			testId: string;
-			text: string;
-			options: string[];
-			points: number;
-		}[];
 	};
+	AttemptQuestions: {
+		ID: number;
+		questionId: number;
+		chosenOption: number;
+		Question: {
+			ID: number;
+			text: string;
+			points: number;
+			options: string[];
+		}
+	}[];
 }

@@ -1,44 +1,44 @@
 const sequelize = require("../utils/database/database");
 const { DataTypes } = require("sequelize");
-const Test = require("./test");
+const Attempt = require("./attempt");
+const Question = require("./question");
 
-const Attempt = sequelize.define("Attempt", {
+const AttemptQuestions = sequelize.define("Attempt_Questions", {
 	ID: {
 		type: DataTypes.INTEGER,
 		autoIncrement: true,
 		primaryKey: true,
 	},
-	testId: {
+	attemptId: {
 		type: DataTypes.INTEGER,
 		references: {
-			model: Test,
+			model: Attempt,
 			key: "ID",
 		},
 	},
-	candidateId: {
-		type: DataTypes.STRING,
-		allowNull: false,
-	},
-	score: {
+	questionId: {
 		type: DataTypes.INTEGER,
-		allowNull: false,
+		references: {
+			model: Question,
+			key: "ID",
+		},
 	},
-	status: {
-		type: DataTypes.STRING,
+	chosenOption: {
+		type: DataTypes.INTEGER,
 		allowNull: false,
 	},
 	createdAt: {
 		type: DataTypes.DATE,
 		allowNull: false,
-		defaultValue: new Date(), // Automatically set to the current date
+		defaultValue: new Date(),
 	},
 	updatedAt: {
 		type: DataTypes.DATE,
 		allowNull: false,
-		defaultValue: new Date(), // Automatically set to the current date
+		defaultValue: new Date(),
 	},
 }, {
 	timestamps: false,
 });
 
-module.exports = Attempt;
+module.exports = AttemptQuestions;

@@ -4,7 +4,6 @@ export type AttemptModel = {
 	candidateId: string;
 	score: number;
 	status: string;
-	choices: number[];
 	createdAt: Date;
 	updatedAt: Date;
 	Test: {
@@ -18,13 +17,19 @@ export type AttemptModel = {
 		createdAt: Date;
 		updatedAt: Date;
 	};
+	AttemptQuestions: {
+		ID: string;
+		attemptId: string;
+		questionId: string;
+		chosenOption: number;
+	}[];
 }
 
 export type QuestionModel = {
-	ID: number;
-	testId: number;
+	ID: string;
+	testId: string;
 	text: string;
 	options: string[];
 	points: number;
-	correctAnswer: number;
+	correctOption: number;
 }
