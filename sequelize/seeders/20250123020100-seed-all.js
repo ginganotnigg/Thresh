@@ -1,6 +1,6 @@
-require('dotenv').config();
-
 'use strict';
+
+require('dotenv').config();
 
 const Test = require('../../src/models/test');
 const Attempt = require('../../src/models/attempt');

@@ -1,6 +1,6 @@
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
-import { AttemptStatus } from "../utils/const";
+import { AttemptStatus } from "../common/domain/enum";
 import AttemptAnswerQuestions from "./attempt_answer_questions";
 
 
