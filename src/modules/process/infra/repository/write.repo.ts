@@ -1,5 +1,5 @@
 import Attempt from "../../../../models/attempt";
-import AttemptAnswerQuestions from "../../../../models/attempt_answer_questions";
+import AttemptsAnswerQuestions from "../../../../models/attempts_answer_questions";
 import Test from "../../../../models/test";
 import { IWriteRepository } from "../../domain/contracts/write.repo.i";
 
@@ -33,7 +33,7 @@ class WriteRepository implements IWriteRepository {
 	 */
 	async answerOnAttempt(attemptId: number, questionId: number, optionId?: number) {
 		if (!optionId) {
-			await AttemptAnswerQuestions.destroy({
+			await AttemptsAnswerQuestions.destroy({
 				where: {
 					attemptId: attemptId,
 					questionId: questionId
@@ -41,7 +41,7 @@ class WriteRepository implements IWriteRepository {
 			});
 			return;
 		}
-		await AttemptAnswerQuestions.upsert(
+		await AttemptsAnswerQuestions.upsert(
 			{
 				attemptId: attemptId,
 				questionId: questionId,

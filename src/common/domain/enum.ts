@@ -4,7 +4,7 @@ export enum AttemptStatus {
 }
 
 export enum TestDifficulty {
-	EASY = 1,
-	MEDIUM = 2,
-	HARD = 3,
+	EASY = 'easy',
+	MEDIUM = 'medium',
+	HARD = 'hard',
 }

@@ -1,5 +1,5 @@
 import Attempt from '../../../../models/attempt';
-import AttemptAnswerQuestions from '../../../../models/attempt_answer_questions';
+import AttemptsAnswerQuestions from '../../../../models/attempts_answer_questions';
 import Question from '../../../../models/question';
 import Test from '../../../../models/test';
 import { AttemptStatus } from '../../../../common/domain/enum';
@@ -66,7 +66,7 @@ export default class QueryUsecase {
 					attributes: { exclude: ['answerCount'] },
 				},
 				{
-					model: AttemptAnswerQuestions,
+					model: AttemptsAnswerQuestions,
 					attributes: ['chosenOption'],
 					include: [{
 						model: Question,

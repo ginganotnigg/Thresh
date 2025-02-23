@@ -1,11 +1,4 @@
-'use strict';
-
-require('dotenv').config();
-
-const Test = require('../../src/models/test');
-const Attempt = require('../../src/models/attempt');
-
-const allTags = [
+const tags = [
 	{ name: 'Programming' },
 	{ name: 'Algorithms' },
 	{ name: 'Databases' },
@@ -19,95 +12,94 @@ const allTags = [
 	{ name: 'Operating Systems' },
 ];
 
-const testCommonProperties = {
-	companyId: 'SkillSharp-HCMUS',
-	answerCount: 0,
-};
-
-const testsData = [
+const tests = [
 	{
+		companyId: '1',
 		title: 'Software Design Patterns Test',
 		description: 'Understanding of software design patterns for best coding practices',
 		minutesToAnswer: 20,
-		difficulty: 'Medium',
+		difficulty: 'easy',
 	},
 	{
+		companyId: '1',
 		title: 'Data Structures Test',
 		description: 'Conceptual understanding of various data structures and algorithms',
 		minutesToAnswer: 10,
-		difficulty: 'Easy',
+		difficulty: 'easy',
 	},
 	{
+		companyId: '2',
 		title: 'Networking Test',
 		description: 'Knowledge about various network protocols and devices',
 		minutesToAnswer: 15,
-		difficulty: 'Easy',
+		difficulty: 'easy',
 	},
 	{
+		companyId: '2',
 		title: 'Distributed Systems Test',
 		description: 'Understanding of distributed systems and their components',
 		minutesToAnswer: 25,
-		difficulty: 'Hard',
+		difficulty: 'hard',
 	},
 	{
+		companyId: '1',
 		title: 'Computer Organization Test',
 		description: 'Knowledge about computer architecture and operations',
 		minutesToAnswer: 15,
-		difficulty: 'Medium',
+		difficulty: 'medium',
 	},
 	{
+		companyId: '1',
 		title: 'Operating Systems Test',
 		description: 'Conceptual understanding of operating systems and their functions',
 		minutesToAnswer: 20,
-		difficulty: 'Hard',
+		difficulty: 'hard',
 	},
 	{
+		companyId: '2',
 		title: 'Database Systems Test',
 		description: 'Understanding of database systems and SQL language',
 		minutesToAnswer: 10,
-		difficulty: 'Easy',
+		difficulty: 'easy',
 	},
 	{
+		companyId: '3',
 		title: 'UI/UX Design Test',
 		description: 'Awareness of UI/UX designing principles',
 		minutesToAnswer: 15,
-		difficulty: 'Medium',
+		difficulty: 'medium',
 	},
 	{
+		companyId: '2',
 		title: 'Machine Learning Test',
 		description: 'Knowledge about machine learning algorithms and their applications',
 		minutesToAnswer: 30,
-		difficulty: 'Hard',
+		difficulty: 'hard',
 	},
 	{
+		companyId: '1',
 		title: 'Web Development Test',
 		description: 'Understanding of web development concepts and languages',
 		minutesToAnswer: 20,
-		difficulty: 'Medium',
+		difficulty: 'medium',
 	},
 	{
+		companyId: '1',
 		title: 'Hardware Design Test',
 		description: 'Knowledge about hardware designing and related concepts',
 		minutesToAnswer: 10,
-		difficulty: 'Easy',
+		difficulty: 'easy',
 	},
 	{
+		companyId: '1',
 		title: 'Enterprise Software Test',
 		description: 'Understanding of enterprise software and related concepts',
 		minutesToAnswer: 20,
-		difficulty: 'Hard',
+		difficulty: 'hard',
 	},
 ];
 
-const allTests = testsData.map(test => ({
-	...testCommonProperties,
-	title: test.title,
-	description: test.description,
-	minutesToAnswer: test.minutesToAnswer,
-	difficulty: test.difficulty,
-}));
-
-const allRelations = [
+const testsTags = [
 	{ testId: 1, tagId: 1 },
 	{ testId: 1, tagId: 2 },
 	{ testId: 2, tagId: 1 },
@@ -140,11 +132,7 @@ const allRelations = [
 	{ testId: 12, tagId: 7 },
 ];
 
-const questionCommonProperties = {
-	correctAnswer: 0,
-};
-
-const questionsData = [
+const questions_Temp1 = [
 	// Questions for Test 1
 	[
 		{
@@ -396,7 +384,7 @@ const questionsData = [
 		},
 		{
 			text: 'Which of the following is an example of secondary storage?',
-			options: ['Hard Disk Drive', 'RAM', 'Cache Memory', 'Registers'],
+			options: ['hard Disk Drive', 'RAM', 'Cache Memory', 'Registers'],
 			points: 15,
 		},
 		{
@@ -684,7 +672,7 @@ const questionsData = [
 		},
 		{
 			text: 'Which component is considered the brain of the computer?',
-			options: ['CPU', 'RAM', 'Hard Drive', 'Motherboard'],
+			options: ['CPU', 'RAM', 'hard Drive', 'Motherboard'],
 			points: 10,
 		},
 		{
@@ -783,181 +771,149 @@ const questionsData = [
 	],
 ];
 
-const allQuestions = questionsData.map((questions, index) => {
+const questions = questions_Temp1.map((questions, index) => {
 	const testId = index + 1; // Test IDs start from 1
 	return questions.map(question => ({
-		...questionCommonProperties,
 		testId: testId,
 		options: JSON.stringify(question.options),
 		text: question.text,
 		points: question.points,
+		correctAnswer: 0
 	}));
 }).flat();
 
-const allAttempts = [
+const attempts = [
 	{
 		testId: 1,
-		candidateId: 'C#0T001',
+		candidateId: '1',
 		score: 85,
 		status: 'Finished',
-		choices: JSON.stringify([0, 0, 0, 0, 1, 0, 0, 0, 0, 0]),
 	},
 	{
 		testId: 1,
-		candidateId: 'C#0T002',
+		candidateId: '2',
 		score: 90,
 		status: 'Finished',
-		choices: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 3]),
 	},
 	{
 		testId: 2,
-		candidateId: 'C#0T001',
+		candidateId: '1',
 		score: 65,
 		status: 'Finished',
-		choices: JSON.stringify([0, 0, 0, 0, 2, 1, 3, 0, 0, 0]),
 	},
 	{
 		testId: 2,
-		candidateId: 'C#0T003',
+		candidateId: '3',
 		score: 45,
 		status: 'Finished',
-		choices: JSON.stringify([0, 0, 0, 0, 2, 1, -1, -1, 0, -1]),
 	},
 	{
 		testId: 3,
-		candidateId: 'C#0T004',
+		candidateId: '4',
 		score: 100,
 		status: 'Finished',
-		choices: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
 	},
 	{
 		testId: 4,
-		candidateId: 'C#0T005',
+		candidateId: '5',
 		score: 20,
 		status: 'Finished',
-		choices: JSON.stringify([0, 1, 0, 1, 1, 3, 1, 2, 3, 3]),
 	},
 	{
 		testId: 5,
-		candidateId: 'C#0T006',
+		candidateId: '6',
 		score: 40,
 		status: 'Finished',
-		choices: JSON.stringify([1, 0, 0, 0, -1, -1, -1, -1, 0, -1]),
 	},
 	{
 		testId: 7,
-		candidateId: 'C#0T002',
+		candidateId: '2',
 		score: 75,
 		status: 'Finished',
-		choices: JSON.stringify([0, 0, 0, 0, 3, 0, 3, 0, 0, 0]),
 	},
 	{
 		testId: 7,
-		candidateId: 'C#0T001',
+		candidateId: '1',
 		score: 80,
 		status: 'Finished',
-		choices: JSON.stringify([0, 1, 0, 0, 3, 0, 0, 0, 0, 0]),
 	},
 	{
 		testId: 7,
-		candidateId: 'C#0T001',
+		candidateId: '1',
 		score: 35,
 		status: 'Finished',
-		choices: JSON.stringify([0, 0, 0, 0, -1, -1, -1, -1, -1, -1]),
 	},
 	{
 		testId: 8,
-		candidateId: 'C#0T002',
+		candidateId: '2',
 		score: 60,
 		status: 'Finished',
-		choices: JSON.stringify([0, 1, 1, 0, 3, 0, 3, 0, 0, 0]),
 	},
 	{
 		testId: 8,
-		candidateId: 'C#0T005',
+		candidateId: '5',
 		score: 80,
 		status: 'Finished',
-		choices: JSON.stringify([0, 1, 0, 0, 3, 0, 0, 0, 0, 0]),
 	},
 	{
 		testId: 8,
-		candidateId: 'C#0T003',
+		candidateId: '3',
 		score: 30,
 		status: 'Finished',
-		choices: JSON.stringify([1, 0, 0, 0, -1, -1, -1, -1, -1, -1]),
 	},
 	{
 		testId: 9,
-		candidateId: 'C#0T003',
+		candidateId: '3',
 		score: 35,
 		status: 'Finished',
-		choices: JSON.stringify([0, 1, 0, 0, 3, 3, 0, 3, 3, 2]),
 	},
 	{
 		testId: 9,
-		candidateId: 'C#0T004',
+		candidateId: '4',
 		score: 20,
 		status: 'Finished',
-		choices: JSON.stringify([1, 0, 0, 0, -1, -1, -1, -1, -1, -1]),
 	},
 	{
 		testId: 10,
-		candidateId: 'C#0T004',
+		candidateId: '4',
 		score: 100,
 		status: 'Finished',
-		choices: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
 	},
 	{
 		testId: 10,
-		candidateId: 'C#0T003',
+		candidateId: '3',
 		score: 5,
 		status: 'Finished',
-		choices: JSON.stringify([1, 0, -1, -1, -1, -1, -1, -1, -1, -1]),
 	},
 	{
 		testId: 11,
-		candidateId: 'C#0T001',
+		candidateId: '1',
 		score: 100,
 		status: 'Finished',
-		choices: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
 	},
 ];
 
-/** @type {import('sequelize-cli').Migration} */
-module.exports = {
-	async up(queryInterface, Sequelize) {
-		if (process.env.SEED_DATA === 'false') {
-			return;
+const attemptsAnswerQuestions = attempts.map((attempt, a_index) => {
+	const qusetionsOfAttempt = questions.filter(question => question.testId === attempt.testId);
+	const answerQuestions = qusetionsOfAttempt.map((question, q_index) => {
+		const randomOption = Math.floor(Math.random() * (question.options.length + 1)) - 1;
+		if (randomOption === -1) {
+			return null;
 		}
-		await queryInterface.bulkInsert('Tags', allTags, {});
-		await queryInterface.bulkInsert('Tests', allTests, {});
-		await queryInterface.bulkInsert('Test_Tags', allRelations, {});
-		await queryInterface.bulkInsert('Questions', allQuestions, {});
-		await queryInterface.bulkInsert('Attempts', allAttempts, {});
+		return {
+			attemptId: a_index + 1,
+			questionId: q_index + 1,
+			chosenOption: randomOption
+		};
+	});
+	return answerQuestions;
+}).flat().filter(answer => answer !== null);
 
-		const tests = await Test.findAll();
-		for (const test of tests) {
-			const answerCount = await Attempt.count({ where: { testId: test.ID } });
-			await Test.update({ answerCount }, { where: { ID: test.ID } });
-		}
-	},
-
-	async down(queryInterface, Sequelize) {
-		await queryInterface.bulkDelete('Attempts', null, {});
-		await queryInterface.bulkDelete('Questions', null, {});
-		await queryInterface.bulkDelete('Test_Tags', null, {});
-		await queryInterface.bulkDelete('Tests', null, {});
-		await queryInterface.bulkDelete('Tags', null, {});
-	},
-};
-
-
-// seed data
-// npx sequelize-cli db:seed:all
-
-
-// reset db and seed data
-// npx sequelize-cli db:migrate:undo:all
-// npx sequelize-cli db:migrate
-// npx sequelize-cli db:seed:all
-
+export default {
+	tags,
+	testsTags,
+	tests,
+	questions,
+	attempts,
+	attemptsAnswerQuestions
+}

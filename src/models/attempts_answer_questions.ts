@@ -2,7 +2,7 @@ import { Association, CreationOptional, DataTypes, InferAttributes, InferCreatio
 import Attempt from "./attempt";
 import Question from "./question";
 
-class AttemptAnswerQuestions extends Model<InferAttributes<AttemptAnswerQuestions>, InferCreationAttributes<AttemptAnswerQuestions>> {
+class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuestions>, InferCreationAttributes<AttemptsAnswerQuestions>> {
 	declare id: CreationOptional<number>;
 	declare attemptId: number;
 	declare questionId: number;
@@ -14,12 +14,12 @@ class AttemptAnswerQuestions extends Model<InferAttributes<AttemptAnswerQuestion
 	declare attempt?: NonAttribute<Attempt>;
 
 	declare static associations: {
-		question: Association<AttemptAnswerQuestions, Question>;
-		attempt: Association<AttemptAnswerQuestions, Attempt>;
+		question: Association<AttemptsAnswerQuestions, Question>;
+		attempt: Association<AttemptsAnswerQuestions, Attempt>;
 	}
 
 	static initModel(sequelize: Sequelize) {
-		AttemptAnswerQuestions.init({
+		AttemptsAnswerQuestions.init({
 			id: {
 				type: DataTypes.INTEGER,
 				autoIncrement: true,
@@ -47,21 +47,21 @@ class AttemptAnswerQuestions extends Model<InferAttributes<AttemptAnswerQuestion
 			updatedAt: DataTypes.DATE,
 		}, {
 			sequelize,
-			modelName: "Attempt_answer_Questions",
+			modelName: "Attempts_answer_Questions",
 		});
 	}
 
 	static associate() {
-		AttemptAnswerQuestions.hasOne(Question, {
+		AttemptsAnswerQuestions.hasOne(Question, {
 			sourceKey: "questionId",
 			foreignKey: "id",
 			as: "question",
 		});
-		AttemptAnswerQuestions.belongsTo(Attempt, {
+		AttemptsAnswerQuestions.belongsTo(Attempt, {
 			foreignKey: "attemptId",
 			as: "attempt",
 		});
 	}
 }
 
-export default AttemptAnswerQuestions;
+export default AttemptsAnswerQuestions;

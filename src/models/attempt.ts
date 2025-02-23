@@ -1,7 +1,7 @@
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
 import { AttemptStatus } from "../common/domain/enum";
-import AttemptAnswerQuestions from "./attempt_answer_questions";
+import AttemptsAnswerQuestions from "./attempts_answer_questions";
 
 
 class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<Attempt>> {
@@ -13,11 +13,11 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 
-	declare answerQuestions?: NonAttribute<AttemptAnswerQuestions[]>;
+	declare answerQuestions?: NonAttribute<AttemptsAnswerQuestions[]>;
 	declare test?: NonAttribute<Test>;
 
 	declare static associations: {
-		answerQuestions: Association<Attempt, AttemptAnswerQuestions>;
+		answerQuestions: Association<Attempt, AttemptsAnswerQuestions>;
 		test: Association<Attempt, Test>;
 	}
 
@@ -57,7 +57,7 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 	}
 
 	static associate() {
-		Attempt.hasMany(AttemptAnswerQuestions, {
+		Attempt.hasMany(AttemptsAnswerQuestions, {
 			sourceKey: "id",
 			foreignKey: "attemptId",
 			onDelete: 'CASCADE',

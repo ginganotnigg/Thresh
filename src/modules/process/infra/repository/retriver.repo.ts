@@ -1,5 +1,5 @@
 import Attempt from "../../../../models/attempt";
-import AttemptAnswerQuestions from '../../../../models/attempt_answer_questions';
+import AttemptsAnswerQuestions from '../../../../models/attempts_answer_questions';
 import Question from '../../../../models/question';
 import Test from '../../../../models/test';
 import { AttemptStatus } from "../../../../common/domain/enum";
@@ -48,7 +48,7 @@ class RetriverRepository implements IRetriverRepository {
 	}
 
 	async getCalculatedTotalScore(attemptId: number): Promise<number> {
-		const result = await AttemptAnswerQuestions.findAll({
+		const result = await AttemptsAnswerQuestions.findAll({
 			where: {
 				attemptId: attemptId,
 				attribute: ['chosenOption']
