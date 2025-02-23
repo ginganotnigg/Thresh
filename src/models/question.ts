@@ -62,7 +62,6 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 	static associate() {
 		Question.belongsTo(Test, {
 			foreignKey: 'testId',
-			as: 'test',
 		});
 	}
 }

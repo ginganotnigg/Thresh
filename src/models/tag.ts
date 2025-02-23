@@ -33,7 +33,6 @@ class Tag extends Model<InferAttributes<Tag>, InferCreationAttributes<Tag>> {
 			through: "Tests_has_Tags",
 			foreignKey: "tagId",
 			sourceKey: "id",
-			as: "tests",
 		});
 	}
 }

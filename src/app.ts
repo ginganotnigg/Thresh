@@ -1,30 +1,18 @@
 import { config } from "dotenv";
-import sequelize from "./configs/sequelize/database";
+config();
 import cors from "cors";
 import express from "express";
 import http from "http";
-import associationConfig from "./configs/sequelize/association";
+import syncSequelize from "./configs/sequelize/init";
 
 const PORT = process.env.PORT || 8080;
-config();
-associationConfig();
-
-const promiseSequelize = sequelize
-	.sync({ alter: true })
-	.then(() => {
-		console.log("Sequelize synchronized!");
-	})
-	.catch((err: any) => {
-		console.error("Unable to create tables, shutting down...", err);
-		process.exit(1);
-	});
 
 // Start the server when all promises are resolved
 const app = express();
 const httpServer = http.createServer(app);
 
 Promise.allSettled([
-	promiseSequelize
+	syncSequelize("alter")
 ]).then(() => {
 	app.use(cors({
 		origin: process.env.CORS_ORIGIN || '*',

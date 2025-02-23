@@ -3,10 +3,10 @@ import Tag from "../../models/tag";
 import Question from "../../models/question";
 import Attempt from "../../models/attempt";
 import AttemptsAnswerQuestions from "../../models/attempts_answer_questions";
-import sequelize from "./database";
+import { Sequelize } from "sequelize";
 
 // Define associations
-function config() {
+function config(sequelize: Sequelize) {
 	Test.initModel(sequelize);
 	Tag.initModel(sequelize);
 	Question.initModel(sequelize);

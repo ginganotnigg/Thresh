@@ -1,4 +1,5 @@
 import { Paged } from "../../../common/controller/base/param";
+import Tag from "../../../models/tag";
 import Test from "../../../models/test";
 import { TestFilterParam } from "../types/param";
 import { TestItemResult } from "../types/result";
@@ -16,28 +17,31 @@ export class QueryService {
 					[Op.lte]: filter.maxMinutesToAnswer ?? undefined
 				},
 				difficulty: filter.difficulty ? { [Op.in]: filter.difficulty } : undefined,
-				'$tags.id$': filter.tags ? { [Op.in]: filter.tags } : undefined
 			},
-			include: [{
-				association: Test.associations.tags,
-				attributes: ['id', 'name']
-			}],
+			include: [
+				{
+					model: Tag,
+					where: {
+						id: filter.tags ? { [Op.in]: filter.tags } : undefined
+					}
+				},
+			],
 			attributes: { exclude: ["description"] },
 			offset: (filter.page - 1) * filter.perPage,
 			limit: filter.perPage,
 		});
 		const total = result.count;
-		const data = result.rows.map(t => ({
-			id: t.id!,
-			companyId: t.companyId!,
-			title: t.title!,
-			difficulty: t.difficulty!,
-			description: t.description!,
-			minutesToAnswer: t.minutesToAnswer!,
-			tags: t.tags!.map(t => t.name!),
-			answerCount: t.answerCount!,
-			createdAt: t.createdAt!,
-			updatedAt: t.updatedAt!
+		const data = result.rows.map(row => ({
+			id: row.id!,
+			companyId: row.companyId!,
+			title: row.title!,
+			difficulty: row.difficulty!,
+			description: row.description!,
+			minutesToAnswer: row.minutesToAnswer!,
+			tags: row.Tags!.map(t => t.name!),
+			answerCount: 0,
+			createdAt: row.createdAt!,
+			updatedAt: row.updatedAt!
 		}));
 		return {
 			data,

@@ -11,17 +11,11 @@ const sequelize = new Sequelize(
 		host: process.env.DB_HOST,
 		port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
 		dialect: "mysql",
-		logging: false,
+		logging: Boolean(process.env.DATABASE_LOGGING) ? console.log : false,
 		define: {
 			timestamps: false
 		},
 	}
 );
-
-sequelize.authenticate().then(() => {
-	console.log('Connection has been established successfully.');
-}).catch((error) => {
-	console.error('Unable to connect to the database:', error);
-});
 
 export default sequelize;

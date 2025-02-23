@@ -18,6 +18,10 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 		attempt: Association<AttemptsAnswerQuestions, Attempt>;
 	}
 
+	get isCorrect(): NonAttribute<boolean> {
+		return this.chosenOption === this.question!.correctOption;
+	}
+
 	static initModel(sequelize: Sequelize) {
 		AttemptsAnswerQuestions.init({
 			id: {
@@ -55,11 +59,9 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 		AttemptsAnswerQuestions.hasOne(Question, {
 			sourceKey: "questionId",
 			foreignKey: "id",
-			as: "question",
 		});
 		AttemptsAnswerQuestions.belongsTo(Attempt, {
 			foreignKey: "attemptId",
-			as: "attempt",
 		});
 	}
 }

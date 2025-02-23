@@ -1,7 +1,11 @@
 const { execSync } = require('child_process');
 
 try {
-	console.log('Checking database existence...');
+	console.log('Dropping database...');
+	execSync('npx sequelize-cli db:drop', { stdio: 'inherit' });
+	console.log('Database dropped.');
+
+	console.log('Create database...');
 	execSync('npx sequelize-cli db:create', { stdio: 'inherit' });
 	console.log('Database is ready.');
 

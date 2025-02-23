@@ -8,13 +8,16 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 	declare id: CreationOptional<number>;
 	declare testId: number;
 	declare candidateId: string;
-	declare score: number;
 	declare status: AttemptStatus;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 
 	declare answerQuestions?: NonAttribute<AttemptsAnswerQuestions[]>;
 	declare test?: NonAttribute<Test>;
+
+	get score(): NonAttribute<number> {
+		return this.answerQuestions!.reduce((acc, aq) => acc + (aq.isCorrect ? aq.question!.points : 0), 0);
+	}
 
 	declare static associations: {
 		answerQuestions: Association<Attempt, AttemptsAnswerQuestions>;
@@ -39,10 +42,6 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 				type: DataTypes.STRING,
 				allowNull: false,
 			},
-			score: {
-				type: DataTypes.INTEGER,
-				allowNull: false,
-			},
 			status: {
 				type: DataTypes.ENUM,
 				values: Object.values(AttemptStatus),
@@ -61,11 +60,9 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 			sourceKey: "id",
 			foreignKey: "attemptId",
 			onDelete: 'CASCADE',
-			as: "answerQuestions",
 		});
 		Attempt.belongsTo(Test, {
 			foreignKey: "testId",
-			as: "test",
 		});
 	}
 }

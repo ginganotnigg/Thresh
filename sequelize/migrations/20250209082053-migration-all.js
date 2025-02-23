@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	async up(queryInterface, Sequelize) {
-		await queryInterface.createTable('Tag', {
+		await queryInterface.createTable('Tags', {
 			id: {
 				allowNull: false,
 				autoIncrement: true,
@@ -16,7 +16,7 @@ module.exports = {
 			}
 		});
 
-		await queryInterface.createTable('Test', {
+		await queryInterface.createTable('Tests', {
 			id: {
 				allowNull: false,
 				autoIncrement: true,
@@ -43,10 +43,6 @@ module.exports = {
 				type: Sequelize.STRING,
 				allowNull: false
 			},
-			answerCount: {
-				type: Sequelize.INTEGER,
-				defaultValue: 0
-			},
 			createdAt: {
 				type: Sequelize.DATE,
 				defaultValue: new Date()
@@ -57,7 +53,7 @@ module.exports = {
 			}
 		});
 
-		await queryInterface.createTable('Question', {
+		await queryInterface.createTable('Questions', {
 			id: {
 				allowNull: false,
 				autoIncrement: true,
@@ -67,7 +63,7 @@ module.exports = {
 			testId: {
 				type: Sequelize.INTEGER,
 				references: {
-					model: 'Test',
+					model: 'Tests',
 					key: 'id'
 				},
 				onUpdate: 'CASCADE',
@@ -91,7 +87,7 @@ module.exports = {
 			}
 		});
 
-		await queryInterface.createTable('Attempt', {
+		await queryInterface.createTable('Attempts', {
 			id: {
 				allowNull: false,
 				autoIncrement: true,
@@ -101,7 +97,7 @@ module.exports = {
 			testId: {
 				type: Sequelize.INTEGER,
 				references: {
-					model: 'Test',
+					model: 'Tests',
 					key: 'id'
 				},
 				onUpdate: 'CASCADE',
@@ -110,10 +106,6 @@ module.exports = {
 			},
 			candidateId: {
 				type: Sequelize.STRING,
-				allowNull: false
-			},
-			score: {
-				type: Sequelize.INTEGER,
 				allowNull: false
 			},
 			status: {
@@ -140,7 +132,7 @@ module.exports = {
 			testId: {
 				type: Sequelize.INTEGER,
 				references: {
-					model: 'Test',
+					model: 'Tests',
 					key: 'id'
 				},
 				onUpdate: 'CASCADE',
@@ -149,7 +141,7 @@ module.exports = {
 			tagId: {
 				type: Sequelize.INTEGER,
 				references: {
-					model: 'Tag',
+					model: 'Tags',
 					key: 'id'
 				},
 				onUpdate: 'CASCADE',
@@ -167,7 +159,7 @@ module.exports = {
 			attemptId: {
 				type: Sequelize.INTEGER,
 				references: {
-					model: 'Attempt',
+					model: 'Attempts',
 					key: 'id'
 				},
 				onUpdate: 'CASCADE',
@@ -176,7 +168,7 @@ module.exports = {
 			questionId: {
 				type: Sequelize.INTEGER,
 				references: {
-					model: 'Question',
+					model: 'Questions',
 					key: 'id'
 				},
 				onUpdate: 'CASCADE',
@@ -193,9 +185,9 @@ module.exports = {
 		// Drop all tables
 		await queryInterface.dropTable('Tests_has_Tags');
 		await queryInterface.dropTable('Attempts_answer_Questions');
-		await queryInterface.dropTable('Attempt');
-		await queryInterface.dropTable('Question');
-		await queryInterface.dropTable('Test');
-		await queryInterface.dropTable('Tag');
+		await queryInterface.dropTable('Attempts');
+		await queryInterface.dropTable('Questions');
+		await queryInterface.dropTable('Tests');
+		await queryInterface.dropTable('Tags');
 	}
 };
