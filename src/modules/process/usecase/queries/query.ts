@@ -82,7 +82,7 @@ export default class QueryUsecase {
 			id: attempt.id,
 			test: {
 				id: attempt.test!.id,
-				companyId: attempt.test!.companyId,
+				managerId: attempt.test!.managerId,
 				title: attempt.test!.title,
 				description: attempt.test!.description,
 				minutesToAnswer: attempt.test!.minutesToAnswer,

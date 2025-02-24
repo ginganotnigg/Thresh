@@ -9,6 +9,12 @@ if (testDir == null) {
 	process.exit(1);
 }
 
-console.log('Running tests in folder: ' + testDir);
-execSync(`npx jest ${testDir}`, { stdio: 'inherit' });
-console.log('Tests completed');
+try {
+	console.log('Running tests in folder: ' + testDir);
+	execSync(`npx jest ${testDir}`, { stdio: 'inherit' });
+	console.log('Tests completed');
+} catch (e) {
+	console.error('Tests failed with error:');
+	console.error(e);
+	process.exit(1);
+}

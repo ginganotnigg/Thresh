@@ -15,10 +15,12 @@ export class TestFilterParam {
 	maxMinutesToAnswer?: number;
 
 	@IsEnum({}, { each: true })
+	@IsOptional()
 	difficulty?: TestDifficulty[];
 
 	@IsNumber({}, { each: true })
-	tags: number[];
+	@IsOptional()
+	tags?: number[];
 
 	@IsNumber()
 	@Min(1)
@@ -31,7 +33,7 @@ export class TestFilterParam {
 
 export type TestCreateParam = {
 	tags: number[];
-	companyId: string;
+	managerId: string;
 	title: string;
 	description: string;
 	difficulty: TestDifficulty;

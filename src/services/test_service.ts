@@ -140,7 +140,7 @@ class TestService extends BaseService {
 			);
 		}
 		const test = await Test.create({
-			companyId: testDetails.companyId,
+			managerId: testDetails.managerId,
 			title: testDetails.title,
 			description: testDetails.description,
 			minutesToAnswer: testDetails.minutesToAnswer,
@@ -396,7 +396,7 @@ class TestService extends BaseService {
 
 		return {
 			ID: `${test.ID}`,
-			companyId: test.companyId,
+			managerId: test.managerId,
 			title: test.title,
 			description: test.description,
 			minutesToAnswer: test.minutesToAnswer,
@@ -429,7 +429,7 @@ class TestService extends BaseService {
 		const attempt = await Attempt.findByPk(attemptId, {
 			include: {
 				model: Test,
-				attributes: ["ID", "companyId", "title"]
+				attributes: ["ID", "managerId", "title"]
 			},
 			attributes: ["ID", "score", "status", "choices"],
 		});
@@ -443,7 +443,7 @@ class TestService extends BaseService {
 
 		return {
 			id: `${attempt.ID}`,
-			companyId: test.companyId,
+			managerId: test.managerId,
 			title: test.title,
 			tags: tagNames,
 			score: attempt.score,

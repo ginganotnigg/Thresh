@@ -56,6 +56,7 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 		}, {
 			sequelize,
 			modelName: "Question",
+			timestamps: false
 		});
 	}
 

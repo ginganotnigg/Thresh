@@ -8,7 +8,7 @@ export type CurrentAttemptDetailResult = {
 	id: number;
 	test: {
 		id: number;
-		companyId: string;
+		managerId: string;
 		title: string;
 		description: string;
 		minutesToAnswer: number;

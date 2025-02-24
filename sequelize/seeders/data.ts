@@ -14,84 +14,84 @@ const tags = [
 
 const tests = [
 	{
-		companyId: '1',
+		managerId: '1',
 		title: 'Software Design Patterns Test',
 		description: 'Understanding of software design patterns for best coding practices',
 		minutesToAnswer: 20,
 		difficulty: 'easy',
 	},
 	{
-		companyId: '1',
+		managerId: '1',
 		title: 'Data Structures Test',
 		description: 'Conceptual understanding of various data structures and algorithms',
 		minutesToAnswer: 10,
 		difficulty: 'easy',
 	},
 	{
-		companyId: '2',
+		managerId: '2',
 		title: 'Networking Test',
 		description: 'Knowledge about various network protocols and devices',
 		minutesToAnswer: 15,
 		difficulty: 'easy',
 	},
 	{
-		companyId: '2',
+		managerId: '2',
 		title: 'Distributed Systems Test',
 		description: 'Understanding of distributed systems and their components',
 		minutesToAnswer: 25,
 		difficulty: 'hard',
 	},
 	{
-		companyId: '1',
+		managerId: '1',
 		title: 'Computer Organization Test',
 		description: 'Knowledge about computer architecture and operations',
 		minutesToAnswer: 15,
 		difficulty: 'medium',
 	},
 	{
-		companyId: '1',
+		managerId: '1',
 		title: 'Operating Systems Test',
 		description: 'Conceptual understanding of operating systems and their functions',
 		minutesToAnswer: 20,
 		difficulty: 'hard',
 	},
 	{
-		companyId: '2',
+		managerId: '2',
 		title: 'Database Systems Test',
 		description: 'Understanding of database systems and SQL language',
 		minutesToAnswer: 10,
 		difficulty: 'easy',
 	},
 	{
-		companyId: '3',
+		managerId: '3',
 		title: 'UI/UX Design Test',
 		description: 'Awareness of UI/UX designing principles',
 		minutesToAnswer: 15,
 		difficulty: 'medium',
 	},
 	{
-		companyId: '2',
+		managerId: '2',
 		title: 'Machine Learning Test',
 		description: 'Knowledge about machine learning algorithms and their applications',
 		minutesToAnswer: 30,
 		difficulty: 'hard',
 	},
 	{
-		companyId: '1',
+		managerId: '1',
 		title: 'Web Development Test',
 		description: 'Understanding of web development concepts and languages',
 		minutesToAnswer: 20,
 		difficulty: 'medium',
 	},
 	{
-		companyId: '1',
+		managerId: '1',
 		title: 'Hardware Design Test',
 		description: 'Knowledge about hardware designing and related concepts',
 		minutesToAnswer: 10,
 		difficulty: 'easy',
 	},
 	{
-		companyId: '1',
+		managerId: '1',
 		title: 'Enterprise Software Test',
 		description: 'Understanding of enterprise software and related concepts',
 		minutesToAnswer: 20,
@@ -99,7 +99,7 @@ const tests = [
 	},
 ];
 
-const testsTags = [
+const testsHasTags = [
 	{ testId: 1, tagId: 1 },
 	{ testId: 1, tagId: 2 },
 	{ testId: 2, tagId: 1 },
@@ -778,7 +778,7 @@ const questions = questions_Temp1.map((questions, index) => {
 		options: JSON.stringify(question.options),
 		text: question.text,
 		points: question.points,
-		correctAnswer: 0
+		correctOption: 0
 	}));
 }).flat();
 
@@ -893,7 +893,7 @@ const attemptsAnswerQuestions = attempts.map((attempt, a_index) => {
 
 export default {
 	tags,
-	testsTags,
+	testsHasTags,
 	tests,
 	questions,
 	attempts,

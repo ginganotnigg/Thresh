@@ -5,6 +5,8 @@ import Test from "./test";
 class Tag extends Model<InferAttributes<Tag>, InferCreationAttributes<Tag>> {
 	declare id: CreationOptional<number>;
 	declare name: string;
+	declare createdAt: CreationOptional<Date>;
+	declare updatedAt: CreationOptional<Date>;
 
 	declare static associations: {
 		tests: Association<Tag, Test>;
@@ -21,10 +23,11 @@ class Tag extends Model<InferAttributes<Tag>, InferCreationAttributes<Tag>> {
 				type: DataTypes.STRING,
 				allowNull: false,
 			},
+			createdAt: DataTypes.DATE,
+			updatedAt: DataTypes.DATE,
 		}, {
 			sequelize,
-			modelName: "Tag",
-			timestamps: false,
+			modelName: "Tag"
 		});
 	}
 
@@ -33,6 +36,7 @@ class Tag extends Model<InferAttributes<Tag>, InferCreationAttributes<Tag>> {
 			through: "Tests_has_Tags",
 			foreignKey: "tagId",
 			sourceKey: "id",
+			timestamps: false
 		});
 	}
 }

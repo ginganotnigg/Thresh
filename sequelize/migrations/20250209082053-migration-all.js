@@ -23,7 +23,7 @@ module.exports = {
 				primaryKey: true,
 				type: Sequelize.INTEGER
 			},
-			companyId: {
+			managerId: {
 				type: Sequelize.STRING,
 				allowNull: false
 			},

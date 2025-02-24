@@ -6,7 +6,7 @@ import { Op } from "sequelize";
 
 class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 	declare id: CreationOptional<number>;
-	declare companyId: string;
+	declare managerId: string;
 	declare title: string;
 	declare description: string;
 	declare minutesToAnswer: number;
@@ -18,9 +18,7 @@ class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 	declare Tags?: NonAttribute<Tag[]>;
 	declare Attempts?: NonAttribute<Attempt[]>;
 
-	get answerCount(): NonAttribute<number> {
-		return 0;
-	}
+	declare answerCount?: NonAttribute<number>;
 
 	declare static associations: {
 		questions: Association<Test, Question>;
@@ -35,7 +33,7 @@ class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 				autoIncrement: true,
 				primaryKey: true,
 			},
-			companyId: {
+			managerId: {
 				type: DataTypes.STRING,
 				allowNull: false,
 			},
@@ -74,6 +72,7 @@ class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 			foreignKey: "testId",
 			sourceKey: "id",
 			onDelete: 'CASCADE',
+			timestamps: false
 		});
 		Test.hasMany(Attempt, {
 			sourceKey: "id",

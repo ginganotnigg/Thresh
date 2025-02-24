@@ -1,20 +1,10 @@
 import { AttemptStatus } from "../../../common/domain/enum";
 
-export type TestItemResult = {
-	id: number;
-	companyId: string;
-	title: string;
-	difficulty: string;
-	minutesToAnswer: number;
-	tags: string[];
-	answerCount: number;
-	createdAt: Date;
-	updatedAt: Date;
-}
+export type TestItemResult = Omit<TestResult, 'description'> & { answerCount: number };
 
 export type TestResult = {
 	id: number;
-	companyId: string;
+	managerId: string;
 	title: string;
 	description: string;
 	difficulty: string;

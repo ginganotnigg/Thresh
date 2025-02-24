@@ -1,54 +1,161 @@
 import { Paged } from "../../../common/controller/base/param";
+import Question from "../../../models/question";
 import Tag from "../../../models/tag";
 import Test from "../../../models/test";
-import { TestFilterParam } from "../types/param";
-import { TestItemResult } from "../types/result";
+import { TestFilterParam } from "../schemas/param";
+import { QuestionResult, TestItemResult, TestResult } from "../schemas/result";
 import { Op } from "sequelize";
+import Sequelize from "sequelize";
 
 export class QueryService {
 	constructor() { }
 
 	async getTests(filter: TestFilterParam): Promise<Paged<TestItemResult>> {
-		const result = await Test.findAndCountAll({
-			where: {
-				title: filter.searchTitle ? { [Op.like]: `%${filter.searchTitle}%` } : undefined,
-				minutesToAnswer: {
-					[Op.gte]: filter.minMinutesToAnswer ?? undefined,
-					[Op.lte]: filter.maxMinutesToAnswer ?? undefined
-				},
-				difficulty: filter.difficulty ? { [Op.in]: filter.difficulty } : undefined,
-			},
+		const { whereClause, includeTagsClause } = getFilterCondition(filter);
+		return await findAllWithFilter(whereClause, includeTagsClause, filter);
+	}
+
+	async getTest(id: number): Promise<TestResult | null> {
+		const row = await Test.findByPk(id, {
 			include: [
 				{
 					model: Tag,
-					where: {
-						id: filter.tags ? { [Op.in]: filter.tags } : undefined
-					}
-				},
+					through: { attributes: [] },
+					attributes: ["id", "name", "createdAt", "updatedAt"]
+				}
 			],
-			attributes: { exclude: ["description"] },
-			offset: (filter.page - 1) * filter.perPage,
-			limit: filter.perPage,
+			attributes: {
+				include: [
+					[
+						Sequelize.literal(`(
+						  SELECT COUNT(*)
+						  FROM Attempts AS Attempt
+						  WHERE Attempt.testId = Test.id
+						)`),
+						"answerCount"
+					]
+				]
+			},
 		});
-		const total = result.count;
-		const data = result.rows.map(row => ({
+		if (!row) return null;
+		return {
 			id: row.id!,
-			companyId: row.companyId!,
+			managerId: row.managerId!,
 			title: row.title!,
 			difficulty: row.difficulty!,
 			description: row.description!,
 			minutesToAnswer: row.minutesToAnswer!,
 			tags: row.Tags!.map(t => t.name!),
-			answerCount: 0,
+			answerCount: row.get('answerCount')!,
 			createdAt: row.createdAt!,
 			updatedAt: row.updatedAt!
-		}));
-		return {
-			data,
-			total,
-			page: filter.page,
-			perPage: filter.perPage,
-			totalPages: Math.ceil(total / filter.perPage)
 		};
 	}
+
+	async getQuestions(testId: number): Promise<QuestionResult[]> {
+		const questions = await Question.findAll({
+			where: {
+				testId
+			}
+		});
+		return questions.map(q => ({
+			id: q.id!,
+			text: q.text!,
+			options: q.options!,
+			points: q.points!,
+			correctOption: q.correctOption!
+		}));
+	}
+
+	async getManagerTests(managerId: string, filter: TestFilterParam): Promise<Paged<TestItemResult>> {
+		const { whereClause, includeTagsClause } = getFilterCondition(filter);
+		const companyWhereClause = { ...whereClause, managerId };
+		return await findAllWithFilter(companyWhereClause, includeTagsClause, filter);
+	}
+}
+
+function getFilterCondition(filter: TestFilterParam) {
+	const whereClase = {
+		...(filter.searchTitle && {
+			title: {
+				[Op.like]: `%${filter.searchTitle}%`
+			}
+		}),
+		...(filter.minMinutesToAnswer !== undefined && {
+			minutesToAnswer: {
+				[Op.gte]: filter.minMinutesToAnswer
+			}
+		}),
+		...(filter.maxMinutesToAnswer !== undefined && {
+			minutesToAnswer: {
+				[Op.lte]: filter.maxMinutesToAnswer
+			}
+		}),
+		...(filter.difficulty != null && filter.difficulty.length > 0 && {
+			difficulty: {
+				[Op.in]: filter.difficulty
+			}
+		}),
+	};
+	const includeTagsClause = {
+		model: Tag,
+		where: filter.tags != null && filter.tags.length > 0 ? {
+			id: { [Op.in]: filter.tags! }
+		} : {},
+		through: { attributes: [] },
+		attributes: ["id", "name", "createdAt", "updatedAt"]
+	};
+	return { whereClause: whereClase, includeTagsClause };
+}
+
+async function findAllWithFilter(whereClause: any, includeTagClause: any, filter: { page: number, perPage: number }): Promise<Paged<TestItemResult>> {
+	const data = await Test.findAll({
+		where: whereClause,
+		include: [
+			includeTagClause
+		],
+		attributes: {
+			exclude: ["description"],
+			include: [
+				[
+					Sequelize.literal(`(
+					  SELECT COUNT(*)
+					  FROM Attempts AS Attempt
+					  WHERE Attempt.testId = Test.id
+					)`),
+					"answerCount"
+				]
+			]
+		},
+		offset: (filter.page - 1) * filter.perPage,
+		limit: filter.perPage,
+	});
+
+	const total = await Test.count({
+		where: whereClause,
+		include: [
+			{ ...includeTagClause, attributes: [] }
+		],
+		distinct: true
+	});
+
+	const castedData = data.map(record => ({
+		id: record.id!,
+		managerId: record.managerId!,
+		title: record.title!,
+		difficulty: record.difficulty!,
+		description: record.description!,
+		minutesToAnswer: record.minutesToAnswer!,
+		tags: record.Tags!.map(t => t.name!),
+		answerCount: record.get('answerCount')!,
+		createdAt: record.createdAt!,
+		updatedAt: record.updatedAt!
+	}));
+	return {
+		data: castedData,
+		total,
+		page: filter.page,
+		perPage: filter.perPage,
+		totalPages: Math.ceil(total / filter.perPage)
+	};
 }

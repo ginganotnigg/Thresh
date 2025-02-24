@@ -7,7 +7,7 @@ export type CurrentAttemptDetailCast = {
 	updatedAt: Date;
 	Test: {
 		ID: string;
-		companyId: string;
+		managerId: string;
 		title: string;
 		description: string;
 		minutesToAnswer: number;

@@ -6,7 +6,7 @@ module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.bulkInsert('Tags', data.default.tags, {});
 		await queryInterface.bulkInsert('Tests', data.default.tests, {});
-		await queryInterface.bulkInsert('Tests_has_Tags', data.default.testsTags, {});
+		await queryInterface.bulkInsert('Tests_has_Tags', data.default.testsHasTags, {});
 		await queryInterface.bulkInsert('Questions', data.default.questions, {});
 		await queryInterface.bulkInsert('Attempts', data.default.attempts, {});
 		await queryInterface.bulkInsert('Attempts_answer_Questions', data.default.attemptsAnswerQuestions, {});
