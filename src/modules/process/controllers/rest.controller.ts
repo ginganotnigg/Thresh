@@ -1,8 +1,8 @@
 import { RequestHandler, Router } from 'express';
-import CommandUsecase from '../usecase/commands/command';
-import QueryUsecase from '../usecase/queries/query';
+import CommandUsecase from '../usecase/command.service';
+import QueryUsecase from '../usecase/query.service';
 import { ControllerBase } from '../../../common/controller/base/controller.base';
-import { AnswerAttemptParam } from '../usecase/commands/param';
+import { AnswerAttemptParam } from '../usecase/schemas/param';
 import { UserRole as UserRole, RoleGuard } from '../../../common/controller/middlewares/guards/role.guard';
 import { middlewareInjectorInstance } from '../../../common/controller/helpers/middleware.inject';
 import { UserPipe } from '../../../common/controller/middlewares/pipes/user.pipe';

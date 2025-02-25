@@ -5,6 +5,7 @@ import { CommandService } from "./services/command.service";
 import { TestCreateParam, TestFilterParam, TestUpdateParam } from "./schemas/param";
 import { validateHelperNumber, validateHelperObject, validateHelperString } from "../../common/controller/helpers/validation.helper";
 import { validateCreateTestParam, validateUpdateTestParam } from "./schemas/validator";
+import { mg } from "../../common/controller/middlewares/guards/role.guard";
 
 export class ManageController extends ControllerBase {
 	constructor(
@@ -62,10 +63,10 @@ export class ManageController extends ControllerBase {
 	protected initializeRoutes(): void {
 		this.route("get", '/tests', this.getTests);
 		this.route("get", '/tests/:testId', this.getTest);
-		this.route("get", '/tests/:testId/questions', this.getTestQuestions);
-		this.route("get", '/manager/:managerId/tests', this.getManagerTests);
-		this.route("post", '/tests', this.createTest);
-		this.route("put", '/tests/:testId', this.updateTest);
-		this.route("delete", '/tests/:testId', this.deleteTest);
+		this.route("get", '/tests/:testId/questions', this.getTestQuestions, [mg]);
+		this.route("get", '/manager/:managerId/tests', this.getManagerTests, [mg]);
+		this.route("post", '/tests', this.createTest, [mg]);
+		this.route("put", '/tests/:testId', this.updateTest, [mg]);
+		this.route("delete", '/tests/:testId', this.deleteTest, [mg]);
 	}
 }

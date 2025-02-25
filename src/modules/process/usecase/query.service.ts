@@ -1,10 +1,10 @@
-import Attempt from '../../../../models/attempt';
-import AttemptsAnswerQuestions from '../../../../models/attempts_answer_questions';
-import Question from '../../../../models/question';
-import Test from '../../../../models/test';
-import { AttemptStatus } from '../../../../common/domain/enum';
-import { AttemptLogic } from '../../domain/logic/attempt.logic';
-import { CurrentAttemptDetailResult, CurrentAttemptSmallResult } from './result';
+import Attempt from '../../../models/attempt';
+import AttemptsAnswerQuestions from '../../../models/attempts_answer_questions';
+import Question from '../../../models/question';
+import Test from '../../../models/test';
+import { AttemptStatus } from '../../../common/domain/enum';
+import { AttemptLogic } from '../domain/logic/attempt.logic';
+import { CurrentAttemptDetailResult, CurrentAttemptSmallResult } from './schemas/result';
 
 export default class QueryUsecase {
 	async getInProgressAttemptId(testId: string, candidateId: string): Promise<number | null> {

@@ -1,21 +1,18 @@
 import { RequestHandler } from "express";
-import { MiddlewareBase } from "../base/middleware.base";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
-import { middlewareInjectorInstance } from "../helpers/middleware.inject";
+import { MiddlewareBase } from "../../base/middleware.base";
+import { middlewareInjectorInstance } from "../../helpers/middleware.inject";
 
 export enum UserRole {
-	UN_AUTH = 0,
 	CANDIDATE = 1,
-	BUSINESS_MANAGER = 2
+	MANAGER = 2
 }
 
 export class RoleGuard extends MiddlewareBase {
 	constructor(
-		private readonly role: UserRole = UserRole.UN_AUTH
-	) {
-		super();
-	}
+		private readonly role: UserRole
+	) { super(); }
 
 	handle: RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>> = (req, res, next) => {
 		if (process.env.NO_AUTH === 'true') {
@@ -37,3 +34,6 @@ export class RoleGuard extends MiddlewareBase {
 }
 
 middlewareInjectorInstance.addTransient(RoleGuard);
+
+export const mg = middlewareInjectorInstance.getTransient(RoleGuard, UserRole.MANAGER);
+export const cg = middlewareInjectorInstance.getTransient(RoleGuard, UserRole.CANDIDATE);

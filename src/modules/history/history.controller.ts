@@ -3,7 +3,8 @@ import { ControllerBase } from "../../common/controller/base/controller.base"
 import { QueryService } from "./services/query.service";
 import { validateHelperNumber, validateHelperObject, validateHelperString } from "../../common/controller/helpers/validation.helper";
 import { AttemptAnswerFilterParam, AttemptFilterParam } from "./schemas/param";
-import { RequestWithUser } from "../../common/controller/base/middleware";
+import { cg, mg } from "../../common/controller/middlewares/guards/role.guard";
+import { UserPipe } from "../../common/controller/middlewares/pipes/user.pipe";
 
 export class HistoryController extends ControllerBase {
 	constructor(
@@ -32,14 +33,14 @@ export class HistoryController extends ControllerBase {
 	}
 
 	private getCandidateAttempts: RequestHandler = async (req, res, next) => {
-		const candidateId = validateHelperString((req as RequestWithUser).user.id);
+		const candidateId = UserPipe.retrive(req).id;
 		const filter = await validateHelperObject(req.query, AttemptFilterParam);
 		const result = await this.query.getCandidateAttempts(candidateId, filter);
 		res.json(result);
 	}
 
 	private getCandidateAttempt: RequestHandler = async (req, res, next) => {
-		const candidateId = validateHelperString((req as RequestWithUser).user.id);
+		const candidateId = UserPipe.retrive(req).id;
 		const testId = validateHelperNumber(req.params.testId);
 		const filter = await validateHelperObject(req.query, AttemptFilterParam);
 		const result = await this.query.getCandidateAttempt(candidateId, testId, filter);
@@ -47,10 +48,10 @@ export class HistoryController extends ControllerBase {
 	}
 
 	protected initializeRoutes(): void {
-		this.route("get", '/tests/:testId/attempts', this.getTestAttempts);
-		this.route("get", '/attempts/:attemptId', this.getAttemptDetail);
-		this.route("get", '/attempts/:attemptId/answers', this.getAttemptAnswers);
-		this.route("get", '/candidate/attempts', this.getCandidateAttempts);
-		this.route("get", '/candidate/test/:testId/attempts', this.getCandidateAttempt);
+		this.route("get", '/tests/:testId/attempts', this.getTestAttempts, [mg]);
+		this.route("get", '/attempts/:attemptId', this.getAttemptDetail, [mg, cg]);
+		this.route("get", '/attempts/:attemptId/answers', this.getAttemptAnswers, [mg, cg]);
+		this.route("get", '/candidate/attempts', this.getCandidateAttempts, [cg]);
+		this.route("get", '/candidate/test/:testId/attempts', this.getCandidateAttempt, [cg]);
 	}
 }

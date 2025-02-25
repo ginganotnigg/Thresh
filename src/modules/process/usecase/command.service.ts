@@ -1,9 +1,9 @@
-import { AttemptService } from '../../domain/services/attempt.service';
-import { IRetriverRepository } from '../../domain/contracts/retriver.repo.i';
-import { IWriteRepository } from '../../domain/contracts/write.repo.i';
-import { AnswerAttemptParam } from './param';
-import { eventDispatcherInstance } from '../../../../common/event/event-queue';
-import { ProcessAnsweredEvent } from '../../domain/events/process-answered.event';
+import { AttemptService } from '../domain/services/attempt.service';
+import { IRetriverRepository } from '../domain/contracts/retriver.repo.i';
+import { IWriteRepository } from '../domain/contracts/write.repo.i';
+import { AnswerAttemptParam } from './schemas/param';
+import { eventDispatcherInstance } from '../../../common/event/event-queue';
+import { ProcessAnsweredEvent } from '../domain/events/process-answered.event';
 
 export default class CommandUsecase {
 	constructor(
@@ -12,15 +12,19 @@ export default class CommandUsecase {
 		private readonly attemptService: AttemptService
 	) { }
 
-	/**
-	 * Quit the previous test process of a candidate (if any) and re-create a new currently In Progress attempt
-	 */
 	async startNew(testId: number, candidateId: string): Promise<void> {
 		// Find previous attempt and evaluate it if it exists
 		const previousAttemptId = await this.retriver.getInProgressAttemptId(testId, candidateId);
 		if (previousAttemptId != null) {
 			await this.attemptService.evaluateTestAttempt(previousAttemptId);
 		}
+
+		await Attempt.create({
+			testId: +testId,
+			candidateId: candidateId,
+			status: AttemptStatus.IN_PROGRESS,
+		});
+
 		await this.write.createNewAttemptForCandidate(testId, candidateId);
 		const attemptId = await this.retriver.getInProgressAttemptId(testId, candidateId);
 		if (attemptId == null) {

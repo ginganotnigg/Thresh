@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { Namespace } from "socket.io";
 import RestController from "./controllers/rest.controller";
-import CommandUsecase from "./usecase/commands/command";
+import CommandUsecase from "./usecase/command.service";
 import WriteRepository from "./infra/repository/write.repo";
 import RetriverRepository from "./infra/repository/retriver.repo";
 import { AttemptService } from "./domain/services/attempt.service";
-import QueryUsecase from "./usecase/queries/query";
+import QueryUsecase from "./usecase/query.service";
 import { SocketController } from "./controllers/socket.controller";
 import { Loader } from "./loader";
 

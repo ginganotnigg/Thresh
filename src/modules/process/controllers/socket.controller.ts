@@ -1,5 +1,5 @@
 import { Namespace } from 'socket.io';
-import QueryUsecase from '../usecase/queries/query';
+import QueryUsecase from '../usecase/query.service';
 import { INotify } from '../domain/contracts/notify.i';
 
 // Todo: extract candidateId from request
