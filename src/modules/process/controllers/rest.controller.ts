@@ -4,7 +4,7 @@ import QueryUsecase from '../usecase/queries/query';
 import { ControllerBase } from '../../../common/controller/base/controller.base';
 import { AnswerAttemptParam } from '../usecase/commands/param';
 import { UserRole as UserRole, RoleGuard } from '../../../common/controller/guards/role.guard';
-import { middlewareInjectorInstance } from '../../../common/controller/middleware.inject';
+import { middlewareInjectorInstance } from '../../../common/controller/helpers/middleware.inject';
 
 const candidateId = "C#0T001";
 

@@ -1,5 +1,6 @@
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
+import AttemptsAnswerQuestions from "./attempts_answer_questions";
 
 
 class Question extends Model<InferAttributes<Question>, InferCreationAttributes<Question>> {
@@ -10,7 +11,8 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 	declare points: number;
 	declare correctOption: number;
 
-	declare test?: NonAttribute<Test>;
+	declare Test?: NonAttribute<Test>;
+	declare Attempts_answer_Questions?: NonAttribute<AttemptsAnswerQuestions[]>;
 
 	declare static associations: {
 		test: Association<Question, Test>;

@@ -1,4 +1,4 @@
-import { IsEnum, IsNumber, IsObject, IsOptional, IsString, Min } from "class-validator";
+import { IsArray, IsEnum, IsNumber, IsObject, IsOptional, IsString, Max, Min } from "class-validator";
 import { TestDifficulty } from "../../../common/domain/enum";
 
 export class TestFilterParam {
@@ -31,21 +31,75 @@ export class TestFilterParam {
 	perPage: number = 5;
 }
 
-export type TestCreateParam = {
-	tags: number[];
-	managerId: string;
-	title: string;
-	description: string;
-	difficulty: TestDifficulty;
-	minutesToAnswer: number;
-	questions: {
-		text: string;
-		options: string[];
-		points: number;
-		correctOption: number;
-	}[];
+export class QuestionCreateParam {
+	@IsString()
+	text: string;
+
+	@IsArray()
+	@IsString({ each: true })
+	options: string[];
+
+	@IsNumber()
+	points: number;
+
+	@IsNumber()
+	correctOption: number;
 }
 
-export type TestUpdateParam = TestCreateParam & {
+export class TestCreateParam {
+	@IsArray()
+	@IsNumber({ each: true })
+	tagIds: number[];
+
+	@IsString()
+	managerId: string;
+
+	@IsString()
+	title: string;
+
+	@IsString()
+	description: string;
+
+	@IsEnum(TestDifficulty)
+	difficulty: TestDifficulty;
+
+	@IsNumber()
+	@Min(1)
+	@Max(10000)
+	minutesToAnswer: number;
+
+	@IsArray()
+	@ValidateNested({ each: true })
+	@Type(() => Question)
+	questions: QuestionCreateParam[];
+}
+
+export class TestUpdateParam {
+	@IsNumber()
 	id: number;
+
+	@IsArray()
+	@IsNumber({ each: true })
+	@IsOptional()
+	tagIds?: number[];
+
+	@IsString()
+	title?: string;
+
+	@IsString()
+	description?: string;
+
+	@IsEnum(TestDifficulty)
+	difficulty?: TestDifficulty;
+
+	@IsNumber()
+	@Min(1)
+	@Max(10000)
+	minutesToAnswer?: number;
+
+	@IsArray()
+	@ValidateNested({ each: true })
+	@Type(() => Question)
+	@IsOptional()
+	questions?: Question[];
 }

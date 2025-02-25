@@ -35,7 +35,7 @@ export abstract class ControllerBase {
 		const createdRouter = Router();
 		if (this.middlewares) {
 			this.middlewares.forEach(middleware => {
-				createdRouter.use(middleware.handle);
+				createdRouter.use((req, res, next) => middleware.handle(req, res, next));
 			});
 		}
 		this.routes.forEach(route => {

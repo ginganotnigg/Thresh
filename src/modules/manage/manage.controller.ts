@@ -1,24 +1,21 @@
 import { RequestHandler, Router } from "express";
 import { ControllerBase } from "../../common/controller/base/controller.base";
-import { QueryService } from "./usecase/query.service";
-import { CommandService } from "./usecase/command.service";
-import { TestFilterParam } from "./schemas/param";
-import { validateHelperNumber, validateHelperObject } from "../../common/controller/helpers/validation.helper";
-import { isNumber } from "class-validator";
+import { QueryService } from "./services/query.service";
+import { CommandService } from "./services/command.service";
+import { TestCreateParam, TestFilterParam, TestUpdateParam } from "./schemas/param";
+import { validateHelperNumber, validateHelperObject, validateHelperString } from "../../common/controller/helpers/validation.helper";
+import { validateCreateTestParam, validateUpdateTestParam } from "./schemas/validator";
 
 export class ManageController extends ControllerBase {
 	constructor(
 		router: Router,
 		private readonly query: QueryService,
 		private readonly command: CommandService
-	) {
-		super(router);
-		this.initializeRoutes();
-	}
+	) { super(router); }
 
 	private getTests: RequestHandler = async (req, res, next) => {
-		const filter = await validateHelperObject(req.query, TestFilterParam);
-		const tests = await this.query.getTests(filter);
+		const query = await validateHelperObject(req.query, TestFilterParam);
+		const tests = await this.query.getTests(query);
 		res.json(tests);
 	}
 
@@ -35,16 +32,31 @@ export class ManageController extends ControllerBase {
 	}
 
 	private getManagerTests: RequestHandler = async (req, res, next) => {
-
+		const managerId = validateHelperString(req.params.managerId);
+		const query = await validateHelperObject(req.query, TestFilterParam);
+		const tests = await this.query.getManagerTests(managerId, query);
+		res.json(tests);
 	}
 
 	private createTest: RequestHandler = async (req, res, next) => {
+		const body = await validateHelperObject(req.body, TestCreateParam);
+		validateCreateTestParam(body);
+		await this.command.createTest(body);
+		res.json({ message: "Test created" });
 	}
 
 	private updateTest: RequestHandler = async (req, res, next) => {
+		const testId = validateHelperNumber(req.params.testId);
+		const body = await validateHelperObject(req.body, TestUpdateParam);
+		validateUpdateTestParam(body);
+		await this.command.updateTest({ ...body, id: testId });
+		res.json({ message: "Test updated" });
 	}
 
 	private deleteTest: RequestHandler = async (req, res, next) => {
+		const testId = validateHelperNumber(req.params.testId);
+		await this.command.deleteTest(testId);
+		res.json({ message: "Test deleted" });
 	}
 
 	protected initializeRoutes(): void {

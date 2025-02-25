@@ -1,10 +1,12 @@
-import { QueryService } from "../../usecase/query.service";
+import { QueryService } from "../../services/query.service";
 import sequelize from "../../../../configs/sequelize/database";
 import syncSequelize from "../../../../configs/sequelize/init";
 import filterData from "./data/filter";
 import detailData from "./data/detail";
 import questionData from "./data/questions";
 import managerData from "./data/manager";
+
+// Todo: Update test data (its v2)
 
 describe('QueryService', () => {
 	let queryService: QueryService;
@@ -18,7 +20,7 @@ describe('QueryService', () => {
 		await sequelize.close();
 	});
 
-	it.skip.each(filterData)(QueryService.prototype.getTests.name, async (data) => {
+	it.each(filterData)(QueryService.prototype.getTests.name, async (data) => {
 		const result = await queryService.getTests(data.input);
 
 		// All record should not be undefined
@@ -33,7 +35,7 @@ describe('QueryService', () => {
 		expect(result.total).toEqual(data.expected.length);
 	});
 
-	it.skip.each(detailData)(QueryService.prototype.getTest.name, async (data) => {
+	it.each(detailData)(QueryService.prototype.getTest.name, async (data) => {
 		const result = await queryService.getTest(data.input);
 
 		if (data.expected == null) {
@@ -50,13 +52,13 @@ describe('QueryService', () => {
 		}
 	});
 
-	it.skip.each(questionData)(QueryService.prototype.getQuestions.name, async (data) => {
+	it.each(questionData)(QueryService.prototype.getQuestions.name, async (data) => {
 		const result = await queryService.getQuestions(data.input);
 		expect(result).toBeDefined();
 		expect(result.length).toEqual(data.expected.length);
 	});
 
-	it.skip.each(managerData)(QueryService.prototype.getManagerTests.name, async (data) => {
+	it.each(managerData)(QueryService.prototype.getManagerTests.name, async (data) => {
 		const result = await queryService.getManagerTests(data.input.managerId, { ...data.input });
 		expect(result).toBeDefined();
 		expect(result.total).toEqual(data.expected.length);

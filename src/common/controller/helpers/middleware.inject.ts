@@ -1,4 +1,4 @@
-import { MiddlewareBase } from "./base/middleware.base";
+import { MiddlewareBase } from "../base/middleware.base";
 
 class MiddlewareInjector {
 	private middlewareSingleton: Map<string, MiddlewareBase> = new Map();

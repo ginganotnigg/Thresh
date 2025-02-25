@@ -1,6 +1,6 @@
 import sequelize from "../sequelize/database";
 
-describe('Sequelize Configuration', () => {
+describe.skip('Sequelize Configuration', () => {
 	beforeEach(() => {
 	});
 

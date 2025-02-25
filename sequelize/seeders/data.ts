@@ -794,6 +794,31 @@ const attempts = [
 		status: 'Finished',
 	},
 	{
+		testId: 1,
+		candidateId: '1',
+		status: 'Finished',
+	},
+	{
+		testId: 1,
+		candidateId: '3',
+		status: 'Finished',
+	},
+	{
+		testId: 1,
+		candidateId: '2',
+		status: 'Finished',
+	},
+	{
+		testId: 1,
+		candidateId: '1',
+		status: 'Finished',
+	},
+	{
+		testId: 2,
+		candidateId: '1',
+		status: 'Finished',
+	},
+	{
 		testId: 2,
 		candidateId: '1',
 		status: 'Finished',
@@ -816,6 +841,11 @@ const attempts = [
 	{
 		testId: 5,
 		candidateId: '6',
+		status: 'Finished',
+	},
+	{
+		testId: 5,
+		candidateId: '1',
 		status: 'Finished',
 	},
 	{
@@ -875,10 +905,16 @@ const attempts = [
 	},
 ];
 
+const attemptsAnswerQuestions_Hash = (attemptId: number, questionId: number, optionsLength: number): number => {
+	const hash = attemptId * 2 + questionId * 3 + 5;
+	return (hash % (optionsLength + 1)) - 1;
+};
+
 const attemptsAnswerQuestions = attempts.map((attempt, a_index) => {
 	const qusetionsOfAttempt = questions.filter(question => question.testId === attempt.testId);
 	const answerQuestions = qusetionsOfAttempt.map((question, q_index) => {
-		const randomOption = Math.floor(Math.random() * (question.options.length + 1)) - 1;
+		const options = JSON.parse(question.options) as string[];
+		const randomOption = attemptsAnswerQuestions_Hash(a_index + 1, q_index + 1, options.length);
 		if (randomOption === -1) {
 			return null;
 		}

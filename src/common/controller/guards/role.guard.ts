@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { MiddlewareBase } from "../base/middleware.base";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
-import { middlewareInjectorInstance } from "../middleware.inject";
+import { middlewareInjectorInstance } from "../helpers/middleware.inject";
 
 export enum UserRole {
 	UN_AUTH = 0,

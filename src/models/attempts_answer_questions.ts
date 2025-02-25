@@ -10,16 +10,16 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 
-	declare question?: NonAttribute<Question>;
-	declare attempt?: NonAttribute<Attempt>;
+	declare Question?: NonAttribute<Question>;
+	declare Attempt?: NonAttribute<Attempt>;
 
 	declare static associations: {
-		question: Association<AttemptsAnswerQuestions, Question>;
-		attempt: Association<AttemptsAnswerQuestions, Attempt>;
+		Question: Association<AttemptsAnswerQuestions, Question>;
+		Attempt: Association<AttemptsAnswerQuestions, Attempt>;
 	}
 
 	get isCorrect(): NonAttribute<boolean> {
-		return this.chosenOption === this.question!.correctOption;
+		return this.chosenOption === this.Question!.correctOption;
 	}
 
 	static initModel(sequelize: Sequelize) {
@@ -52,6 +52,12 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 		}, {
 			sequelize,
 			modelName: "Attempts_answer_Questions",
+			indexes: [
+				{
+					unique: true,
+					fields: ["attemptId", "questionId"]
+				}
+			]
 		});
 	}
 

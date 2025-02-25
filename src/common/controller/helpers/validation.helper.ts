@@ -18,3 +18,13 @@ export function validateHelperNumber(obj: any): number {
 	}
 	return parsed;
 }
+
+export function validateHelperString(obj: any, allowSpaces: boolean = false): string {
+	if (typeof obj !== "string" || obj === "" || obj === null) {
+		throw new ValidationError("Not a string");
+	}
+	if (allowSpaces == false && obj.includes(" ")) {
+		throw new ValidationError("This string should not has space");
+	}
+	return obj;
+}

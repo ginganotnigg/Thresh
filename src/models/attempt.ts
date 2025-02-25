@@ -12,16 +12,22 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 
-	declare answerQuestions?: NonAttribute<AttemptsAnswerQuestions[]>;
-	declare test?: NonAttribute<Test>;
+	declare Attempts_answer_Questions?: NonAttribute<AttemptsAnswerQuestions[]>;
+	declare Test?: NonAttribute<Test>;
 
-	get score(): NonAttribute<number> {
-		return this.answerQuestions!.reduce((acc, aq) => acc + (aq.isCorrect ? aq.question!.points : 0), 0);
+	declare score?: NonAttribute<number>;
+	declare totalQuestions?: NonAttribute<number>;
+	declare totalCorrectAnswers?: NonAttribute<number>;
+	declare totalWrongAnswers?: NonAttribute<number>;
+
+	get timeSpent(): NonAttribute<number> {
+		if (!this.createdAt || !this.updatedAt) { return 0; }
+		return this.updatedAt!.getTime() - this.createdAt!.getTime();
 	}
 
 	declare static associations: {
-		answerQuestions: Association<Attempt, AttemptsAnswerQuestions>;
-		test: Association<Attempt, Test>;
+		Attempts_answer_Questions: Association<Attempt, AttemptsAnswerQuestions>;
+		Test: Association<Attempt, Test>;
 	}
 
 	static initModel(sequelize: Sequelize) {

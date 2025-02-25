@@ -1,8 +1,7 @@
-import { Association, col, CreationOptional, DataTypes, fn, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
+import { Association, CreationOptional, DataTypes, HasManyCountAssociationsMixin, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Question from "./question";
 import Tag from "./tag";
 import Attempt from "./attempt";
-import { Op } from "sequelize";
 
 class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 	declare id: CreationOptional<number>;
@@ -19,6 +18,8 @@ class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 	declare Attempts?: NonAttribute<Attempt[]>;
 
 	declare answerCount?: NonAttribute<number>;
+
+	declare setTags: HasManySetAssociationsMixin<Tag, number>;
 
 	declare static associations: {
 		questions: Association<Test, Question>;

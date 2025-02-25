@@ -12,7 +12,7 @@ const app = express();
 const httpServer = http.createServer(app);
 
 Promise.allSettled([
-	syncSequelize("alter")
+	syncSequelize()
 ]).then(() => {
 	app.use(cors({
 		origin: process.env.CORS_ORIGIN || '*',
