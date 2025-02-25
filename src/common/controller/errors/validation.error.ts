@@ -1,4 +1,4 @@
-import { ErrorResponseBase, ErrorResponseCodes } from "../base/error-response.base";
+import { ErrorResponseBase, ErrorResponseCodes } from "./error-response.base";
 import { ValidationError as ClassValidationError } from "class-validator";
 
 export class ValidationError extends ErrorResponseBase {
@@ -13,6 +13,6 @@ export class ValidationError extends ErrorResponseBase {
 		} else {
 			context = errors;
 		}
-		super(ErrorResponseCodes.VALIDATION_FAILED, message, context);
+		super(400, ErrorResponseCodes.VALIDATION_FAILED, message, context);
 	}
 }
