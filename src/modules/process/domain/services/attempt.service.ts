@@ -14,8 +14,7 @@ export class AttemptService {
 	) { }
 
 	async evaluateTestAttempt(attemptId: number): Promise<void> {
-		const totalScore = await this.retriver.getCalculatedTotalScore(attemptId);
-		await this.write.submitAttemptScore(attemptId, totalScore);
+		await this.write.submitAttempt(attemptId);
 		eventDispatcherInstance.dispatch(new ProcessEndedEvent(attemptId));
 	}
 

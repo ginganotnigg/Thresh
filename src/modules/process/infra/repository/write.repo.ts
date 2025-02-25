@@ -1,3 +1,4 @@
+import { AttemptStatus } from "../../../../common/domain/enum";
 import Attempt from "../../../../models/attempt";
 import AttemptsAnswerQuestions from "../../../../models/attempts_answer_questions";
 import Test from "../../../../models/test";
@@ -8,21 +9,17 @@ class WriteRepository implements IWriteRepository {
 		await Attempt.create({
 			testId: +testId,
 			candidateId: candidateId,
-			score: 0,
-			status: ATTEMPT_STATUS.IN_PROGRESS,
+			status: AttemptStatus.IN_PROGRESS,
 		});
-		await Test.increment('answerCount', { where: { id: testId } });
 	}
 
 	/**
 	 * Update score of an attempt
 	 */
-	async submitAttemptScore(attemptId: number, score: number) {
+	async submitAttempt(attemptId: number) {
 		await Attempt.update(
 			{
-				score: score,
-				status: ATTEMPT_STATUS.COMPLETED,
-				updatedAt: new Date()
+				status: AttemptStatus.COMPLETED
 			},
 			{ where: { id: attemptId } }
 		);
@@ -32,7 +29,7 @@ class WriteRepository implements IWriteRepository {
 	 * Answer a question in an attempt, if optionId is not provided, the answer will be removed
 	 */
 	async answerOnAttempt(attemptId: number, questionId: number, optionId?: number) {
-		if (!optionId) {
+		if (optionId == null) {
 			await AttemptsAnswerQuestions.destroy({
 				where: {
 					attemptId: attemptId,

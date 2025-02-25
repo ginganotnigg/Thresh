@@ -1,8 +1,13 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import { MiddlewareBase } from "../../base/middleware.base";
-import { RequestWithUser } from "../../base/middleware";
 import { UnauthorizedErrorResponse } from "../../errors/unauthorized.error";
 import { validateHelperString } from "../../helpers/validation.helper";
+
+interface RequestWithUser extends Request {
+	user: {
+		id: string;
+	};
+}
 
 export class UserPipe extends MiddlewareBase {
 	handle: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
@@ -15,4 +20,8 @@ export class UserPipe extends MiddlewareBase {
 		};
 		next();
 	};
+
+	static retrive(req: Request): { id: string } {
+		return (req as RequestWithUser).user;
+	}
 }

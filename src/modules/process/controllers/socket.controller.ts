@@ -26,6 +26,7 @@ export class SocketController implements INotify {
 		this.namespace.to(attemptId.toString()).emit(SOCKET_EVENT.SYNCED, timeLeft);
 	}
 
+	// Not necessary, Can be removed if too complex
 	sendAnswered(attemptId: number, questionId: number, optionId?: number): void {
 		this.namespace.to(attemptId.toString()).emit(SOCKET_EVENT.ANSWERED, { questionId, optionId });
 	}
