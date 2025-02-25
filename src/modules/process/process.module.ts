@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Application, Router } from "express";
 import { Namespace } from "socket.io";
 import RestController from "./controllers/rest.controller";
 import CommandUsecase from "./usecase/command.service";
@@ -8,22 +8,29 @@ import { AttemptService } from "./domain/domain.service";
 import QueryUsecase from "./usecase/query.service";
 import { SocketController } from "./controllers/socket.controller";
 import { Loader } from "./loader";
+import { ModuleBase } from "../../common/module/module.base";
 
-export async function configProcessModule(router: Router, namespace: Namespace) {
-	const writeRepo = new WriteRepository();
-	const retriveRepo = new RetriverRepository();
-	const attemptService = new AttemptService(retriveRepo, writeRepo);
+export class ProcessModule extends ModuleBase {
+	constructor(
+		router: Router,
+		private readonly namespace: Namespace
+	) { super(router); }
 
-	const command = new CommandUsecase(retriveRepo, writeRepo, attemptService);
-	const query = new QueryUsecase();
+	async _initialize(): Promise<void> {
+		const writeRepo = new WriteRepository();
+		const retriveRepo = new RetriverRepository();
+		const attemptService = new AttemptService(retriveRepo, writeRepo);
 
-	const socketController = new SocketController(namespace, query);
-	const controller = new RestController(router, command, query);
+		const command = new CommandUsecase(retriveRepo, writeRepo, attemptService);
+		const query = new QueryUsecase();
 
-	controller.initialize();
-	socketController.initialize();
+		const socketController = new SocketController(this.namespace, query);
+		const controller = new RestController(this.router, command, query);
 
-	const loader = new Loader(retriveRepo, attemptService);
-	await loader.initialize();
-	console.log('Test Process module initialized');
+		controller.initialize();
+		socketController.initialize();
+
+		const loader = new Loader(retriveRepo, attemptService);
+		await loader.initialize();
+	}
 }

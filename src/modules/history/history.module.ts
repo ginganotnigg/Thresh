@@ -1,10 +1,11 @@
-import { Router } from "express";
 import { QueryService } from "./services/query.service";
 import { HistoryController } from "./history.controller";
+import { ModuleBase } from "../../common/module/module.base";
 
-export function configModule(router: Router) {
-	const query = new QueryService();
-	const controller = new HistoryController(router, query);
-	controller.initialize();
-	console.log('Manage module initialized');
+export class HistoryModule extends ModuleBase {
+	protected async _initialize(): Promise<void> {
+		const query = new QueryService();
+		const controller = new HistoryController(this.router, query);
+		controller.initialize();
+	}
 }
