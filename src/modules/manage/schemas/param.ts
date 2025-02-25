@@ -1,5 +1,7 @@
-import { IsArray, IsEnum, IsNumber, IsObject, IsOptional, IsString, Max, Min } from "class-validator";
+import { IsArray, IsEnum, IsNumber, IsObject, IsOptional, IsString, Max, Min, ValidateNested } from "class-validator";
 import { TestDifficulty } from "../../../common/domain/enum";
+import { Type } from "class-transformer";
+import Question from "../../../models/question";
 
 export class TestFilterParam {
 	@IsString()
@@ -48,7 +50,7 @@ export class QuestionCreateParam {
 
 export class TestCreateParam {
 	@IsArray()
-	@IsNumber({ each: true })
+	@IsNumber({}, { each: true })
 	tagIds: number[];
 
 	@IsString()
@@ -79,7 +81,7 @@ export class TestUpdateParam {
 	id: number;
 
 	@IsArray()
-	@IsNumber({ each: true })
+	@IsNumber({}, { each: true })
 	@IsOptional()
 	tagIds?: number[];
 

@@ -11,7 +11,6 @@ export abstract class ModuleBase {
 		if (version != null) {
 			router.use(version, this.router);
 		}
-		this._initialize();
 	}
 
 	async initialize(): Promise<void> {

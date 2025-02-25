@@ -50,8 +50,8 @@ export class CommandService {
 					transaction,
 				});
 				await Question.bulkCreate(questions.map((question) => ({
-					testId: testInfo.id,
 					...question,
+					testId: testInfo.id,
 				})), { transaction });
 			}
 			await transaction.commit();

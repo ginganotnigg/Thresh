@@ -1,6 +1,6 @@
 import config from "./association";
 import sequelize from "./database";
-import data from "../../../sequelize/seeders/data";
+import data from "../../__tests__/data";
 
 export default async function syncSequelize(useSampleData: boolean = false) {
 	config(sequelize);

@@ -1,4 +1,4 @@
-import { Application, Router } from "express";
+import { Router } from "express";
 import { Namespace } from "socket.io";
 import RestController from "./controllers/rest.controller";
 import CommandUsecase from "./usecase/command.service";

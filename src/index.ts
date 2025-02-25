@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { config } from "dotenv";
 config();
 import syncSequelize from "./configs/sequelize/init";
