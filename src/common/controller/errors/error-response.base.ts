@@ -3,6 +3,7 @@ export enum ErrorResponseCodes {
 	VALIDATION_FAILED = 1,
 	UNAUTHORIZED = 2,
 	FORBIDDEN = 3,
+	DOMAIN = 4,
 }
 
 export abstract class ErrorResponseBase extends Error {

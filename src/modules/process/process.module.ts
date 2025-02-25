@@ -4,7 +4,7 @@ import RestController from "./controllers/rest.controller";
 import CommandUsecase from "./usecase/command.service";
 import WriteRepository from "./infra/repository/write.repo";
 import RetriverRepository from "./infra/repository/retriver.repo";
-import { AttemptService } from "./domain/services/attempt.service";
+import { AttemptService } from "./domain/domain.service";
 import QueryUsecase from "./usecase/query.service";
 import { SocketController } from "./controllers/socket.controller";
 import { Loader } from "./loader";
@@ -24,6 +24,6 @@ export async function configProcessModule(router: Router, namespace: Namespace) 
 	socketController.initialize();
 
 	const loader = new Loader(retriveRepo, attemptService);
-	await loader.loadInprogresses();
+	await loader.initialize();
 	console.log('Test Process module initialized');
 }
