@@ -1,13 +1,11 @@
 import { Router } from "express";
 
 export abstract class ModuleBase {
-	protected readonly router: Router;
-
 	constructor(
-		router: Router,
+		protected readonly router: Router,
 		version?: string
 	) {
-		this.router = Router();
+
 		if (version != null) {
 			router.use(version, this.router);
 		}

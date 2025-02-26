@@ -8,18 +8,17 @@ import { ProcessModule } from "../modules/process/process.module";
 import { ManageModule } from "../modules/manage/manage.module";
 import { ModuleBase } from "../common/module/module.base";
 import { HistoryModule } from "../modules/history/history.module";
+import swaggerMiddleware from "../configs/swagger/mdw";
+import { configGlobalRouterAfter as configGlobalMdwAfter, configGlobalRouterBefore } from "./config-global.mdw";
 
-export function configApplication() {
+export async function configApplication() {
 	const app = express();
 
 	// =====================
-	// Configurations
+	// Before Middlewares
 	// =====================
 
-	app.use(cors({
-		origin: process.env.CORS_ORIGIN || '*',
-	}));
-	app.use(json());
+	configGlobalRouterBefore(app);
 
 	// =====================
 	// Routes
@@ -49,16 +48,21 @@ export function configApplication() {
 		new ManageModule(router),
 		new HistoryModule(router)
 	];
-	modules.forEach(async (module) => {
-		await module.initialize();
-	});
+	for (const m of modules) {
+		await m.initialize();
+	}
 
 	// =====================
-	// Error handler
+	// After Middlewares
 	// =====================
 
-	const errorHandler = new ErrorHandlerMiddleware();
-	router.use((err: any, req: Request, res: Response, next: NextFunction) => { errorHandler.handle(err, req, res, next); });
+	configGlobalMdwAfter(app);
+
+	// =====================
+	// Under testing
+	// =====================
+
+	swaggerMiddleware(app);
 
 	return server;
 }

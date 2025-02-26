@@ -35,5 +35,5 @@ export class RoleGuard extends MiddlewareBase {
 
 middlewareInjectorInstance.addTransient(RoleGuard);
 
-export const mg = middlewareInjectorInstance.getTransient(RoleGuard, UserRole.MANAGER);
-export const cg = middlewareInjectorInstance.getTransient(RoleGuard, UserRole.CANDIDATE);
+export const manGuard = middlewareInjectorInstance.getTransient(RoleGuard, UserRole.MANAGER);
+export const canGuard = middlewareInjectorInstance.getTransient(RoleGuard, UserRole.CANDIDATE);

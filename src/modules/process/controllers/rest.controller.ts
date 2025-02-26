@@ -3,8 +3,7 @@ import CommandUsecase from '../usecase/command.service';
 import QueryUsecase from '../usecase/query.service';
 import { ControllerBase } from '../../../common/controller/base/controller.base';
 import { AnswerAttemptParam } from '../usecase/schemas/param';
-import { UserRole as UserRole, RoleGuard } from '../../../common/controller/middlewares/guards/role.guard';
-import { middlewareInjectorInstance } from '../../../common/controller/helpers/middleware.inject';
+import { canGuard } from '../../../common/controller/middlewares/guards/role.guard';
 import { UserPipe } from '../../../common/controller/middlewares/pipes/user.pipe';
 
 
@@ -17,9 +16,7 @@ export default class RestController extends ControllerBase {
 		super(
 			router,
 			undefined,
-			[
-				middlewareInjectorInstance.getTransient(RoleGuard, UserRole.CANDIDATE)
-			]
+			[canGuard]
 		);
 	}
 

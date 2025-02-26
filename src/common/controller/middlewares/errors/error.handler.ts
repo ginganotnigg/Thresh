@@ -1,11 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { ErrorResponseBase, ErrorResponseCodes } from '../../errors/error-response.base';
+import logger from '../../../../configs/logger/winston';
 
 export class ErrorHandlerMiddleware {
-	constructor(
-		// todo: inject logger
-	) { }
-
 	handle(err: any, req: Request, res: Response, next: NextFunction) {
 		const errorRes = {
 			stack: process.env.NODE_ENV === 'production' ? null : err.stack ?? undefined,
@@ -26,6 +23,9 @@ export class ErrorHandlerMiddleware {
 			errorRes.links = err.links;
 			errorRes.timestamp = err.timestamp;
 		}
+
+		logger.error(`[${req.method}] ${req.originalUrl} - ${errorRes.httpCode} - ${errorRes.message}`);
+		logger.error(errorRes.stack);
 
 		return res.status(errorRes.httpCode).json(errorRes);
 	}

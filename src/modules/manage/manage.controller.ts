@@ -5,7 +5,8 @@ import { CommandService } from "./services/command.service";
 import { TestCreateParam, TestFilterParam, TestUpdateParam } from "./schemas/param";
 import { validateHelperNumber, validateHelperObject, validateHelperString } from "../../common/controller/helpers/validation.helper";
 import { validateCreateTestParam, validateUpdateTestParam } from "./schemas/validator";
-import { mg } from "../../common/controller/middlewares/guards/role.guard";
+import { manGuard } from "../../common/controller/middlewares/guards/role.guard";
+import { UserPipe, userPipe } from "../../common/controller/middlewares/pipes/user.pipe";
 
 export class ManageController extends ControllerBase {
 	constructor(
@@ -33,7 +34,7 @@ export class ManageController extends ControllerBase {
 	}
 
 	private getManagerTests: RequestHandler = async (req, res, next) => {
-		const managerId = validateHelperString(req.params.managerId);
+		const managerId = UserPipe.retrive(req).id;
 		const query = await validateHelperObject(req.query, TestFilterParam);
 		const tests = await this.query.getManagerTests(managerId, query);
 		res.json(tests);
@@ -63,10 +64,10 @@ export class ManageController extends ControllerBase {
 	protected initializeRoutes(): void {
 		this.route("get", '/tests', this.getTests);
 		this.route("get", '/tests/:testId', this.getTest);
-		this.route("get", '/tests/:testId/questions', this.getTestQuestions, [mg]);
-		this.route("get", '/manager/:managerId/tests', this.getManagerTests, [mg]);
-		this.route("post", '/tests', this.createTest, [mg]);
-		this.route("put", '/tests/:testId', this.updateTest, [mg]);
-		this.route("delete", '/tests/:testId', this.deleteTest, [mg]);
+		this.route("get", '/tests/:testId/questions', this.getTestQuestions, [manGuard]);
+		this.route("get", '/manager/tests', this.getManagerTests, [manGuard]);
+		this.route("post", '/tests', this.createTest, [manGuard]);
+		this.route("put", '/tests/:testId', this.updateTest, [manGuard]);
+		this.route("delete", '/tests/:testId', this.deleteTest, [manGuard]);
 	}
 }

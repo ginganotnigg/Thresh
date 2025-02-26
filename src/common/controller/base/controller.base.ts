@@ -40,8 +40,8 @@ export abstract class ControllerBase {
 		}
 		this.routes.forEach(route => {
 			const { method, path, controller, middlewares } = route;
-			const handlers = middlewares ? middlewares.map(mw => mw.handle) : [];
-			createdRouter[method](path, ...handlers, async (req: Request, res: Response, next: NextFunction) => {
+			const mdwHandlers = middlewares ? middlewares.map(mw => mw.handle) : [];
+			createdRouter[method](path, ...mdwHandlers, async (req: Request, res: Response, next: NextFunction) => {
 				try {
 					await controller(req, res, next);
 				} catch (error) {

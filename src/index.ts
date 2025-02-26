@@ -8,8 +8,8 @@ const PORT = process.env.PORT || 8080;
 
 Promise.allSettled([
 	syncSequelize()
-]).then(() => {
-	const server = configApplication();
+]).then(async () => {
+	const server = await configApplication();
 	server.listen(PORT, () => {
 		console.log(`Server running on port: ${PORT}`);
 	});

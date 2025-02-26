@@ -12,7 +12,8 @@ class RetriverRepository implements IRetriverRepository {
 			where: {
 				status: AttemptStatus.IN_PROGRESS
 			},
-			attributes: ['id']
+			attributes: ['id'],
+			logging: false
 		});
 		return attempts.map(attempt => attempt.getDataValue('id')!);
 	}
