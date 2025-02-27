@@ -5,6 +5,7 @@ import { ControllerBase } from '../../../common/controller/base/controller.base'
 import { AnswerAttemptParam } from '../usecase/schemas/param';
 import { canGuard } from '../../../common/controller/middlewares/guards/role.guard';
 import { UserPipe } from '../../../common/controller/middlewares/pipes/user.pipe';
+import { validateHelperNumber, validateHelperObject } from '../../../common/controller/helpers/validation.helper';
 
 
 export default class RestController extends ControllerBase {
@@ -21,43 +22,38 @@ export default class RestController extends ControllerBase {
 	}
 
 	private getCurrent: RequestHandler = async (req, res, next) => {
-		const { testId } = req.params;
+		const testId = validateHelperNumber(req.params.testId);
 		const candidateId = UserPipe.retrive(req).id;
 		const current = await this.query.getInProgressAttemptSmall(testId, candidateId);
 		res.json(current);
 	}
 
 	private startNew: RequestHandler = async (req, res, next) => {
-		const { testId } = req.params;
+		const testId = validateHelperNumber(req.params.testId);
 		const candidateId = UserPipe.retrive(req).id;
 		await this.command.startNew(+testId, candidateId);
 		res.status(201).end();
 	}
 
 	private do: RequestHandler = async (req, res, next) => {
-		const { testId } = req.params;
+		const testId = validateHelperNumber(req.params.testId);
 		const candidateId = UserPipe.retrive(req).id;
 		const attemptDetail = await this.query.getInProgressAttemptToDo(+testId, candidateId);
 		res.json(attemptDetail);
 	}
 
 	private answer: RequestHandler = async (req, res, next) => {
-		const { testId } = req.params;
-		const { questionId, optionId } = req.body;
-		const answerParam: AnswerAttemptParam = {
-			testId: +testId,
-			questionId: +questionId,
-			optionId: optionId ? +optionId : undefined
-		};
+		const testId = validateHelperNumber(req.params.testId);
+		const body = await validateHelperObject(req.body, AnswerAttemptParam);
 		const candidateId = UserPipe.retrive(req).id;
-		await this.command.answer(answerParam, candidateId);
+		await this.command.answer(testId, candidateId, body);
 		res.status(201).end();
 	}
 
 	private submit: RequestHandler = async (req, res, next) => {
-		const { testId } = req.params;
+		const testId = validateHelperNumber(req.params.testId);
 		const candidateId = UserPipe.retrive(req).id;
-		await this.command.submit(+testId, candidateId);
+		await this.command.submit(testId, candidateId);
 		res.status(201).end();
 	}
 

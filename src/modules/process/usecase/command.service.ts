@@ -29,8 +29,8 @@ export default class CommandUsecase {
 		this.attemptService.scheduleAttemptEvaluation(attemptId);
 	}
 
-	async answer(param: AnswerAttemptParam, candidateId: string) {
-		const { testId, questionId, optionId } = param;
+	async answer(testId: number, candidateId: string, param: AnswerAttemptParam) {
+		const { questionId, optionId } = param;
 		const attemptId = await this.retriver.getInProgressAttemptId(testId, candidateId);
 		if (attemptId == null) {
 			throw new Error('Attempt to answer is not found');

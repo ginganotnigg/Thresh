@@ -2,7 +2,6 @@ import { Association, CreationOptional, DataTypes, InferAttributes, InferCreatio
 import Test from "./test";
 import AttemptsAnswerQuestions from "./attempts_answer_questions";
 
-
 class Question extends Model<InferAttributes<Question>, InferCreationAttributes<Question>> {
 	declare id: CreationOptional<number>;
 	declare testId: number;

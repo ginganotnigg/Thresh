@@ -81,6 +81,7 @@ function getFilterCondition(filter: TestFilterParam) {
 				[Op.like]: `%${filter.searchTitle}%`
 			}
 		}),
+		// Todo: check conditions, min max is wrong (it is or, not and)
 		...(filter.minMinutesToAnswer !== undefined && {
 			minutesToAnswer: {
 				[Op.gte]: filter.minMinutesToAnswer

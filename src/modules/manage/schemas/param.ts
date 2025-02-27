@@ -1,6 +1,6 @@
-import { IsArray, IsEnum, IsNumber, IsObject, IsOptional, IsString, Max, Min, ValidateNested } from "class-validator";
+import { IsArray, IsEnum, IsNumber, IsOptional, IsString, Max, Min, ValidateNested } from "class-validator";
 import { TestDifficulty } from "../../../common/domain/enum";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import Question from "../../../models/question";
 
 export class TestFilterParam {
@@ -9,26 +9,33 @@ export class TestFilterParam {
 	searchTitle?: string;
 
 	@IsNumber()
+	@Type(() => Number)
 	@IsOptional()
 	minMinutesToAnswer?: number;
 
 	@IsNumber()
+	@Type(() => Number)
 	@IsOptional()
 	maxMinutesToAnswer?: number;
 
-	@IsEnum({}, { each: true })
+	@Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+	@IsArray()
 	@IsOptional()
+	@IsEnum(TestDifficulty, { each: true })
 	difficulty?: TestDifficulty[];
 
 	@IsNumber({}, { each: true })
+	@Type(() => Number)
 	@IsOptional()
 	tags?: number[];
 
 	@IsNumber()
+	@Type(() => Number)
 	@Min(1)
 	page: number;
 
 	@IsNumber()
+	@Type(() => Number)
 	@IsOptional()
 	perPage: number = 5;
 }
@@ -54,9 +61,6 @@ export class TestCreateParam {
 	tagIds: number[];
 
 	@IsString()
-	managerId: string;
-
-	@IsString()
 	title: string;
 
 	@IsString()
@@ -72,7 +76,7 @@ export class TestCreateParam {
 
 	@IsArray()
 	@ValidateNested({ each: true })
-	@Type(() => Question)
+	@Type(() => QuestionCreateParam)
 	questions: QuestionCreateParam[];
 }
 

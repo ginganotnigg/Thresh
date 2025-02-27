@@ -7,11 +7,12 @@ import { removeNullFields } from "../../../common/utils/object";
 export class CommandService {
 	constructor() { }
 
-	async createTest(param: TestCreateParam) {
+	async createTest(managerId: string, param: TestCreateParam) {
 		const { questions, tagIds, ...testInfo } = param;
 		const transaction = await sequelize.transaction();
 		try {
 			const test = await Test.create({
+				managerId,
 				...testInfo,
 			}, { transaction });
 			await test.setTags(tagIds, { transaction });

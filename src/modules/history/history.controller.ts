@@ -52,6 +52,6 @@ export class HistoryController extends ControllerBase {
 		this.route("get", '/attempts/:attemptId', this.getAttemptDetail, [manGuard, canGuard]);
 		this.route("get", '/attempts/:attemptId/answers', this.getAttemptAnswers, [manGuard, canGuard]);
 		this.route("get", '/candidate/attempts', this.getCandidateAttempts, [canGuard]);
-		this.route("get", '/candidate/test/:testId/attempts', this.getCandidateAttempt, [canGuard]);
+		this.route("get", '/candidate/tests/:testId/attempts', this.getCandidateAttempt, [canGuard]);
 	}
 }

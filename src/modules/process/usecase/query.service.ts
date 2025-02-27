@@ -25,7 +25,7 @@ export default class QueryUsecase {
 	/**
 	 * Return the currently In Progress attempt of a candidate in small detail for showing in the list
 	 */
-	async getInProgressAttemptSmall(testId: string, candidateId: string): Promise<CurrentAttemptSmallResult | null> {
+	async getInProgressAttemptSmall(testId: number, candidateId: string): Promise<CurrentAttemptSmallResult | null> {
 		const attempt = await Attempt.findOne({
 			where: {
 				testId: testId,

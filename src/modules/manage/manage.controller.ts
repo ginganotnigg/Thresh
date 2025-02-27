@@ -42,8 +42,9 @@ export class ManageController extends ControllerBase {
 
 	private createTest: RequestHandler = async (req, res, next) => {
 		const body = await validateHelperObject(req.body, TestCreateParam);
+		const managerId = UserPipe.retrive(req).id;
 		validateCreateTestParam(body);
-		await this.command.createTest(body);
+		await this.command.createTest(managerId, body);
 		res.json({ message: "Test created" });
 	}
 
