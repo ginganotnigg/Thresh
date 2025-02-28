@@ -1,7 +1,7 @@
 import { Type } from "class-transformer";
 import { IsEnum, IsOptional, IsString, Min } from "class-validator";
 
-export class AttemptFilterParam {
+export class AttemptFilterQuery {
 	@IsEnum(["asc", "desc"])
 	@IsOptional()
 	sortByStartDate?: "asc" | "desc";
@@ -21,7 +21,7 @@ export class AttemptFilterParam {
 	perPage: number = 5;
 }
 
-export class AttemptAnswerFilterParam {
+export class AttemptAnswerFilterQuery {
 	@IsString()
 	@Min(1)
 	page: number;

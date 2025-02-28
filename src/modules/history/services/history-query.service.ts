@@ -1,22 +1,21 @@
-import { Paged } from "../../../common/controller/base/param";
+import { Paged } from "../../../common/controller/schemas/base";
 import Attempt from "../../../models/attempt";
 import AttemptsAnswerQuestions from "../../../models/attempts_answer_questions";
 import Test from "../../../models/test";
 import Question from "../../../models/question";
-import { AttemptAnswerFilterParam, AttemptFilterParam } from "../schemas/param";
-import { AnswerQuestionResult, AttemptItemResult, AttemptResult } from "../schemas/result";
+import { AttemptAnswerFilterQuery, AttemptFilterQuery } from "../schemas/request";
+import { AnswerQuestionResult, AttemptItemResult, AttemptResult } from "../schemas/response";
 import Tag from "../../../models/tag";
 import sequelize from "../../../configs/sequelize/database";
 import { Literal } from "sequelize/types/utils";
 import { InferAttributes, WhereOptions } from "sequelize";
 
-
-export class QueryService {
-	async getTestAttempts(testId: number, filter: AttemptFilterParam): Promise<Paged<AttemptItemResult>> {
+export class HistoryQueryService {
+	static async getTestAttempts(testId: number, filter: AttemptFilterQuery): Promise<Paged<AttemptItemResult>> {
 		return await retrieveFilteredAttempts({ testId }, filter,);
 	}
 
-	async getAttemptDetail(attemptId: number): Promise<AttemptResult> {
+	static async getAttemptDetail(attemptId: number): Promise<AttemptResult> {
 		const attempt = await Attempt.findByPk(attemptId, {
 			include: [
 				{
@@ -60,7 +59,7 @@ export class QueryService {
 		};
 	}
 
-	async getAttemptAnswers(attemptId: number, filter: AttemptAnswerFilterParam): Promise<Paged<AnswerQuestionResult>> {
+	static async getAttemptAnswers(attemptId: number, filter: AttemptAnswerFilterQuery): Promise<Paged<AnswerQuestionResult>> {
 		const questionsOfAttempts = await Question.findAndCountAll({
 			include: [
 				{
@@ -108,16 +107,16 @@ export class QueryService {
 		}
 	}
 
-	async getCandidateAttempts(candidateId: string, filter: AttemptFilterParam): Promise<Paged<AttemptItemResult>> {
+	static async getCandidateAttempts(candidateId: string, filter: AttemptFilterQuery): Promise<Paged<AttemptItemResult>> {
 		return await retrieveFilteredAttempts({ candidateId }, filter);
 	}
 
-	async getCandidateAttempt(candidateId: string, testId: number, filter: AttemptFilterParam): Promise<Paged<AttemptItemResult>> {
+	static async getCandidateAttempt(candidateId: string, testId: number, filter: AttemptFilterQuery): Promise<Paged<AttemptItemResult>> {
 		return await retrieveFilteredAttempts({ testId, candidateId }, filter)
 	}
 }
 
-async function retrieveFilteredAttempts(whereClause: WhereOptions<InferAttributes<Attempt, { omit: never; }>>, filter: AttemptFilterParam): Promise<Paged<AttemptItemResult>> {
+async function retrieveFilteredAttempts(whereClause: WhereOptions<InferAttributes<Attempt, { omit: never; }>>, filter: AttemptFilterQuery): Promise<Paged<AttemptItemResult>> {
 	const order: [string | Literal, string][] = [];
 	if (filter.sortByStartDate) {
 		order.push(["createdAt", filter.sortByStartDate]);

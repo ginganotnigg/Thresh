@@ -1,5 +1,5 @@
 import { RequestHandler, Router } from "express";
-import { ControllerBase } from "../../common/controller/base/controller.base";
+import { ControllerBase } from "../../common/controller/schemas/controller.base";
 import Tag from "../../models/tag";
 import { validateHelperNumber, validateHelperString } from "../../common/controller/helpers/validation.helper";
 

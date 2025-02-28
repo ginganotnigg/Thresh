@@ -1,57 +1,74 @@
-import { RequestHandler, Router } from "express";
-import { ControllerBase } from "../../common/controller/base/controller.base"
-import { QueryService } from "./services/query.service";
-import { validateHelperNumber, validateHelperObject, validateHelperString } from "../../common/controller/helpers/validation.helper";
-import { AttemptAnswerFilterParam, AttemptFilterParam } from "./schemas/param";
-import { canGuard, manGuard } from "../../common/controller/middlewares/guards/role.guard";
-import { UserPipe } from "../../common/controller/middlewares/pipes/user.pipe";
+import { ManagerGuardHandler } from "../../common/controller/guards/manager.guard";
+import { ChuoiController } from "../../library/caychuoijs/router.i";
+import { HistoryQueryService } from "./services/history-query.service";
+import { AttemptFilterQuery } from "./schemas/request";
+import { AttemptIdParams, TestIdParams } from "../../common/controller/schemas/params";
 
-export class HistoryController extends ControllerBase {
-	constructor(
-		router: Router,
-		private readonly query: QueryService
-	) { super(router); }
+export function historyController() {
+	const router = ChuoiController.router();
 
-	private getTestAttempts: RequestHandler = async (req, res, next) => {
-		const testId = validateHelperNumber(req.params.testId);
-		const filter = await validateHelperObject(req.query, AttemptFilterParam);
-		const result = await this.query.getTestAttempts(testId, filter);
-		res.json(result);
-	}
+	router.endpoint().get('/tests/:testId/attempts')
+		.before(ManagerGuardHandler)
+		.schema({
+			params: TestIdParams,
+			query: AttemptFilterQuery,
+		})
+		.handle(async (data) => {
+			const testId = data.params.testId;
+			const filter = data.query;
+			const result = await HistoryQueryService.getTestAttempts(testId, filter);
+			return result;
+		}).build();
 
-	private getAttemptDetail: RequestHandler = async (req, res, next) => {
-		const attemptId = validateHelperNumber(req.params.attemptId);
-		const result = await this.query.getAttemptDetail(attemptId);
-		res.json(result);
-	}
+	router.endpoint().get('/attempts/:attemptId')
+		.before(ManagerGuardHandler)
+		.schema({
+			params: AttemptIdParams,
+		})
+		.handle(async (data) => {
+			const attemptId = data.params.attemptId;
+			const result = await HistoryQueryService.getAttemptDetail(attemptId);
+			return result;
+		}).build();
 
-	private getAttemptAnswers: RequestHandler = async (req, res, next) => {
-		const attemptId = validateHelperNumber(req.params.attemptId);
-		const filter = await validateHelperObject(req.query, AttemptAnswerFilterParam);
-		const result = await this.query.getAttemptAnswers(attemptId, filter);
-		res.json(result);
-	}
+	router.endpoint().get('/attempts/:attemptId/answers')
+		.before(ManagerGuardHandler)
+		.schema({
+			params: AttemptIdParams,
+			query: AttemptFilterQuery,
+		})
+		.handle(async (data) => {
+			const attemptId = data.params.attemptId;
+			const filter = data.query;
+			const result = await HistoryQueryService.getAttemptAnswers(attemptId, filter);
+			return result;
+		}).build();
 
-	private getCandidateAttempts: RequestHandler = async (req, res, next) => {
-		const candidateId = UserPipe.retrive(req).id;
-		const filter = await validateHelperObject(req.query, AttemptFilterParam);
-		const result = await this.query.getCandidateAttempts(candidateId, filter);
-		res.json(result);
-	}
+	router.endpoint().get('/candidate/attempts')
+		.before(ManagerGuardHandler)
+		.schema({
+			query: AttemptFilterQuery,
+		})
+		.handle(async (data) => {
+			const candidateId = data.meta.id;
+			const filter = data.query;
+			const result = await HistoryQueryService.getCandidateAttempts(candidateId, filter);
+			return result;
+		}).build();
 
-	private getCandidateAttempt: RequestHandler = async (req, res, next) => {
-		const candidateId = UserPipe.retrive(req).id;
-		const testId = validateHelperNumber(req.params.testId);
-		const filter = await validateHelperObject(req.query, AttemptFilterParam);
-		const result = await this.query.getCandidateAttempt(candidateId, testId, filter);
-		res.json(result);
-	}
+	router.endpoint().get('/candidate/tests/:testId/attempts')
+		.before(ManagerGuardHandler)
+		.schema({
+			params: TestIdParams,
+			query: AttemptFilterQuery,
+		})
+		.handle(async (data) => {
+			const candidateId = data.meta.id;
+			const testId = data.params.testId;
+			const filter = data.query;
+			const result = await HistoryQueryService.getCandidateAttempt(candidateId, testId, filter);
+			return result;
+		}).build();
 
-	protected initializeRoutes(): void {
-		this.route("get", '/tests/:testId/attempts', this.getTestAttempts, [manGuard]);
-		this.route("get", '/attempts/:attemptId', this.getAttemptDetail, [manGuard, canGuard]);
-		this.route("get", '/attempts/:attemptId/answers', this.getAttemptAnswers, [manGuard, canGuard]);
-		this.route("get", '/candidate/attempts', this.getCandidateAttempts, [canGuard]);
-		this.route("get", '/candidate/tests/:testId/attempts', this.getCandidateAttempt, [canGuard]);
-	}
+	return router;
 }

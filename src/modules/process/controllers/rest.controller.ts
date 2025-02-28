@@ -1,10 +1,10 @@
 import { RequestHandler, Router } from 'express';
 import CommandUsecase from '../usecase/command.service';
 import QueryUsecase from '../usecase/query.service';
-import { ControllerBase } from '../../../common/controller/base/controller.base';
+import { ControllerBase } from '../../../common/controller/schemas/controller.base';
 import { AnswerAttemptParam } from '../usecase/schemas/param';
-import { canGuard } from '../../../common/controller/middlewares/guards/role.guard';
-import { UserPipe } from '../../../common/controller/middlewares/pipes/user.pipe';
+import { canGuard } from '../../../common/controller/guards/candidate.guard';
+import { UserPipe } from '../../../common/controller/pipes/user.pipe';
 import { validateHelperNumber, validateHelperObject } from '../../../common/controller/helpers/validation.helper';
 
 

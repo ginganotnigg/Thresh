@@ -1,4 +1,4 @@
-import { Paged } from "../../../common/controller/base/param";
+import { Paged } from "../../../common/controller/schemas/base";
 import Question from "../../../models/question";
 import Tag from "../../../models/tag";
 import Test from "../../../models/test";

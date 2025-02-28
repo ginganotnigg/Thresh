@@ -1,7 +1,7 @@
 import { Application, Request, Response, NextFunction } from 'express';
-import { LoggerMiddleware } from '../common/controller/middlewares/pipes/logger.pipe';
+import { LoggerMiddleware } from '../common/controller/pipes/logger.pipe';
 import { ErrorHandlerMiddleware } from '../common/controller/middlewares/errors/error.handler';
-import { UserPipe } from '../common/controller/middlewares/pipes/user.pipe';
+import { UserPipe } from '../common/controller/pipes/user.pipe';
 
 export function configGlobalRouterAfter(app: Application) {
 	const errorHandler = new ErrorHandlerMiddleware();

@@ -1,9 +1,11 @@
-import { Request, Response, NextFunction } from 'express';
-import { ErrorResponseBase, ErrorResponseCodes } from '../../errors/error-response.base';
-import logger from '../../../../configs/logger/winston';
+import { Request, Response } from "express";
+import logger from "../../../configs/logger/winston";
+import { ErrorResponseCodes, ErrorResponseBase } from "../errors/error-response.base";
+import { ChuoiExceptionFinalBase } from "../../../library/caychuoijs/contracts";
+import { ChuoiContainer } from "../../../library/caychuoijs/utils/container";
 
-export class ErrorHandlerMiddleware {
-	handle(err: any, req: Request, res: Response, next: NextFunction) {
+export class AllChuoiExceptionFinal extends ChuoiExceptionFinalBase {
+	final(err: any, req: Request, res: Response) {
 		const errorRes = {
 			stack: process.env.NODE_ENV === 'production' ? null : err.stack ?? undefined,
 			httpCode: 500,
@@ -14,7 +16,6 @@ export class ErrorHandlerMiddleware {
 			timestamp: err.timestamp,
 		}
 
-		// Known error
 		if (err instanceof ErrorResponseBase) {
 			errorRes.httpCode = err.httpCode;
 			errorRes.message = err.message;
@@ -23,10 +24,11 @@ export class ErrorHandlerMiddleware {
 			errorRes.links = err.links;
 			errorRes.timestamp = err.timestamp;
 		}
-
 		logger.error(`[${req.method}] ${req.originalUrl} - ${errorRes.httpCode} - ${errorRes.message}`);
 		logger.error(errorRes.stack);
 
-		return res.status(errorRes.httpCode).json(errorRes);
+		res.status(errorRes.httpCode).json(errorRes);
 	}
 }
+
+ChuoiContainer.register(AllChuoiExceptionFinal);

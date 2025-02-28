@@ -1,12 +1,12 @@
 import { RequestHandler, Router } from "express";
-import { ControllerBase } from "../../common/controller/base/controller.base";
+import { ControllerBase } from "../../common/controller/schemas/controller.base";
 import { QueryService } from "./services/query.service";
 import { CommandService } from "./services/command.service";
 import { TestCreateParam, TestFilterParam, TestUpdateParam } from "./schemas/param";
 import { validateHelperNumber, validateHelperObject, validateHelperString } from "../../common/controller/helpers/validation.helper";
 import { validateCreateTestParam, validateUpdateTestParam } from "./schemas/validator";
-import { manGuard } from "../../common/controller/middlewares/guards/role.guard";
-import { UserPipe, userPipe } from "../../common/controller/middlewares/pipes/user.pipe";
+import { manGuard } from "../../common/controller/guards/candidate.guard";
+import { UserPipe, userPipe } from "../../common/controller/pipes/user.pipe";
 
 export class ManageController extends ControllerBase {
 	constructor(
