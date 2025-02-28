@@ -1,11 +1,11 @@
 import { ManagerGuardHandler } from "../../common/controller/guards/manager.guard";
 import { ChuoiController } from "../../library/caychuoijs/router.i";
-import { HistoryQueryService } from "./services/history-query.service";
+import { HistoryQueryService } from "./history.query.service";
 import { AttemptFilterQuery } from "./schemas/request";
 import { AttemptIdParams, TestIdParams } from "../../common/controller/schemas/params";
 
 export function historyController() {
-	const router = ChuoiController.router();
+	const router = ChuoiController.router().down();
 
 	router.endpoint().get('/tests/:testId/attempts')
 		.before(ManagerGuardHandler)

@@ -9,3 +9,8 @@ export class AttemptIdParams {
 	@IsNumber()
 	attemptId: number;
 }
+
+export class TagIdParams {
+	@IsNumber()
+	tagId: number;
+}

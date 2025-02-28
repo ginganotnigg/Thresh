@@ -23,18 +23,23 @@ export class ChuoiController {
 	}
 }
 
-export class ChuoiRouter {
+class ChuoiRouter {
 	private readonly _router: Router;
 	private readonly _children: ChuoiRouter[] = [];
 	private readonly _validator: ISchemaValidator;
 
-	constructor(router: Router, routerPath: string) {
+	constructor(router: Router, routerPath?: string) {
 		this._router = Router();
-		router.use(routerPath, this._router);
+		if (routerPath) {
+			router.use(routerPath, this._router);
+		}
+		else {
+			router.use(this._router);
+		}
 		this._validator = ChuoiContainer.retrieve(ClassValidatorSchemaValidator);
 	}
 
-	router(childPath: string) {
+	down(childPath?: string) {
 		const child = new ChuoiRouter(this._router, childPath);
 		this._children.push(child);
 		return child;
@@ -158,6 +163,7 @@ export class ChuoiRouter {
 				return { schema };
 			},
 			schema,
+
 		};
 
 		const _switch = {

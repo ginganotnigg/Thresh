@@ -1,5 +1,5 @@
-import { DataDriven } from "../../../../../common/test/data-driven.i"
-import { QuestionResult } from "../../../schemas/result"
+import { DataDriven } from "../../../../../library/caymejs/test/data-driven.i"
+import { QuestionResult } from "../../../schemas/response"
 
 const questionData: DataDriven<number, { length: number }>[] = [
 	{

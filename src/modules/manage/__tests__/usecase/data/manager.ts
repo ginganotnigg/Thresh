@@ -1,8 +1,8 @@
 import { TestDifficulty } from "../../../../../common/domain/enum";
-import { DataDriven } from "../../../../../common/test/data-driven.i";
-import { TestFilterParam } from "../../../schemas/param";
+import { DataDriven } from "../../../../../library/caymejs/test/data-driven.i";
+import { TestFilterQuery } from "../../../schemas/request";
 
-const managerData: DataDriven<TestFilterParam & { managerId: string }, { length: number }>[] = [
+const managerData: DataDriven<TestFilterQuery & { managerId: string }, { length: number }>[] = [
 	{
 		input: {
 			managerId: '1',

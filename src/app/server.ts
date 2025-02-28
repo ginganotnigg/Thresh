@@ -4,9 +4,9 @@ import { Server } from "socket.io";
 import cors from "cors";
 
 import { ErrorHandlerMiddleware } from "../common/controller/middlewares/errors/error.handler";
-import { ProcessModule } from "../modules/process/process.module";
+import { ProcessModule } from "../modules/do/process.module";
 import { ManageModule } from "../modules/manage/manage.module";
-import { ModuleBase } from "../common/module/module.base";
+import { ModuleBase } from "../library/cayduajs/module/module.base";
 import { HistoryModule } from "../modules/history/history.module";
 import swaggerMiddleware from "../configs/swagger/mdw";
 import { configGlobalRouterAfter as configGlobalMdwAfter, configGlobalRouterBefore } from "./config-global.mdw";

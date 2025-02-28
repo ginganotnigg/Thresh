@@ -1,47 +1,61 @@
-import { RequestHandler, Router } from "express";
-import { ControllerBase } from "../../common/controller/schemas/controller.base";
+import { OpenAPIV3 } from "openapi-types";
+import { ChuoiController } from "../../library/caychuoijs/router.i";
 import Tag from "../../models/tag";
-import { validateHelperNumber, validateHelperString } from "../../common/controller/helpers/validation.helper";
+import { TagIdParams } from "../../common/controller/schemas/params";
 
-export class TagsController extends ControllerBase {
-	constructor(
-		router: Router
-	) {
-		super(router, '/tags');
-	}
+export function tagsController() {
+	const router = ChuoiController.router().down();
 
-	protected initializeRoutes(): void {
-		this.route("get", '/', this.getAll);
-		this.route("post", '/', this.create);
-		this.route("put", '/:id', this.update);
-		this.route("delete", '/:id', this.delete);
-	}
+	router.endpoint().get("/tags")
+		.schema()
+		.handle(async data => {
+			return await Tag.findAll();
+		}).build();
 
-	private getAll: RequestHandler = async (req, res, next) => {
-		const tags = await Tag.findAll({});
-		res.json(tags);
-	}
+	router.endpoint().get("/tags/:id")
+		.schema({
+			params: TagIdParams
+		})
+		.handle(async data => {
+			return await Tag.findByPk(data.params.tagId);
+		}).build();
 
-	private create: RequestHandler = async (req, res, next) => {
-		const name = req.body.name;
-		validateHelperString(name);
-		const tag = await Tag.create({ name });
-		res.status(201).json(tag);
-	}
 
-	private update: RequestHandler = async (req, res, next) => {
-		const id = req.params.id;
-		const name = req.body.name;
-		validateHelperString(name);
-		validateHelperNumber(id);
-		await Tag.update({ name }, { where: { id } });
-		res.status(204).end();
-	}
+	router.endpoint().post("/tags")
+		.schema({
+			body: class {
+				name: string;
+			}
+		})
+		.handle(async data => {
+			return await Tag.create(data.body);
+		}).build();
 
-	private delete: RequestHandler = async (req, res, next) => {
-		const id = req.params.id;
-		validateHelperNumber(id);
-		await Tag.destroy({ where: { id } });
-		res.status(204).end();
-	}
+	router.endpoint().put("/tags/:id")
+		.schema({
+			params: TagIdParams,
+			body: class {
+				name: string;
+			}
+		})
+		.handle(async data => {
+			const tag = await Tag.findByPk(data.params.tagId);
+			if (!tag) {
+				throw new Error("Tag not found");
+			}
+			return await tag.update(data.body);
+		}).build();
+
+	router.endpoint().delete("/tags/:id")
+		.schema({
+			params: TagIdParams
+		})
+		.handle(async data => {
+			const tag = await Tag.findByPk(data.params.tagId);
+			if (!tag) {
+				throw new Error("Tag not found");
+			}
+			await tag.destroy();
+			return { message: "Deleted" };
+		}).build();
 }
