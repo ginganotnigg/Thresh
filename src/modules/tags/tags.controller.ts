@@ -1,10 +1,9 @@
-import { OpenAPIV3 } from "openapi-types";
 import { ChuoiController } from "../../library/caychuoijs/router.i";
 import Tag from "../../models/tag";
 import { TagIdParams } from "../../common/controller/schemas/params";
 
 export function tagsController() {
-	const router = ChuoiController.router().down();
+	const router = ChuoiController.newRoute();
 
 	router.endpoint().get("/tags")
 		.schema()

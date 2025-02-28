@@ -7,7 +7,7 @@ import { CommandService } from "./services/command.service";
 import { ManagerGuardHandler } from "../../common/controller/guards/manager.guard";
 
 export function manageController() {
-	const router = ChuoiController.router().down();
+	const router = ChuoiController.newRoute();
 
 	router.endpoint().get('/tests')
 		.schema({

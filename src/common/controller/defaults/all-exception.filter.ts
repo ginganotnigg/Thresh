@@ -4,7 +4,7 @@ import { ErrorResponseCodes, ErrorResponseBase } from "../errors/error-response.
 import { ChuoiExceptionFinalBase } from "../../../library/caychuoijs/contracts";
 import { ChuoiContainer } from "../../../library/caychuoijs/utils/container";
 
-export class AllChuoiExceptionFinal extends ChuoiExceptionFinalBase {
+export class AllExceptionFilter extends ChuoiExceptionFinalBase {
 	final(err: any, req: Request, res: Response) {
 		const errorRes = {
 			stack: process.env.NODE_ENV === 'production' ? null : err.stack ?? undefined,
@@ -31,4 +31,4 @@ export class AllChuoiExceptionFinal extends ChuoiExceptionFinalBase {
 	}
 }
 
-ChuoiContainer.register(AllChuoiExceptionFinal);
+ChuoiContainer.register(AllExceptionFilter);

@@ -5,7 +5,7 @@ import { AttemptFilterQuery } from "./schemas/request";
 import { AttemptIdParams, TestIdParams } from "../../common/controller/schemas/params";
 
 export function historyController() {
-	const router = ChuoiController.router().down();
+	const router = ChuoiController.newRoute();
 
 	router.endpoint().get('/tests/:testId/attempts')
 		.before(ManagerGuardHandler)

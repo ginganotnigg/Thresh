@@ -1,25 +1,42 @@
-import { Application, Response, Router } from "express";
+import { Response, Router } from "express";
 import { Constructor, CallbackExpressHandler, RequestData, MetaRequest as MetadataRequest, CallbackDataHandler } from "./utils/type";
 import { ChuoiContainer } from "./utils/container";
-import { IChuoiHandler, ISchemaValidator } from "./contracts";
+import { IChuoiExceptionHandler, IChuoiHandler, ISchemaValidator } from "./contracts";
 import { ClassValidatorSchemaValidator } from "./utils/schema-validator"
 
 export class ChuoiController {
 	private static _globalRouter?: ChuoiRouter;
+	private static _childRouters: ChuoiRouter[] = [];
 
-	static init(app: Application, config: {
+	static init(router: Router, config: {
 		basePath: string,
 	}): void {
-		const router = Router();
-		app.use(config.basePath, router);
-		this._globalRouter = new ChuoiRouter(router, config.basePath);
+		const _router = Router();
+		router.use(config.basePath, _router);
+		this._globalRouter = new ChuoiRouter(_router, config.basePath);
 	}
 
-	static router(): ChuoiRouter {
+	static middleware(...handlers: Constructor<IChuoiHandler>[]) {
 		if (!this._globalRouter) {
 			throw new Error("ChuoiController not initialized");
 		}
-		return this._globalRouter;
+		this._globalRouter.handler(...handlers);
+	}
+
+	static newRoute(path?: string): ChuoiRouter {
+		if (!this._globalRouter) {
+			throw new Error("ChuoiController not initialized");
+		}
+		const child = this._globalRouter.down(path);
+		this._childRouters.push(child);
+		return child;
+	}
+
+	static final(errorHandler: IChuoiExceptionHandler) {
+		if (!this._globalRouter) {
+			throw new Error("ChuoiController not initialized");
+		}
+		this._globalRouter.errorHandler(errorHandler);
 	}
 }
 
@@ -50,6 +67,10 @@ class ChuoiRouter {
 			this._router.use(...handler.map(h => ChuoiContainer.retrieve(h).handle));
 		}
 		return this;
+	}
+
+	errorHandler(errorHandler: IChuoiExceptionHandler) {
+		this._router.use(errorHandler.handle);
 	}
 
 	endpoint() {
