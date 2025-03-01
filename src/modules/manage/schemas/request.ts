@@ -1,108 +1,50 @@
-import { IsArray, IsEnum, IsNumber, IsOptional, IsString, Max, Min, ValidateNested } from "class-validator";
+import { z } from "zod";
 import { TestDifficulty } from "../../../common/domain/enum";
-import { Transform, Type } from "class-transformer";
 import Question from "../../../models/question";
 
-export class TestFilterQuery {
-	@IsString()
-	@IsOptional()
-	searchTitle?: string;
+const TestFilterQuerySchema = z.object({
+	searchTitle: z.string().optional(),
+	minMinutesToAnswer: z.number().optional(),
+	maxMinutesToAnswer: z.number().optional(),
+	difficulty: z.array(z.nativeEnum(TestDifficulty)).optional(),
+	tags: z.array(z.number()).optional(),
+	page: z.number().min(1),
+	perPage: z.number().optional().default(5),
+});
 
-	@IsNumber()
-	@Type(() => Number)
-	@IsOptional()
-	minMinutesToAnswer?: number;
+const QuestionCreateBodySchema = z.object({
+	text: z.string(),
+	options: z.array(z.string()),
+	points: z.number(),
+	correctOption: z.number(),
+});
 
-	@IsNumber()
-	@Type(() => Number)
-	@IsOptional()
-	maxMinutesToAnswer?: number;
+const TestCreateBodySchema = z.object({
+	tagIds: z.array(z.number()),
+	title: z.string(),
+	description: z.string(),
+	difficulty: z.nativeEnum(TestDifficulty),
+	minutesToAnswer: z.number().min(1).max(10000),
+	questions: z.array(QuestionCreateBodySchema),
+});
 
-	@Transform(({ value }) => (Array.isArray(value) ? value : [value]))
-	@IsArray()
-	@IsOptional()
-	@IsEnum(TestDifficulty, { each: true })
-	difficulty?: TestDifficulty[];
+const TestUpdateBodySchema = z.object({
+	tagIds: z.array(z.number()).optional(),
+	title: z.string().optional(),
+	description: z.string().optional(),
+	difficulty: z.nativeEnum(TestDifficulty).optional(),
+	minutesToAnswer: z.number().min(1).max(10000).optional(),
+	questions: z.array(z.instanceof(Question)).optional(),
+});
 
-	@IsNumber({}, { each: true })
-	@Type(() => Number)
-	@IsOptional()
-	tags?: number[];
+export {
+	TestFilterQuerySchema,
+	QuestionCreateBodySchema,
+	TestCreateBodySchema,
+	TestUpdateBodySchema,
+};
 
-	@IsNumber()
-	@Type(() => Number)
-	@Min(1)
-	page: number;
-
-	@IsNumber()
-	@Type(() => Number)
-	@IsOptional()
-	perPage: number = 5;
-}
-
-export class QuestionCreateBody {
-	@IsString()
-	text: string;
-
-	@IsArray()
-	@IsString({ each: true })
-	options: string[];
-
-	@IsNumber()
-	points: number;
-
-	@IsNumber()
-	correctOption: number;
-}
-
-export class TestCreateBody {
-	@IsArray()
-	@IsNumber({}, { each: true })
-	tagIds: number[];
-
-	@IsString()
-	title: string;
-
-	@IsString()
-	description: string;
-
-	@IsEnum(TestDifficulty)
-	difficulty: TestDifficulty;
-
-	@IsNumber()
-	@Min(1)
-	@Max(10000)
-	minutesToAnswer: number;
-
-	@IsArray()
-	@ValidateNested({ each: true })
-	@Type(() => QuestionCreateBody)
-	questions: QuestionCreateBody[];
-}
-
-export class TestUpdateBody {
-	@IsArray()
-	@IsNumber({}, { each: true })
-	@IsOptional()
-	tagIds?: number[];
-
-	@IsString()
-	title?: string;
-
-	@IsString()
-	description?: string;
-
-	@IsEnum(TestDifficulty)
-	difficulty?: TestDifficulty;
-
-	@IsNumber()
-	@Min(1)
-	@Max(10000)
-	minutesToAnswer?: number;
-
-	@IsArray()
-	@ValidateNested({ each: true })
-	@Type(() => Question)
-	@IsOptional()
-	questions?: Question[];
-}
+export type TestFilterQuery = z.infer<typeof TestFilterQuerySchema>;
+export type QuestionCreateBody = z.infer<typeof QuestionCreateBodySchema>;
+export type TestCreateBody = z.infer<typeof TestCreateBodySchema>;
+export type TestUpdateBody = z.infer<typeof TestUpdateBodySchema>;

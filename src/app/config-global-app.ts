@@ -1,17 +1,17 @@
 import { Application } from "express";
-import { ChuoiController } from "../library/caychuoijs/router.i";
+import { Chuoi } from "../library/caychuoijs";
 import { AllExceptionFilter } from "../common/controller/defaults/all-exception.filter";
 import { LoggerMiddleware } from "../common/controller/defaults/logger.middleware";
 import { UserPipe } from "../common/controller/pipes/user.pipe";
 
 export function configGlobalApp(app: Application) {
-	ChuoiController.init(app, {
+	Chuoi.init(app, {
 		basePath: '/api',
 	});
 
-	ChuoiController.middleware(
+	Chuoi.middleware(
 		LoggerMiddleware,
 		UserPipe
 	);
-	ChuoiController.final(new AllExceptionFilter());
+	Chuoi.final(new AllExceptionFilter());
 }

@@ -1,13 +1,5 @@
-import { IsString, Validate } from "class-validator";
-import { UnauthorizedErrorResponse } from "../errors/unauthorized.error";
+import { z } from "zod";
 
-export class UserIdMeta {
-	@Validate((value: string) => {
-		if (!value) {
-			throw new UnauthorizedErrorResponse();
-		}
-		return true;
-	})
-	@IsString()
-	userId: string;
-}
+export const UserIdMetaSchema = z.object({
+	userId: z.coerce.string().nonempty({ message: "Unauthorized" })
+});

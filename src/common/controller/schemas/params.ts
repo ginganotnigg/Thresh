@@ -1,16 +1,13 @@
-import { IsNumber } from "class-validator";
+import { z } from "zod";
 
-export class TestIdParams {
-	@IsNumber()
-	testId: number;
-}
+export const TestIdParamsSchema = z.object({
+	testId: z.coerce.number(),
+});
 
-export class AttemptIdParams {
-	@IsNumber()
-	attemptId: number;
-}
+export const AttemptIdParamsSchema = z.object({
+	attemptId: z.coerce.number(),
+});
 
-export class TagIdParams {
-	@IsNumber()
-	tagId: number;
-}
+export const TagIdParamsSchema = z.object({
+	tagId: z.coerce.number(),
+});

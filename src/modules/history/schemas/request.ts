@@ -1,32 +1,17 @@
-import { Type } from "class-transformer";
-import { IsEnum, IsOptional, IsString, Min } from "class-validator";
+import { z } from "zod";
 
-export class AttemptFilterQuery {
-	@IsEnum(["asc", "desc"])
-	@IsOptional()
-	sortByStartDate?: "asc" | "desc";
+export const AttemptFilterQuerySchema = z.object({
+	sortByStartDate: z.enum(["asc", "desc"]).optional(),
+	sortByScore: z.enum(["asc", "desc"]).optional(),
+	page: z.number().min(1),
+	perPage: z.number().min(1).optional().default(5),
+});
 
-	@IsEnum(["asc", "desc"])
-	@IsOptional()
-	sortByScore?: "asc" | "desc";
+export const AttemptAnswerFilterQuerySchema = z.object({
+	page: z.number().min(1),
+	perPage: z.number().min(1).optional().default(10),
+});
 
-	@IsString()
-	@Type(() => Number)
-	@Min(1)
-	page: number;
+export type AttemptFilterQuery = z.infer<typeof AttemptFilterQuerySchema>;
+export type AttemptAnswerFilterQuery = z.infer<typeof AttemptAnswerFilterQuerySchema>;
 
-	@IsString()
-	@Type(() => Number)
-	@IsOptional()
-	perPage: number = 5;
-}
-
-export class AttemptAnswerFilterQuery {
-	@IsString()
-	@Min(1)
-	page: number;
-
-	@IsString()
-	@IsOptional()
-	perPage: number = 10;
-}

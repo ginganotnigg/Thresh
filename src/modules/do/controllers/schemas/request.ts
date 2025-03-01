@@ -1,10 +1,8 @@
-import { IsNumber, IsOptional } from "class-validator";
+import { z } from "zod";
 
-export class AnswerAttemptBody {
-	@IsNumber()
-	questionId: number;
+export const AnswerAttemptBodySchema = z.object({
+	questionId: z.coerce.number(),
+	optionId: z.coerce.number().optional(),
+});
 
-	@IsNumber()
-	@IsOptional()
-	optionId?: number;
-}
+export type AnswerAttemptBody = z.infer<typeof AnswerAttemptBodySchema>;

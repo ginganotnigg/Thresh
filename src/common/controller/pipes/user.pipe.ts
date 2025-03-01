@@ -1,6 +1,7 @@
 import { IChuoiHandler } from "../../../library/caychuoijs/contracts";
 import { CallbackExpressHandler } from "../../../library/caychuoijs/utils/type";
 import { ChuoiMeta } from "../../../library/caychuoijs/utils/meta";
+import { ChuoiContainer } from "../../../library/caychuoijs/utils/container";
 
 export class UserPipe implements IChuoiHandler {
 	get handle(): CallbackExpressHandler {
@@ -13,3 +14,5 @@ export class UserPipe implements IChuoiHandler {
 		}
 	}
 }
+
+ChuoiContainer.register(UserPipe);

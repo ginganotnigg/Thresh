@@ -1,85 +1,54 @@
-import { Response, Router } from "express";
-import { Constructor, CallbackExpressHandler, RequestData, MetaRequest as MetadataRequest, CallbackDataHandler } from "./utils/type";
+import { Router, Response } from "express";
+import { RequestSchema } from "./utils/type";
+import { IChuoiHandler, IChuoiExceptionHandler } from "./contracts";
 import { ChuoiContainer } from "./utils/container";
-import { IChuoiExceptionHandler, IChuoiHandler, ISchemaValidator } from "./contracts";
-import { ClassValidatorSchemaValidator } from "./utils/schema-validator"
+import { zodParse } from "./utils/schema-zod";
+import { Constructor, CallbackExpressHandler, CallbackDataHandler, RequestData, MetaRequest as MetadataRequest } from "./utils/type";
+import { z } from "zod";
+import { ChuoiDocument } from "./documentation/open-api";
 
-export class ChuoiController {
-	private static _globalRouter?: ChuoiRouter;
-	private static _childRouters: ChuoiRouter[] = [];
 
-	static init(router: Router, config: {
-		basePath: string,
-	}): void {
-		const _router = Router();
-		router.use(config.basePath, _router);
-		this._globalRouter = new ChuoiRouter(_router, config.basePath);
-	}
+export class ChuoiRouter {
+	private readonly _realRouter: Router;
+	private readonly _parent?: ChuoiRouter;
 
-	static middleware(...handlers: Constructor<IChuoiHandler>[]) {
-		if (!this._globalRouter) {
-			throw new Error("ChuoiController not initialized");
-		}
-		this._globalRouter.handler(...handlers);
-	}
-
-	static newRoute(path?: string): ChuoiRouter {
-		if (!this._globalRouter) {
-			throw new Error("ChuoiController not initialized");
-		}
-		const child = this._globalRouter.down(path);
-		this._childRouters.push(child);
-		return child;
-	}
-
-	static final(errorHandler: IChuoiExceptionHandler) {
-		if (!this._globalRouter) {
-			throw new Error("ChuoiController not initialized");
-		}
-		this._globalRouter.errorHandler(errorHandler);
-	}
-}
-
-class ChuoiRouter {
-	private readonly _router: Router;
-	private readonly _children: ChuoiRouter[] = [];
-	private readonly _validator: ISchemaValidator;
-
-	constructor(router: Router, routerPath?: string) {
-		this._router = Router();
+	constructor(realRouter: Router, parrent?: ChuoiRouter, routerPath?: string) {
+		this._realRouter = Router();
 		if (routerPath) {
-			router.use(routerPath, this._router);
+			realRouter.use(routerPath, this._realRouter);
 		}
 		else {
-			router.use(this._router);
+			realRouter.use(this._realRouter);
 		}
-		this._validator = ChuoiContainer.retrieve(ClassValidatorSchemaValidator);
+		this._parent = parrent;
 	}
 
 	down(childPath?: string) {
-		const child = new ChuoiRouter(this._router, childPath);
-		this._children.push(child);
+		const child = new ChuoiRouter(this._realRouter, this, childPath);
 		return child;
 	}
 
 	handler(...handler: Constructor<IChuoiHandler>[]) {
 		if (handler) {
-			this._router.use(...handler.map(h => ChuoiContainer.retrieve(h).handle));
+			this._realRouter.use(...handler.map(h => ChuoiContainer.retrieve(h).handle));
 		}
 		return this;
 	}
 
 	errorHandler(errorHandler: IChuoiExceptionHandler) {
-		this._router.use(errorHandler.handle);
+		this._realRouter.use(errorHandler.handle);
 	}
 
 	endpoint() {
 		const __instance = this;
-		let _method: "get" | "post" | "put" | "delete" | "patch" | "options" | "head" | "connect" | "trace" = "get";
+		let _method: "get" | "post" | "put" | "delete" | "patch" | "options" | "head" | "trace" = "get";
 		let _path = '';
+		let _reqSchema: RequestSchema<any, any, any, any, any> | undefined;
+		let _resSchema: z.ZodObject<any> | undefined;
 		let beforeHandlers: CallbackExpressHandler[] = [];
 		let afterHandlers: CallbackExpressHandler[] = [];
 		let mainHandler: CallbackDataHandler<any, any, any, any, any, any> = () => { };
+		// Default response.
 		let afterHandler: (result: any, res: Response) => void = (result, res) => {
 			let statusCode = 200;
 			switch (_method) {
@@ -110,30 +79,24 @@ class ChuoiRouter {
 			TQuery extends Record<string, any>,
 			TBody extends Record<string, any>,
 			THeader extends Record<string, any>,
-			TMeta extends Record<string, any>,
+			TMeta extends Record<string, any>
 		>(
-			{
-				params,
-				query,
-				body,
-				headers,
-				meta,
-			}: {
-				params?: Constructor<TParams>,
-				query?: Constructor<TQuery>,
-				body?: Constructor<TBody>,
-				headers?: Constructor<THeader>,
-				meta?: Constructor<TMeta>,
-			} = {}
+			schema: RequestSchema<TParams, TQuery, TBody, THeader, TMeta> = {}
 		) {
+			const { params, query, body, headers, meta } = schema;
+			_reqSchema = schema;
 			return {
-				handle<TResponse extends Record<string, any>>(callback: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) {
+				handle<TResponse extends Record<string, any>>(callback: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>, successResponseSchema?: z.ZodObject<TResponse>) {
 					mainHandler = (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => {
-						const parsedParams = params ? __instance._validator.validate(data.params, params) : {} as TParams;
-						const parsedQuery = query ? __instance._validator.validate(data.query, query) : {} as TQuery;
-						const parsedBody = body ? __instance._validator.validate(data.body, body) : {} as TBody;
-						const parsedHeaders = headers ? __instance._validator.validate(data.headers, headers) : {} as THeader;
-						const parsedMeta = meta ? __instance._validator.validate(data.meta, meta) : {} as TMeta;
+						// const a = z.object({ a: z.string() });
+						// const b = zodParse(a, { a: "a" });
+						// b;
+
+						const parsedParams = params ? zodParse(params, data.params) : {} as TParams;
+						const parsedQuery = query ? zodParse(query, data.query) : {} as TQuery;
+						const parsedBody = body ? zodParse(body, data.body) : {} as TBody;
+						const parsedHeaders = headers ? zodParse(headers, data.headers) : {} as THeader;
+						const parsedMeta = meta ? zodParse(meta, data.meta) : {} as TMeta;
 						const result = callback({
 							params: parsedParams,
 							query: parsedQuery,
@@ -141,8 +104,13 @@ class ChuoiRouter {
 							headers: parsedHeaders,
 							meta: parsedMeta,
 						});
+						if (successResponseSchema) {
+							const parsedResult = zodParse(successResponseSchema, result);
+							return parsedResult;
+						}
 						return result;
 					};
+					_resSchema = successResponseSchema;
 					return {
 						build,
 						after: (handler: (result: TResponse, res: Response) => void) => {
@@ -151,10 +119,13 @@ class ChuoiRouter {
 						},
 					};
 				}
-			}
+			};
 		}
 
-		function build() {
+		function build(meta: {
+			summary?: string;
+			description?: string;
+		} = {}) {
 			const mainCallback: CallbackExpressHandler = async (req, res, next) => {
 				const metaData = (req as MetadataRequest)?.meta || {};
 				const data = {
@@ -171,10 +142,23 @@ class ChuoiRouter {
 					next(error);
 				}
 			};
-			__instance._router[_method](_path,
+
+			__instance._realRouter[_method](_path,
 				...beforeHandlers,
 				mainCallback,
 				...afterHandlers
+			);
+
+			// Documentation:
+			const _absPath = [...__instance._realRouter.stack.map(r => r.path), _path].join('');
+
+			ChuoiDocument.addEndpointDocumentation(
+				_absPath,
+				_method,
+				_reqSchema,
+				_resSchema,
+				meta.summary,
+				meta.description
 			);
 		}
 
@@ -184,7 +168,6 @@ class ChuoiRouter {
 				return { schema };
 			},
 			schema,
-
 		};
 
 		const _switch = {
@@ -223,21 +206,13 @@ class ChuoiRouter {
 				_path = path;
 				return _handler;
 			},
-			connect(path: string) {
-				_method = "connect";
-				_path = path;
-				return _handler;
-			},
 			trace(path: string) {
 				_method = "trace";
 				_path = path;
 				return _handler;
 			}
-		}
+		};
 
 		return _switch;
 	}
 }
-
-const router = new ChuoiRouter(Router(), "/api");
-export { router };

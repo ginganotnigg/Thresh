@@ -1,8 +1,8 @@
 import { TestDifficulty } from "../../../../../common/domain/enum";
 import { DataDriven } from "../../../../../library/caymejs/test/data-driven.i";
-import { TestResult } from "../../../schemas/response";
+import { TestResponse } from "../../../schemas/response";
 
-const detailData: DataDriven<number, Partial<TestResult> | null>[] = [
+const detailData: DataDriven<number, Partial<TestResponse> | null>[] = [
 	{
 		input: 1,
 		expected: {

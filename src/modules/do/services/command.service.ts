@@ -1,7 +1,7 @@
-import { AnswerAttemptBody } from '../controllers/schemas/request';
 import { WriteRepository } from '../infra/repository';
 import { EventController } from '../controllers/event.controller';
 import { ProcessQueryService } from './query.service';
+import { AnswerAttemptBody } from '../controllers/schemas/request';
 
 export class ProcessCommandService {
 	static async evaluateAttempt(attemptId: number): Promise<void> {

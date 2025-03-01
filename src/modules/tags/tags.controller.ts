@@ -1,9 +1,9 @@
-import { ChuoiController } from "../../library/caychuoijs/router.i";
+import { Chuoi } from "../../library/caychuoijs";
 import Tag from "../../models/tag";
 import { TagIdParams } from "../../common/controller/schemas/params";
 
 export function tagsController() {
-	const router = ChuoiController.newRoute();
+	const router = Chuoi.newRoute();
 
 	router.endpoint().get("/tags")
 		.schema()

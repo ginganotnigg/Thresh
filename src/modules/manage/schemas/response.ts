@@ -1,35 +1,50 @@
+import { z } from "zod";
 import { AttemptStatus } from "../../../common/domain/enum";
 
-export type TestItemResult = Omit<TestResult, 'description'> & { answerCount: number };
+const TestResponseSchema = z.object({
+	id: z.number(),
+	managerId: z.string(),
+	title: z.string(),
+	description: z.string(),
+	difficulty: z.string(),
+	minutesToAnswer: z.number(),
+	answerCount: z.number(),
+	tags: z.array(z.string()),
+	createdAt: z.date(),
+	updatedAt: z.date(),
+});
 
-export type TestResult = {
-	id: number;
-	managerId: string;
-	title: string;
-	description: string;
-	difficulty: string;
-	minutesToAnswer: number;
-	answerCount: number;
-	tags: string[];
-	createdAt: Date;
-	updatedAt: Date;
-}
+const TestItemResponseSchema = TestResponseSchema.omit({ description: true }).extend({
+	answerCount: z.number(),
+});
 
-export type QuestionResult = {
-	id: number;
-	text: string;
-	options: string[];
-	points: number;
-	correctOption: number;
-}
+const QuestionResponseSchema = z.object({
+	id: z.number(),
+	text: z.string(),
+	options: z.array(z.string()),
+	points: z.number(),
+	correctOption: z.number(),
+});
 
-export type AttemptResult = {
-	id: number;
-	testId: number;
-	candidateId: string;
-	score: number;
-	status: AttemptStatus;
-	answerQuestions: QuestionResult & { chosenOption: number }[];
-	createdAt: Date;
-	updatedAt: Date;
-}
+const AttemptResponseSchema = z.object({
+	id: z.number(),
+	testId: z.number(),
+	candidateId: z.string(),
+	score: z.number(),
+	status: z.nativeEnum(AttemptStatus),
+	answerQuestions: z.array(QuestionResponseSchema.extend({ chosenOption: z.number() })),
+	createdAt: z.date(),
+	updatedAt: z.date(),
+});
+
+export {
+	TestResponseSchema,
+	TestItemResponseSchema,
+	QuestionResponseSchema,
+	AttemptResponseSchema,
+};
+
+export type TestResponse = z.infer<typeof TestResponseSchema>;
+export type TestItemResponse = z.infer<typeof TestItemResponseSchema>;
+export type QuestionResponse = z.infer<typeof QuestionResponseSchema>;
+export type AttemptResponse = z.infer<typeof AttemptResponseSchema>;

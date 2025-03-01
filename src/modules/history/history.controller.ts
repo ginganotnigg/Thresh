@@ -1,17 +1,17 @@
 import { ManagerGuardHandler } from "../../common/controller/guards/manager.guard";
-import { ChuoiController } from "../../library/caychuoijs/router.i";
+import { Chuoi } from "../../library/caychuoijs";
 import { HistoryQueryService } from "./history.query.service";
-import { AttemptFilterQuery } from "./schemas/request";
-import { AttemptIdParams, TestIdParams } from "../../common/controller/schemas/params";
+import { AttemptFilterQuerySchema } from "./schemas/request";
+import { AttemptIdParamsSchema, TestIdParamsSchema } from "../../common/controller/schemas/params";
 
 export function historyController() {
-	const router = ChuoiController.newRoute();
+	const router = Chuoi.newRoute();
 
 	router.endpoint().get('/tests/:testId/attempts')
 		.before(ManagerGuardHandler)
 		.schema({
-			params: TestIdParams,
-			query: AttemptFilterQuery,
+			params: TestIdParamsSchema,
+			query: AttemptFilterQuerySchema,
 		})
 		.handle(async (data) => {
 			const testId = data.params.testId;
@@ -23,7 +23,7 @@ export function historyController() {
 	router.endpoint().get('/attempts/:attemptId')
 		.before(ManagerGuardHandler)
 		.schema({
-			params: AttemptIdParams,
+			params: AttemptIdParamsSchema,
 		})
 		.handle(async (data) => {
 			const attemptId = data.params.attemptId;
@@ -34,8 +34,8 @@ export function historyController() {
 	router.endpoint().get('/attempts/:attemptId/answers')
 		.before(ManagerGuardHandler)
 		.schema({
-			params: AttemptIdParams,
-			query: AttemptFilterQuery,
+			params: AttemptIdParamsSchema,
+			query: AttemptFilterQuerySchema,
 		})
 		.handle(async (data) => {
 			const attemptId = data.params.attemptId;
@@ -47,7 +47,7 @@ export function historyController() {
 	router.endpoint().get('/candidate/attempts')
 		.before(ManagerGuardHandler)
 		.schema({
-			query: AttemptFilterQuery,
+			query: AttemptFilterQuerySchema,
 		})
 		.handle(async (data) => {
 			const candidateId = data.meta.id;
@@ -59,8 +59,8 @@ export function historyController() {
 	router.endpoint().get('/candidate/tests/:testId/attempts')
 		.before(ManagerGuardHandler)
 		.schema({
-			params: TestIdParams,
-			query: AttemptFilterQuery,
+			params: TestIdParamsSchema,
+			query: AttemptFilterQuerySchema,
 		})
 		.handle(async (data) => {
 			const candidateId = data.meta.id;

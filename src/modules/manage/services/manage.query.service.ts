@@ -3,17 +3,17 @@ import Question from "../../../models/question";
 import Tag from "../../../models/tag";
 import Test from "../../../models/test";
 import { TestFilterQuery } from "../schemas/request";
-import { QuestionResult, TestItemResult, TestResult } from "../schemas/response";
+import { QuestionResponse, TestItemResponse, TestResponse } from "../schemas/response";
 import { Op } from "sequelize";
 import Sequelize from "sequelize";
 
 export class ManageQueryService {
-	static async getTests(filter: TestFilterQuery): Promise<Paged<TestItemResult>> {
+	static async getTests(filter: TestFilterQuery): Promise<Paged<TestItemResponse>> {
 		const { whereClause, includeTagsClause } = getFilterCondition(filter);
 		return await findAllWithFilter(whereClause, includeTagsClause, filter);
 	}
 
-	static async getTest(id: number): Promise<TestResult | null> {
+	static async getTest(id: number): Promise<TestResponse | null> {
 		const row = await Test.findByPk(id, {
 			include: [
 				{
@@ -50,7 +50,7 @@ export class ManageQueryService {
 		};
 	}
 
-	static async getQuestions(testId: number): Promise<QuestionResult[]> {
+	static async getQuestions(testId: number): Promise<QuestionResponse[]> {
 		const questions = await Question.findAll({
 			where: {
 				testId
@@ -65,7 +65,7 @@ export class ManageQueryService {
 		}));
 	}
 
-	static async getManagerTests(managerId: string, filter: TestFilterQuery): Promise<Paged<TestItemResult>> {
+	static async getManagerTests(managerId: string, filter: TestFilterQuery): Promise<Paged<TestItemResponse>> {
 		const { whereClause, includeTagsClause } = getFilterCondition(filter);
 		const companyWhereClause = { ...whereClause, managerId };
 		return await findAllWithFilter(companyWhereClause, includeTagsClause, filter);
@@ -107,7 +107,7 @@ function getFilterCondition(filter: TestFilterQuery) {
 	return { whereClause: whereClase, includeTagsClause };
 }
 
-async function findAllWithFilter(whereClause: any, includeTagClause: any, filter: { page: number, perPage: number }): Promise<Paged<TestItemResult>> {
+async function findAllWithFilter(whereClause: any, includeTagClause: any, filter: { page: number, perPage: number }): Promise<Paged<TestItemResponse>> {
 	const data = await Test.findAll({
 		where: whereClause,
 		include: [

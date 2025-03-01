@@ -1,18 +1,18 @@
 import { CandidateGuardHandler } from "../../../common/controller/guards/candidate.guard";
-import { UserIdMeta } from "../../../common/controller/schemas/meta";
-import { TestIdParams } from "../../../common/controller/schemas/params";
-import { ChuoiController } from "../../../library/caychuoijs/router.i";
+import { UserIdMetaSchema } from "../../../common/controller/schemas/meta";
+import { TestIdParamsSchema } from "../../../common/controller/schemas/params";
+import { Chuoi } from "../../../library/caychuoijs";
 import { ProcessCommandService } from "../services/command.service";
 import { ProcessQueryService } from "../services/query.service";
-import { AnswerAttemptBody } from "./schemas/request";
+import { AnswerAttemptBodySchema } from "./schemas/request";
 
 export function processController() {
-	const router = ChuoiController.newRoute().handler(CandidateGuardHandler);
+	const router = Chuoi.newRoute().handler(CandidateGuardHandler);
 
 	router.endpoint().get('/tests/:testId/current')
 		.schema({
-			params: TestIdParams,
-			meta: UserIdMeta
+			params: TestIdParamsSchema,
+			meta: UserIdMetaSchema
 		}).handle(async data => {
 			const testId = data.params.testId;
 			const candidateId = data.meta.userId;
@@ -22,8 +22,8 @@ export function processController() {
 
 	router.endpoint().post('/tests/:testId/current/new')
 		.schema({
-			params: TestIdParams,
-			meta: UserIdMeta
+			params: TestIdParamsSchema,
+			meta: UserIdMetaSchema,
 		}).handle(async data => {
 			const testId = data.params.testId;
 			const candidateId = data.meta.userId;
@@ -32,8 +32,8 @@ export function processController() {
 
 	router.endpoint().get('/tests/:testId/current/do')
 		.schema({
-			params: TestIdParams,
-			meta: UserIdMeta
+			params: TestIdParamsSchema,
+			meta: UserIdMetaSchema,
 		}).handle(async data => {
 			const testId = data.params.testId;
 			const candidateId = data.meta.userId;
@@ -43,9 +43,9 @@ export function processController() {
 
 	router.endpoint().patch('/tests/:testId/current/answer')
 		.schema({
-			params: TestIdParams,
-			meta: UserIdMeta,
-			body: AnswerAttemptBody
+			params: TestIdParamsSchema,
+			meta: UserIdMetaSchema,
+			body: AnswerAttemptBodySchema,
 		}).handle(async data => {
 			const testId = data.params.testId;
 			const candidateId = data.meta.userId;
@@ -55,8 +55,8 @@ export function processController() {
 
 	router.endpoint().post('/tests/:testId/current/submit')
 		.schema({
-			params: TestIdParams,
-			meta: UserIdMeta
+			params: TestIdParamsSchema,
+			meta: UserIdMetaSchema
 		}).handle(async data => {
 			const testId = data.params.testId;
 			const candidateId = data.meta.userId;
