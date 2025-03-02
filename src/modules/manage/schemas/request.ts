@@ -4,12 +4,12 @@ import Question from "../../../models/question";
 
 const TestFilterQuerySchema = z.object({
 	searchTitle: z.string().optional(),
-	minMinutesToAnswer: z.number().optional(),
-	maxMinutesToAnswer: z.number().optional(),
+	minMinutesToAnswer: z.coerce.number().optional(),
+	maxMinutesToAnswer: z.coerce.number().optional(),
 	difficulty: z.array(z.nativeEnum(TestDifficulty)).optional(),
-	tags: z.array(z.number()).optional(),
-	page: z.number().min(1),
-	perPage: z.number().optional().default(5),
+	tags: z.array(z.coerce.number()).optional(),
+	page: z.coerce.number().min(1).openapi({ default: 1 }),
+	perPage: z.coerce.number().optional().default(5),
 });
 
 const QuestionCreateBodySchema = z.object({

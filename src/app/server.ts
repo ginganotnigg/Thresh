@@ -75,7 +75,7 @@ export async function configApplication() {
 	// Final
 	// =====================
 
-	Chuoi.final(new AllExceptionFilter());
+	Chuoi.final(AllExceptionFilter);
 	Chuoi.log((message, isWarning) => {
 		if (isWarning) {
 			console.warn(message);

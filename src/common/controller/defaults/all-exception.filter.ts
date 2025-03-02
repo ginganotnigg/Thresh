@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import logger from "../../../configs/logger/winston";
 import { ErrorResponseCodes, ErrorResponseBase } from "../errors/error-response.base";
-import { ChuoiExceptionFinalBase } from "../../../library/caychuoijs/contracts";
 import { ChuoiContainer } from "../../../library/caychuoijs/utils/container";
+import { IChuoiExceptionHandler } from "../../../library/caychuoijs/contracts";
 
-export class AllExceptionFilter extends ChuoiExceptionFinalBase {
-	final(err: any, req: Request, res: Response) {
+export class AllExceptionFilter implements IChuoiExceptionHandler {
+	handle(err: any, req: Request, res: Response, next: NextFunction): void {
 		const errorRes = {
 			stack: process.env.NODE_ENV === 'production' ? null : err.stack ?? undefined,
 			httpCode: 500,

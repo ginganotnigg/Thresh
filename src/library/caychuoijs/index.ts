@@ -8,6 +8,7 @@ import { ChuoiDocument } from "./documentation/open-api";
 import { writeFileSync } from "fs";
 import swaggerUi from 'swagger-ui-express';
 import { ChuoiContainer } from "./utils/container";
+import { AllExceptionFilter } from "../../common/controller/defaults/all-exception.filter";
 
 export class Chuoi {
 	private static _globalRouter?: ChuoiRouter;
@@ -27,7 +28,7 @@ export class Chuoi {
 		return { globalRouter: this._globalRouter, baseRouter: this._baseRouter };
 	}
 
-	static init(router: Router, {
+	static init(app: Application, {
 		basePath,
 		title,
 		version,
@@ -37,8 +38,10 @@ export class Chuoi {
 		version: string,
 	}): void {
 		extendZodWithOpenApi(z);
+		const router = Router();
+		app.use(basePath, router);
 		this._baseRouter = router;
-		this._globalRouter = new ChuoiRouter(router, basePath);
+		this._globalRouter = new ChuoiRouter(router);
 		this._config = {
 			basePath,
 			title,
@@ -61,11 +64,11 @@ export class Chuoi {
 		return child;
 	}
 
-	static final(errorHandler: IChuoiExceptionHandler) {
+	static final(errorHandler: Constructor<IChuoiExceptionHandler>): void {
 		if (!this._baseRouter) {
 			throw new Error("ChuoiController not initialized");
 		}
-		this._baseRouter.use(errorHandler.handle);
+		this._baseRouter.use(ChuoiContainer.retrieve(errorHandler).handle);
 	}
 
 	static log(logger: (message: string, isWarning: boolean) => void, router: Application | Router | undefined = this._baseRouter, parentPath = ''): void {
@@ -118,6 +121,6 @@ export class Chuoi {
 		});
 		writeFileSync("swagger.json", JSON.stringify(swaggerSpec));
 		this._baseRouter.use(docPath, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-		console.log(`API documentation is available at ${url}${docPath}`);
+		console.log(`API documentation is available at ${url}${this._config.basePath + docPath}`);
 	}
 }
