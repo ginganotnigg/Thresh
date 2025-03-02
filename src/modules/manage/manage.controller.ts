@@ -24,7 +24,7 @@ export function manageController() {
 		}).build();
 
 	router.endpoint().get('/tests/:testId/questions')
-		.before(ManagerGuardHandler)
+		.middleware(ManagerGuardHandler)
 		.schema({
 			params: TestIdParamsSchema
 		}).handle(async data => {
@@ -32,7 +32,7 @@ export function manageController() {
 		}).build();
 
 	router.endpoint().get('/manager/tests')
-		.before(ManagerGuardHandler)
+		.middleware(ManagerGuardHandler)
 		.schema({
 			query: TestFilterQuerySchema,
 			meta: UserIdMetaSchema
@@ -41,7 +41,7 @@ export function manageController() {
 		}).build();
 
 	router.endpoint().post('/tests')
-		.before(ManagerGuardHandler)
+		.middleware(ManagerGuardHandler)
 		.schema({
 			body: TestCreateBodySchema,
 			meta: UserIdMetaSchema
@@ -51,7 +51,7 @@ export function manageController() {
 		}).build();
 
 	router.endpoint().put('/tests/:testId')
-		.before(ManagerGuardHandler)
+		.middleware(ManagerGuardHandler)
 		.schema({
 			params: TestIdParamsSchema,
 			body: TestUpdateBodySchema,
@@ -61,7 +61,7 @@ export function manageController() {
 		}).build();
 
 	router.endpoint().delete('/tests/:testId')
-		.before(ManagerGuardHandler)
+		.middleware(ManagerGuardHandler)
 		.schema({
 			params: TestIdParamsSchema,
 		}).handle(async data => {

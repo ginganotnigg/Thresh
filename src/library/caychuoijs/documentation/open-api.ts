@@ -9,7 +9,7 @@ export class ChuoiDocument {
 	static generateV31(config?: Partial<Omit<OpenAPIObjectConfigV31, 'openapi'>>) {
 		const _config: OpenAPIObjectConfigV31 = {
 			...config,
-			openapi: '3.1.x',
+			openapi: '3.1.0',
 			info: {
 				version: '1.0.0',
 				title: 'My API',
@@ -23,15 +23,17 @@ export class ChuoiDocument {
 		path: string,
 		method: "get" | "post" | "put" | "delete" | "patch" | "options" | "head" | "trace",
 		schema?: RequestSchema<any, any, any, any, any>,
-		successResponseSchema?: z.ZodObject<any>,
+		successResponseSchema?: z.ZodTypeAny,
 		summary?: string,
-		description?: string
+		description?: string,
+		tags?: string[],
 	) {
 		ChuoiDocument.documentRegistry.registerPath({
 			path,
 			method,
 			summary,
 			description,
+			tags: tags || [],
 			request: schema ? {
 				params: schema.params,
 				query: schema.query,

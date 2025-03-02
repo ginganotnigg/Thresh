@@ -3,12 +3,13 @@ import { Chuoi } from "../../library/caychuoijs";
 import { HistoryQueryService } from "./history.query.service";
 import { AttemptFilterQuerySchema } from "./schemas/request";
 import { AttemptIdParamsSchema, TestIdParamsSchema } from "../../common/controller/schemas/params";
+import { UserIdMetaSchema } from "../../common/controller/schemas/meta";
 
 export function historyController() {
 	const router = Chuoi.newRoute();
 
 	router.endpoint().get('/tests/:testId/attempts')
-		.before(ManagerGuardHandler)
+		.middleware(ManagerGuardHandler)
 		.schema({
 			params: TestIdParamsSchema,
 			query: AttemptFilterQuerySchema,
@@ -21,7 +22,7 @@ export function historyController() {
 		}).build();
 
 	router.endpoint().get('/attempts/:attemptId')
-		.before(ManagerGuardHandler)
+		.middleware(ManagerGuardHandler)
 		.schema({
 			params: AttemptIdParamsSchema,
 		})
@@ -32,7 +33,7 @@ export function historyController() {
 		}).build();
 
 	router.endpoint().get('/attempts/:attemptId/answers')
-		.before(ManagerGuardHandler)
+		.middleware(ManagerGuardHandler)
 		.schema({
 			params: AttemptIdParamsSchema,
 			query: AttemptFilterQuerySchema,
@@ -45,25 +46,27 @@ export function historyController() {
 		}).build();
 
 	router.endpoint().get('/candidate/attempts')
-		.before(ManagerGuardHandler)
+		.middleware(ManagerGuardHandler)
 		.schema({
 			query: AttemptFilterQuerySchema,
+			meta: UserIdMetaSchema,
 		})
 		.handle(async (data) => {
-			const candidateId = data.meta.id;
+			const candidateId = data.meta.userId;
 			const filter = data.query;
 			const result = await HistoryQueryService.getCandidateAttempts(candidateId, filter);
 			return result;
 		}).build();
 
 	router.endpoint().get('/candidate/tests/:testId/attempts')
-		.before(ManagerGuardHandler)
+		.middleware(ManagerGuardHandler)
 		.schema({
 			params: TestIdParamsSchema,
+			meta: UserIdMetaSchema,
 			query: AttemptFilterQuerySchema,
 		})
 		.handle(async (data) => {
-			const candidateId = data.meta.id;
+			const candidateId = data.meta.userId;
 			const testId = data.params.testId;
 			const filter = data.query;
 			const result = await HistoryQueryService.getCandidateAttempt(candidateId, testId, filter);

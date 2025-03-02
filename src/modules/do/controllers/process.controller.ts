@@ -7,7 +7,7 @@ import { ProcessQueryService } from "../services/query.service";
 import { AnswerAttemptBodySchema } from "./schemas/request";
 
 export function processController() {
-	const router = Chuoi.newRoute().handler(CandidateGuardHandler);
+	const router = Chuoi.newRoute().middleware(CandidateGuardHandler);
 
 	router.endpoint().get('/tests/:testId/current')
 		.schema({

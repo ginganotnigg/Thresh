@@ -1,5 +1,5 @@
 import { plainToClass } from "class-transformer";
-import { validate, validateSync } from "class-validator";
+import { validateSync } from "class-validator";
 import { ISchemaValidator } from "../contracts";
 import { Constructor } from "./type";
 import { ValidationError } from "../../../common/controller/errors/validation.error";

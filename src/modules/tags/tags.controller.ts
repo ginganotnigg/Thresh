@@ -1,41 +1,41 @@
+import { z } from "zod";
+import { TagIdParamsSchema } from "../../common/controller/schemas/params";
 import { Chuoi } from "../../library/caychuoijs";
 import Tag from "../../models/tag";
-import { TagIdParams } from "../../common/controller/schemas/params";
+
+const bodySchema = z.object({
+	name: z.string().nonempty()
+});
 
 export function tagsController() {
 	const router = Chuoi.newRoute();
 
 	router.endpoint().get("/tags")
-		.schema()
 		.handle(async data => {
 			return await Tag.findAll();
-		}).build();
+		}).build({ tags: ["Tags"] });
 
 	router.endpoint().get("/tags/:id")
 		.schema({
-			params: TagIdParams
+			params: TagIdParamsSchema
 		})
 		.handle(async data => {
 			return await Tag.findByPk(data.params.tagId);
-		}).build();
+		}).build({ tags: ["Tags"] });
 
 
 	router.endpoint().post("/tags")
 		.schema({
-			body: class {
-				name: string;
-			}
+			body: bodySchema
 		})
 		.handle(async data => {
 			return await Tag.create(data.body);
-		}).build();
+		}).build({ tags: ["Tags"] });
 
 	router.endpoint().put("/tags/:id")
 		.schema({
-			params: TagIdParams,
-			body: class {
-				name: string;
-			}
+			params: TagIdParamsSchema,
+			body: bodySchema
 		})
 		.handle(async data => {
 			const tag = await Tag.findByPk(data.params.tagId);
@@ -47,7 +47,7 @@ export function tagsController() {
 
 	router.endpoint().delete("/tags/:id")
 		.schema({
-			params: TagIdParams
+			params: TagIdParamsSchema
 		})
 		.handle(async data => {
 			const tag = await Tag.findByPk(data.params.tagId);
@@ -56,5 +56,5 @@ export function tagsController() {
 			}
 			await tag.destroy();
 			return { message: "Deleted" };
-		}).build();
+		}).build({ tags: ["Tags"] });
 }

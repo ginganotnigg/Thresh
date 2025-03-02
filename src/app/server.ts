@@ -1,14 +1,16 @@
-import express, { json, Router, Request, Response, NextFunction } from "express";
+import express, { json, Request, Response, NextFunction } from "express";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
-
 import { ProcessModule } from "../modules/do/process.module";
 import { ManageModule } from "../modules/manage/manage.module";
 import { ModuleBase } from "../library/cayduajs/module/module.base";
 import { HistoryModule } from "../modules/history/history.module";
-import swaggerMiddleware from "../configs/swagger/mdw";
-import { configGlobalApp } from "./config-global-app";
+import { Chuoi } from "../library/caychuoijs";
+import { AllExceptionFilter } from "../common/controller/defaults/all-exception.filter";
+import { LoggerMiddleware } from "../common/controller/defaults/logger.middleware";
+import { UserPipe } from "../common/controller/pipes/user.pipe";
+import { TagsModule } from "../modules/tags/tags.module";
 
 export async function configApplication() {
 
@@ -27,21 +29,22 @@ export async function configApplication() {
 		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-role-id');
 		next();
 	});
+	app.get('/ping', (req, res) => { res.send('server is alive'); });
 
 	// =====================
 	// Config Global Middlewares
 	// =====================
 
-	configGlobalApp(app);
+	Chuoi.init(app, {
+		basePath: '/api',
+		title: "API",
+		version: "1.0.0",
+	});
 
-	// =====================
-	// Routes
-	// =====================
-
-	const router = Router();
-	app.get('/ping', (req, res) => { res.send('server is alive'); });
-	app.use('/api', router);
-
+	Chuoi.middleware(
+		LoggerMiddleware,
+		UserPipe,
+	);
 
 	// =====================
 	// Socket.io
@@ -59,19 +62,29 @@ export async function configApplication() {
 	// =====================
 
 	const modules: ModuleBase[] = [
+		new TagsModule(),
 		new ProcessModule(io),
 		new ManageModule(),
-		new HistoryModule()
+		new HistoryModule(),
 	];
 	for (const m of modules) {
 		await m.initialize();
 	}
 
 	// =====================
-	// Under testing
+	// Final
 	// =====================
 
-	swaggerMiddleware(app);
+	Chuoi.final(new AllExceptionFilter());
+	Chuoi.log((message, isWarning) => {
+		if (isWarning) {
+			console.warn(message);
+		} else {
+			console.log(`\x1b[32m ${message} \x1b[0m`);
+		}
+	});
+
+	Chuoi.doc();
 
 	return server;
 }
