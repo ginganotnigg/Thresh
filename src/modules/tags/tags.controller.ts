@@ -7,17 +7,24 @@ const bodySchema = z.object({
 	name: z.string().nonempty()
 });
 
+const responseSchema = z.object({
+	id: z.number(),
+	name: z.string()
+});
+
 export function tagsController() {
 	const router = Chuoi.newRoute();
 
 	router.endpoint().get("/tags")
+		.schema({ response: z.array(responseSchema) })
 		.handle(async data => {
-			return await Tag.findAll();
+			return (await Tag.findAll());
 		}).build({ tags: ["Tags"] });
 
 	router.endpoint().get("/tags/:id")
 		.schema({
-			params: TagIdParamsSchema
+			params: TagIdParamsSchema,
+			response: responseSchema,
 		})
 		.handle(async data => {
 			return await Tag.findByPk(data.params.tagId);
@@ -54,7 +61,6 @@ export function tagsController() {
 			if (!tag) {
 				throw new Error("Tag not found");
 			}
-			await tag.destroy();
-			return { message: "Deleted" };
+			return await tag.destroy();
 		}).build({ tags: ["Tags"] });
 }

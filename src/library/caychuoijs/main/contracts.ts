@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express"
-import { CallbackExpressHandler, Constructor, RequestData } from "./utils/type";
+import { CallbackExpressHandler, Constructor } from "../utils/type";
 
 export interface IChuoiHandler {
 	get handle(): CallbackExpressHandler;

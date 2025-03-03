@@ -6,9 +6,11 @@ const TestFilterQuerySchema = z.object({
 	searchTitle: z.string().optional(),
 	minMinutesToAnswer: z.coerce.number().optional(),
 	maxMinutesToAnswer: z.coerce.number().optional(),
-	difficulty: z.array(z.nativeEnum(TestDifficulty)).optional(),
+	difficulty: z.union([
+		z.array(z.nativeEnum(TestDifficulty)),
+		z.string()]).optional(),
 	tags: z.array(z.coerce.number()).optional(),
-	page: z.coerce.number().min(1).openapi({ default: 1 }),
+	page: z.coerce.number().min(1).default(1),
 	perPage: z.coerce.number().optional().default(5),
 });
 

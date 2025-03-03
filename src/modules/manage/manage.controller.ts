@@ -5,6 +5,9 @@ import { TestIdParamsSchema } from "../../common/controller/schemas/params";
 import { CommandService } from "./services/command.service";
 import { ManagerGuardHandler } from "../../common/controller/guards/manager.guard";
 import { UserIdMetaSchema } from "../../common/controller/schemas/meta";
+import { QuestionResponseSchema, TestItemResponseSchema, TestResponseSchema } from "./schemas/response";
+import { PagedSchema } from "../../common/controller/schemas/base";
+import { z } from "zod";
 
 export function manageController() {
 	const router = Chuoi.newRoute();
@@ -12,13 +15,15 @@ export function manageController() {
 	router.endpoint().get('/tests')
 		.schema({
 			query: TestFilterQuerySchema,
+			response: PagedSchema(TestItemResponseSchema)
 		}).handle(async data => {
 			return await ManageQueryService.getTests(data.query);
 		}).build();
 
 	router.endpoint().get('/tests/:testId')
 		.schema({
-			params: TestIdParamsSchema
+			params: TestIdParamsSchema,
+			response: TestResponseSchema
 		}).handle(async data => {
 			return await ManageQueryService.getTest(data.params.testId);
 		}).build();
@@ -26,7 +31,8 @@ export function manageController() {
 	router.endpoint().get('/tests/:testId/questions')
 		.middleware(ManagerGuardHandler)
 		.schema({
-			params: TestIdParamsSchema
+			params: TestIdParamsSchema,
+			response: z.array(QuestionResponseSchema)
 		}).handle(async data => {
 			return await ManageQueryService.getQuestions(data.params.testId);
 		}).build();
@@ -35,7 +41,8 @@ export function manageController() {
 		.middleware(ManagerGuardHandler)
 		.schema({
 			query: TestFilterQuerySchema,
-			meta: UserIdMetaSchema
+			meta: UserIdMetaSchema,
+			response: PagedSchema(TestItemResponseSchema)
 		}).handle(async data => {
 			return await ManageQueryService.getManagerTests(data.meta.userId, data.query);
 		}).build();
@@ -44,7 +51,7 @@ export function manageController() {
 		.middleware(ManagerGuardHandler)
 		.schema({
 			body: TestCreateBodySchema,
-			meta: UserIdMetaSchema
+			meta: UserIdMetaSchema,
 		}).handle(async data => {
 			await CommandService.createTest(data.meta.userId, data.body);
 			return { message: "Test created" };

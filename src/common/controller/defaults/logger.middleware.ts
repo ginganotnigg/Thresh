@@ -1,6 +1,6 @@
 import { logHttpRequest } from "../../../configs/logger/winston";
 import { ChuoiContainer } from "../../../library/caychuoijs/utils/container";
-import { IChuoiHandler } from "../../../library/caychuoijs/contracts";
+import { IChuoiHandler } from "../../../library/caychuoijs/main/contracts";
 import { CallbackExpressHandler } from "../../../library/caychuoijs/utils/type";
 
 export class LoggerMiddleware implements IChuoiHandler {

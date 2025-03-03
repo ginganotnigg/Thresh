@@ -4,7 +4,7 @@ import { z } from "zod";
 export type Constructor<T = any> = new (...args: any[]) => T;
 export type HttpMethod = "get" | "post" | "put" | "delete" | "patch" | "options" | "head" | "trace";
 
-export type CallbackDataHandler<TParams, TQuery, TBody, THeaders, TMeta, TResponse> = (requestData: RequestData<TParams, TQuery, TBody, THeaders, TMeta>) => TResponse | Promise<TResponse>;
+export type CallbackDataHandler<TParams, TQuery, TBody, THeaders, TMeta, TResponse> = (requestData: RequestData<TParams, TQuery, TBody, THeaders, TMeta>) => TResponse | Promise<TResponse> | any;
 
 export type CallbackExpressHandler = (req: Request, res: Response, next: NextFunction) => void;
 
@@ -31,3 +31,7 @@ export type RequestSchema<
 	headers?: z.ZodObject<any, any, any, THeader>;
 	meta?: z.ZodObject<any, any, any, TMeta>;
 };
+
+export type FullSchema<TParams, TQuery, TBody, THeaders, TMeta, TResponse> = RequestSchema<TParams, TQuery, TBody, THeaders, TMeta> & {
+	response?: z.ZodType<TResponse> | z.ZodObject<any, any, any, TResponse> | z.ZodArray<z.ZodType<TResponse>>;
+}

@@ -5,6 +5,7 @@ import { Chuoi } from "../../../library/caychuoijs";
 import { ProcessCommandService } from "../services/command.service";
 import { ProcessQueryService } from "../services/query.service";
 import { AnswerAttemptBodySchema } from "./schemas/request";
+import { CurrentAttemptDetailResponseSchema } from "./schemas/response";
 
 export function processController() {
 	const router = Chuoi.newRoute().middleware(CandidateGuardHandler);
@@ -12,7 +13,8 @@ export function processController() {
 	router.endpoint().get('/tests/:testId/current')
 		.schema({
 			params: TestIdParamsSchema,
-			meta: UserIdMetaSchema
+			meta: UserIdMetaSchema,
+			response: CurrentAttemptDetailResponseSchema.optional()
 		}).handle(async data => {
 			const testId = data.params.testId;
 			const candidateId = data.meta.userId;
@@ -34,6 +36,7 @@ export function processController() {
 		.schema({
 			params: TestIdParamsSchema,
 			meta: UserIdMetaSchema,
+			response: CurrentAttemptDetailResponseSchema
 		}).handle(async data => {
 			const testId = data.params.testId;
 			const candidateId = data.meta.userId;

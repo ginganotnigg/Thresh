@@ -26,25 +26,12 @@ const QuestionResponseSchema = z.object({
 	correctOption: z.number(),
 });
 
-const AttemptResponseSchema = z.object({
-	id: z.number(),
-	testId: z.number(),
-	candidateId: z.string(),
-	score: z.number(),
-	status: z.nativeEnum(AttemptStatus),
-	answerQuestions: z.array(QuestionResponseSchema.extend({ chosenOption: z.number() })),
-	createdAt: z.date(),
-	updatedAt: z.date(),
-});
-
 export {
 	TestResponseSchema,
 	TestItemResponseSchema,
 	QuestionResponseSchema,
-	AttemptResponseSchema,
 };
 
 export type TestResponse = z.infer<typeof TestResponseSchema>;
 export type TestItemResponse = z.infer<typeof TestItemResponseSchema>;
 export type QuestionResponse = z.infer<typeof QuestionResponseSchema>;
-export type AttemptResponse = z.infer<typeof AttemptResponseSchema>;

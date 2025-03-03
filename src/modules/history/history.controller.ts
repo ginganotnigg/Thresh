@@ -4,6 +4,8 @@ import { HistoryQueryService } from "./history.query.service";
 import { AttemptFilterQuerySchema } from "./schemas/request";
 import { AttemptIdParamsSchema, TestIdParamsSchema } from "../../common/controller/schemas/params";
 import { UserIdMetaSchema } from "../../common/controller/schemas/meta";
+import { PagedSchema } from "../../common/controller/schemas/base";
+import { AnswerQuestionResultSchema, AttemptItemResult, AttemptItemResultSchema, AttemptResultSchema } from "./schemas/response";
 
 export function historyController() {
 	const router = Chuoi.newRoute();
@@ -13,6 +15,7 @@ export function historyController() {
 		.schema({
 			params: TestIdParamsSchema,
 			query: AttemptFilterQuerySchema,
+			response: PagedSchema(AttemptItemResultSchema)
 		})
 		.handle(async (data) => {
 			const testId = data.params.testId;
@@ -25,6 +28,7 @@ export function historyController() {
 		.middleware(ManagerGuardHandler)
 		.schema({
 			params: AttemptIdParamsSchema,
+			response: AttemptResultSchema,
 		})
 		.handle(async (data) => {
 			const attemptId = data.params.attemptId;
@@ -37,6 +41,7 @@ export function historyController() {
 		.schema({
 			params: AttemptIdParamsSchema,
 			query: AttemptFilterQuerySchema,
+			response: PagedSchema(AnswerQuestionResultSchema)
 		})
 		.handle(async (data) => {
 			const attemptId = data.params.attemptId;
@@ -50,6 +55,7 @@ export function historyController() {
 		.schema({
 			query: AttemptFilterQuerySchema,
 			meta: UserIdMetaSchema,
+			response: PagedSchema(AttemptItemResultSchema)
 		})
 		.handle(async (data) => {
 			const candidateId = data.meta.userId;
@@ -64,6 +70,7 @@ export function historyController() {
 			params: TestIdParamsSchema,
 			meta: UserIdMetaSchema,
 			query: AttemptFilterQuerySchema,
+			response: PagedSchema(AttemptItemResultSchema)
 		})
 		.handle(async (data) => {
 			const candidateId = data.meta.userId;

@@ -1,4 +1,4 @@
-import { IChuoiHandler } from "../../../library/caychuoijs/contracts";
+import { IChuoiHandler } from "../../../library/caychuoijs/main/contracts";
 import { CallbackExpressHandler } from "../../../library/caychuoijs/utils/type";
 import { ChuoiMeta } from "../../../library/caychuoijs/utils/meta";
 import { ChuoiContainer } from "../../../library/caychuoijs/utils/container";

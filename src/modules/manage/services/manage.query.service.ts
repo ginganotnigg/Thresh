@@ -73,6 +73,7 @@ export class ManageQueryService {
 }
 
 function getFilterCondition(filter: TestFilterQuery) {
+	const difficultyArray = filter.difficulty != null && typeof filter.difficulty === "string" ? [filter.difficulty] : filter.difficulty;
 	const whereClase = {
 		...(filter.searchTitle && {
 			title: {
@@ -92,7 +93,7 @@ function getFilterCondition(filter: TestFilterQuery) {
 		}),
 		...(filter.difficulty != null && filter.difficulty.length > 0 && {
 			difficulty: {
-				[Op.in]: filter.difficulty
+				[Op.in]: difficultyArray
 			}
 		}),
 	};
