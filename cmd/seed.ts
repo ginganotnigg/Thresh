@@ -1,4 +1,6 @@
-const { execSync } = require('child_process');
+import { execSync } from 'child_process';
+import { seed } from '../src/__tests__/seed';
+
 
 try {
 	console.log('Dropping database...');
@@ -13,8 +15,8 @@ try {
 	execSync('npx sequelize-cli db:migrate', { stdio: 'inherit' });
 	console.log('Migrations applied.');
 
-	console.log('Seeding data...');
-	execSync('npx sequelize-cli db:seed:all', { stdio: 'inherit' });
+	console.log('Seeding (test) data ...');
+	Promise.resolve(seed());
 	console.log('Seeding completed.');
 } catch (error) {
 	console.error('Error during seeding:', error);

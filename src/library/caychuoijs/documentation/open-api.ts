@@ -3,6 +3,11 @@ import { OpenAPIObjectConfigV31 } from "@asteasolutions/zod-to-openapi/dist/v3.1
 import { RequestSchema } from "../utils/type";
 import { z } from "zod";
 
+// Function to transform Express paths to OpenAPI paths
+function convertExpressPathToOpenAPI(path: string): string {
+	return path.replace(/:([\w]+)/g, '{$1}');
+}
+
 export class ChuoiDocument {
 	public static readonly documentRegistry = new OpenAPIRegistry();
 
@@ -29,7 +34,7 @@ export class ChuoiDocument {
 		tags?: string[],
 	) {
 		ChuoiDocument.documentRegistry.registerPath({
-			path,
+			path: convertExpressPathToOpenAPI(path),
 			method,
 			summary,
 			description,

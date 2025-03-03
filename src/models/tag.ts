@@ -1,4 +1,3 @@
-import sequelize from "../configs/sequelize/database";
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, Sequelize } from "sequelize";
 import Test from "./test";
 

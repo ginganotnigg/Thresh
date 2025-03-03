@@ -1,4 +1,4 @@
-import { Association, CreationOptional, DataTypes, HasManyCountAssociationsMixin, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
+import { Association, CreationOptional, DataTypes, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Question from "./question";
 import Tag from "./tag";
 import Attempt from "./attempt";

@@ -1,7 +1,7 @@
 import { TestCreateBody, TestUpdateBody } from "../schemas/request";
 import Test from "../../../models/test";
 import Question from "../../../models/question";
-import sequelize from "../../../configs/sequelize/database";
+import sequelize from "../../../configs/orm/sequelize";
 import { removeNullFields } from "../../../common/utils/object";
 
 export class CommandService {

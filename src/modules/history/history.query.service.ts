@@ -6,7 +6,7 @@ import Question from "../../models/question";
 import { AttemptAnswerFilterQuery, AttemptFilterQuery } from "./schemas/request";
 import { AnswerQuestionResult, AttemptItemResult, AttemptResult } from "./schemas/response";
 import Tag from "../../models/tag";
-import sequelize from "../../configs/sequelize/database";
+import sequelize from "../../configs/orm/sequelize";
 import { Literal } from "sequelize/types/utils";
 import { InferAttributes, WhereOptions } from "sequelize";
 

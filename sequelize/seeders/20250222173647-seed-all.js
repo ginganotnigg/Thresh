@@ -1,5 +1,5 @@
 'use strict';
-const data = require('./data.d.ts');
+const data = require('./data');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {

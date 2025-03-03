@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { config } from "dotenv";
 config();
-import syncSequelize from "./configs/sequelize/init";
+import syncSequelize from "./configs/orm/sequelize";
 import { configApplication } from "./app/server";
 
 const PORT = process.env.PORT || 8080;
