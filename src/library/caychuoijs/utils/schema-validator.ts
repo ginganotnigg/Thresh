@@ -1,9 +1,9 @@
 import { plainToClass } from "class-transformer";
 import { validateSync } from "class-validator";
-import { ISchemaValidator } from "../contracts";
 import { Constructor } from "./type";
 import { ValidationError } from "../../../common/controller/errors/validation.error";
 import { ChuoiContainer } from "./container";
+import { ISchemaValidator } from "../main/contracts";
 
 export class ClassValidatorSchemaValidator implements ISchemaValidator {
 	validate<T extends object>(obj: any, type: Constructor<T>): T {

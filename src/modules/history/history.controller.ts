@@ -22,7 +22,7 @@ export function historyController() {
 			const filter = data.query;
 			const result = await HistoryQueryService.getTestAttempts(testId, filter);
 			return result;
-		}).build();
+		}).build({ tags: ['History'] });
 
 	router.endpoint().get('/attempts/:attemptId')
 		.middleware(ManagerGuardHandler)
@@ -34,7 +34,7 @@ export function historyController() {
 			const attemptId = data.params.attemptId;
 			const result = await HistoryQueryService.getAttemptDetail(attemptId);
 			return result;
-		}).build();
+		}).build({ tags: ['History'] });
 
 	router.endpoint().get('/attempts/:attemptId/answers')
 		.middleware(ManagerGuardHandler)
@@ -48,7 +48,7 @@ export function historyController() {
 			const filter = data.query;
 			const result = await HistoryQueryService.getAttemptAnswers(attemptId, filter);
 			return result;
-		}).build();
+		}).build({ tags: ['History'] });
 
 	router.endpoint().get('/candidate/attempts')
 		.middleware(ManagerGuardHandler)
@@ -62,7 +62,7 @@ export function historyController() {
 			const filter = data.query;
 			const result = await HistoryQueryService.getCandidateAttempts(candidateId, filter);
 			return result;
-		}).build();
+		}).build({ tags: ['History'] });
 
 	router.endpoint().get('/candidate/tests/:testId/attempts')
 		.middleware(ManagerGuardHandler)
@@ -78,7 +78,7 @@ export function historyController() {
 			const filter = data.query;
 			const result = await HistoryQueryService.getCandidateAttempt(candidateId, testId, filter);
 			return result;
-		}).build();
+		}).build({ tags: ['History'] });
 
 	return router;
 }

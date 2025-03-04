@@ -18,7 +18,7 @@ export function manageController() {
 			response: PagedSchema(TestItemResponseSchema)
 		}).handle(async data => {
 			return await ManageQueryService.getTests(data.query);
-		}).build();
+		}).build({ tags: ['Tests'] });
 
 	router.endpoint().get('/tests/:testId')
 		.schema({
@@ -26,7 +26,7 @@ export function manageController() {
 			response: TestResponseSchema
 		}).handle(async data => {
 			return await ManageQueryService.getTest(data.params.testId);
-		}).build();
+		}).build({ tags: ['Tests'] });
 
 	router.endpoint().get('/tests/:testId/questions')
 		.middleware(ManagerGuardHandler)
@@ -35,7 +35,7 @@ export function manageController() {
 			response: z.array(QuestionResponseSchema)
 		}).handle(async data => {
 			return await ManageQueryService.getQuestions(data.params.testId);
-		}).build();
+		}).build({ tags: ['Tests', 'Questions'] });
 
 	router.endpoint().get('/manager/tests')
 		.middleware(ManagerGuardHandler)
@@ -45,7 +45,7 @@ export function manageController() {
 			response: PagedSchema(TestItemResponseSchema)
 		}).handle(async data => {
 			return await ManageQueryService.getManagerTests(data.meta.userId, data.query);
-		}).build();
+		}).build({ tags: ['Tests'] });
 
 	router.endpoint().post('/tests')
 		.middleware(ManagerGuardHandler)
@@ -55,7 +55,7 @@ export function manageController() {
 		}).handle(async data => {
 			await CommandService.createTest(data.meta.userId, data.body);
 			return { message: "Test created" };
-		}).build();
+		}).build({ tags: ['Tests'] });
 
 	router.endpoint().put('/tests/:testId')
 		.middleware(ManagerGuardHandler)
@@ -65,7 +65,7 @@ export function manageController() {
 		}).handle(async data => {
 			await CommandService.updateTest(data.params.testId, data.body);
 			return { message: "Test updated" };
-		}).build();
+		}).build({ tags: ['Tests'] });
 
 	router.endpoint().delete('/tests/:testId')
 		.middleware(ManagerGuardHandler)
@@ -74,5 +74,5 @@ export function manageController() {
 		}).handle(async data => {
 			await CommandService.deleteTest(data.params.testId);
 			return { message: "Test deleted" };
-		}).build();
+		}).build({ tags: ['Tests'] });
 }

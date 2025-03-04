@@ -25,6 +25,16 @@ export class ChuoiRouter {
 		this._path = routerPath;
 	}
 
+	fullPath() {
+		const _fullPath = (chuoiRouter: ChuoiRouter): string => {
+			if (chuoiRouter._path && chuoiRouter._parentChuoiRouter) {
+				return _fullPath(chuoiRouter._parentChuoiRouter) + chuoiRouter._path;
+			}
+			return "";
+		}
+		return _fullPath(this);
+	}
+
 	down(childPath?: string) {
 		const child = new ChuoiRouter(this, childPath);
 		const mdwHandlers = this._middlewares.map(m => ChuoiContainer.retrieve(m).handle);
@@ -58,14 +68,7 @@ export class ChuoiRouter {
 	}
 
 	endpoint() {
-		const findBasePath = (chuoiRouter: ChuoiRouter): string => {
-			if (chuoiRouter._path && chuoiRouter._parentChuoiRouter) {
-				return findBasePath(chuoiRouter._parentChuoiRouter) + chuoiRouter._path;
-			}
-			return "";
-		}
-		const basePath = findBasePath(this);
-		return new ChuoiEndpoint(basePath, this._router).endpoint();
+		return new ChuoiEndpoint(this.fullPath(), this._router).endpoint();
 	}
 }
 

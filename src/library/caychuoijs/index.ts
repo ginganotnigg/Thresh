@@ -20,13 +20,6 @@ export class Chuoi {
 
 	private constructor() { }
 
-	private static get(): { globalRouter: ChuoiRouter, baseRouter: Router } {
-		if (!this._globalRouter || !this._baseRouter) {
-			throw new Error("ChuoiController not initialized");
-		}
-		return { globalRouter: this._globalRouter, baseRouter: this._baseRouter };
-	}
-
 	static init(app: Application, {
 		basePath,
 		title,
@@ -92,10 +85,8 @@ export class Chuoi {
 				const methods = Object.keys(layer.route.methods).map(method => method.toUpperCase());
 				logger(`[${methods.join(', ')}] ${routePath}`, false);
 			} else if (layer.name === 'router' && layer.handle.stack) {
-				const subPath = parentPath + (layer.regexp.source
-					.replace(/^\/\^\\/, '') // Remove leading regex cruft
-					.replace(/\\\/\?\(\?=\\\/\|\$\)\/i/, '') // Remove trailing regex cruft
-					|| '');
+				const extractedPath = extractPathFromRegex(layer.regexp);
+				const subPath = parentPath + extractedPath;
 				this.log(logger, layer.handle, subPath);
 			}
 		});
@@ -123,3 +114,11 @@ export class Chuoi {
 		console.log(`API documentation is available at ${url}${this._config.basePath + docPath}`);
 	}
 }
+
+const extractPathFromRegex = (regexp: RegExp) => {
+	let path = regexp.toString()  // Convert to string
+		.replace('/^', '')         // Remove start anchor (^)
+		.replace('\\/?(?=\\/|$)/i', '') // Remove trailing regex part
+		.replace(/\\\//g, '/');    // Convert escaped slashes back to normal ones
+	return path;
+};

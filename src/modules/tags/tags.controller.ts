@@ -21,7 +21,7 @@ export function tagsController() {
 			return (await Tag.findAll());
 		}).build({ tags: ["Tags"] });
 
-	router.endpoint().get("/tags/:id")
+	router.endpoint().get("/tags/:tagId")
 		.schema({
 			params: TagIdParamsSchema,
 			response: responseSchema,
@@ -39,7 +39,7 @@ export function tagsController() {
 			return await Tag.create(data.body);
 		}).build({ tags: ["Tags"] });
 
-	router.endpoint().put("/tags/:id")
+	router.endpoint().put("/tags/:tagId")
 		.schema({
 			params: TagIdParamsSchema,
 			body: bodySchema
@@ -50,9 +50,9 @@ export function tagsController() {
 				throw new Error("Tag not found");
 			}
 			return await tag.update(data.body);
-		}).build();
+		}).build({ tags: ["Tags"] });
 
-	router.endpoint().delete("/tags/:id")
+	router.endpoint().delete("/tags/:tagId")
 		.schema({
 			params: TagIdParamsSchema
 		})

@@ -20,7 +20,7 @@ export function processController() {
 			const candidateId = data.meta.userId;
 			const current = await ProcessQueryService.getInProgressAttemptSmall(testId, candidateId);
 			return current;
-		}).build();
+		}).build({ tags: ['Current'] });
 
 	router.endpoint().post('/tests/:testId/current/new')
 		.schema({
@@ -30,7 +30,7 @@ export function processController() {
 			const testId = data.params.testId;
 			const candidateId = data.meta.userId;
 			await ProcessCommandService.startNew(testId, candidateId);
-		}).build();
+		}).build({ tags: ['Current'] });
 
 	router.endpoint().get('/tests/:testId/current/do')
 		.schema({
@@ -42,7 +42,7 @@ export function processController() {
 			const candidateId = data.meta.userId;
 			const attemptDetail = await ProcessQueryService.getInProgressAttemptToDo(testId, candidateId);
 			return attemptDetail;
-		}).build();
+		}).build({ tags: ['Current'], summary: 'Prepare the test for the candidate to do' });
 
 	router.endpoint().patch('/tests/:testId/current/answer')
 		.schema({
@@ -54,7 +54,7 @@ export function processController() {
 			const candidateId = data.meta.userId;
 			const body = data.body;
 			await ProcessCommandService.answer(testId, candidateId, body);
-		}).build();
+		}).build({ tags: ['Current'] });
 
 	router.endpoint().post('/tests/:testId/current/submit')
 		.schema({
@@ -64,5 +64,5 @@ export function processController() {
 			const testId = data.params.testId;
 			const candidateId = data.meta.userId;
 			await ProcessCommandService.submit(testId, candidateId);
-		}).build();
+		}).build({ tags: ['Current'] });
 }

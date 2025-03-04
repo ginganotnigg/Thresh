@@ -1,13 +1,14 @@
 import "reflect-metadata";
 import { config } from "dotenv";
 config();
-import syncSequelize from "./configs/orm/sequelize";
 import { configApplication } from "./app/server";
+import sequelize from "./configs/orm/sequelize";
 
 const PORT = process.env.PORT || 8080;
 
 Promise.allSettled([
-	syncSequelize()
+	sequelize.sync({ logging: false }),
+	sequelize.authenticate({ logging: false }),
 ]).then(async () => {
 	const server = await configApplication();
 	server.listen(PORT, () => {
