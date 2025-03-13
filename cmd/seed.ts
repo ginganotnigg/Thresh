@@ -1,6 +1,5 @@
 import { execSync } from 'child_process';
-import { seed } from '../src/__tests__/seed';
-
+import { seed } from '../src/__init__/seed';
 
 try {
 	console.log('Dropping database...');

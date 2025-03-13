@@ -13,12 +13,7 @@ export class ValidationError extends ErrorResponseBase {
 			}));
 		}
 		else if (errors instanceof ZodError) {
-			context = {
-				message: errors.message,
-				errors: errors.errors.map(error => ({
-					message: error.message
-				})),
-			};
+			context = errors.format();
 		}
 		else {
 			context = errors;

@@ -6,5 +6,5 @@ export function zodParse<TParsed>(schema: z.ZodObject<any, any, any, TParsed, an
 	if (result.success) {
 		return result.data;
 	}
-	throw new ValidationError(result.error.message);
+	throw new ValidationError(result.error);
 }

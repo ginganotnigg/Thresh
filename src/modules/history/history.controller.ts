@@ -5,7 +5,7 @@ import { AttemptAnswerFilterQuerySchema, AttemptFilterQuerySchema } from "./sche
 import { AttemptIdParamsSchema, TestIdParamsSchema } from "../../common/controller/schemas/params";
 import { UserIdMetaSchema } from "../../common/controller/schemas/meta";
 import { PagedSchema } from "../../common/controller/schemas/base";
-import { AnswerQuestionResultSchema, AttemptItemResult, AttemptItemResultSchema, AttemptResultSchema } from "./schemas/response";
+import { AnswerQuestionResultSchema, AttemptItemResultSchema, AttemptResultSchema } from "./schemas/response";
 
 export function historyController() {
 	const router = Chuoi.newRoute();

@@ -1,5 +1,14 @@
 import { config } from 'dotenv';
-config();
+
+process.env.NODE_ENV = process.env.NODE_ENV || 'test';
+
+config({
+	path: [
+		`${__dirname}/../.env`,
+		`${__dirname}/../.env.${process.env.NODE_ENV}`,
+	],
+	override: true,
+});
 import { execSync } from 'child_process';
 
 const testDir = process.env.TEST_DIR;

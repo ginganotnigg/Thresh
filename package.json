@@ -12,7 +12,8 @@
 		"migrate": "node cmd/migrate.js",
 		"seed": "ts-node cmd/seed.ts",
 		"test": "jest",
-		"test:folder": "cross-env NODE_ENV=test && ts-node cmd/test-folder.ts"
+		"test:folder": "cross-env NODE_ENV=test && ts-node cmd/test-folder.ts",
+		"doc": "ts-node cmd/doc.ts"
 	},
 	"author": "",
 	"license": "ISC",
@@ -45,6 +46,7 @@
 		"@types/express": "^5.0.0",
 		"@types/jest": "^29.5.14",
 		"@types/node-schedule": "^2.1.7",
+		"@types/supertest": "^6.0.2",
 		"@types/swagger-jsdoc": "^6.0.4",
 		"@types/swagger-ui-express": "^4.1.8",
 		"@types/winston": "^2.4.4",

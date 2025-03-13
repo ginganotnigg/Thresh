@@ -18,6 +18,10 @@
 	"exclude": [
 		"node_modules",
 		"**/*.spec.ts",
-		"**/*.test.ts"
+		"**/*.test.ts",
+		"**/__tests__/**",
+		"**/__test__/**",
+		"**/__mocks__/**",
+		"**/__mock__/**",
 	]
 }

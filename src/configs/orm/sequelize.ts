@@ -1,6 +1,3 @@
-import { config } from "dotenv";
-config();
-
 import { Sequelize } from "sequelize";
 import { logSqlCommand } from "../logger/winston";
 import Attempt from "../../models/attempt";

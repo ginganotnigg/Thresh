@@ -38,7 +38,11 @@ export async function load() {
 	const testsHasTags = await readCsv(`${__dirname}/data/tests_has_tags.csv`);
 	const questions = (await readCsv(`${__dirname}/data/questions.csv`)).map(q => ({ ...q, options: JSON.stringify(pipeStringToArray(q.options)) }));
 	const attempts = await readCsv(`${__dirname}/data/attempts.csv`);
-	const attemptsAnswerQuestions = [];
+	const attemptsAnswerQuestions: {
+		attemptId: number,
+		questionId: number,
+		chosenOption: number | null
+	}[] = [];
 	for (let i = 0; i < attempts.length; i++) {
 		const a = attempts[i];
 		for (let j = 0; j < questions.length; j++) {

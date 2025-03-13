@@ -1,18 +1,15 @@
 import "reflect-metadata";
-import { config } from "dotenv";
-config();
+import { env } from "./app/env"; // On top of all others imports
 import { configApplication } from "./app/server";
 import sequelize from "./configs/orm/sequelize";
-
-const PORT = process.env.PORT || 8080;
 
 Promise.allSettled([
 	sequelize.sync({ logging: false }),
 	sequelize.authenticate({ logging: false }),
 ]).then(async () => {
-	const server = await configApplication();
-	server.listen(PORT, () => {
-		console.log(`Server running on port: ${PORT}`);
+	const { server } = await configApplication();
+	server.listen(env.port, () => {
+		console.log(`Server running on port: ${env.port}`);
 	});
 }).catch((err) => {
 	console.error(err);

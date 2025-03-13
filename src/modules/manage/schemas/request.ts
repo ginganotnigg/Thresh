@@ -8,8 +8,20 @@ const TestFilterQuerySchema = z.object({
 	maxMinutesToAnswer: z.coerce.number().optional(),
 	difficulty: z.union([
 		z.array(z.nativeEnum(TestDifficulty)),
-		z.string()]).optional(),
-	tags: z.array(z.coerce.number()).optional(),
+		z.string().transform((str) => {
+			if (!str) return [];
+			return str.split(',').map(s => s.trim())
+				.filter(s => Object.values(TestDifficulty).includes(s as TestDifficulty))
+				.map(s => s as TestDifficulty);
+		})
+	]).optional(),
+	tags: z.union([
+		z.array(z.coerce.number()),
+		z.string().transform((str) => {
+			if (!str) return [];
+			return str.split(',').map(Number).filter(n => !isNaN(n));
+		})
+	]).optional(),
 	page: z.coerce.number().min(1).default(1),
 	perPage: z.coerce.number().optional().default(5),
 });
