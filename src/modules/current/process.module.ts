@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { ModuleBase } from "../../library/cayduajs/module/module.base";
-import { processController } from "./controllers/process.controller";
+import { processController } from "./controllers/current.controller";
 import { NotifyService } from "./services/notify.service";
 
 export class ProcessModule extends ModuleBase {

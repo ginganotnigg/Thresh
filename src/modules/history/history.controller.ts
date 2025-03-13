@@ -1,7 +1,7 @@
 import { ManagerGuardHandler } from "../../common/controller/guards/manager.guard";
 import { Chuoi } from "../../library/caychuoijs";
 import { HistoryQueryService } from "./history.query.service";
-import { AttemptFilterQuerySchema } from "./schemas/request";
+import { AttemptAnswerFilterQuerySchema, AttemptFilterQuerySchema } from "./schemas/request";
 import { AttemptIdParamsSchema, TestIdParamsSchema } from "../../common/controller/schemas/params";
 import { UserIdMetaSchema } from "../../common/controller/schemas/meta";
 import { PagedSchema } from "../../common/controller/schemas/base";
@@ -40,7 +40,7 @@ export function historyController() {
 		.middleware(ManagerGuardHandler)
 		.schema({
 			params: AttemptIdParamsSchema,
-			query: AttemptFilterQuerySchema,
+			query: AttemptAnswerFilterQuerySchema,
 			response: PagedSchema(AnswerQuestionResultSchema)
 		})
 		.handle(async (data) => {

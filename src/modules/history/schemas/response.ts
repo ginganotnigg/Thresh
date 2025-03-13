@@ -13,6 +13,7 @@ const AttemptItemResultSchema = z.object({
 	startDate: z.date(),
 	timeSpent: z.number(),
 	score: z.number(),
+	totalScore: z.number(),
 });
 
 const AttemptResultSchema = AttemptItemResultSchema.extend({
@@ -29,7 +30,7 @@ const AnswerQuestionResultSchema = z.object({
 		points: z.number(),
 		correctOption: z.number(),
 	}),
-	chosenOption: z.number(),
+	chosenOption: z.number().nullable(),
 });
 
 export { AttemptItemResultSchema, AttemptResultSchema, AnswerQuestionResultSchema };

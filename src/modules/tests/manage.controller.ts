@@ -35,7 +35,7 @@ export function manageController() {
 			response: z.array(QuestionResponseSchema)
 		}).handle(async data => {
 			return await ManageQueryService.getQuestions(data.params.testId);
-		}).build({ tags: ['Tests', 'Questions'] });
+		}).build({ tags: ['Tests'] });
 
 	router.endpoint().get('/manager/tests')
 		.middleware(ManagerGuardHandler)

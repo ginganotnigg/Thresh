@@ -109,7 +109,7 @@ export class Chuoi {
 				},
 			]
 		});
-		writeFileSync("swagger.json", JSON.stringify(swaggerSpec));
+		writeFileSync("openapi.json", JSON.stringify(swaggerSpec));
 		this._baseRouter.use(docPath, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 		console.log(`API documentation is available at ${url}${this._config.basePath + docPath}`);
 	}

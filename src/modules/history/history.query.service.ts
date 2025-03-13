@@ -31,6 +31,7 @@ export class HistoryQueryService {
 			attributes: {
 				include: [
 					getScoreSQL,
+					getTotalScoreSQL,
 					getTotalQuestionSQL,
 					getTotalCorrectAnswerSQL,
 					getTotalWrongAnswerSQL
@@ -51,8 +52,9 @@ export class HistoryQueryService {
 			},
 			candidateId: attempt.candidateId,
 			startDate: attempt.createdAt,
-			score: Number(attempt.get("score")!),
 			timeSpent: attempt.timeSpent,
+			score: Number(attempt.get("score")!),
+			totalScore: Number(attempt.get("totalScore")!),
 			totalQuestions: Number(attempt.get("totalQuestions")!),
 			totalCorrectAnswers: Number(attempt.get("totalCorrectAnswers")!),
 			totalWrongAnswers: Number(attempt.get("totalWrongAnswers")!)
@@ -83,7 +85,7 @@ export class HistoryQueryService {
 				points: qoa.points!,
 				correctOption: qoa.correctOption!
 			}
-			let chosenOption = -1;
+			let chosenOption = null;
 			if (
 				qoa.Attempts_answer_Questions != null &&
 				qoa.Attempts_answer_Questions.length >= 1
@@ -138,7 +140,10 @@ async function retrieveFilteredAttempts(whereClause: WhereOptions<InferAttribute
 			}
 		],
 		attributes: {
-			include: [getScoreSQL]
+			include: [
+				getScoreSQL,
+				getTotalScoreSQL,
+			]
 		},
 		order,
 		limit: filter.perPage,
@@ -157,6 +162,7 @@ async function retrieveFilteredAttempts(whereClause: WhereOptions<InferAttribute
 		candidateId: attempt.candidateId,
 		startDate: attempt.createdAt,
 		score: Number(attempt.get("score")!),
+		totalScore: Number(attempt.get("totalScore")!),
 		timeSpent: attempt.timeSpent
 	}));
 	return {
@@ -182,6 +188,15 @@ const getScoreSQL: [Literal, string] = [sequelize.literal(`(
 	ON aaq.questionId = q.id
 	WHERE aaq.attemptId = Attempt.id
 	)`), "score"
+];
+
+const getTotalScoreSQL: [Literal, string] = [sequelize.literal(`(
+	SELECT COALESCE(
+		SUM(q.points), 0
+	)
+	FROM questions AS q
+	WHERE q.testId = Test.id
+	)`), "totalScore"
 ];
 
 const getTotalQuestionSQL: [Literal, string] = [sequelize.literal(`(

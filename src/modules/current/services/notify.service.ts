@@ -15,7 +15,7 @@ export class NotifyService {
 		if (this._instance) {
 			throw new Error('Socket controller already initialized');
 		}
-		const namespace = server.of('/process');
+		const namespace = server.of('/current');
 		this._instance = new NotifyService(namespace);
 	}
 
@@ -52,7 +52,7 @@ export class NotifyService {
 	}
 
 	synced(attemptId: number, timeLeft: number): void {
-		this.namespace.to(attemptId.toString()).emit(SOCKET_EVENT.SYNCED, timeLeft);
+		this.namespace.to(attemptId.toString()).emit(SOCKET_EVENT.SYNCED, { timeLeft });
 	}
 
 	// Not necessary, Can be removed if too complex
