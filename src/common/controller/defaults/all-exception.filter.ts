@@ -9,7 +9,7 @@ export class AllExceptionFilter implements IChuoiExceptionHandler {
 		const errorRes = {
 			stack: process.env.NODE_ENV === 'production' ? null : err.stack ?? undefined,
 			httpCode: 500,
-			message: 'Internal Server Error',
+			message: 'Internal Server Error: ' + err.message || 'Unknown error',
 			code: ErrorResponseCodes.INTERNAL_SERVER_ERROR,
 			context: err,
 			links: [''],

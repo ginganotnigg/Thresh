@@ -12,7 +12,7 @@ import { InferAttributes, WhereOptions } from "sequelize";
 
 export class HistoryQueryService {
 	static async getTestAttempts(testId: number, filter: AttemptFilterQuery): Promise<Paged<AttemptItemResult>> {
-		return await retrieveFilteredAttempts({ testId }, filter,);
+		return await retrieveFilteredAttempts({ testId }, filter);
 	}
 
 	static async getAttemptDetail(attemptId: number): Promise<AttemptResult> {
@@ -194,15 +194,15 @@ const getTotalScoreSQL: [Literal, string] = [sequelize.literal(`(
 	SELECT COALESCE(
 		SUM(q.points), 0
 	)
-	FROM questions AS q
-	WHERE q.testId = Test.id
+	FROM questions AS q, tests AS t
+	WHERE q.testId = t.id
 	)`), "totalScore"
 ];
 
 const getTotalQuestionSQL: [Literal, string] = [sequelize.literal(`(
 	SELECT COUNT(*)
-	FROM questions AS q
-	WHERE q.testId = Test.id
+	FROM questions AS q, tests AS t
+	WHERE q.testId = t.id
 	)`), "totalQuestions"
 ];
 
