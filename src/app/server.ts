@@ -57,13 +57,12 @@ export async function configApplication() {
 	);
 
 	// =====================
-	// Socket.io
+	// Servers
 	// =====================
 
-	const server = http.createServer(app);
-	const io = new Server(server, {
+	const ioServer = new Server({
 		cors: {
-			origin: process.env.CORS_ORIGIN || '*',
+			origin: env.corsOrigin,
 		}
 	});
 
@@ -73,7 +72,7 @@ export async function configApplication() {
 
 	const modules: ModuleBase[] = [
 		new TagsModule(),
-		new ProcessModule(io),
+		new ProcessModule(ioServer),
 		new ManageModule(),
 		new HistoryModule(),
 	];
@@ -86,6 +85,21 @@ export async function configApplication() {
 	// =====================
 
 	Chuoi.final(AllExceptionFilter);
+
+	// =====================
+	// Server listen
+	// =====================
+
+	const socketServer = http.createServer(app);
+	const restServer = http.createServer(app);
+
+	ioServer.attach(socketServer);
+	socketServer.listen(+env.socketPort, () => {
+		console.log(`Socket server running on port: ${env.socketPort}`);
+	});
+	restServer.listen(+env.port, () => {
+		console.log(`Rest server running on port: ${env.port}`);
+	});
 
 	// =====================
 	// Documentation
@@ -105,5 +119,5 @@ export async function configApplication() {
 		Chuoi.doc();
 	}
 
-	return { server, app };
+	return { socketServer, app };
 }

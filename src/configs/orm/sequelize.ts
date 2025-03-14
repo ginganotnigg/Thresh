@@ -5,16 +5,17 @@ import AttemptsAnswerQuestions from "../../models/attempts_answer_questions";
 import Question from "../../models/question";
 import Tag from "../../models/tag";
 import Test from "../../models/test";
+import { env } from "../../app/env";
 
 const sequelize = new Sequelize(
-	process.env.DB_DATABASE ?? "database",
-	process.env.DB_USERNAME ?? "root",
-	process.env.DB_PASSWORD ?? "123456",
+	env.db.database,
+	env.db.username,
+	env.db.password,
 	{
-		host: process.env.DB_HOST,
-		port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
+		host: env.db.host,
+		port: env.db.port,
 		dialect: "mysql",
-		logging: Boolean(process.env.DATABASE_LOGGING) ? logSqlCommand : false,
+		logging: env.databaseLogging ? logSqlCommand : false,
 		dialectOptions: {
 			connectTimeout: 0,
 		},

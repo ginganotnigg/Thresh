@@ -8,6 +8,7 @@ import { ChuoiDocument } from "./documentation/open-api";
 import { writeFileSync } from "fs";
 import swaggerUi from 'swagger-ui-express';
 import { ChuoiContainer } from "./utils/container";
+import { env } from "../../app/env";
 
 export class Chuoi {
 	private static _globalRouter?: ChuoiRouter;
@@ -96,7 +97,7 @@ export class Chuoi {
 		if (!this._baseRouter) {
 			throw new Error("ChuoiController not initialized");
 		}
-		const url = `http://localhost:${process.env.PORT}`
+		const url = `http://localhost:${env.port}`;
 		const swaggerSpec = ChuoiDocument.generateV31({
 			info: {
 				title: this._config.title,

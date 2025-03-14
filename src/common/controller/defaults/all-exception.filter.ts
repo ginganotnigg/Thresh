@@ -3,11 +3,12 @@ import logger from "../../../configs/logger/winston";
 import { ErrorResponseCodes, ErrorResponseBase } from "../errors/error-response.base";
 import { ChuoiContainer } from "../../../library/caychuoijs/utils/container";
 import { IChuoiExceptionHandler } from "../../../library/caychuoijs/main/contracts";
+import { env } from "../../../app/env";
 
 export class AllExceptionFilter implements IChuoiExceptionHandler {
 	handle(err: any, req: Request, res: Response, next: NextFunction): void {
 		const errorRes = {
-			stack: process.env.NODE_ENV === 'production' ? null : err.stack ?? undefined,
+			stack: env.mode === 'production' ? null : err.stack ?? undefined,
 			httpCode: 500,
 			message: 'Internal Server Error: ' + err.message || 'Unknown error',
 			code: ErrorResponseCodes.INTERNAL_SERVER_ERROR,

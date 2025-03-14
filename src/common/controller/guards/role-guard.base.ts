@@ -1,3 +1,4 @@
+import { env } from "../../../app/env";
 import { IChuoiHandler } from "../../../library/caychuoijs/main/contracts";
 import { CallbackExpressHandler } from "../../../library/caychuoijs/utils/type";
 import { Role } from "./role";
@@ -8,7 +9,7 @@ export abstract class RoleGuardBaseHandler implements IChuoiHandler {
 	) { }
 
 	handle: CallbackExpressHandler = (req, res, next) => {
-		if (process.env.NO_AUTH === 'true') {
+		if (env.noAuth == true) {
 			next();
 		}
 		else if (req.header('x-role-id') === undefined) {

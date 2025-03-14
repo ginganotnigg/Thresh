@@ -1,17 +1,7 @@
-import { config } from 'dotenv';
-
-process.env.NODE_ENV = process.env.NODE_ENV || 'test';
-
-config({
-	path: [
-		`${__dirname}/../.env`,
-		`${__dirname}/../.env.${process.env.NODE_ENV}`,
-	],
-	override: true,
-});
+import { env } from "../src/app/env";
 import { execSync } from 'child_process';
 
-const testDir = process.env.TEST_DIR;
+const testDir = env.testDir;
 
 if (testDir == null) {
 	console.log('Please provide a test directory to run tests in: TEST_DIR=tests/folder');
