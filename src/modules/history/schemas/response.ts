@@ -11,7 +11,7 @@ const AttemptItemResultSchema = z.object({
 	}),
 	candidateId: z.string(),
 	startDate: z.date(),
-	timeSpent: z.number(),
+	secondsSpent: z.number(),
 	score: z.number(),
 	totalScore: z.number(),
 });

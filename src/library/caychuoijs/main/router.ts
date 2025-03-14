@@ -111,54 +111,66 @@ class ChuoiEndpoint {
 		}
 	};
 
+	// **************************
+	// Method chaining:
+	// + Those with using call back function must be used with .bind(_this) to keep the context
+	// **************************
+
 	private _methodNext() {
+		const _this = this;
 		return {
-			middleware: this.middleware.bind(this),
-			schema: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => this.schema.bind(this)(schema),
-			before: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => this.before.bind(this)<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
-			handle: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => this.handle.bind(this)<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
+			middleware: _this.middleware.bind(_this),
+			schema: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this.schema(schema),
+			before: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => _this.before(handler),
+			handle: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this.handle(handler),
 		}
 	}
 
 	private _methodMiddleware() {
+		const _this = this;
 		return {
-			schema: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => this.schema.bind(this)<TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema),
-			before: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => this.before.bind(this)<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
-			handle: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => this.handle.bind(this)<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
+			schema: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this.schema<TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema),
+			before: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => _this.before<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
+			handle: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this.handle<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
 		}
 	}
 
 	private _methodSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>() {
+		const _this = this;
 		return {
-			before: (handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => this.before.bind(this)<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
-			handle: (handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => this.handle.bind(this)<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
+			before: (handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => _this.before<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
+			handle: (handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this.handle<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
 		}
 	}
 
 	private _methodBefore<TParams, TQuery, TBody, THeader, TMeta, TResponse>() {
+		const _this = this;
 		return {
-			handle: (handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => this.handle.bind(this)<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
+			handle: (handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this.handle<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
 		}
 	}
 
 	private _methodHandle<TResponse>() {
+		const _this = this;
 		return {
-			after: (handler: (result: TResponse, res: Response) => void | Promise<void>) => this.after.bind(this)<TResponse>(handler),
-			error: this.error.bind(this),
-			build: this.build.bind(this),
+			after: (handler: (result: TResponse, res: Response) => void | Promise<void>) => _this.after<TResponse>(handler),
+			error: _this.error.bind(_this),
+			build: _this.build.bind(_this),
 		}
 	}
 
 	private _methodAfter() {
+		const _this = this;
 		return {
-			error: this.error.bind(this),
-			build: this.build.bind(this)
+			error: _this.error.bind(_this),
+			build: _this.build.bind(_this),
 		}
 	}
 
 	private _methodError() {
+		const _this = this;
 		return {
-			build: this.build.bind(this)
+			build: _this.build.bind(_this),
 		}
 	}
 

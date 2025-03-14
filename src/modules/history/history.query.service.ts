@@ -52,7 +52,7 @@ export class HistoryQueryService {
 			},
 			candidateId: attempt.candidateId,
 			startDate: attempt.createdAt,
-			timeSpent: attempt.timeSpent,
+			secondsSpent: attempt.secondsSpent,
 			score: Number(attempt.get("score")!),
 			totalScore: Number(attempt.get("totalScore")!),
 			totalQuestions: Number(attempt.get("totalQuestions")!),
@@ -163,7 +163,7 @@ async function retrieveFilteredAttempts(whereClause: WhereOptions<InferAttribute
 		startDate: attempt.createdAt,
 		score: Number(attempt.get("score")!),
 		totalScore: Number(attempt.get("totalScore")!),
-		timeSpent: attempt.timeSpent
+		secondsSpent: attempt.secondsSpent,
 	}));
 	return {
 		data,

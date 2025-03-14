@@ -3,12 +3,12 @@ import Test from "./test";
 import { AttemptStatus } from "../common/domain/enum";
 import AttemptsAnswerQuestions from "./attempts_answer_questions";
 
-
 class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<Attempt>> {
 	declare id: CreationOptional<number>;
 	declare testId: number;
 	declare candidateId: string;
 	declare status: AttemptStatus;
+	declare secondsSpent: number;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 
@@ -19,11 +19,6 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 	declare totalQuestions?: NonAttribute<number>;
 	declare totalCorrectAnswers?: NonAttribute<number>;
 	declare totalWrongAnswers?: NonAttribute<number>;
-
-	get timeSpent(): NonAttribute<number> {
-		if (!this.createdAt || !this.updatedAt) { return 0; }
-		return this.updatedAt!.getTime() - this.createdAt!.getTime();
-	}
 
 	declare static associations: {
 		Attempts_answer_Questions: Association<Attempt, AttemptsAnswerQuestions>;
@@ -51,6 +46,10 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 			status: {
 				type: DataTypes.ENUM,
 				values: Object.values(AttemptStatus),
+				allowNull: false,
+			},
+			secondsSpent: {
+				type: DataTypes.INTEGER,
 				allowNull: false,
 			},
 			createdAt: DataTypes.DATE,
