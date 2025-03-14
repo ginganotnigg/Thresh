@@ -14,7 +14,7 @@ export function processController() {
 		.schema({
 			params: TestIdParamsSchema,
 			meta: UserIdMetaSchema,
-			response: CurrentAttemptSmallResponseSchema.optional()
+			response: CurrentAttemptSmallResponseSchema.nullable()
 		}).handle(async data => {
 			const testId = data.params.testId;
 			const candidateId = data.meta.userId;

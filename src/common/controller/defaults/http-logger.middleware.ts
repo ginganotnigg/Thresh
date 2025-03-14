@@ -15,9 +15,9 @@ export class LoggerMiddleware implements IChuoiHandler {
 			next();
 		});
 		const _originalJson = res.json;
-		(res.send as any) = function (body: any) {
+		(res.json as any) = function (body: any) {
 			logHttpResponse(`[${res.statusCode}] - [${res.statusMessage}] \n [${JSON.stringify(body)}]`, body);
-			return _originalJson.apply(res, body);
+			return _originalJson.call(res, body);
 		};
 	}
 }

@@ -1,24 +1,28 @@
+import { logTickError } from "../../../configs/logger/winston";
 import { EventController } from "../controllers/event.controller";
 import { AttemptTimeMemory } from "./attempt-time.memory";
 
 // Todo: make global and handlers configurable
 
-const tick = 1000; // 1 second
+const tick = 1000; // Refresh every 1 second
 
-export class TimerController {
+export class TimerService {
 	static init() {
 		setInterval(() => {
-			this.tick();
+			try {
+				this.tick();
+			} catch (error) {
+				logTickError(error);
+			}
 		}, tick);
 	}
 
-	private static tick() {
-		console.log('tick');
-		// Do something
+	private static async tick() {
 		const attemptTime = AttemptTimeMemory.instance().all();
-		attemptTime.forEach(attempt => {
-			this.syncTime(attempt.attemptId, attempt.endDate);
+		const promises = attemptTime.map(async (attempt) => {
+			await this.syncTime(attempt.attemptId, attempt.endDate);
 		});
+		await Promise.all(promises);
 	}
 
 	private static async syncTime(attemptId: number, endDate: Date) {

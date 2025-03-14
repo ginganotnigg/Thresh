@@ -32,17 +32,33 @@ export class NotifyService {
 	) {
 		this.namespace.disconnectSockets();
 		this.namespace.removeAllListeners();
+
+		this.namespace.use((socket, next) => {
+			const userId = socket.handshake.auth.userId;
+			if (userId == null) {
+				return next(new Error("Authentication error"));
+			}
+			socket.data.userId = userId;
+			return next();
+		});
+
 		this.namespace.on('connection', (socket) => {
 			logSocket(`[${socket.id}] => Client connected to: /current`);
 			socket.on('disconnect', () => {
 				logSocket(`[${socket.id}] => Client disconnected to: /current`);
 			});
-			socket.on(SOCKET_EVENT.REGISTERED, async (testId, userId) => {
-				const id = await ProcessQueryService.getInProgressAttemptId(testId, userId);
-				if (id == null) {
-					return;
+			socket.on(SOCKET_EVENT.REGISTERED, async (testId) => {
+				// Missing id here
+				try {
+					const candidateId = socket.data.userId;
+					const id = await ProcessQueryService.getInProgressAttemptId(testId, candidateId);
+					if (id == null) {
+						return;
+					}
+					await socket.join(id.toString());
+				} catch (error) {
+					logSocket(`[${socket.id}] => Error`, { error });
 				}
-				await socket.join(id.toString());
 			});
 		});
 		this.namespace.adapter.on('join-room', (room, id) => {

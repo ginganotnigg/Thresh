@@ -8,6 +8,7 @@ const levels = {
 	http: 3,
 	socket: 3,
 	sql: 3,
+	tick: 3,
 	debug: 5
 };
 
@@ -16,32 +17,33 @@ const colors = {
 	warn: 'yellow',
 	info: 'green',
 	http: 'cyan',
-	socket: 'orange',
-	sql: 'magenta',
+	socket: 'cyan',
+	sql: 'cyan',
+	tick: 'cyan',
 	debug: 'blue'
 };
 
 const { combine, timestamp, printf, colorize, align } = format;
 
-const restCustomFormat = printf(({ level, message, timestamp }) => {
+const restCustomFormat = printf(({ level, message, timestamp, errorStack }) => {
 	const requestId = getRequestId();
-	return `[${requestId}] - [${timestamp}] - [${level}]: ${message}`;
+	return `[${requestId}] - [${timestamp}] - [${level}]: ${message} ${errorStack ? '\n' + '[Error Stack]: ' + '\n' + errorStack : ''}`;
 });
 
-const socketCustomFormat = printf(({ level, message, timestamp }) => {
-	return `[${timestamp}] - [${level}]: ${message}`;
+const socketCustomFormat = printf(({ level, message, timestamp, errorStack }) => {
+	return `[${timestamp}] - [${level}]: ${message} ${errorStack ? '\n' + '[Error Stack]: ' + '\n' + errorStack : ''}`;
 });
 
-const restFormat = combine(
+const httpFormat = combine(
 	colorize(),
-	timestamp(),
+	timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
 	align(),
 	restCustomFormat
 );
 
-const socketFormat = combine(
+const normalFormat = combine(
 	colorize(),
-	timestamp(),
+	timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
 	align(),
 	socketCustomFormat
 );
@@ -50,44 +52,54 @@ format.colorize().addColors(colors);
 
 const logger = createLogger({
 	levels,
-	level: 'http',
-	format: restFormat,
+	level: 'info',
+	format: httpFormat,
 	transports: [
-		new transports.Console(),
-		new transports.File({ filename: 'logs/error.log', level: 'error' }),
+		new transports.Console({ level: 'info' }),
+		new transports.File({ filename: 'logs/error.log', level: 'error', options: { flags: 'w' } }),
 		new transports.File({ filename: 'logs/combined.log' }),
 	],
 });
 
 const httpRequestLogger = createLogger({
 	level: 'info',
-	format: restFormat,
+	format: httpFormat,
 	transports: [
-		new transports.File({ filename: 'logs/req.log', level: 'info' })
+		new transports.File({ filename: 'logs/req.log', level: 'info', options: { flags: 'w' } })
 	]
 });
 
 const httpResponseLogger = createLogger({
 	level: 'info',
-	format: restFormat,
+	format: httpFormat,
 	transports: [
-		new transports.File({ filename: 'logs/res.log', level: 'info' })
+		new transports.File({ filename: 'logs/res.log', level: 'info', options: { flags: 'w' } })
 	]
 });
 
 const sqlLogger = createLogger({
 	level: 'info',
-	format: restFormat,
+	format: httpFormat,
 	transports: [
-		new transports.File({ filename: 'logs/sql.log', level: 'info' })
+		new transports.File({ filename: 'logs/sql.log', level: 'info', options: { flags: 'w' } })
 	]
 });
 
 const socketLogger = createLogger({
+	levels,
 	level: 'info',
-	format: socketFormat,
+	format: normalFormat,
 	transports: [
-		new transports.File({ filename: 'logs/socket.log', level: 'info' })
+		new transports.File({ filename: 'logs/socket.log', level: 'info', options: { flags: 'w' } })
+	]
+});
+
+const tickLogger = createLogger({
+	levels,
+	level: 'error',
+	format: normalFormat,
+	transports: [
+		new transports.File({ filename: 'logs/tick.log', level: 'error', options: { flags: 'w' } })
 	]
 });
 
@@ -107,8 +119,22 @@ export const logSqlCommand = (message: string, meta?: any) => {
 };
 
 export const logSocket = (message: string, meta?: any) => {
-	socketLogger.info(message, meta);
+	socketLogger.info(message, { ...meta });
 	logger.log('socket', message, meta);
+}
+
+export const logTickError = (error: Error | unknown, meta?: any) => {
+	let message;
+	let errorStack;
+	if (error instanceof Error) {
+		message = error.message;
+		errorStack = error.stack || '';
+	} else {
+		message = 'Unknown error';
+		errorStack = JSON.stringify(error);
+	}
+	tickLogger.error({ message, errorStack, ...meta });
+	logger.log('error', { message, errorStack, ...meta });
 }
 
 export default logger;

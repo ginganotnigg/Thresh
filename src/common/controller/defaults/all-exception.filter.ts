@@ -25,8 +25,10 @@ export class AllExceptionFilter implements IChuoiExceptionHandler {
 			errorRes.links = err.links;
 			errorRes.timestamp = err.timestamp;
 		}
-		logger.error(`[${req.method}] ${req.originalUrl} - ${errorRes.httpCode} - ${errorRes.message}`, errorRes.stack);
-
+		logger.error({
+			message: `[${req.method}] ${req.originalUrl} - ${errorRes.httpCode} - ${errorRes.message}`,
+			errorStack: errorRes.stack
+		});
 		res.status(errorRes.httpCode).json(errorRes);
 	}
 }
