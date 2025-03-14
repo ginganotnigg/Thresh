@@ -1,5 +1,6 @@
 import { Namespace, Server } from 'socket.io';
 import { ProcessQueryService } from './query.service';
+import { logSocket } from '../../../configs/logger/winston';
 
 export const SOCKET_EVENT = {
 	REGISTERED: 'registered',
@@ -32,9 +33,9 @@ export class NotifyService {
 		this.namespace.disconnectSockets();
 		this.namespace.removeAllListeners();
 		this.namespace.on('connection', (socket) => {
-			console.log(`Client connected: ${socket.id}`);
+			logSocket(`[${socket.id}] => Client connected to: /current`);
 			socket.on('disconnect', () => {
-				console.log(`Client disconnected: ${socket.id}`);
+				logSocket(`[${socket.id}] => Client disconnected to: /current`);
 			});
 			socket.on(SOCKET_EVENT.REGISTERED, async (testId, userId) => {
 				const id = await ProcessQueryService.getInProgressAttemptId(testId, userId);
@@ -44,19 +45,26 @@ export class NotifyService {
 				await socket.join(id.toString());
 			});
 		});
-		console.log('Socket controller initialized');
+		this.namespace.adapter.on('join-room', (room, id) => {
+			logSocket(`[${id}] => Client joined room: ${room}`);
+		});
+		this.namespace.adapter.on('leave-room', (room, id) => {
+			logSocket(`[${id}] => Client left room: ${room}`);
+		});
 	}
 
 	ended(attemptId: number): void {
 		this.namespace.to(attemptId.toString()).emit(SOCKET_EVENT.ENDED);
+		logSocket(`[ROOM] - [${attemptId}] => ${SOCKET_EVENT.ENDED}`);
 	}
 
 	synced(attemptId: number, timeLeft: number): void {
 		this.namespace.to(attemptId.toString()).emit(SOCKET_EVENT.SYNCED, { timeLeft });
+		logSocket(`[ROOM] - [${attemptId}] => ${SOCKET_EVENT.SYNCED} | timeLeft: ${timeLeft}`);
 	}
 
-	// Not necessary, Can be removed if too complex
 	answered(attemptId: number, questionId: number, optionId?: number): void {
 		this.namespace.to(attemptId.toString()).emit(SOCKET_EVENT.ANSWERED, { questionId, optionId });
+		logSocket(`[ROOM] - [${attemptId}] => ${SOCKET_EVENT.ANSWERED} | questionId: ${questionId} | optionId: ${optionId ?? 'undefined'}`);
 	}
 }

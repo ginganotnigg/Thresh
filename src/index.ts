@@ -1,13 +1,12 @@
 import "reflect-metadata";
-import { env } from "./app/env";
-import { configApplication } from "./app/server";
+import { configServer } from "./app/configServer";
 import sequelize from "./configs/orm/sequelize";
 
 Promise.allSettled([
 	sequelize.sync({ logging: false }),
 	sequelize.authenticate({ logging: false }),
 ]).then(async () => {
-	await configApplication();
+	await configServer();
 }).catch((err) => {
 	console.error(err);
 	console.error("Unable to start server, shutting down...");

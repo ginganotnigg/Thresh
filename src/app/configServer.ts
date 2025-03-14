@@ -8,21 +8,13 @@ import { ModuleBase } from "../library/cayduajs/module/module.base";
 import { HistoryModule } from "../modules/history/history.module";
 import { Chuoi } from "../library/caychuoijs";
 import { AllExceptionFilter } from "../common/controller/defaults/all-exception.filter";
-import { LoggerMiddleware } from "../common/controller/defaults/logger.middleware";
+import { LoggerMiddleware } from "../common/controller/defaults/http-logger.middleware";
 import { UserPipe } from "../common/controller/pipes/user.pipe";
 import { TagsModule } from "../modules/tags/tags.module";
 import { env } from "./env";
+import { configSocket } from "./configSocket";
 
-export async function configApplication() {
-	// =====================
-	// Environment
-	// =====================
-
-	for (const key in env) {
-		if (env.hasOwnProperty(key)) {
-			console.log(`${key}: ${env[key as keyof typeof env]}`);
-		}
-	}
+export async function configServer() {
 
 	// =====================
 	// Express
@@ -41,6 +33,13 @@ export async function configApplication() {
 	});
 	app.get('/ping', (req, res) => { res.send('server is alive'); });
 
+
+	// =====================
+	// Socket IO
+	// =====================
+
+	const io = configSocket();
+
 	// =====================
 	// Config Global Middlewares
 	// =====================
@@ -57,22 +56,12 @@ export async function configApplication() {
 	);
 
 	// =====================
-	// Servers
-	// =====================
-
-	const ioServer = new Server({
-		cors: {
-			origin: env.corsOrigin,
-		}
-	});
-
-	// =====================
 	// Modules
 	// =====================
 
 	const modules: ModuleBase[] = [
 		new TagsModule(),
-		new ProcessModule(ioServer),
+		new ProcessModule(io),
 		new ManageModule(),
 		new HistoryModule(),
 	];
@@ -93,7 +82,7 @@ export async function configApplication() {
 	const socketServer = http.createServer(app);
 	const restServer = http.createServer(app);
 
-	ioServer.attach(socketServer);
+	io.attach(socketServer);
 	socketServer.listen(+env.socketPort, () => {
 		console.log(`Socket server running on port: ${env.socketPort}`);
 	});
@@ -119,5 +108,5 @@ export async function configApplication() {
 		Chuoi.doc();
 	}
 
-	return { socketServer, app };
+	return { socketServer, restServer, app };
 }

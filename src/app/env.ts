@@ -11,7 +11,7 @@ config({
 	override: true,
 });
 
-export const env = {
+const env = {
 	mode: envMode,
 	db: {
 		database: process.env.DB_DATABASE || "database",
@@ -32,3 +32,8 @@ export const env = {
 	databaseLogging: process.env.DATABASE_LOGGING === "true",
 	restApiDocumentation: process.env.REST_API_DOCUMENTATION === "true",
 }
+
+console.log("Loaded environment variables:");
+console.log(env);
+
+export { env };
