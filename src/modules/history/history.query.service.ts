@@ -9,6 +9,7 @@ import Tag from "../../models/tag";
 import sequelize from "../../configs/orm/sequelize";
 import { Literal } from "sequelize/types/utils";
 import { InferAttributes, WhereOptions } from "sequelize";
+import { DomainErrorResponse } from "../../common/controller/errors/domain.error";
 
 export class HistoryQueryService {
 	static async getTestAttempts(testId: number, filter: AttemptFilterQuery): Promise<Paged<AttemptItemResult>> {
@@ -39,7 +40,7 @@ export class HistoryQueryService {
 			}
 		});
 		if (attempt == null) {
-			throw new Error("Attempt not found");
+			throw new DomainErrorResponse("Attempt not found");
 		}
 		return {
 			id: attempt.id,
@@ -91,7 +92,7 @@ export class HistoryQueryService {
 				qoa.Attempts_answer_Questions.length >= 1
 			) {
 				if (qoa.Attempts_answer_Questions.length !== 1) {
-					throw new Error("Invalid attempts_answer_qusetions data");
+					throw new DomainErrorResponse("Invalid attempts_answer_qusetions data");
 				}
 				chosenOption = qoa.Attempts_answer_Questions[0].chosenOption;
 			}

@@ -51,7 +51,7 @@ export class ProcessQueryService {
 			}]
 		});
 		if (attempt == null) {
-			throw new Error('Attempt not found');
+			throw new DomainErrorResponse('Attempt not found');
 		}
 		return {
 			id: attempt.id,

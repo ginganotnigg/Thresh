@@ -2,6 +2,7 @@ import { z } from "zod";
 import { TagIdParamsSchema } from "../../common/controller/schemas/params";
 import { Chuoi } from "../../library/caychuoijs";
 import Tag from "../../models/tag";
+import { DomainErrorResponse } from "../../common/controller/errors/domain.error";
 
 const bodySchema = z.object({
 	name: z.string().nonempty()
@@ -47,7 +48,7 @@ export function tagsController() {
 		.handle(async data => {
 			const tag = await Tag.findByPk(data.params.tagId);
 			if (!tag) {
-				throw new Error("Tag not found");
+				throw new DomainErrorResponse("Tag not found");
 			}
 			return await tag.update(data.body);
 		}).build({ tags: ["Tags"] });
@@ -59,7 +60,7 @@ export function tagsController() {
 		.handle(async data => {
 			const tag = await Tag.findByPk(data.params.tagId);
 			if (!tag) {
-				throw new Error("Tag not found");
+				throw new DomainErrorResponse("Tag not found");
 			}
 			return await tag.destroy();
 		}).build({ tags: ["Tags"] });

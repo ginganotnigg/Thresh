@@ -3,6 +3,7 @@ import Test from "../../../models/test";
 import Question from "../../../models/question";
 import sequelize from "../../../configs/orm/sequelize";
 import { removeNullFields } from "../../../common/utils/object";
+import { DomainErrorResponse } from "../../../common/controller/errors/domain.error";
 
 export class CommandService {
 	static async createTest(managerId: string, param: TestCreateBody) {
@@ -32,7 +33,7 @@ export class CommandService {
 		try {
 			const test = await Test.findByPk(testId, { transaction });
 			if (test == null) {
-				throw new Error("Test not found");
+				throw new DomainErrorResponse("Test not found");
 			}
 			await Test.update({
 				...notNullTestInfo,
@@ -65,7 +66,7 @@ export class CommandService {
 		try {
 			const test = await Test.findByPk(id, { transaction });
 			if (test == null) {
-				throw new Error("Test not found");
+				throw new DomainErrorResponse("Test not found");
 			}
 			await test.destroy({ transaction });
 			await transaction.commit();

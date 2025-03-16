@@ -2,12 +2,13 @@ import { WriteRepository } from '../infra/repository';
 import { EventController } from '../controllers/event.controller';
 import { ProcessQueryService } from './query.service';
 import { AnswerAttemptBody } from '../controllers/schemas/request';
+import { DomainErrorResponse } from '../../../common/controller/errors/domain.error';
 
 export class ProcessCommandService {
 	static async evaluateAttempt(attemptId: number): Promise<void> {
 		const attempt = await ProcessQueryService.getInProgressAttemptSmallById(attemptId);
 		if (attempt == null) {
-			throw new Error('Attempt not found');
+			throw new DomainErrorResponse('Attempt not found');
 		}
 		let nowOrEnd = new Date();
 		if (attempt.endedAt < new Date()) {
@@ -27,7 +28,7 @@ export class ProcessCommandService {
 		await WriteRepository.newAttempt(testId, candidateId);
 		const attemptId = await ProcessQueryService.getInProgressAttemptId(testId, candidateId);
 		if (attemptId == null) {
-			throw new Error('Attempt is not yet started');
+			throw new DomainErrorResponse('Attempt is not yet started');
 		}
 		EventController.started(attemptId);
 	}
@@ -36,7 +37,7 @@ export class ProcessCommandService {
 		const { questionId, optionId } = param;
 		const attemptId = await ProcessQueryService.getInProgressAttemptId(testId, userId);
 		if (attemptId == null) {
-			throw new Error('Attempt to answer is not found');
+			throw new DomainErrorResponse('Attempt to answer is not found');
 		}
 		await WriteRepository.answerAttempt(attemptId, questionId, optionId);
 		EventController.answered(attemptId, questionId, optionId);
@@ -45,7 +46,7 @@ export class ProcessCommandService {
 	static async submit(testId: number, candidateId: string) {
 		const attemptId = await ProcessQueryService.getInProgressAttemptId(testId, candidateId);
 		if (attemptId == null) {
-			throw new Error('Attempt to submit is not found');
+			throw new DomainErrorResponse('Attempt to submit is not found');
 		}
 		await this.evaluateAttempt(attemptId);
 	}
