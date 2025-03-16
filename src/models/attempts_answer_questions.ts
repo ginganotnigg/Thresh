@@ -62,10 +62,10 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 	}
 
 	static associate() {
-		AttemptsAnswerQuestions.hasOne(Question, {
-			sourceKey: "questionId",
-			foreignKey: "id",
+		AttemptsAnswerQuestions.belongsTo(Question, {
+			foreignKey: "questionId",
 		});
+
 		AttemptsAnswerQuestions.belongsTo(Attempt, {
 			foreignKey: "attemptId",
 		});

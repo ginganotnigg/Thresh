@@ -1,4 +1,4 @@
-import { XRoleIdSchema } from "../../../common/controller/schemas/headers";
+import { XRoleIdSchema, XUserIdSchema } from "../../../common/controller/schemas/headers";
 import { UserIdMetaSchema } from "../../../common/controller/schemas/meta";
 import { TestIdParamsSchema } from "../../../common/controller/schemas/params";
 import { Chuoi } from "../../../library/caychuoijs";
@@ -14,11 +14,11 @@ export function processController() {
 		.schema({
 			params: TestIdParamsSchema,
 			meta: UserIdMetaSchema,
-			headers: XRoleIdSchema,
+			headers: XUserIdSchema,
 			response: CurrentAttemptSmallResponseSchema.nullable(),
 		}).handle(async data => {
 			const testId = data.params.testId;
-			const candidateId = data.headers["x-role-id"];
+			const candidateId = data.headers["x-user-id"];
 			const current = await ProcessQueryService.getInProgressAttemptSmall(testId, candidateId);
 			return current;
 		}).build({ tags: ['Current'] });
@@ -27,10 +27,10 @@ export function processController() {
 		.schema({
 			params: TestIdParamsSchema,
 			meta: UserIdMetaSchema,
-			headers: XRoleIdSchema,
+			headers: XUserIdSchema,
 		}).handle(async data => {
 			const testId = data.params.testId;
-			const candidateId = data.headers["x-role-id"];
+			const candidateId = data.headers["x-user-id"];
 			await ProcessCommandService.startNew(testId, candidateId);
 		}).build({ tags: ['Current'] });
 
@@ -38,11 +38,11 @@ export function processController() {
 		.schema({
 			params: TestIdParamsSchema,
 			meta: UserIdMetaSchema,
-			headers: XRoleIdSchema,
+			headers: XUserIdSchema,
 			response: CurrentAttemptDetailResponseSchema
 		}).handle(async data => {
 			const testId = data.params.testId;
-			const candidateId = data.headers["x-role-id"];
+			const candidateId = data.headers["x-user-id"];
 			const attemptDetail = await ProcessQueryService.getInProgressAttemptToDo(testId, candidateId);
 			return attemptDetail;
 		}).build({ tags: ['Current'], summary: 'Prepare the test for the candidate to do' });
@@ -51,11 +51,11 @@ export function processController() {
 		.schema({
 			params: TestIdParamsSchema,
 			meta: UserIdMetaSchema,
-			headers: XRoleIdSchema,
+			headers: XUserIdSchema,
 			body: AnswerAttemptBodySchema,
 		}).handle(async data => {
 			const testId = data.params.testId;
-			const candidateId = data.headers["x-role-id"];
+			const candidateId = data.headers["x-user-id"];
 			const body = data.body;
 			await ProcessCommandService.answer(testId, candidateId, body);
 		}).build({ tags: ['Current'] });
@@ -63,11 +63,11 @@ export function processController() {
 	router.endpoint().post('/tests/:testId/current/submit')
 		.schema({
 			params: TestIdParamsSchema,
-			headers: XRoleIdSchema,
+			headers: XUserIdSchema,
 			meta: UserIdMetaSchema,
 		}).handle(async data => {
 			const testId = data.params.testId;
-			const candidateId = data.headers["x-role-id"];
+			const candidateId = data.headers["x-user-id"];
 			await ProcessCommandService.submit(testId, candidateId);
 		}).build({ tags: ['Current'] });
 }

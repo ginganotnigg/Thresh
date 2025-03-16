@@ -65,6 +65,12 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 		Question.belongsTo(Test, {
 			foreignKey: 'testId',
 		});
+
+		Question.hasMany(AttemptsAnswerQuestions, {
+			sourceKey: "id",
+			foreignKey: "questionId",
+			onDelete: 'CASCADE',
+		});
 	}
 }
 
