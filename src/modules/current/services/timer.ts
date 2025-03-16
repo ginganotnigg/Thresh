@@ -27,12 +27,12 @@ export class TimerService {
 
 	private static async syncTime(attemptId: number, endDate: Date) {
 		const now = new Date();
-		const timeLeft = Math.floor((endDate.getTime() - now.getTime()) / 1000);
-		if (timeLeft <= 0) {
+		const secondsLeft = Math.floor((endDate.getTime() - now.getTime()) / 1000);
+		if (secondsLeft <= 0) {
 			await EventController.timeUp(attemptId);
 			EventController.synced(attemptId, 0);
 		} else {
-			EventController.synced(attemptId, timeLeft);
+			EventController.synced(attemptId, secondsLeft);
 		}
 	}
 }

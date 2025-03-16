@@ -5,7 +5,16 @@ import { AnswerAttemptBody } from '../controllers/schemas/request';
 
 export class ProcessCommandService {
 	static async evaluateAttempt(attemptId: number): Promise<void> {
-		await WriteRepository.endAttempt(attemptId);
+		const attempt = await ProcessQueryService.getInProgressAttemptSmallById(attemptId);
+		if (attempt == null) {
+			throw new Error('Attempt not found');
+		}
+		let nowOrEnd = new Date();
+		if (attempt.endedAt < new Date()) {
+			nowOrEnd = attempt.endedAt;
+		}
+		const secondsSpent = Math.floor((nowOrEnd.getTime() - attempt.startedAt.getTime()) / 1000);
+		await WriteRepository.endAttempt(attemptId, secondsSpent);
 		EventController.ended(attemptId);
 	}
 

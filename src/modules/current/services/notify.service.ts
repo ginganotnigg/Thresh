@@ -74,9 +74,9 @@ export class NotifyService {
 		logSocket(`[ROOM] - [${attemptId}] => ${SOCKET_EVENT.ENDED}`);
 	}
 
-	synced(attemptId: number, timeLeft: number): void {
-		this.namespace.to(attemptId.toString()).emit(SOCKET_EVENT.SYNCED, { timeLeft });
-		logSocket(`[ROOM] - [${attemptId}] => ${SOCKET_EVENT.SYNCED} | timeLeft: ${timeLeft}`);
+	synced(attemptId: number, secondsLeft: number): void {
+		this.namespace.to(attemptId.toString()).emit(SOCKET_EVENT.SYNCED, { secondsLeft });
+		logSocket(`[ROOM] - [${attemptId}] => ${SOCKET_EVENT.SYNCED} | secondsLeft: ${secondsLeft}`);
 	}
 
 	answered(attemptId: number, questionId: number, optionId?: number): void {

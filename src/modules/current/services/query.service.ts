@@ -4,6 +4,7 @@ import Question from '../../../models/question';
 import Test from '../../../models/test';
 import { AttemptStatus } from '../../../common/domain/enum';
 import { CurrentAttemptDetailResponse, CurrentAttemptSmallResponse } from '../controllers/schemas/response';
+import { DomainErrorResponse } from '../../../common/controller/errors/domain.error';
 
 export class ProcessQueryService {
 	static async getInProgressAttemptId(testId: number, candidateId: string): Promise<number | null> {
@@ -107,7 +108,7 @@ export class ProcessQueryService {
 			]
 		});
 		if (attempt == null) {
-			throw new Error('Attempt not found');
+			throw new DomainErrorResponse('Attempt not found');
 		}
 		return {
 			id: attempt.id,

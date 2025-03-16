@@ -1,7 +1,8 @@
-import { configApplication } from "../src/app/server";
+import { configServer } from "../src/app/configServer";
 
-configApplication().then(() => {
+configServer().then(() => {
 	console.log("Documentation generated successfully");
+	process.exit(0);
 }).catch((err) => {
 	console.error(err);
 	process.exit(1);

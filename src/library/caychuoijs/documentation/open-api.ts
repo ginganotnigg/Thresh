@@ -43,7 +43,7 @@ export class ChuoiDocument {
 				params: schema.params,
 				query: schema.query,
 				body: schema.body ? {
-					// To extends
+					// Only supports json response for convention
 					description: "Request body",
 					content: {
 						"application/json": {

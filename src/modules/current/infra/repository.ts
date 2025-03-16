@@ -8,13 +8,15 @@ export class WriteRepository {
 			testId: +testId,
 			candidateId: candidateId,
 			status: AttemptStatus.IN_PROGRESS,
+			secondsSpent: 0,
 		});
 	}
 
-	static async endAttempt(attemptId: number) {
+	static async endAttempt(attemptId: number, secondsSpent: number) {
 		await Attempt.update(
 			{
-				status: AttemptStatus.COMPLETED
+				status: AttemptStatus.COMPLETED,
+				secondsSpent: secondsSpent
 			},
 			{ where: { id: attemptId } }
 		);

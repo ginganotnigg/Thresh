@@ -8,8 +8,8 @@ export class EventController {
 		NotifyService.notify().ended(attemptId);
 	}
 
-	static synced(attemptId: number, timeLeft: number) {
-		NotifyService.notify().synced(attemptId, timeLeft);
+	static synced(attemptId: number, secondsLeft: number) {
+		NotifyService.notify().synced(attemptId, secondsLeft);
 	}
 
 	static answered(attemptId: number, questionId: number, optionId?: number) {
