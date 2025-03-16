@@ -58,7 +58,7 @@ export const CurrentAttemptDetailResponseSchema = z.object({
 			text: z.string(),
 		})),
 		points: z.number(),
-		chosenOption: z.number(),
+		chosenOption: z.number().nullable().openapi({ description: 'The index of the chosen option. If null, the question is not answered yet.' }),
 	})),
 	startedAt: z.date(),
 	endedAt: z.date(),

@@ -96,15 +96,16 @@ export class ProcessQueryService {
 				{
 					model: Test,
 					attributes: { exclude: ['answerCount'] },
-				},
-				{
-					model: AttemptsAnswerQuestions,
-					attributes: ['chosenOption'],
 					include: [{
 						model: Question,
 						attributes: { exclude: ['correctOption'] },
+						include: [{
+							model: AttemptsAnswerQuestions,
+							attributes: ['chosenOption'],
+							required: false,
+						}]
 					}]
-				}
+				},
 			]
 		});
 		if (attempt == null) {
@@ -122,12 +123,12 @@ export class ProcessQueryService {
 				createdAt: attempt.Test!.createdAt,
 				updatedAt: attempt.Test!.updatedAt,
 			},
-			questions: attempt.Attempts_answer_Questions!.map(answer => ({
-				id: answer.Question!.id,
-				text: answer.Question!.text,
-				options: answer.Question!.options!.map((option, index) => ({ id: index, text: option })),
-				points: answer.Question!.points,
-				chosenOption: answer.chosenOption,
+			questions: attempt.Test!.Questions!.map(question => ({
+				id: question.id,
+				text: question.text,
+				options: question.options!.map((option, index) => ({ id: index, text: option })),
+				points: question.points,
+				chosenOption: question.Attempts_answer_Questions?.find(aaq => aaq.attemptId === attempt.id)?.chosenOption || null,
 			})),
 			startedAt: attempt.createdAt,
 			endedAt: new Date(attempt.createdAt.getTime() + (attempt.Test!.minutesToAnswer! * 60 * 1000)),
