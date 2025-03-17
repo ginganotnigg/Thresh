@@ -2,7 +2,7 @@ import { XUserIdSchema } from "../../../controller/schemas/headers";
 import { TestIdParamsSchema } from "../../../controller/schemas/params";
 import { Chuoi } from "../../../library/caychuoijs";
 import { ProcessCommandService } from "../services/command.service";
-import { ProcessQueryService } from "../services/query.service";
+import { CurrentQueryService } from "../services/query.service";
 import { AnswerAttemptBodySchema } from "./schemas/request";
 import { CurrentAttemptDetailResponseSchema, CurrentAttemptSmallResponseSchema } from "./schemas/response";
 
@@ -17,7 +17,7 @@ export function processController() {
 		}).handle(async data => {
 			const testId = data.params.testId;
 			const candidateId = data.headers["x-user-id"];
-			const current = await ProcessQueryService.getCurrentAttemptState(testId, candidateId);
+			const current = await CurrentQueryService.getCurrentAttemptState(testId, candidateId);
 			return current;
 		}).build({ tags: ['Current'] });
 
@@ -29,7 +29,7 @@ export function processController() {
 		}).handle(async data => {
 			const testId = data.params.testId;
 			const candidateId = data.headers["x-user-id"];
-			const current = await ProcessQueryService.getCurrentAttemptState(testId, candidateId);
+			const current = await CurrentQueryService.getCurrentAttemptState(testId, candidateId);
 			return current;
 		}).build({ tags: ['Current'] });
 
@@ -51,7 +51,7 @@ export function processController() {
 		}).handle(async data => {
 			const testId = data.params.testId;
 			const candidateId = data.headers["x-user-id"];
-			const attemptDetail = await ProcessQueryService.getInProgressAttemptToDo(testId, candidateId);
+			const attemptDetail = await CurrentQueryService.getInProgressAttemptToDo(testId, candidateId);
 			return attemptDetail;
 		}).build({ tags: ['Current'], summary: 'Prepare the test for the candidate to do' });
 

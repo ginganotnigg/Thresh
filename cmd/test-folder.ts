@@ -1,5 +1,5 @@
-import { env } from "../src/app/env";
 import { execSync } from 'child_process';
+import { env } from '../src/utils/env';
 
 const testDir = env.testDir;
 
@@ -13,7 +13,6 @@ try {
 	execSync(`npx jest ${testDir}`, { stdio: 'inherit' });
 	console.log('Tests completed');
 } catch (e) {
-	console.error('Tests failed with error:');
-	console.error(e);
+	console.error('Tests failed');
 	process.exit(1);
 }

@@ -1,5 +1,5 @@
 import { Namespace, Server, Socket } from 'socket.io';
-import { ProcessQueryService } from '../services/query.service';
+import { CurrentQueryService } from '../services/query.service';
 import { logSocket } from '../../../configs/logger/winston';
 import { CurrentTestNamespace, CurrentTestSocket } from './schemas/socket';
 import { eventDispatcherInstance } from '../../../library/cayduajs/event/event-queue';
@@ -77,7 +77,7 @@ export class SocketController {
 			// Missing id here
 			try {
 				const candidateId = socket.data.candidateId;
-				const id = await ProcessQueryService.getInProgressAttemptId(testId, candidateId);
+				const id = await CurrentQueryService.getInProgressAttemptId(testId, candidateId);
 				if (id == null) {
 					cb({ error: "Attempt not found" });
 					return;

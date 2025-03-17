@@ -10,7 +10,7 @@ import { CurrentAttemptCompute } from '../../../domain/current-attempt/current-a
 
 const { getEndDate, getSecondsLeft } = CurrentAttemptCompute;
 
-export class ProcessQueryService {
+export class CurrentQueryService {
 	static async getInProgressAttemptId(testId: number, candidateId: string): Promise<number | null> {
 		const result = await Attempt.findOne({
 			where: {

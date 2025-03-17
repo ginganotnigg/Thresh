@@ -1,4 +1,4 @@
-import { ProcessQueryService } from "../services/query.service";
+import { CurrentQueryService } from "../services/query.service";
 import { AttemptSchedule } from "./schemas/dto";
 import schedule from "node-schedule";
 import logger, { logTickError } from "../../../configs/logger/winston";
@@ -21,7 +21,7 @@ export class ScheduleService {
 		if (this._instance) {
 			throw new Error('AttemptTimeMemory already initialized');
 		}
-		const attempts = await ProcessQueryService.loadAttemptsForSchedule();
+		const attempts = await CurrentQueryService.loadAttemptsForSchedule();
 		this._instance = new ScheduleService(attempts.map(attempt => new AttemptSchedule(
 			attempt.attemptId,
 			attempt.endDate
