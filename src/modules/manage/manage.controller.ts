@@ -1,12 +1,12 @@
+import { ManagerGuardHandler } from "../../controller/guards/manager.guard";
+import { PagedSchema } from "../../controller/schemas/base";
+import { UserIdMetaSchema } from "../../controller/schemas/meta";
+import { TestIdParamsSchema } from "../../controller/schemas/params";
 import { Chuoi } from "../../library/caychuoijs";
 import { TestCreateBodySchema, TestFilterQuerySchema, TestUpdateBodySchema } from "./schemas/request";
-import { ManageQueryService } from "./services/manage.query.service";
-import { TestIdParamsSchema } from "../../common/controller/schemas/params";
+import { TestItemResponseSchema, TestResponseSchema, QuestionResponseSchema } from "./schemas/response";
 import { CommandService } from "./services/command.service";
-import { ManagerGuardHandler } from "../../common/controller/guards/manager.guard";
-import { UserIdMetaSchema } from "../../common/controller/schemas/meta";
-import { QuestionResponseSchema, TestItemResponseSchema, TestResponseSchema } from "./schemas/response";
-import { PagedSchema } from "../../common/controller/schemas/base";
+import { ManageQueryService } from "./services/manage.query.service";
 import { z } from "zod";
 
 export function manageController() {

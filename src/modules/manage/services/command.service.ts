@@ -1,9 +1,9 @@
 import { TestCreateBody, TestUpdateBody } from "../schemas/request";
-import Test from "../../../models/test";
-import Question from "../../../models/question";
 import sequelize from "../../../configs/orm/sequelize";
-import { removeNullFields } from "../../../common/utils/object";
-import { DomainErrorResponse } from "../../../common/controller/errors/domain.error";
+import { removeNullFields } from "../../../utils/object";
+import Test from "../../../domain/models/test";
+import { DomainErrorResponse } from "../../../controller/errors/domain.error";
+import Question from "../../../domain/models/question";
 
 export class CommandService {
 	static async createTest(managerId: string, param: TestCreateBody) {

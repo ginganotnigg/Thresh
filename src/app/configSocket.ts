@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { env } from "./env";
+import { env } from "../utils/env";
 import { instrument } from "@socket.io/admin-ui";
 import { logSocket } from "../configs/logger/winston";
 
@@ -25,6 +25,10 @@ export function configSocket() {
 		socket.on('disconnect', () => {
 			logSocket(`[${socket.id}] => Client disconnected`);
 		});
+	});
+
+	io.on('error', (error) => {
+		logSocket('Error: ' + (error.message || error));
 	});
 
 	instrument(io, {

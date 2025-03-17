@@ -1,7 +1,7 @@
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
-import { AttemptStatus } from "../common/domain/enum";
 import AttemptsAnswerQuestions from "./attempts_answer_questions";
+import { AttemptStatus } from "../enum";
 
 class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<Attempt>> {
 	declare id: CreationOptional<number>;

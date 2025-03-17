@@ -1,5 +1,5 @@
 import { createLogger, format, transports } from 'winston';
-import { getRequestId } from '../../common/controller/defaults/http-logger.middleware';
+import { getRequestId } from '../../controller/defaults/http-logger.middleware';
 
 const levels = {
 	error: 0,
@@ -120,7 +120,7 @@ export const logSqlCommand = (message: string, meta?: any) => {
 
 export const logSocket = (message: string, meta?: any) => {
 	socketLogger.info(message, { ...meta });
-	logger.log('socket', message, meta);
+	logger.log('info', message, meta);
 }
 
 export const logTickError = (error: Error | unknown, meta?: any) => {

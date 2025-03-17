@@ -6,15 +6,14 @@ import { ManageModule } from "../modules/manage/manage.module";
 import { ModuleBase } from "../library/cayduajs/module/module.base";
 import { HistoryModule } from "../modules/history/history.module";
 import { Chuoi } from "../library/caychuoijs";
-import { AllExceptionFilter } from "../common/controller/defaults/all-exception.filter";
-import { LoggerMiddleware } from "../common/controller/defaults/http-logger.middleware";
-import { UserPipe } from "../common/controller/pipes/user.pipe";
 import { TagsModule } from "../modules/tags/tags.module";
-import { env } from "./env";
+import { env } from "../utils/env";
 import { configSocket } from "./configSocket";
+import { AllExceptionFilter } from "../controller/defaults/all-exception.filter";
+import { LoggerMiddleware } from "../controller/defaults/http-logger.middleware";
+import { UserPipe } from "../controller/pipes/user.pipe";
 
 export async function configServer() {
-
 	// =====================
 	// Express
 	// =====================

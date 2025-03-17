@@ -1,11 +1,11 @@
 import { Sequelize } from "sequelize";
 import { logSqlCommand } from "../logger/winston";
-import Attempt from "../../models/attempt";
-import AttemptsAnswerQuestions from "../../models/attempts_answer_questions";
-import Question from "../../models/question";
-import Tag from "../../models/tag";
-import Test from "../../models/test";
-import { env } from "../../app/env";
+import { env } from "../../utils/env";
+import Test from "../../domain/models/test";
+import Attempt from "../../domain/models/attempt";
+import AttemptsAnswerQuestions from "../../domain/models/attempts_answer_questions";
+import Question from "../../domain/models/question";
+import Tag from "../../domain/models/tag";
 
 const sequelize = new Sequelize(
 	env.db.database,

@@ -1,4 +1,4 @@
-import { readCsv } from "../common/utils/file";
+import { readCsv } from "../utils/file";
 
 /**
  * Converts a pipe-separated string to an array of strings

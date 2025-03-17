@@ -1,15 +1,15 @@
-import { Paged } from "../../common/controller/schemas/base";
-import Attempt from "../../models/attempt";
-import AttemptsAnswerQuestions from "../../models/attempts_answer_questions";
-import Test from "../../models/test";
-import Question from "../../models/question";
 import { AttemptAnswerFilterQuery, AttemptFilterQuery } from "./schemas/request";
 import { AnswerQuestionResult, AttemptItemResult, AttemptResult } from "./schemas/response";
-import Tag from "../../models/tag";
 import sequelize from "../../configs/orm/sequelize";
 import { Literal } from "sequelize/types/utils";
 import { InferAttributes, WhereOptions } from "sequelize";
-import { DomainErrorResponse } from "../../common/controller/errors/domain.error";
+import Test from "../../domain/models/test";
+import { DomainErrorResponse } from "../../controller/errors/domain.error";
+import { Paged } from "../../controller/schemas/base";
+import Attempt from "../../domain/models/attempt";
+import AttemptsAnswerQuestions from "../../domain/models/attempts_answer_questions";
+import Question from "../../domain/models/question";
+import Tag from "../../domain/models/tag";
 
 export class HistoryQueryService {
 	static async getTestAttempts(testId: number, filter: AttemptFilterQuery): Promise<Paged<AttemptItemResult>> {

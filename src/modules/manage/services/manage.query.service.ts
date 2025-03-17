@@ -1,7 +1,7 @@
-import { Paged } from "../../../common/controller/schemas/base";
-import Question from "../../../models/question";
-import Tag from "../../../models/tag";
-import Test from "../../../models/test";
+import { Paged } from "../../../controller/schemas/base";
+import Question from "../../../domain/models/question";
+import Tag from "../../../domain/models/tag";
+import Test from "../../../domain/models/test";
 import { TestFilterQuery } from "../schemas/request";
 import { QuestionResponse, TestItemResponse, TestResponse } from "../schemas/response";
 import { Op } from "sequelize";

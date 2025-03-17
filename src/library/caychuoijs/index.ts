@@ -8,7 +8,7 @@ import { ChuoiDocument } from "./documentation/open-api";
 import { writeFileSync } from "fs";
 import swaggerUi from 'swagger-ui-express';
 import { ChuoiContainer } from "./utils/container";
-import { env } from "../../app/env";
+import { env } from "../../utils/env";
 
 export class Chuoi {
 	private static _globalRouter?: ChuoiRouter;

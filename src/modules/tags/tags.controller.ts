@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { TagIdParamsSchema } from "../../common/controller/schemas/params";
+import { DomainErrorResponse } from "../../controller/errors/domain.error";
+import { TagIdParamsSchema } from "../../controller/schemas/params";
+import Tag from "../../domain/models/tag";
 import { Chuoi } from "../../library/caychuoijs";
-import Tag from "../../models/tag";
-import { DomainErrorResponse } from "../../common/controller/errors/domain.error";
 
 const bodySchema = z.object({
 	name: z.string().nonempty()

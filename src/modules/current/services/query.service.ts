@@ -1,10 +1,14 @@
-import Attempt from '../../../models/attempt';
-import AttemptsAnswerQuestions from '../../../models/attempts_answer_questions';
-import Question from '../../../models/question';
-import Test from '../../../models/test';
-import { AttemptStatus } from '../../../common/domain/enum';
+import { AttemptStatus } from '../../../domain/enum';
 import { CurrentAttemptDetailResponse, CurrentAttemptSmallResponse } from '../controllers/schemas/response';
-import { DomainErrorResponse } from '../../../common/controller/errors/domain.error';
+import { AttemptSchedule } from '../controllers/schemas/dto';
+import Test from '../../../domain/models/test';
+import { DomainErrorResponse } from '../../../controller/errors/domain.error';
+import Attempt from '../../../domain/models/attempt';
+import AttemptsAnswerQuestions from '../../../domain/models/attempts_answer_questions';
+import Question from '../../../domain/models/question';
+import { CurrentAttemptCompute } from '../../../domain/current-attempt/current-attempt.compute';
+
+const { getEndDate, getSecondsLeft } = CurrentAttemptCompute;
 
 export class ProcessQueryService {
 	static async getInProgressAttemptId(testId: number, candidateId: string): Promise<number | null> {
@@ -22,65 +26,55 @@ export class ProcessQueryService {
 		return result.getDataValue('id')!;
 	}
 
-	static async getAllInProgress(): Promise<CurrentAttemptSmallResponse[]> {
+	static async loadAttemptsForSchedule(): Promise<AttemptSchedule[]> {
 		const attempts = await Attempt.findAll({
 			where: {
 				status: AttemptStatus.IN_PROGRESS
 			},
 			attributes: ['id', 'createdAt'],
-			include: [{
+			include: {
 				model: Test,
 				attributes: ['minutesToAnswer'],
-			}]
-		});
-		return attempts.map(attempt => {
-			return {
-				id: attempt.id,
-				startedAt: attempt.createdAt,
-				endedAt: new Date(attempt.createdAt.getTime() + (attempt.Test!.minutesToAnswer! * 60 * 1000)),
 			}
 		});
+		return attempts.map(attempt => new AttemptSchedule(attempt.id, getEndDate(attempt, attempt.Test!.minutesToAnswer)));
 	}
 
-	static async getInProgressAttemptSmallById(attemptId: number): Promise<CurrentAttemptSmallResponse> {
-		const attempt = await Attempt.findByPk(attemptId, {
-			attributes: ['id', 'createdAt'],
-			include: [{
-				model: Test,
-				attributes: ['minutesToAnswer'],
-			}]
-		});
-		if (attempt == null) {
-			throw new DomainErrorResponse('Attempt not found');
-		}
-		return {
-			id: attempt.id,
-			startedAt: attempt.createdAt,
-			endedAt: new Date(attempt.createdAt.getTime() + (attempt.Test!.minutesToAnswer! * 60 * 1000)),
-		};
-	}
-
-	static async getInProgressAttemptSmall(testId: number, candidateId: string): Promise<CurrentAttemptSmallResponse | null> {
+	static async getCurrentAttemptState(testId: number, candidateId: string): Promise<CurrentAttemptSmallResponse | null> {
 		const attempt = await Attempt.findOne({
 			where: {
 				testId: testId,
 				candidateId: candidateId,
 				status: AttemptStatus.IN_PROGRESS,
 			},
-			attributes: ['ID', 'status', 'createdAt'],
-			include: [{
-				model: Test,
-				attributes: ['minutesToAnswer'],
-			}]
+			attributes: ['id', 'status', 'createdAt'],
+			include: [
+				{
+					model: Test,
+					attributes: ['minutesToAnswer'],
+				},
+				{
+					model: AttemptsAnswerQuestions,
+					attributes: ['questionId', 'chosenOption'],
+				}
+			]
 		});
 		if (attempt == null) {
-			return null;
+			throw new DomainErrorResponse('In-progress attempt not found');
 		}
-		const endDate = new Date(attempt.createdAt.getTime() + (attempt.Test!.minutesToAnswer! * 60 * 1000));
+		const minutesToAnswer = attempt.Test!.minutesToAnswer!;
+		const endedAt = getEndDate(attempt, minutesToAnswer);
+		const secondsLeft = getSecondsLeft(attempt, minutesToAnswer);
+		const answers = attempt.Attempts_answer_Questions!.map(answer => ({
+			questionId: answer.questionId,
+			chosenOption: answer.chosenOption,
+		}));
 		return {
 			id: attempt.id,
-			startedAt: attempt.createdAt,
-			endedAt: endDate,
+			secondsLeft,
+			endedAt,
+			createdAt: attempt.createdAt,
+			answers,
 		};
 	}
 
@@ -91,19 +85,12 @@ export class ProcessQueryService {
 				candidateId: candidateId,
 				status: AttemptStatus.IN_PROGRESS,
 			},
-			attributes: { exclude: ["score"] },
 			include: [
 				{
 					model: Test,
-					attributes: { exclude: ['answerCount'] },
 					include: [{
 						model: Question,
-						attributes: { exclude: ['correctOption'] },
-						include: [{
-							model: AttemptsAnswerQuestions,
-							attributes: ['chosenOption'],
-							required: false,
-						}]
+						attributes: { exclude: ['correctOption'] }
 					}]
 				},
 			]
@@ -128,10 +115,7 @@ export class ProcessQueryService {
 				text: question.text,
 				options: question.options!.map((option, index) => ({ id: index, text: option })),
 				points: question.points,
-				chosenOption: question.Attempts_answer_Questions?.find(aaq => aaq.attemptId === attempt.id)?.chosenOption || null,
 			})),
-			startedAt: attempt.createdAt,
-			endedAt: new Date(attempt.createdAt.getTime() + (attempt.Test!.minutesToAnswer! * 60 * 1000)),
 		};
 	}
 }

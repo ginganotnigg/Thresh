@@ -1,6 +1,5 @@
-import { XRoleIdSchema, XUserIdSchema } from "../../../common/controller/schemas/headers";
-import { UserIdMetaSchema } from "../../../common/controller/schemas/meta";
-import { TestIdParamsSchema } from "../../../common/controller/schemas/params";
+import { XUserIdSchema } from "../../../controller/schemas/headers";
+import { TestIdParamsSchema } from "../../../controller/schemas/params";
 import { Chuoi } from "../../../library/caychuoijs";
 import { ProcessCommandService } from "../services/command.service";
 import { ProcessQueryService } from "../services/query.service";
@@ -13,20 +12,30 @@ export function processController() {
 	router.endpoint().get('/tests/:testId/current')
 		.schema({
 			params: TestIdParamsSchema,
-			meta: UserIdMetaSchema,
 			headers: XUserIdSchema,
 			response: CurrentAttemptSmallResponseSchema.nullable(),
 		}).handle(async data => {
 			const testId = data.params.testId;
 			const candidateId = data.headers["x-user-id"];
-			const current = await ProcessQueryService.getInProgressAttemptSmall(testId, candidateId);
+			const current = await ProcessQueryService.getCurrentAttemptState(testId, candidateId);
+			return current;
+		}).build({ tags: ['Current'] });
+
+	router.endpoint().get('/tests/:testId/current')
+		.schema({
+			params: TestIdParamsSchema,
+			headers: XUserIdSchema,
+			response: CurrentAttemptSmallResponseSchema.nullable(),
+		}).handle(async data => {
+			const testId = data.params.testId;
+			const candidateId = data.headers["x-user-id"];
+			const current = await ProcessQueryService.getCurrentAttemptState(testId, candidateId);
 			return current;
 		}).build({ tags: ['Current'] });
 
 	router.endpoint().post('/tests/:testId/current/new')
 		.schema({
 			params: TestIdParamsSchema,
-			meta: UserIdMetaSchema,
 			headers: XUserIdSchema,
 		}).handle(async data => {
 			const testId = data.params.testId;
@@ -37,7 +46,6 @@ export function processController() {
 	router.endpoint().get('/tests/:testId/current/do')
 		.schema({
 			params: TestIdParamsSchema,
-			meta: UserIdMetaSchema,
 			headers: XUserIdSchema,
 			response: CurrentAttemptDetailResponseSchema
 		}).handle(async data => {
@@ -47,24 +55,10 @@ export function processController() {
 			return attemptDetail;
 		}).build({ tags: ['Current'], summary: 'Prepare the test for the candidate to do' });
 
-	router.endpoint().patch('/tests/:testId/current/answer')
-		.schema({
-			params: TestIdParamsSchema,
-			meta: UserIdMetaSchema,
-			headers: XUserIdSchema,
-			body: AnswerAttemptBodySchema,
-		}).handle(async data => {
-			const testId = data.params.testId;
-			const candidateId = data.headers["x-user-id"];
-			const body = data.body;
-			await ProcessCommandService.answer(testId, candidateId, body);
-		}).build({ tags: ['Current'] });
-
 	router.endpoint().post('/tests/:testId/current/submit')
 		.schema({
 			params: TestIdParamsSchema,
 			headers: XUserIdSchema,
-			meta: UserIdMetaSchema,
 		}).handle(async data => {
 			const testId = data.params.testId;
 			const candidateId = data.headers["x-user-id"];

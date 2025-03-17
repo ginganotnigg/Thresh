@@ -1,41 +1,14 @@
 import { z } from 'zod';
 
-// export type CurrentAttemptSmallResponse = {
-// 	id: number;
-// 	startedAt: Date;
-// 	endedAt: Date;
-// }
-
-// export type CurrentAttemptDetailResponse = {
-// 	id: number;
-// 	test: {
-// 		id: number;
-// 		managerId: string;
-// 		title: string;
-// 		description: string;
-// 		minutesToAnswer: number;
-// 		difficulty: string;
-// 		createdAt: Date;
-// 		updatedAt: Date;
-// 	};
-// 	questions: {
-// 		id: number;
-// 		text: string;
-// 		options: {
-// 			id: number;
-// 			text: string;
-// 		}[];
-// 		points: number;
-// 		chosenOption: number;
-// 	}[];
-// 	startedAt: Date;
-// 	endedAt: Date;
-// }
-
 export const CurrentAttemptSmallResponseSchema = z.object({
 	id: z.number(),
-	startedAt: z.date(),
+	secondsLeft: z.number(),
+	createdAt: z.date(),
 	endedAt: z.date(),
+	answers: z.array(z.object({
+		questionId: z.number(),
+		chosenOption: z.number(),
+	})),
 });
 
 export const CurrentAttemptDetailResponseSchema = z.object({
@@ -58,10 +31,7 @@ export const CurrentAttemptDetailResponseSchema = z.object({
 			text: z.string(),
 		})),
 		points: z.number(),
-		chosenOption: z.number().nullable().openapi({ description: 'The index of the chosen option. If null, the question is not answered yet.' }),
 	})),
-	startedAt: z.date(),
-	endedAt: z.date(),
 });
 
 export type CurrentAttemptDetailResponse = z.infer<typeof CurrentAttemptDetailResponseSchema>;

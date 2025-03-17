@@ -1,10 +1,10 @@
-import { ManagerGuardHandler } from "../../common/controller/guards/manager.guard";
+import { ManagerGuardHandler } from "../../controller/guards/manager.guard";
+import { PagedSchema } from "../../controller/schemas/base";
+import { UserIdMetaSchema } from "../../controller/schemas/meta";
+import { TestIdParamsSchema, AttemptIdParamsSchema } from "../../controller/schemas/params";
 import { Chuoi } from "../../library/caychuoijs";
 import { HistoryQueryService } from "./history.query.service";
 import { AttemptAnswerFilterQuerySchema, AttemptFilterQuerySchema } from "./schemas/request";
-import { AttemptIdParamsSchema, TestIdParamsSchema } from "../../common/controller/schemas/params";
-import { UserIdMetaSchema } from "../../common/controller/schemas/meta";
-import { PagedSchema } from "../../common/controller/schemas/base";
 import { AnswerQuestionResultSchema, AttemptItemResultSchema, AttemptResultSchema } from "./schemas/response";
 
 export function historyController() {

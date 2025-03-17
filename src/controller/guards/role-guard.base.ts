@@ -1,6 +1,6 @@
-import { env } from "../../../app/env";
-import { IChuoiHandler } from "../../../library/caychuoijs/main/contracts";
-import { CallbackExpressHandler } from "../../../library/caychuoijs/utils/type";
+import { IChuoiHandler } from "../../library/caychuoijs/main/contracts";
+import { CallbackExpressHandler } from "../../library/caychuoijs/utils/type";
+import { env } from "../../utils/env";
 import { Role } from "./role";
 
 export abstract class RoleGuardBaseHandler implements IChuoiHandler {

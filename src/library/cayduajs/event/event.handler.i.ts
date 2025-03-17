@@ -1,5 +1,5 @@
 import { IEventDTO } from "./event.dto.i";
 
-export interface IEventHandler {
-	handle(event: IEventDTO): void;
+export interface IEventHandler<T extends IEventDTO> {
+	handle(event: T): void;
 }

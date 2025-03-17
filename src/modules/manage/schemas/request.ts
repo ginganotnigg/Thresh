@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { TestDifficulty } from "../../../common/domain/enum";
-import Question from "../../../models/question";
+import { TestDifficulty } from "../../../domain/enum";
+import Question from "../../../domain/models/question";
 
 const TestFilterQuerySchema = z.object({
 	searchTitle: z.string().optional(),

@@ -1,18 +1,24 @@
 import { IEventDTO } from "./event.dto.i";
 import { IEventHandler } from "./event.handler.i";
 
+type HandlerFunction<T extends IEventDTO> = (event: T) => void;
+
 class EventDispatcher {
-	private handlers: { [event: string]: IEventHandler[] } = {};
+	private handlers: { [event: string]: HandlerFunction<any>[] } = {};
 
 	/**  
 	 * Register an event handler for a specific event 
 	 */
-	public register(eventType: new (...args: any[]) => IEventDTO, handler: IEventHandler): void {
+	public register<T extends IEventDTO>(eventType: new (...args: any[]) => T, handler: IEventHandler<T> | HandlerFunction<T>): void {
 		const name = eventType.name;
 		if (!this.handlers[name]) {
 			this.handlers[name] = [];
 		}
-		this.handlers[name].push(handler);
+		if (typeof handler === 'function') {
+			this.handlers[name].push(handler);
+		} else {
+			this.handlers[name].push(handler.handle.bind(handler));
+		}
 	}
 
 	/**
@@ -21,21 +27,7 @@ class EventDispatcher {
 	public dispatch(event: IEventDTO): void {
 		const eventHandlers = this.handlers[event.constructor.name];
 		if (eventHandlers) {
-			eventHandlers.forEach(handler => handler.handle(event));
-		}
-	}
-
-	/**
-	 * Remove an event handler for a specific event
-	 */
-	public remove(eventType: new (...args: any[]) => IEventDTO, handler: IEventHandler): void {
-		const name = eventType.name;
-		const eventHandlers = this.handlers[name];
-		if (eventHandlers) {
-			this.handlers[name] = eventHandlers.filter(h => h !== handler);
-		}
-		if (this.handlers[name].length === 0) {
-			delete this.handlers[name];
+			eventHandlers.forEach(handler => handler(event));
 		}
 	}
 }

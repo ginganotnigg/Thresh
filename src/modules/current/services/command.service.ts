@@ -1,53 +1,24 @@
-import { WriteRepository } from '../infra/repository';
-import { EventController } from '../controllers/event.controller';
-import { ProcessQueryService } from './query.service';
 import { AnswerAttemptBody } from '../controllers/schemas/request';
-import { DomainErrorResponse } from '../../../common/controller/errors/domain.error';
+import { CurrentAttemptDomain } from '../../../domain/current-attempt/current-attempt.domain';
 
 export class ProcessCommandService {
-	static async evaluateAttempt(attemptId: number): Promise<void> {
-		const attempt = await ProcessQueryService.getInProgressAttemptSmallById(attemptId);
-		if (attempt == null) {
-			throw new DomainErrorResponse('Attempt not found');
-		}
-		let nowOrEnd = new Date();
-		if (attempt.endedAt < new Date()) {
-			nowOrEnd = attempt.endedAt;
-		}
-		const secondsSpent = Math.floor((nowOrEnd.getTime() - attempt.startedAt.getTime()) / 1000);
-		await WriteRepository.endAttempt(attemptId, secondsSpent);
-		EventController.ended(attemptId);
-	}
-
 	static async startNew(testId: number, candidateId: string): Promise<void> {
-		// Find previous attempt and evaluate it if it exists
-		const previousAttemptId = await ProcessQueryService.getInProgressAttemptId(testId, candidateId);
-		if (previousAttemptId != null) {
-			await this.evaluateAttempt(previousAttemptId);
-		}
-		await WriteRepository.newAttempt(testId, candidateId);
-		const attemptId = await ProcessQueryService.getInProgressAttemptId(testId, candidateId);
-		if (attemptId == null) {
-			throw new DomainErrorResponse('Attempt is not yet started');
-		}
-		EventController.started(attemptId);
+		await CurrentAttemptDomain.startNew(testId, candidateId);
 	}
 
-	static async answer(testId: number, userId: string, param: AnswerAttemptBody) {
+	static async answer(attemptId: number, param: AnswerAttemptBody) {
 		const { questionId, optionId } = param;
-		const attemptId = await ProcessQueryService.getInProgressAttemptId(testId, userId);
-		if (attemptId == null) {
-			throw new DomainErrorResponse('Attempt to answer is not found');
-		}
-		await WriteRepository.answerAttempt(attemptId, questionId, optionId);
-		EventController.answered(attemptId, questionId, optionId);
+		const attempt = await CurrentAttemptDomain.loadByIdStrict(attemptId);
+		await attempt.answerAttempt(questionId, optionId);
 	}
 
 	static async submit(testId: number, candidateId: string) {
-		const attemptId = await ProcessQueryService.getInProgressAttemptId(testId, candidateId);
-		if (attemptId == null) {
-			throw new DomainErrorResponse('Attempt to submit is not found');
-		}
-		await this.evaluateAttempt(attemptId);
+		const attempt = await CurrentAttemptDomain.loadStrict(testId, candidateId);
+		await attempt.endAttempt();
+	}
+
+	static async timesUp(attemptId: number) {
+		const attempt = await CurrentAttemptDomain.loadByIdStrict(attemptId);
+		await attempt.endAttempt();
 	}
 }
