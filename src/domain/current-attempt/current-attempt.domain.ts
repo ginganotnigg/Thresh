@@ -18,36 +18,44 @@ export class CurrentAttemptDomain {
 	}
 
 	static async startNew(testId: number, candidateId: string) {
-		const previousAttempt = await CurrentAttemptDomain.load(testId, candidateId);
+		const previousAttempt = await CurrentAttemptDomain.load(candidateId);
 		if (previousAttempt != null) {
 			await previousAttempt.endAttempt();
 		}
-		const attempt = await Attempt.create({
+		await Attempt.create({
 			testId: +testId,
 			candidateId: candidateId,
 			status: AttemptStatus.IN_PROGRESS,
 			secondsSpent: 0,
 		});
-		const attempt2 = await Attempt.findByPk(attempt.id, {
+		// Check if there are multiple attempts in progress or no attempt started
+		const attempts = await Attempt.findAll({
+			where: {
+				testId: testId,
+				candidateId: candidateId,
+				status: AttemptStatus.IN_PROGRESS
+			},
 			include: {
 				model: Test,
 				attributes: ['minutesToAnswer'],
 			}
 		});
-		if (attempt2 == null) {
+		if (attempts.length > 1) {
+			throw new DomainErrorResponse("Multiple attempts In Progress found");
+		}
+		if (attempts.length === 0) {
 			throw new DomainErrorResponse("Attempt failed to start");
 		}
-		const currentAttempt = new CurrentAttemptDomain(attempt2.id, attempt2.createdAt, attempt2.Test!.minutesToAnswer!);
+		const currentAttempt = new CurrentAttemptDomain(attempts[0].id, attempts[0].createdAt, attempts[0].Test!.minutesToAnswer!);
 		eventDispatcherInstance.dispatch(new AttemptStartedEvent(
 			currentAttempt.id,
 			currentAttempt.getEndDate()
 		));
 	}
 
-	static async load(testId: number, candidateId: string) {
+	static async load(candidateId: string) {
 		const attempt = await Attempt.findOne({
 			where: {
-				testId: testId,
 				candidateId: candidateId,
 				status: AttemptStatus.IN_PROGRESS
 			},
@@ -79,8 +87,8 @@ export class CurrentAttemptDomain {
 		return new CurrentAttemptDomain(currentAttempt.id, currentAttempt.createdAt, currentAttempt.Test!.minutesToAnswer!);
 	}
 
-	static async loadStrict(testId: number, candidateId: string) {
-		const currentAttempt = await this.load(testId, candidateId);
+	static async loadStrict(candidateId: string) {
+		const currentAttempt = await this.load(candidateId);
 		if (currentAttempt == null) {
 			throw new DomainErrorResponse("Attempt not found");
 		}

@@ -1,7 +1,7 @@
 import { Namespace, Socket } from "socket.io";
 
 interface ListenEvents {
-	REGISTERED: (data: { testId: number; }, cb: (error: { error?: string; }) => void) => void;
+	REGISTERED: (data: { attemptId: number; }, cb: (ack: { isInprogress: boolean }) => void) => void;
 	ANSWERED: (data: { attemptId: number; questionId: number; optionId?: number; }, cb: (error: { error?: string; }) => void) => void;
 }
 

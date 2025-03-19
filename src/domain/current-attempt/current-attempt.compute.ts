@@ -9,7 +9,7 @@ export class CurrentAttemptCompute {
 		if (now.getTime() < attempt.createdAt.getTime()) {
 			throw new Error("Invalid time");
 		}
-		const endDate = this.getEndDate(attempt, minutesToAnswer);
+		const endDate = CurrentAttemptCompute.getEndDate(attempt, minutesToAnswer);
 		if (now.getTime() > endDate.getTime()) {
 			return minutesToAnswer * 60;
 		}
@@ -19,7 +19,7 @@ export class CurrentAttemptCompute {
 
 	static getSecondsLeft(attempt: { createdAt: Date; }, minutesToAnswer: number): number {
 		const now = new Date();
-		const endDate = this.getEndDate(attempt, minutesToAnswer);
+		const endDate = CurrentAttemptCompute.getEndDate(attempt, minutesToAnswer);
 		const secondsLeft = Math.floor((endDate.getTime() - now.getTime()) / 1000);
 		return secondsLeft < 0 ? 0 : secondsLeft;
 	}

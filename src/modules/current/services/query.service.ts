@@ -1,5 +1,5 @@
 import { AttemptStatus } from '../../../domain/enum';
-import { CurrentAttemptDetailResponse, CurrentAttemptSmallResponse } from '../controllers/schemas/response';
+import { TestDetailToDoResponse, CurrentAttemptStateResponse } from '../controllers/schemas/response';
 import { AttemptSchedule } from '../controllers/schemas/dto';
 import Test from '../../../domain/models/test';
 import { DomainErrorResponse } from '../../../controller/errors/domain.error';
@@ -11,19 +11,17 @@ import { CurrentAttemptCompute } from '../../../domain/current-attempt/current-a
 const { getEndDate, getSecondsLeft } = CurrentAttemptCompute;
 
 export class CurrentQueryService {
-	static async getInProgressAttemptId(testId: number, candidateId: string): Promise<number | null> {
+	static async isAttemptInProgress(attemptId: number): Promise<boolean> {
 		const result = await Attempt.findOne({
 			where: {
-				testId: testId,
-				candidateId: candidateId,
+				id: attemptId,
 				status: AttemptStatus.IN_PROGRESS
 			},
-			attributes: ['id']
 		});
 		if (!result) {
-			return null;
+			return false;
 		}
-		return result.getDataValue('id')!;
+		return true;
 	}
 
 	static async loadAttemptsForSchedule(): Promise<AttemptSchedule[]> {
@@ -40,10 +38,9 @@ export class CurrentQueryService {
 		return attempts.map(attempt => new AttemptSchedule(attempt.id, getEndDate(attempt, attempt.Test!.minutesToAnswer)));
 	}
 
-	static async getCurrentAttemptState(testId: number, candidateId: string): Promise<CurrentAttemptSmallResponse | null> {
+	static async getCurrentAttemptState(candidateId: string): Promise<CurrentAttemptStateResponse> {
 		const attempt = await Attempt.findOne({
 			where: {
-				testId: testId,
 				candidateId: candidateId,
 				status: AttemptStatus.IN_PROGRESS,
 			},
@@ -51,7 +48,7 @@ export class CurrentQueryService {
 			include: [
 				{
 					model: Test,
-					attributes: ['minutesToAnswer'],
+					attributes: ['minutesToAnswer', 'id', 'title'],
 				},
 				{
 					model: AttemptsAnswerQuestions,
@@ -60,7 +57,10 @@ export class CurrentQueryService {
 			]
 		});
 		if (attempt == null) {
-			throw new DomainErrorResponse('In-progress attempt not found');
+			return {
+				hasCurrentAttempt: false,
+				currentAttempt: null,
+			}
 		}
 		const minutesToAnswer = attempt.Test!.minutesToAnswer!;
 		const endedAt = getEndDate(attempt, minutesToAnswer);
@@ -70,18 +70,25 @@ export class CurrentQueryService {
 			chosenOption: answer.chosenOption,
 		}));
 		return {
-			id: attempt.id,
-			secondsLeft,
-			endedAt,
-			createdAt: attempt.createdAt,
-			answers,
+			hasCurrentAttempt: true,
+			currentAttempt: {
+				id: attempt.id,
+				secondsLeft,
+				endedAt,
+				createdAt: attempt.createdAt,
+				answers,
+				test: {
+					id: attempt.Test!.id,
+					title: attempt.Test!.title,
+					minutesToAnswer,
+				}
+			},
 		};
 	}
 
-	static async getInProgressAttemptToDo(testId: number, candidateId: string): Promise<CurrentAttemptDetailResponse> {
+	static async getTestDetailToDo(candidateId: string): Promise<TestDetailToDoResponse> {
 		const attempt = await Attempt.findOne({
 			where: {
-				testId: testId,
 				candidateId: candidateId,
 				status: AttemptStatus.IN_PROGRESS,
 			},

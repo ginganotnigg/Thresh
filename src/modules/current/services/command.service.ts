@@ -12,8 +12,8 @@ export class ProcessCommandService {
 		await attempt.answerAttempt(questionId, optionId);
 	}
 
-	static async submit(testId: number, candidateId: string) {
-		const attempt = await CurrentAttemptDomain.loadStrict(testId, candidateId);
+	static async submit(candidateId: string) {
+		const attempt = await CurrentAttemptDomain.loadStrict(candidateId);
 		await attempt.endAttempt();
 	}
 

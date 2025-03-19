@@ -73,17 +73,13 @@ export class SocketController {
 	}
 
 	private listen(socket: CurrentTestSocket): void {
-		socket.on("REGISTERED", async ({ testId }, cb) => {
-			// Missing id here
+		socket.on("REGISTERED", async ({ attemptId }, cb) => {
 			try {
-				const candidateId = socket.data.candidateId;
-				const id = await CurrentQueryService.getInProgressAttemptId(testId, candidateId);
-				if (id == null) {
-					cb({ error: "Attempt not found" });
-					return;
-				}
-				await socket.join(id.toString());
-				logSocket(`[${socket.id}] => Client registered to room: ${id}`);
+				const isInprogress = await CurrentQueryService.isAttemptInProgress(attemptId);
+				cb({ isInprogress });
+				if (isInprogress == false) return;
+				await socket.join(attemptId.toString());
+				logSocket(`[${socket.id}] => Client registered to room: ${attemptId}`);
 			} catch (error) {
 				logSocket(`[${socket.id}] => Error`, { error });
 			}
