@@ -6,7 +6,7 @@
 	"type": "commonjs",
 	"scripts": {
 		"build": "tsc",
-		"prod": "node dist/index.js",
+		"prod": "node --require ./dist/configs/openapi/extends-zod.js ./dist/index.js",
 		"start": "ts-node --require ./src/configs/openapi/extends-zod.ts src/index.ts",
 		"start:watch": "nodemon --exec ts-node src/index.ts",
 		"migrate": "node cmd/migrate.js",

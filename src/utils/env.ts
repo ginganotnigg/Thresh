@@ -18,7 +18,7 @@ const env = {
 		username: process.env.DB_USERNAME || "root",
 		password: process.env.DB_PASSWORD || "123456",
 		host: process.env.DB_HOST || "localhost",
-		port: Number(process.env.DB_PORT) || 3306,
+		port: Number(process.env.DB_PORT) || 3300,
 	},
 	corsOrigin: process.env.CORS_ORIGIN || "*",
 	port: process.env.PORT || 3000,

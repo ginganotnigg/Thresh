@@ -1,4 +1,4 @@
-import { DomainErrorResponse } from "../../../common/controller/errors/domain.error";
+import { DomainErrorResponse } from "../../../controller/errors/domain.error";
 import { TestCreateBody, TestUpdateBody } from "../schemas/request";
 
 export function validateCreateTestParam(param: TestCreateBody) {

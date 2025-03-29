@@ -1,0 +1,57 @@
+version: "3.8"
+
+services:
+  app:
+    image: skillsharp123/thresh:local
+    container_name: Thresh-Main
+    volumes:
+      - app_data:/app/data
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - DB_PORT=3306
+      - DB_HOST=mysql
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+
+  mysql:
+    image: mysql:9.0
+    container_name: Thresh-MySQL
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: skillsharp_thresh
+      MYSQL_PASSWORD: 123456
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-P",
+          "3307",
+          "-u",
+          "root",
+          "--password=123456",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+    driver: local
+  app_data:
+    driver: local
