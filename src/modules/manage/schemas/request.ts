@@ -48,7 +48,11 @@ const TestUpdateBodySchema = z.object({
 	description: z.string().optional(),
 	difficulty: z.nativeEnum(TestDifficulty).optional(),
 	minutesToAnswer: z.number().min(1).max(10000).optional(),
-	questions: z.array(z.instanceof(Question)).optional(),
+	questions: z.array(
+		QuestionCreateBodySchema.extend({
+			id: z.number(),
+		})
+	).optional(),
 });
 
 export {
