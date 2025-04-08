@@ -1,6 +1,6 @@
 import { ManagerGuardHandler } from "../../controller/guards/manager.guard";
 import { PagedSchema } from "../../controller/schemas/base";
-import { UserIdMetaSchema } from "../../controller/schemas/meta";
+import { XUserIdSchema } from "../../controller/schemas/headers";
 import { TestIdParamsSchema, AttemptIdParamsSchema } from "../../controller/schemas/params";
 import { Chuoi } from "../../library/caychuoijs";
 import { HistoryQueryService } from "./history.query.service";
@@ -54,11 +54,11 @@ export function historyController() {
 		.middleware(ManagerGuardHandler)
 		.schema({
 			query: AttemptFilterQuerySchema,
-			meta: UserIdMetaSchema,
+			headers: XUserIdSchema,
 			response: PagedSchema(AttemptItemResultSchema)
 		})
 		.handle(async (data) => {
-			const candidateId = data.meta.userId;
+			const candidateId = data.headers["x-user-id"];
 			const filter = data.query;
 			const result = await HistoryQueryService.getCandidateAttempts(candidateId, filter);
 			return result;
@@ -68,12 +68,12 @@ export function historyController() {
 		.middleware(ManagerGuardHandler)
 		.schema({
 			params: TestIdParamsSchema,
-			meta: UserIdMetaSchema,
+			headers: XUserIdSchema,
 			query: AttemptFilterQuerySchema,
 			response: PagedSchema(AttemptItemResultSchema)
 		})
 		.handle(async (data) => {
-			const candidateId = data.meta.userId;
+			const candidateId = data.headers["x-user-id"];
 			const testId = data.params.testId;
 			const filter = data.query;
 			const result = await HistoryQueryService.getCandidateAttempt(candidateId, testId, filter);

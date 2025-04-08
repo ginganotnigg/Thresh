@@ -120,7 +120,7 @@ export const logSqlCommand = (message: string, meta?: any) => {
 
 export const logSocket = (message: string, meta?: any) => {
 	socketLogger.info(message, { ...meta });
-	logger.log('info', message, meta);
+	logger.log('socket', message, meta);
 }
 
 export const logTickError = (error: Error | unknown, meta?: any) => {

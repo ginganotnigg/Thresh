@@ -1,6 +1,6 @@
 import { ManagerGuardHandler } from "../../controller/guards/manager.guard";
 import { PagedSchema } from "../../controller/schemas/base";
-import { UserIdMetaSchema } from "../../controller/schemas/meta";
+import { XUserIdSchema } from "../../controller/schemas/headers";
 import { TestIdParamsSchema } from "../../controller/schemas/params";
 import { Chuoi } from "../../library/caychuoijs";
 import { TestCreateBodySchema, TestFilterQuerySchema, TestUpdateBodySchema } from "./schemas/request";
@@ -41,19 +41,19 @@ export function manageController() {
 		.middleware(ManagerGuardHandler)
 		.schema({
 			query: TestFilterQuerySchema,
-			meta: UserIdMetaSchema,
+			headers: XUserIdSchema,
 			response: PagedSchema(TestItemResponseSchema)
 		}).handle(async data => {
-			return await ManageQueryService.getManagerTests(data.meta.userId, data.query);
+			return await ManageQueryService.getManagerTests(data.headers["x-user-id"], data.query);
 		}).build({ tags: ['Tests'] });
 
 	router.endpoint().post('/tests')
 		.middleware(ManagerGuardHandler)
 		.schema({
 			body: TestCreateBodySchema,
-			meta: UserIdMetaSchema,
+			headers: XUserIdSchema,
 		}).handle(async data => {
-			await CommandService.createTest(data.meta.userId, data.body);
+			await CommandService.createTest(data.headers["x-user-id"], data.body);
 			return { message: "Test created" };
 		}).build({ tags: ['Tests'] });
 

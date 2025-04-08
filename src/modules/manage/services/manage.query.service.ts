@@ -43,7 +43,10 @@ export class ManageQueryService {
 			difficulty: row.difficulty!,
 			description: row.description!,
 			minutesToAnswer: row.minutesToAnswer!,
-			tags: row.Tags!.map(t => t.name!),
+			tags: row.Tags!.map(t => ({
+				id: t.id!,
+				name: t.name!,
+			})),
 			answerCount: row.get('answerCount')!,
 			createdAt: row.createdAt!,
 			updatedAt: row.updatedAt!
@@ -146,7 +149,10 @@ async function findAllWithFilter(whereClause: any, includeTagClause: any, filter
 		difficulty: record.difficulty!,
 		description: record.description!,
 		minutesToAnswer: record.minutesToAnswer!,
-		tags: record.Tags!.map(t => t.name!),
+		tags: record.Tags!.map(t => ({
+			id: t.id!,
+			name: t.name!,
+		})),
 		answerCount: record.get('answerCount')!,
 		createdAt: record.createdAt!,
 		updatedAt: record.updatedAt!

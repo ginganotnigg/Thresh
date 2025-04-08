@@ -74,7 +74,6 @@ export class HistoryQueryService {
 					}
 				}
 			],
-			attributes: [],
 			limit: filter.perPage,
 			offset: (filter.page - 1) * filter.perPage,
 		});
@@ -101,13 +100,14 @@ export class HistoryQueryService {
 				chosenOption,
 			}
 		});
-		return {
+		const result = {
 			data,
 			total: questionsOfAttempts.count,
 			page: filter.page,
 			perPage: filter.perPage,
 			totalPages: Math.ceil(questionsOfAttempts.count / filter.perPage)
 		}
+		return result;
 	}
 
 	static async getCandidateAttempts(candidateId: string, filter: AttemptFilterQuery): Promise<Paged<AttemptItemResult>> {

@@ -8,7 +8,10 @@ const TestResponseSchema = z.object({
 	difficulty: z.string(),
 	minutesToAnswer: z.number(),
 	answerCount: z.number(),
-	tags: z.array(z.string()),
+	tags: z.array(z.object({
+		id: z.number(),
+		name: z.string(),
+	})),
 	createdAt: z.date(),
 	updatedAt: z.date(),
 });
