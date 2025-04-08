@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { TestDifficulty } from "../../../domain/enum";
-import Question from "../../../domain/models/question";
 
 const TestFilterQuerySchema = z.object({
 	searchTitle: z.string().optional(),
@@ -16,7 +15,7 @@ const TestFilterQuerySchema = z.object({
 		})
 	]).optional(),
 	tags: z.union([
-		z.array(z.coerce.number()),
+		z.array(z.string()),
 		z.string().transform((str) => {
 			if (!str) return [];
 			return str.split(',').map(Number).filter(n => !isNaN(n));
@@ -48,7 +47,7 @@ const TestUpdateBodySchema = z.object({
 	description: z.string().optional(),
 	difficulty: z.nativeEnum(TestDifficulty).optional(),
 	minutesToAnswer: z.number().min(1).max(10000).optional(),
-	questions: z.array(z.instanceof(Question)).optional(),
+	questions: z.array(QuestionCreateBodySchema).optional(), // No id field, recreate all questions
 });
 
 export {

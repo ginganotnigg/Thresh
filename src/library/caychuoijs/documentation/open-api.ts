@@ -2,6 +2,7 @@ import { OpenApiGeneratorV31, OpenAPIRegistry } from "@asteasolutions/zod-to-ope
 import { OpenAPIObjectConfigV31 } from "@asteasolutions/zod-to-openapi/dist/v3.1/openapi-generator";
 import { RequestSchema } from "../utils/type";
 import { z } from "zod";
+import { ParameterLocation, SecuritySchemeType } from "openapi3-ts/oas31";
 
 // Function to transform Express paths to OpenAPI paths
 function convertExpressPathToOpenAPI(path: string): string {
@@ -24,6 +25,19 @@ export class ChuoiDocument {
 		return new OpenApiGeneratorV31(this.documentRegistry.definitions).generateDocument(_config);
 	}
 
+	static addCustomSecurityScheme(name: string, locationName: string, _in: ParameterLocation = "header", description?: string) {
+		this.documentRegistry.registerComponent(
+			"securitySchemes",
+			name,
+			{
+				type: "apiKey",
+				name: locationName,
+				in: _in,
+				description: description,
+			}
+		);
+	}
+
 	static addEndpointDocumentation(
 		path: string,
 		method: "get" | "post" | "put" | "delete" | "patch" | "options" | "head" | "trace",
@@ -33,7 +47,7 @@ export class ChuoiDocument {
 		description?: string,
 		tags?: string[],
 	) {
-		ChuoiDocument.documentRegistry.registerPath({
+		this.documentRegistry.registerPath({
 			path: convertExpressPathToOpenAPI(path),
 			method,
 			summary,
@@ -44,7 +58,6 @@ export class ChuoiDocument {
 				query: schema.query,
 				body: schema.body ? {
 					// Only supports json response for convention
-					description: "Request body",
 					content: {
 						"application/json": {
 							schema: schema.body
@@ -70,5 +83,4 @@ export class ChuoiDocument {
 			}
 		});
 	}
-
 }

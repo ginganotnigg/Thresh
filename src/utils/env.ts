@@ -33,7 +33,15 @@ const env = {
 	restApiDocumentation: process.env.REST_API_DOCUMENTATION === "true",
 }
 
+const logAbleEnv = {
+	...env,
+	db: {
+		...env.db,
+		password: "********",
+	},
+}
+
 console.log("Loaded environment variables:");
-console.log(env);
+console.log(logAbleEnv);
 
 export { env };

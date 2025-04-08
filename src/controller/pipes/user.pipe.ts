@@ -3,7 +3,6 @@ import { ChuoiContainer } from "../../library/caychuoijs/utils/container";
 import { ChuoiMeta } from "../../library/caychuoijs/utils/meta";
 import { CallbackExpressHandler } from "../../library/caychuoijs/utils/type";
 
-
 export class UserPipe implements IChuoiHandler {
 	get handle(): CallbackExpressHandler {
 		return (req, res, next) => {

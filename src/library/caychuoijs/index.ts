@@ -97,6 +97,8 @@ export class Chuoi {
 		if (!this._baseRouter) {
 			throw new Error("ChuoiController not initialized");
 		}
+		ChuoiDocument.addCustomSecurityScheme("User ID", "x-user-id", "header", "X-User-Id header for authentication");
+		ChuoiDocument.addCustomSecurityScheme("Role ID", "x-role-id", "header", "X-Role-Id header for authentication");
 		const url = `http://localhost:${env.port}`;
 		const swaggerSpec = ChuoiDocument.generateV31({
 			info: {
