@@ -1,14 +1,15 @@
 import { createLogger, format, transports } from 'winston';
 import { getRequestId } from '../../controller/defaults/http-logger.middleware';
+import { env } from '../../utils/env';
 
 const levels = {
 	error: 0,
 	warn: 1,
 	info: 2,
 	http: 3,
-	socket: 3,
-	sql: 3,
-	tick: 3,
+	socket: 4,
+	sql: 4,
+	tick: 4,
 	debug: 5
 };
 
@@ -52,10 +53,10 @@ format.colorize().addColors(colors);
 
 const logger = createLogger({
 	levels,
-	level: 'info',
+	level: env.logLevel,
 	format: httpFormat,
 	transports: [
-		new transports.Console({ level: 'info' }),
+		new transports.Console({ level: 'http' }),
 		new transports.File({ filename: 'logs/error.log', level: 'error', options: { flags: 'w' } }),
 		new transports.File({ filename: 'logs/combined.log', options: { flags: 'w' } }),
 	],
