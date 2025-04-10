@@ -2,6 +2,7 @@ import sequelize from "../configs/orm/sequelize";
 import { load } from "./load";
 
 async function seed() {
+	console.log("Seeding database...");
 	await sequelize.sync({
 		force: true,
 		logging: false
