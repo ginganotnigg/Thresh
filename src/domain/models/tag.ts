@@ -26,7 +26,7 @@ class Tag extends Model<InferAttributes<Tag>, InferCreationAttributes<Tag>> {
 			updatedAt: DataTypes.DATE,
 		}, {
 			sequelize,
-			modelName: "Tag"
+			modelName: "Tag",
 		});
 	}
 
