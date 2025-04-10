@@ -4,7 +4,6 @@ import sequelize from "./configs/orm/sequelize";
 import { configServices } from "./app/configServices";
 import ensureDatabase from "./configs/orm/ensure-database";
 import { env } from "./utils/env";
-import { seed } from "./__init__/seed";
 import recreateDatabase from "./configs/orm/recreate-database";
 
 ensureDatabase()
