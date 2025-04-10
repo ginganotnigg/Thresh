@@ -9,6 +9,7 @@ export default async function ensureDatabase() {
 		port: env.db.port,
 	});
 	connection.query(`CREATE DATABASE IF NOT EXISTS ${env.db.database};`).then(() => {
+		console.log(`Database ${env.db.database} ensured.`);
 		connection.end();
 	});
 }
