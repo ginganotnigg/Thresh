@@ -1,0 +1,121 @@
+testId,text,options,points,correctOption
+1,"What is a design pattern?","A reusable solution to a common problem|A specific piece of code|A programming language|A type of software",5,0
+1,"Which of the following is a creational design pattern?","Singleton|Observer|Decorator|Strategy",10,1
+1,"What is the main purpose of the Factory Method pattern?","To create objects without specifying the exact class|To define a family of algorithms|To provide a unified interface for a set of interfaces|To add new functionality to an existing class",10,2
+1,"Which design pattern is used to provide a simplified interface to a complex subsystem?","Facade|Adapter|Bridge|Composite",10,3
+1,"What does the Observer pattern do?","Creates a one-to-many dependency between objects|Allows an object to notify other objects about changes|Encapsulates a request as an object|Provides a way to access the elements of an aggregate object sequentially",15,0
+1,"Which of the following is NOT a structural design pattern?","Singleton|Decorator|Proxy|Composite",10,1
+1,"What is the main benefit of using design patterns?","Improved code readability and maintainability|Faster execution time|Reduced memory usage|Easier debugging",10,2
+1,"In which scenario would you use the Strategy pattern?","When you want to define a family of algorithms|When you want to create a single instance of a class|When you want to add new functionality to an existing class|When you want to provide a unified interface for a set of interfaces",10,3
+1,"What is the main purpose of the Command pattern?","To encapsulate a request as an object|To create a one-to-many dependency between objects|To provide a simplified interface to a complex subsystem|To define a family of algorithms",10,0
+1,"Which design pattern allows you to add new functionality to an existing class without modifying its structure?","Decorator|Adapter|Facade|Observer",10,1
+2,"What is the time complexity of accessing an element in an array?","O(1)|O(n)|O(log n)|O(n^2)",5,2
+2,"Which of the following data structures uses LIFO (Last In First Out) order?","Stack|Queue|Array|Linked List",10,3
+2,"What is the primary advantage of using a linked list over an array?","Dynamic size|Faster access time|Better memory locality|Easier to implement",10,0
+2,"Which of the following is a characteristic of a binary search tree?","Each node has at most two children|All nodes have the same value|It is always balanced|It can have more than two children",10,1
+2,"What is the worst-case time complexity for searching an element in a balanced binary search tree?","O(log n)|O(n)|O(n log n)|O(1)",10,2
+2,"Which data structure is used to implement a breadth-first search (BFS)?","Queue|Stack|Array|Linked List",15,3
+2,"What is the space complexity of a recursive function that uses a stack?","O(n)|O(1)|O(log n)|O(n^2)",10,0
+2,"Which of the following sorting algorithms has the best average-case time complexity?","Quick Sort|Bubble Sort|Insertion Sort|Selection Sort",15,1
+2,"What is the primary disadvantage of using a hash table?","Collision handling|Memory usage|Speed of access|Ease of implementation",10,2
+2,"In a graph, what does it mean if two vertices are connected by an edge?","There is a direct relationship between them|They are part of the same component|They have the same value|They are both leaf nodes",5,3
+3,"What does IP stand for in networking?","Internet Protocol|Internal Protocol|Internet Package|Internal Package",10,0
+3,"Which layer of the OSI model is responsible for routing?","Network Layer|Transport Layer|Data Link Layer|Application Layer",15,1
+3,"What is the primary purpose of a router?","To forward data packets between networks|To connect devices within a local network|To filter incoming traffic|To provide wireless connectivity",10,2
+3,"Which protocol is used to send email?","SMTP|HTTP|FTP|POP3",15,3
+3,"What is the maximum length of a CAT5 Ethernet cable?","100 meters|200 meters|300 meters|400 meters",5,0
+3,"Which of the following is a private IP address?","192.168.1.1|172.16.0.1|10.0.0.1|All of the above",10,1
+3,"What does DNS stand for?","Domain Name System|Dynamic Name Service|Domain Network Service|Dynamic Network System",10,2
+3,"Which protocol is used for secure data transmission over the internet?","HTTPS|HTTP|FTP|SMTP",15,3
+3,"What is the function of a firewall?","To monitor and control incoming and outgoing network traffic|To provide wireless access|To connect different networks|To store data",5,0
+3,"Which of the following is a common network topology?","Star|Circle|Square|Triangle",5,1
+4,"What is the CAP theorem in distributed systems?","Consistency, Availability, Partition Tolerance|Consistency, Accessibility, Performance|Capacity, Availability, Partitioning|Consistency, Availability, Performance",15,2
+4,"Which of the following is a common challenge in distributed systems?","Network latency|Single point of failure|Data redundancy|Centralized control",10,3
+4,"What is a distributed hash table (DHT)?","A decentralized data structure for storing key-value pairs|A method for synchronizing data across nodes|A protocol for secure data transmission|A type of database management system",5,0
+4,"In a distributed system, what does 'eventual consistency' mean?","All nodes will eventually converge to the same state|Data is always consistent across all nodes|Updates are immediately visible to all nodes|Data is only consistent during a transaction",15,1
+4,"Which protocol is commonly used for achieving consensus in distributed systems?","Paxos|TCP|HTTP|UDP",5,2
+4,"What is the primary purpose of a load balancer in a distributed system?","To distribute incoming network traffic across multiple servers|To store data in a centralized location|To ensure data consistency|To provide security against attacks",10,3
+4,"Which of the following is NOT a characteristic of microservices architecture?","Decentralized data management|Tightly coupled services|Independent deployment|Scalability",10,0
+4,"What is the role of a service registry in a microservices architecture?","To keep track of service instances and their locations|To manage user authentication|To store application data|To monitor system performance",10,1
+4,"Which of the following is a common method for ensuring data consistency in distributed databases?","Two-phase commit|Single-phase commit|Eventual consistency|Optimistic locking",10,2
+4,"What is a common approach to handle failures in distributed systems?","Retry mechanisms|Ignoring errors|Centralized logging|Immediate shutdown",10,3
+5,"What is the primary function of the CPU?","To execute instructions|To store data|To manage input/output devices|To provide power",5,0
+5,"Which of the following is a type of memory that is non-volatile?","ROM|RAM|Cache|Registers",10,1
+5,"What does ALU stand for in computer architecture?","Arithmetic Logic Unit|Advanced Logic Unit|Arithmetic Load Unit|Analog Logic Unit",5,2
+5,"Which of the following is NOT a type of cache memory?","L1|L2|L3|L4",10,3
+5,"What is the purpose of the control unit in a CPU?","To direct the operation of the processor|To perform arithmetic operations|To store data temporarily|To manage input/output operations",10,0
+5,"Which of the following architectures is based on the concept of a single instruction stream and a single data stream?","SISD|SIMD|MISD|MIMD",10,1
+5,"What is the function of the system bus?","To transfer data between components|To provide power to the CPU|To store data|To manage input/output devices",10,2
+5,"Which of the following is an example of secondary storage?","Hard Disk Drive|RAM|Cache Memory|Registers",15,3
+5,"What is pipelining in computer architecture?","A technique to improve instruction throughput|A method for data storage|A way to increase CPU clock speed|A type of memory management",15,0
+5,"Which of the following is a characteristic of RISC architecture?","Simple instructions and a large number of registers|Complex instructions and fewer registers|High power consumption|Low performance",10,1
+6,"What is the primary function of an operating system?","To manage hardware and software resources|To provide a user interface|To execute applications|To manage network connections",10,2
+6,"Which of the following is a type of process scheduling algorithm?","Round Robin|FIFO|LIFO|All of the above",10,3
+6,"What is a deadlock in operating systems?","A situation where two or more processes each is waiting for the other|A state where a process is waiting for an I/O operation to complete|A condition where a process is terminated|A method of resource allocation",10,0
+6,"Which of the following is NOT a type of memory management technique?","Paging|Segmentation|Fragmentation|Swapping",15,1
+6,"What is the purpose of a system call in an operating system?","To request a service from the operating system|To terminate a process|To allocate memory|To manage file systems",5,2
+6,"Which of the following is a characteristic of a microkernel architecture?","Minimal core functionality with additional services running in user space|All services run in kernel space|High performance due to less context switching|Complexity in design",15,3
+6,"What is the role of the file system in an operating system?","To manage data storage and retrieval|To execute applications|To manage hardware resources|To provide a user interface",10,0
+6,"Which of the following is a common method for achieving process synchronization?","Semaphores|Mutexes|Monitors|All of the above",10,1
+6,"What is virtual memory?","A memory management technique that gives an application the illusion of a large memory space|A type of physical memory|A method for increasing CPU speed|A way to manage disk space",5,2
+6,"Which of the following is a common operating system?","Linux|Windows|macOS|All of the above",10,3
+7,"What does SQL stand for?","Structured Query Language|Simple Query Language|Sequential Query Language|Standard Query Language",10,0
+7,"Which of the following is a type of database model?","Relational|Hierarchical|Network|All of the above",10,1
+7,"What is a primary key in a database?","A unique identifier for a record|A key used to encrypt data|A key that allows multiple records|A unique identifier that links two tables",10,2
+7,"Which SQL statement is used to retrieve data from a database?","SELECT|GET|FETCH|RETRIEVE",5,3
+7,"What is the purpose of a foreign key?","To create a relationship between two tables|To uniquely identify a record|To store large amounts of data|To index a table",10,0
+7,"Which of the following SQL commands is used to delete data from a table?","DELETE|DROP|REMOVE|TRUNCATE",5,1
+7,"What does the acronym ACID stand for in database management?","Atomicity, Consistency, Isolation, Durability|Atomicity, Consistency, Integrity, Durability|Atomicity, Concurrency, Isolation, Durability|Atomicity, Consistency, Isolation, Data",15,2
+7,"Which SQL clause is used to filter records?","WHERE|FILTER|HAVING|SELECT",10,3
+7,"What is normalization in database design?","The process of organizing data to reduce redundancy|The process of backing up data|The process of encrypting data|The process of indexing data",15,0
+7,"Which of the following is a NoSQL database?","MongoDB|MySQL|PostgreSQL|Oracle",10,1
+8,"What does UI stand for in design?","User Interface|User Interaction|Universal Interface|User Integration",10,2
+8,"What is the primary goal of UX design?","To enhance user satisfaction|To create visually appealing designs|To increase website traffic|To improve SEO",10,3
+8,"Which of the following is a common method for user research?","Surveys|A/B Testing|Focus Groups|All of the above",10,0
+8,"What is a wireframe in UI/UX design?","A low-fidelity representation of a design|A high-fidelity representation of a design|A final design|A type of user feedback",10,1
+8,"Which principle emphasizes that users should not have to think too much when using a product?","Simplicity|Consistency|Feedback|Accessibility",10,2
+8,"What is the purpose of usability testing?","To evaluate a product by testing it with real users|To gather feedback from stakeholders|To analyze competitors|To create design specifications",10,3
+8,"Which of the following is an important aspect of responsive design?","Fluid grids|Fixed layouts|Static images|Single-column layouts",10,0
+8,"What does the term 'affordance' refer to in design?","The properties of an object that suggest how it should be used|The visual appeal of a design|The amount of information presented|The speed of a website",15,1
+8,"Which color model is commonly used in digital design?","RGB|CMYK|HSB|LAB",5,2
+8,"What is the significance of a design system?","To create a consistent design language across products|To reduce the number of designers needed|To speed up the development process|To eliminate user feedback",10,3
+9,"What is overfitting in machine learning?","When a model learns noise in the training data|When a model performs well on training data but poorly on unseen data|When a model is too simple to capture the underlying trend|Both A and B",15,0
+9,"Which of the following algorithms is used for classification tasks?","Support Vector Machines|K-Means Clustering|Principal Component Analysis|Linear Regression",10,1
+9,"What is the purpose of cross-validation in machine learning?","To assess how the results of a statistical analysis will generalize to an independent data set|To increase the size of the training dataset|To reduce overfitting|To improve model accuracy",5,2
+9,"Which of the following is a common metric for evaluating classification models?","Accuracy|Mean Squared Error|R-squared|Silhouette Score",5,3
+9,"What does the term 'feature engineering' refer to?","The process of selecting, modifying, or creating features to improve model performance|The process of training a model|The process of evaluating a model|The process of deploying a model",15,0
+9,"Which of the following techniques is used to prevent overfitting?","Regularization|Increasing the number of features|Decreasing the size of the training set|Using a more complex model",10,1
+9,"What is the main difference between supervised and unsupervised learning?","Supervised learning uses labeled data, while unsupervised learning does not|Unsupervised learning is faster than supervised learning|Supervised learning requires more data than unsupervised learning|There is no difference",10,2
+9,"Which of the following is an example of a regression algorithm?","Linear Regression|K-Nearest Neighbors|Decision Trees|Random Forest",5,3
+9,"What is the purpose of a confusion matrix?","To evaluate the performance of a classification model|To visualize the decision boundary|To assess the importance of features|To optimize hyperparameters",10,0
+9,"Which of the following is a common technique for dimensionality reduction?","Principal Component Analysis (PCA)|K-Means Clustering|Support Vector Machines|Random Forest",15,1
+10,"What does HTML stand for?","HyperText Markup Language|HighText Machine Language|HyperText Markup Level|None of the above",5,2
+10,"Which of the following is a CSS framework?","Bootstrap|JavaScript|HTML5|jQuery",5,3
+10,"What is the purpose of the <head> tag in HTML?","To contain meta-information about the document|To display the main content|To create a navigation menu|To include scripts",15,0
+10,"Which of the following is a JavaScript data type?","String|Integer|Float|All of the above",10,1
+10,"What does CSS stand for?","Cascading Style Sheets|Computer Style Sheets|Creative Style Sheets|Colorful Style Sheets",5,2
+10,"Which of the following is used to make an HTTP request in JavaScript?","fetch()|getRequest()|httpRequest()|ajax()",10,3
+10,"What is the purpose of the <div> tag in HTML?","To create a block-level container|To create a hyperlink|To display an image|To create a list",15,0
+10,"Which of the following is a popular JavaScript library for building user interfaces?","React|Django|Ruby on Rails|Flask",10,1
+10,"What is the function of the <form> tag in HTML?","To collect user input|To display images|To create a table|To link to other pages",15,2
+10,"Which of the following is a method to style an HTML element?","Inline CSS|Internal CSS|External CSS|All of the above",10,3
+11,"What does CPU stand for?","Central Processing Unit|Computer Personal Unit|Centralized Processing Unit|Computer Processing Unit",10,0
+11,"Which component is considered the brain of the computer?","CPU|RAM|Hard Drive|Motherboard",10,1
+11,"What is the function of RAM in a computer?","To store data temporarily|To store data permanently|To process data|To connect peripherals",10,2
+11,"Which of the following is a type of storage device?","SSD|CPU|GPU|RAM",10,3
+11,"What does GPU stand for?","Graphics Processing Unit|General Processing Unit|Graphical Personal Unit|Graphics Personal Unit",10,0
+11,"Which of the following is an input device?","Keyboard|Monitor|Printer|Speaker",10,1
+11,"What is the purpose of a motherboard?","To connect all components of a computer|To store data|To process graphics|To manage power supply",10,2
+11,"Which of the following is a type of network interface card (NIC)?","Ethernet card|Sound card|Graphics card|Video card",10,3
+11,"What is the primary function of a power supply unit (PSU)?","To convert AC to DC power for the computer|To store data|To process information|To manage cooling",10,0
+11,"Which of the following is a common type of RAM?","DDR4|SSD|HDD|Flash",10,1
+12,"What is the primary purpose of Enterprise Resource Planning (ERP) software?","To integrate and manage core business processes|To manage customer relationships|To handle project management|To provide business intelligence",10,2
+12,"Which of the following is a common characteristic of enterprise software?","Scalability|Simplicity|Single-user access|Low cost",15,3
+12,"What does CRM stand for in the context of enterprise software?","Customer Relationship Management|Corporate Resource Management|Client Resource Management|Customer Retention Management",10,0
+12,"Which of the following is a benefit of using cloud-based enterprise software?","Accessibility from anywhere|Higher upfront costs|Limited scalability|Complex installation process",15,1
+12,"What is the role of middleware in enterprise applications?","To facilitate communication between different software applications|To store data|To manage user interfaces|To provide security",5,2
+12,"Which of the following is an example of an enterprise software solution?","SAP|Photoshop|Notepad|WinRAR",10,3
+12,"What is the purpose of Business Process Management (BPM) software?","To model, automate, and optimize business processes|To manage customer relationships|To handle financial transactions|To provide data analytics",10,0
+12,"Which of the following is a common challenge when implementing enterprise software?","User resistance to change|Low initial costs|Simplicity of integration|Immediate ROI",15,1
+12,"What does the term 'data silos' refer to in enterprise software?","Isolated data that is not easily accessible across the organization|Centralized data storage|Data that is shared across departments|Data that is encrypted across the organization",5,2
+12,"Which of the following methodologies is commonly used in enterprise software development?","Agile|Waterfall|V-Model|All of the above",5,3

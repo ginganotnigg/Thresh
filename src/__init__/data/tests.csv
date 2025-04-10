@@ -1,0 +1,13 @@
+managerId,title,description,minutesToAnswer,difficulty
+1,Software Design Patterns Test,Understanding of software design patterns for best coding practices,20,easy
+1,Data Structures Test,Conceptual understanding of various data structures and algorithms,10,easy
+2,Networking Test,Knowledge about various network protocols and devices,15,easy
+2,Distributed Systems Test,Understanding of distributed systems and their components,25,hard
+1,Computer Organization Test,Knowledge about computer architecture and operations,15,medium
+1,Operating Systems Test,Conceptual understanding of operating systems and their functions,20,hard
+2,Database Systems Test,Understanding of database systems and SQL language,10,easy
+3,UI/UX Design Test,Awareness of UI/UX designing principles,15,medium
+2,Machine Learning Test,Knowledge about machine learning algorithms and their applications,30,hard
+1,Web Development Test,Understanding of web development concepts and languages,20,medium
+1,Hardware Design Test,Knowledge about hardware designing and related concepts,10,easy
+1,Enterprise Software Test,Understanding of enterprise software and related concepts,20,hard
