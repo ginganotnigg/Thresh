@@ -1,7 +1,6 @@
 import { Sequelize } from "sequelize";
 import { logSqlCommand } from "../logger/winston";
 import { env } from "../../utils/env";
-import mysql from 'mysql2/promise';
 import Test from "../../domain/models/test";
 import Attempt from "../../domain/models/attempt";
 import AttemptsAnswerQuestions from "../../domain/models/attempts_answer_questions";

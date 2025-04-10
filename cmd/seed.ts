@@ -10,10 +10,6 @@ try {
 	execSync('npx sequelize-cli db:create', { stdio: 'inherit' });
 	console.log('Database is ready.');
 
-	console.log('Running migrations...');
-	execSync('npx sequelize-cli db:migrate', { stdio: 'inherit' });
-	console.log('Migrations applied.');
-
 	console.log('Seeding (test) data ...');
 	Promise.resolve(seed()).then(() => {
 		console.log('Seeding completed.');
