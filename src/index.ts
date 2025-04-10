@@ -9,13 +9,11 @@ import recreateDatabase from "./configs/orm/recreate-database";
 
 ensureDatabase()
 	.then(async () => {
-		if (env.useSeed === true) {
+		if (env.resetDatabase === true) {
 			await recreateDatabase();
-			await seed();
-		} else {
-			await sequelize.sync({ logging: false });
-			await sequelize.authenticate({ logging: false });
 		}
+		await sequelize.sync({ logging: false });
+		await sequelize.authenticate({ logging: false });
 		await configServices();
 		await configServer();
 	}).catch((err) => {
