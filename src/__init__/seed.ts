@@ -1,6 +1,5 @@
 import sequelize from "../configs/orm/sequelize";
 import { load } from "./load";
-
 async function seed() {
 	console.log("Seeding database...");
 	await sequelize.sync({
@@ -15,7 +14,7 @@ async function seed() {
 	await query.bulkInsert("questions", data.questions, { logging: false });
 	await query.bulkInsert("attempts", data.attempts, { logging: false });
 	await query.bulkInsert("attempts_answer_questions", data.attemptsAnswerQuestions, { logging: false });
-	console.log("Database reset successfully");
+	console.log("Database seed successfully");
 };
 
 export { seed };

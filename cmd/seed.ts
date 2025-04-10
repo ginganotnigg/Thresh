@@ -15,8 +15,9 @@ try {
 	console.log('Migrations applied.');
 
 	console.log('Seeding (test) data ...');
-	Promise.resolve(seed());
-	console.log('Seeding completed.');
+	Promise.resolve(seed()).then(() => {
+		console.log('Seeding completed.');
+	});
 } catch (error) {
 	console.error('Error during seeding:', error);
 	process.exit(1);
