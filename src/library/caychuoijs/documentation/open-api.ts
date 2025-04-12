@@ -2,9 +2,8 @@ import { OpenApiGeneratorV31, OpenAPIRegistry } from "@asteasolutions/zod-to-ope
 import { OpenAPIObjectConfigV31 } from "@asteasolutions/zod-to-openapi/dist/v3.1/openapi-generator";
 import { RequestSchema } from "../utils/type";
 import { z } from "zod";
-import { ParameterLocation, SecuritySchemeType } from "openapi3-ts/oas31";
+import { ChuoiSecurityBase } from "./security";
 
-// Function to transform Express paths to OpenAPI paths
 function convertExpressPathToOpenAPI(path: string): string {
 	return path.replace(/:([\w]+)/g, '{$1}');
 }
@@ -12,7 +11,7 @@ function convertExpressPathToOpenAPI(path: string): string {
 export class ChuoiDocument {
 	public static readonly documentRegistry = new OpenAPIRegistry();
 
-	static generateV31(config?: Partial<Omit<OpenAPIObjectConfigV31, 'openapi'>>) {
+	static generateV31<TScheme extends string>(security?: ChuoiSecurityBase<TScheme>, config?: Partial<Omit<OpenAPIObjectConfigV31, 'openapi'>>) {
 		const _config: OpenAPIObjectConfigV31 = {
 			...config,
 			openapi: '3.1.0',
@@ -22,20 +21,22 @@ export class ChuoiDocument {
 				description: 'This is the API',
 			},
 		}
-		return new OpenApiGeneratorV31(this.documentRegistry.definitions).generateDocument(_config);
-	}
 
-	static addCustomSecurityScheme(name: string, locationName: string, _in: ParameterLocation = "header", description?: string) {
-		this.documentRegistry.registerComponent(
-			"securitySchemes",
-			name,
-			{
-				type: "apiKey",
-				name: locationName,
-				in: _in,
-				description: description,
-			}
-		);
+		if (security) {
+			security.getSecuritySchemes().forEach(scheme => {
+				this.documentRegistry.registerComponent(
+					"securitySchemes",
+					scheme.name,
+					{
+						type: scheme.type,
+						name: scheme.locationName,
+						in: scheme.in,
+						description: scheme.description,
+					}
+				);
+			});
+		}
+		return new OpenApiGeneratorV31(this.documentRegistry.definitions).generateDocument(_config);
 	}
 
 	static addEndpointDocumentation(
@@ -46,12 +47,18 @@ export class ChuoiDocument {
 		summary?: string,
 		description?: string,
 		tags?: string[],
+		securitySchemeKeys?: string[],
 	) {
 		this.documentRegistry.registerPath({
 			path: convertExpressPathToOpenAPI(path),
 			method,
 			summary,
 			description,
+			security: schema ? securitySchemeKeys?.map(k => {
+				return {
+					[k]: []
+				}
+			}) : undefined,
 			tags: tags || [],
 			request: schema ? {
 				params: schema.params,

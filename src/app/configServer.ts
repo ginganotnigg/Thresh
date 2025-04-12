@@ -12,6 +12,7 @@ import { configSocket } from "./configSocket";
 import { AllExceptionFilter } from "../controller/defaults/all-exception.filter";
 import { LoggerMiddleware } from "../controller/defaults/http-logger.middleware";
 import { UserPipe } from "../controller/pipes/user.pipe";
+import { securityDocument } from "../controller/documents/security";
 
 export async function configServer() {
 	// =====================
@@ -103,7 +104,7 @@ export async function configServer() {
 	}
 
 	if (env.restApiDocumentation) {
-		Chuoi.doc();
+		Chuoi.doc(securityDocument);
 	}
 
 	return { socketServer, restServer, app };

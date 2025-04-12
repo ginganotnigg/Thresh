@@ -1,4 +1,6 @@
+import { securityDocument } from "../../controller/documents/security";
 import { ManagerGuardHandler } from "../../controller/guards/manager.guard";
+import { UserPipe } from "../../controller/pipes/user.pipe";
 import { PagedSchema } from "../../controller/schemas/base";
 import { XUserIdSchema } from "../../controller/schemas/headers";
 import { TestIdParamsSchema, AttemptIdParamsSchema } from "../../controller/schemas/params";
@@ -51,29 +53,31 @@ export function historyController() {
 		}).build({ tags: ['History'] });
 
 	router.endpoint().get('/candidate/attempts')
+		.addSecurity(securityDocument, "userId")
+		.addPipe(UserPipe)
 		.middleware(ManagerGuardHandler)
 		.schema({
 			query: AttemptFilterQuerySchema,
-			headers: XUserIdSchema,
 			response: PagedSchema(AttemptItemResultSchema)
 		})
 		.handle(async (data) => {
-			const candidateId = data.headers["x-user-id"];
+			const candidateId = data.meta.userId;
 			const filter = data.query;
 			const result = await HistoryQueryService.getCandidateAttempts(candidateId, filter);
 			return result;
 		}).build({ tags: ['History'] });
 
 	router.endpoint().get('/candidate/tests/:testId/attempts')
+		.addSecurity(securityDocument, "userId")
+		.addPipe(UserPipe)
 		.middleware(ManagerGuardHandler)
 		.schema({
 			params: TestIdParamsSchema,
-			headers: XUserIdSchema,
 			query: AttemptFilterQuerySchema,
 			response: PagedSchema(AttemptItemResultSchema)
 		})
 		.handle(async (data) => {
-			const candidateId = data.headers["x-user-id"];
+			const candidateId = data.meta.userId;
 			const testId = data.params.testId;
 			const filter = data.query;
 			const result = await HistoryQueryService.getCandidateAttempt(candidateId, testId, filter);

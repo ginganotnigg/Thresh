@@ -1,13 +1,13 @@
 import { nanoid } from "nanoid";
 import { createNamespace } from "cls-hooked";
 import { logHttpRequest, logHttpResponse } from "../../configs/logger/winston";
-import { IChuoiHandler } from "../../library/caychuoijs/main/contracts";
+import { IChuoiMiddleware } from "../../library/caychuoijs/main/contracts";
 import { ChuoiContainer } from "../../library/caychuoijs/utils/container";
 import { CallbackExpressHandler } from "../../library/caychuoijs/utils/type";
 
 const requestNamespace = createNamespace("request");
 
-export class LoggerMiddleware implements IChuoiHandler {
+export class LoggerMiddleware implements IChuoiMiddleware {
 	handle: CallbackExpressHandler = (req, res, next) => {
 		const requestId = nanoid(6);
 		requestNamespace.run(() => {

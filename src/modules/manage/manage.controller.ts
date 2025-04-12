@@ -1,6 +1,8 @@
+import { securityDocument } from "../../controller/documents/security";
 import { ManagerGuardHandler } from "../../controller/guards/manager.guard";
+import { UserPipe } from "../../controller/pipes/user.pipe";
 import { PagedSchema } from "../../controller/schemas/base";
-import { XUserIdSchema } from "../../controller/schemas/headers";
+import { UserIdMeta } from "../../controller/schemas/meta";
 import { TestIdParamsSchema } from "../../controller/schemas/params";
 import { Chuoi } from "../../library/caychuoijs";
 import { TestCreateBodySchema, TestFilterQuerySchema, TestUpdateBodySchema } from "./schemas/request";
@@ -38,22 +40,25 @@ export function manageController() {
 		}).build({ tags: ['Tests'] });
 
 	router.endpoint().get('/manager/tests')
+		.addSecurity(securityDocument, "userId")
+		.addPipe(UserPipe)
 		.middleware(ManagerGuardHandler)
 		.schema({
 			query: TestFilterQuerySchema,
-			headers: XUserIdSchema,
 			response: PagedSchema(TestItemResponseSchema)
 		}).handle(async data => {
-			return await ManageQueryService.getManagerTests(data.headers["x-user-id"], data.query);
+			return await ManageQueryService.getManagerTests(data.meta.userId, data.query);
 		}).build({ tags: ['Tests'] });
 
 	router.endpoint().post('/tests')
+		.addSecurity(securityDocument, "userId")
+		.addPipe(UserPipe)
 		.middleware(ManagerGuardHandler)
 		.schema({
 			body: TestCreateBodySchema,
-			headers: XUserIdSchema,
+			meta: UserIdMeta,
 		}).handle(async data => {
-			await CommandService.createTest(data.headers["x-user-id"], data.body);
+			await CommandService.createTest(data.meta.userId, data.body);
 			return { message: "Test created" };
 		}).build({ tags: ['Tests'] });
 

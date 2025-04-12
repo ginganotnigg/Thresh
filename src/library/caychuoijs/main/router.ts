@@ -1,18 +1,19 @@
 import { Router, Response } from "express";
 import { FullSchema, HttpMethod, RequestSchema } from "../utils/type";
-import { IChuoiHandler, IChuoiExceptionHandler } from "./contracts";
+import { IChuoiMiddleware, IChuoiExceptionHandler, ChuoiPipeBase } from "./contracts";
 import { ChuoiContainer } from "../utils/container";
 import { zodParse } from "../utils/schema-zod";
 import { Constructor, CallbackExpressHandler, CallbackDataHandler, RequestData, MetaRequest as MetadataRequest } from "../utils/type";
 import { z } from "zod";
 import { ChuoiDocument } from "../documentation/open-api";
+import { ChuoiSecurityBase } from "../documentation/security";
 
 
 export class ChuoiRouter {
 	private readonly _router: Router;
 	private readonly _parentChuoiRouter?: ChuoiRouter;
 	private readonly _path?: string;
-	private readonly _middlewares: Constructor<IChuoiHandler>[] = [];
+	private readonly _middlewares: Constructor<IChuoiMiddleware>[] = [];
 	private _errorHandler?: Constructor<IChuoiExceptionHandler>;
 
 	constructor(parrentChuoiRouter: ChuoiRouter | Router, routerPath?: string) {
@@ -57,7 +58,7 @@ export class ChuoiRouter {
 		return child;
 	}
 
-	middleware(...handler: Constructor<IChuoiHandler>[]) {
+	middleware(...handler: Constructor<IChuoiMiddleware>[]) {
 		this._middlewares.push(...handler);
 		return this;
 	}
@@ -68,11 +69,11 @@ export class ChuoiRouter {
 	}
 
 	endpoint() {
-		return new ChuoiEndpoint(this.fullPath(), this._router).endpoint();
+		return new ChuoiEndpointBuilder(this.fullPath(), this._router).endpoint();
 	}
 }
 
-class ChuoiEndpoint {
+class ChuoiEndpointBuilder {
 	constructor(
 		private readonly basePath: string,
 		private readonly router: Router
@@ -80,7 +81,8 @@ class ChuoiEndpoint {
 
 	private path: string;
 	private method: "get" | "post" | "put" | "delete" | "patch" | "options" | "head" | "trace";
-	private middlewares: Constructor<IChuoiHandler>[] = [];
+	private securities: string[] = [];
+	private middlewares: Constructor<IChuoiMiddleware>[] = [];
 	private errorHandler: Constructor<IChuoiExceptionHandler> | undefined;
 	private requestSchema: RequestSchema<any, any, any, any, any> | undefined;
 	private responseSchema: z.ZodType<any> | undefined;
@@ -111,50 +113,94 @@ class ChuoiEndpoint {
 		}
 	};
 
+	public endpoint() {
+		return {
+			get: (path: string) => this._createMethod("get", path),
+			post: (path: string) => this._createMethod("post", path),
+			put: (path: string) => this._createMethod("put", path),
+			delete: (path: string) => this._createMethod("delete", path),
+			patch: (path: string) => this._createMethod("patch", path),
+			options: (path: string) => this._createMethod("options", path),
+			head: (path: string) => this._createMethod("head", path),
+			trace: (path: string) => this._createMethod("trace", path),
+		}
+	}
+
 	// **************************
 	// Method chaining:
 	// + Those with using call back function must be used with .bind(_this) to keep the context
 	// **************************
 
+	private _createMethod(method: HttpMethod, path: string) {
+		this.path = path;
+		this.method = method;
+		return this._methodNext();
+	}
+
 	private _methodNext() {
 		const _this = this;
 		return {
-			middleware: _this.middleware.bind(_this),
-			schema: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this.schema(schema),
-			before: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => _this.before(handler),
-			handle: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this.handle(handler),
+			addSecurity: <TScheme extends string>(security: ChuoiSecurityBase<TScheme>, key: TScheme) => _this._addSecurity(security, key),
+			addPipe: <TMetaNew extends object>(handler: Constructor<ChuoiPipeBase<TMetaNew>>) => _this._addPipe<{}, TMetaNew>(handler),
+			middleware: (...handlers: Constructor<IChuoiMiddleware>[]) => _this._middleware<{}>(...handlers),
+			schema: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._schema(schema),
+			before: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => _this._before(handler),
+			handle: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._handle(handler),
 		}
 	}
 
-	private _methodMiddleware() {
+	private _methodSecurity() {
 		const _this = this;
 		return {
-			schema: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this.schema<TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema),
-			before: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => _this.before<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
-			handle: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this.handle<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
+			addSecurity: <TScheme extends string>(security: ChuoiSecurityBase<TScheme>, key: TScheme) => _this._addSecurity(security, key),
+			addPipe: <TMetaNew extends object>(handler: Constructor<ChuoiPipeBase<TMetaNew>>) => _this._addPipe<{}, TMetaNew>(handler),
+			middleware: (...handlers: Constructor<IChuoiMiddleware>[]) => _this._middleware<{}>(...handlers),
+			schema: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._schema(schema),
+			before: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => _this._before(handler),
+			handle: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._handle(handler),
+		}
+	}
+
+	private _methodPipe<TMeta extends object>() {
+		const _this = this;
+		return {
+			addPipe: <TMetaNew extends object>(handler: Constructor<ChuoiPipeBase<TMetaNew>>) => _this._addPipe<TMeta, TMetaNew>(handler),
+			middleware: (...handlers: Constructor<IChuoiMiddleware>[]) => _this._middleware<TMeta>(...handlers),
+			schema: <TParams, TQuery, TBody, THeader, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._schema(schema),
+			before: <TParams, TQuery, TBody, THeader>(handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => _this._before(handler),
+			handle: <TParams, TQuery, TBody, THeader, TResponse>(handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._handle(handler),
+		}
+	}
+
+	private _methodMiddleware<TMeta extends object>() {
+		const _this = this;
+		return {
+			schema: <TParams, TQuery, TBody, THeader, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._schema<TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema),
+			before: <TParams, TQuery, TBody, THeader, TResponse>(handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => _this._before<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
+			handle: <TParams, TQuery, TBody, THeader, TResponse>(handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._handle<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
 		}
 	}
 
 	private _methodSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>() {
 		const _this = this;
 		return {
-			before: (handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => _this.before<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
-			handle: (handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this.handle<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
+			before: (handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => _this._before<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
+			handle: (handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._handle<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
 		}
 	}
 
 	private _methodBefore<TParams, TQuery, TBody, THeader, TMeta, TResponse>() {
 		const _this = this;
 		return {
-			handle: (handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this.handle<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
+			handle: (handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._handle<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler),
 		}
 	}
 
 	private _methodHandle<TResponse>() {
 		const _this = this;
 		return {
-			after: (handler: (result: TResponse, res: Response) => void | Promise<void>) => _this.after<TResponse>(handler),
-			error: _this.error.bind(_this),
+			after: (handler: (result: TResponse, res: Response) => void | Promise<void>) => _this._after<TResponse>(handler),
+			error: _this._error.bind(_this),
 			build: _this.build.bind(_this),
 		}
 	}
@@ -162,7 +208,7 @@ class ChuoiEndpoint {
 	private _methodAfter() {
 		const _this = this;
 		return {
-			error: _this.error.bind(_this),
+			error: _this._error.bind(_this),
 			build: _this.build.bind(_this),
 		}
 	}
@@ -174,31 +220,29 @@ class ChuoiEndpoint {
 		}
 	}
 
-	public endpoint() {
-		return {
-			get: (path: string) => this.createMethod("get", path),
-			post: (path: string) => this.createMethod("post", path),
-			put: (path: string) => this.createMethod("put", path),
-			delete: (path: string) => this.createMethod("delete", path),
-			patch: (path: string) => this.createMethod("patch", path),
-			options: (path: string) => this.createMethod("options", path),
-			head: (path: string) => this.createMethod("head", path),
-			trace: (path: string) => this.createMethod("trace", path),
-		}
+
+	/* 
+	 **********************************************
+	 * Setter part
+	 **********************************************
+	 */
+
+	private _addSecurity<TScheme extends string>(security: ChuoiSecurityBase<TScheme>, key: TScheme) {
+		this.securities.push(key);
+		return this._methodSecurity();
 	}
 
-	private createMethod(method: HttpMethod, path: string) {
-		this.path = path;
-		this.method = method;
-		return this._methodNext();
+	private _addPipe<TMetaCurrent extends object, TMetaNew extends object>(handler: Constructor<ChuoiPipeBase<TMetaNew>>) {
+		this.middlewares.push(handler);
+		return this._methodPipe<TMetaCurrent & TMetaNew>();
 	}
 
-	private middleware(...handlers: Constructor<IChuoiHandler>[]) {
+	private _middleware<TMeta extends object>(...handlers: Constructor<IChuoiMiddleware>[]) {
 		this.middlewares.push(...handlers);
-		return this._methodMiddleware();
+		return this._methodMiddleware<TMeta>();
 	}
 
-	private schema<TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) {
+	private _schema<TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) {
 		this.requestSchema = {
 			params: schema.params,
 			query: schema.query,
@@ -210,25 +254,32 @@ class ChuoiEndpoint {
 		return this._methodSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>();
 	}
 
-	private before<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) {
+	private _before<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) {
 		this.beforeHandler = handler;
 		return this._methodBefore<TParams, TQuery, TBody, THeader, TMeta, TResponse>();
 	}
 
-	private handle<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) {
+	private _handle<TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) {
 		this.mainHandler = handler;
 		return this._methodHandle<TResponse>();
 	}
 
-	private after<TResponse>(handler: (result: TResponse, res: Response) => void | Promise<void>) {
+	private _after<TResponse>(handler: (result: TResponse, res: Response) => void | Promise<void>) {
 		this.afterHandler = handler;
 		return this._methodAfter();
 	}
 
-	private error(handler: Constructor<IChuoiExceptionHandler>) {
+	private _error(handler: Constructor<IChuoiExceptionHandler>) {
 		this.errorHandler = handler;
 		return this._methodError();
 	}
+
+
+	/* 
+	 **********************************************
+	 * Handle part
+	 **********************************************
+	 */
 
 	private _handleWarpped: CallbackExpressHandler = async (req, res, next) => {
 		try {
@@ -248,11 +299,11 @@ class ChuoiEndpoint {
 					headers: sHeaders,
 					meta: sMeta
 				} = this.requestSchema;
-				params = sParams ? zodParse(sParams, params) : {};
-				query = sQuery ? zodParse(sQuery, query) : {};
-				body = sBody ? zodParse(sBody, body) : {};
-				headers = sHeaders ? zodParse(sHeaders, headers) : {};
-				meta = sMeta ? zodParse(sMeta, meta) : {};
+				params = sParams ? zodParse(sParams, params) : params;
+				query = sQuery ? zodParse(sQuery, query) : query;
+				body = sBody ? zodParse(sBody, body) : body;
+				headers = sHeaders ? zodParse(sHeaders, headers) : headers;
+				meta = sMeta ? zodParse(sMeta, meta) : meta;
 			}
 			let beforeHandlerResult = { params, query, body, headers, meta };
 			if (this.beforeHandler) {
@@ -267,6 +318,10 @@ class ChuoiEndpoint {
 			next(error);
 		}
 	}
+
+	// **************************
+	// Build the endpoint
+	// **************************
 
 	private build({
 		summary,
@@ -296,6 +351,7 @@ class ChuoiEndpoint {
 			summary,
 			description,
 			tags,
+			this.securities
 		);
 	}
 }

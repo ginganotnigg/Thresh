@@ -1,6 +1,6 @@
 import { Application, Router } from "express";
 import { Constructor } from "./utils/type";
-import { IChuoiExceptionHandler, IChuoiHandler } from "./main/contracts";
+import { IChuoiExceptionHandler, IChuoiMiddleware } from "./main/contracts";
 import { z } from "zod";
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { ChuoiRouter } from "./main/router";
@@ -9,6 +9,7 @@ import { writeFileSync } from "fs";
 import swaggerUi from 'swagger-ui-express';
 import { ChuoiContainer } from "./utils/container";
 import { env } from "../../utils/env";
+import { ChuoiSecurityBase } from "./documentation/security";
 
 export class Chuoi {
 	private static _globalRouter?: ChuoiRouter;
@@ -42,11 +43,15 @@ export class Chuoi {
 		}
 	}
 
-	static middleware(...handlers: Constructor<IChuoiHandler>[]) {
+	static middleware(...handlers: Constructor<IChuoiMiddleware>[]) {
 		if (!this._baseRouter) {
 			throw new Error("ChuoiController not initialized");
 		}
-		this._baseRouter.use(...handlers.map(h => ChuoiContainer.retrieve(h).handle));
+		this._baseRouter.use(...handlers.map(h => {
+			const instance = ChuoiContainer.retrieve(h);
+			instance.handle = instance.handle.bind(instance);
+			return instance.handle;
+		}));
 	}
 
 	static newRoute(path?: string): ChuoiRouter {
@@ -93,14 +98,13 @@ export class Chuoi {
 		});
 	}
 
-	static doc(docPath: string = '/api-docs'): void {
+	static doc<TScheme extends string>(security?: ChuoiSecurityBase<TScheme>, docPath: string = '/api-docs'): void {
 		if (!this._baseRouter) {
 			throw new Error("ChuoiController not initialized");
 		}
-		ChuoiDocument.addCustomSecurityScheme("User ID", "x-user-id", "header", "X-User-Id header for authentication");
-		ChuoiDocument.addCustomSecurityScheme("Role ID", "x-role-id", "header", "X-Role-Id header for authentication");
+
 		const url = `http://localhost:${env.port}`;
-		const swaggerSpec = ChuoiDocument.generateV31({
+		const swaggerSpec = ChuoiDocument.generateV31(security, {
 			info: {
 				title: this._config.title,
 				version: this._config.version,

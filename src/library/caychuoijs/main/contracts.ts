@@ -1,8 +1,18 @@
 import { Request, Response, NextFunction } from "express"
-import { CallbackExpressHandler, Constructor } from "../utils/type";
+import { Constructor } from "../utils/type";
 
-export interface IChuoiHandler {
-	get handle(): CallbackExpressHandler;
+export abstract class ChuoiPipeBase<TMeta extends object = {}> implements IChuoiMiddleware {
+	abstract extract(req: Request): TMeta;
+
+	handle(req: Request, res: Response, next: NextFunction): void {
+		const meta = this.extract(req);
+		(req as any).meta = meta;
+		next();
+	}
+}
+
+export interface IChuoiMiddleware {
+	handle(req: Request, res: Response, next: NextFunction): void;
 }
 
 export interface IChuoiExceptionHandler {
