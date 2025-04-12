@@ -54,6 +54,7 @@ export function historyController() {
 
 	router.endpoint().get('/candidate/attempts')
 		.addSecurity(securityDocument, "userId")
+		.addSecurity(securityDocument, "roleId")
 		.addPipe(UserPipe)
 		.middleware(ManagerGuardHandler)
 		.schema({
@@ -65,10 +66,11 @@ export function historyController() {
 			const filter = data.query;
 			const result = await HistoryQueryService.getCandidateAttempts(candidateId, filter);
 			return result;
-		}).build({ tags: ['History'] });
+		}).build({ tags: ['History'], summary: 'Get all attempts of the candidate' });
 
 	router.endpoint().get('/candidate/tests/:testId/attempts')
 		.addSecurity(securityDocument, "userId")
+		.addSecurity(securityDocument, "roleId")
 		.addPipe(UserPipe)
 		.middleware(ManagerGuardHandler)
 		.schema({
@@ -82,7 +84,7 @@ export function historyController() {
 			const filter = data.query;
 			const result = await HistoryQueryService.getCandidateAttempt(candidateId, testId, filter);
 			return result;
-		}).build({ tags: ['History'] });
+		}).build({ tags: ['History'], summary: "Get all attempts of the candidate in a test" });
 
 	return router;
 }

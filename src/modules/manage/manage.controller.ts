@@ -30,16 +30,18 @@ export function manageController() {
 			return await ManageQueryService.getTest(data.params.testId);
 		}).build({ tags: ['Tests'] });
 
-	router.endpoint().get('/tests/:testId/questions')
+	router.endpoint().get('/manager/tests/:testId/questions')
+		.addSecurity(securityDocument, "roleId")
 		.middleware(ManagerGuardHandler)
 		.schema({
 			params: TestIdParamsSchema,
 			response: z.array(QuestionResponseSchema)
 		}).handle(async data => {
 			return await ManageQueryService.getQuestions(data.params.testId);
-		}).build({ tags: ['Tests'] });
+		}).build({ tags: ['Tests'], summary: 'Get all informations (include correct answer) of all questions of a test.' });
 
 	router.endpoint().get('/manager/tests')
+		.addSecurity(securityDocument, "roleId")
 		.addSecurity(securityDocument, "userId")
 		.addPipe(UserPipe)
 		.middleware(ManagerGuardHandler)
@@ -48,9 +50,10 @@ export function manageController() {
 			response: PagedSchema(TestItemResponseSchema)
 		}).handle(async data => {
 			return await ManageQueryService.getManagerTests(data.meta.userId, data.query);
-		}).build({ tags: ['Tests'] });
+		}).build({ tags: ['Tests'], summary: "Get manager's tests" });
 
-	router.endpoint().post('/tests')
+	router.endpoint().post('/manager/tests')
+		.addSecurity(securityDocument, "roleId")
 		.addSecurity(securityDocument, "userId")
 		.addPipe(UserPipe)
 		.middleware(ManagerGuardHandler)
@@ -62,7 +65,8 @@ export function manageController() {
 			return { message: "Test created" };
 		}).build({ tags: ['Tests'] });
 
-	router.endpoint().put('/tests/:testId')
+	router.endpoint().put('/manager/tests/:testId')
+		.addSecurity(securityDocument, "roleId")
 		.middleware(ManagerGuardHandler)
 		.schema({
 			params: TestIdParamsSchema,
@@ -72,7 +76,8 @@ export function manageController() {
 			return { message: "Test updated" };
 		}).build({ tags: ['Tests'] });
 
-	router.endpoint().delete('/tests/:testId')
+	router.endpoint().delete('/manager/tests/:testId')
+		.addSecurity(securityDocument, "roleId")
 		.middleware(ManagerGuardHandler)
 		.schema({
 			params: TestIdParamsSchema,

@@ -1,4 +1,4 @@
-import { Application, Router } from "express";
+import { Application, NextFunction, Request, Response, Router } from "express";
 import { Constructor } from "./utils/type";
 import { IChuoiExceptionHandler, IChuoiMiddleware } from "./main/contracts";
 import { z } from "zod";
@@ -12,8 +12,9 @@ import { env } from "../../utils/env";
 import { ChuoiSecurityBase } from "./documentation/security";
 
 export class Chuoi {
-	private static _globalRouter?: ChuoiRouter;
+	private static _baseChuoiRouter?: ChuoiRouter;
 	private static _baseRouter?: Router;
+	private static _app: Application;
 	private static _config: {
 		basePath: string,
 		title: string,
@@ -27,15 +28,16 @@ export class Chuoi {
 		title,
 		version,
 	}: {
-		basePath: string,
-		title: string,
-		version: string,
+		basePath: string;
+		title: string;
+		version: string;
 	}): void {
 		extendZodWithOpenApi(z);
 		const router = Router();
 		app.use(basePath, router);
 		this._baseRouter = router;
-		this._globalRouter = new ChuoiRouter(router);
+		this._baseChuoiRouter = new ChuoiRouter(router);
+		this._app = app;
 		this._config = {
 			basePath,
 			title,
@@ -55,10 +57,10 @@ export class Chuoi {
 	}
 
 	static newRoute(path?: string): ChuoiRouter {
-		if (!this._globalRouter) {
+		if (!this._baseChuoiRouter) {
 			throw new Error("ChuoiController not initialized");
 		}
-		const child = this._globalRouter.down(path);
+		const child = this._baseChuoiRouter.down(path);
 		return child;
 	}
 
@@ -66,7 +68,8 @@ export class Chuoi {
 		if (!this._baseRouter) {
 			throw new Error("ChuoiController not initialized");
 		}
-		this._baseRouter.use(ChuoiContainer.retrieve(errorHandler).handle);
+		const instance = ChuoiContainer.retrieve(errorHandler);
+		this._app.use(instance.handle.bind(instance));
 	}
 
 	static log(logger: (message: string, isWarning: boolean) => void, router: Application | Router | undefined = this._baseRouter, parentPath = ''): void {
@@ -98,6 +101,7 @@ export class Chuoi {
 		});
 	}
 
+	// TODO: split the doc into a different router on "/api-docs", not "/api/api-docs"
 	static doc<TScheme extends string>(security?: ChuoiSecurityBase<TScheme>, docPath: string = '/api-docs'): void {
 		if (!this._baseRouter) {
 			throw new Error("ChuoiController not initialized");

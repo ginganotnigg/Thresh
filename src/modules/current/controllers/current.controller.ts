@@ -1,4 +1,5 @@
 import { securityDocument } from "../../../controller/documents/security";
+import { CandidateGuard } from "../../../controller/guards/candidate.guard";
 import { UserPipe } from "../../../controller/pipes/user.pipe";
 import { TestIdParamsSchema } from "../../../controller/schemas/params";
 import { Chuoi } from "../../../library/caychuoijs";
@@ -9,19 +10,25 @@ import { TestDetailToDoResponseSchema, CurrentAttemptStateResponseSchema } from 
 export function processController() {
 	const router = Chuoi.newRoute();
 
-	router.endpoint().get('/current-attempt/state')
+	router.endpoint().get('/candidate/current-attempt/state')
 		.addSecurity(securityDocument, "userId")
+		.addSecurity(securityDocument, "roleId")
+		.addGuard(CandidateGuard)
 		.addPipe(UserPipe)
 		.schema({
 			response: CurrentAttemptStateResponseSchema,
-		}).handle(async data => {
-			const candidateId = data.meta.userId;
-			const current = await CurrentQueryService.getCurrentAttemptState(candidateId);
-			return current;
+		}).handle(async (data) => {
+			throw new Error("Test error");
+			// }).handle(async data => {
+			// 	const candidateId = data.meta.userId;
+			// 	const current = await CurrentQueryService.getCurrentAttemptState(candidateId);
+			// 	return current;
 		}).build({ tags: ['Current'] });
 
-	router.endpoint().post('/current-attempt/new')
+	router.endpoint().post('/candidate/current-attempt/new')
 		.addSecurity(securityDocument, "userId")
+		.addSecurity(securityDocument, "roleId")
+		.addGuard(CandidateGuard)
 		.addPipe(UserPipe)
 		.schema({
 			body: TestIdParamsSchema,
@@ -31,8 +38,10 @@ export function processController() {
 			await ProcessCommandService.startNew(testId, candidateId);
 		}).build({ tags: ['Current'] });
 
-	router.endpoint().get('/current-attempt/do')
+	router.endpoint().get('/candidate/current-attempt/do')
 		.addSecurity(securityDocument, "userId")
+		.addSecurity(securityDocument, "roleId")
+		.addGuard(CandidateGuard)
 		.addPipe(UserPipe)
 		.schema({
 			response: TestDetailToDoResponseSchema
@@ -42,8 +51,10 @@ export function processController() {
 			return attemptDetail;
 		}).build({ tags: ['Current'], summary: 'Prepare the test for the candidate to do' });
 
-	router.endpoint().post('/current-attempt/submit')
+	router.endpoint().post('/candidate/current-attempt/submit')
 		.addSecurity(securityDocument, "userId")
+		.addSecurity(securityDocument, "roleId")
+		.addGuard(CandidateGuard)
 		.addPipe(UserPipe)
 		.schema({}).handle(async data => {
 			const candidateId = data.meta.userId;

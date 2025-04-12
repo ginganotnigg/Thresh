@@ -7,6 +7,7 @@ export type HttpMethod = "get" | "post" | "put" | "delete" | "patch" | "options"
 export type CallbackDataHandler<TParams, TQuery, TBody, THeaders, TMeta, TResponse> = (requestData: RequestData<TParams, TQuery, TBody, THeaders, TMeta>) => TResponse | Promise<TResponse> | any;
 
 export type CallbackExpressHandler = (req: Request, res: Response, next: NextFunction) => void;
+export type AsyncCallbackExpressHandler = (req: Request, res: Response, next: NextFunction) => Promise<void>;
 
 export type RequestData<TParams, TQuery, TBody, THeaders, TMeta> = {
 	params: TParams;

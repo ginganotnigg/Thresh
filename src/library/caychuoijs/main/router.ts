@@ -1,6 +1,6 @@
 import { Router, Response } from "express";
-import { FullSchema, HttpMethod, RequestSchema } from "../utils/type";
-import { IChuoiMiddleware, IChuoiExceptionHandler, ChuoiPipeBase } from "./contracts";
+import { AsyncCallbackExpressHandler, FullSchema, HttpMethod, RequestSchema } from "../utils/type";
+import { IChuoiMiddleware, IChuoiExceptionHandler, ChuoiPipeBase, ChuoiGuardBase } from "./contracts";
 import { ChuoiContainer } from "../utils/container";
 import { zodParse } from "../utils/schema-zod";
 import { Constructor, CallbackExpressHandler, CallbackDataHandler, RequestData, MetaRequest as MetadataRequest } from "../utils/type";
@@ -141,6 +141,7 @@ class ChuoiEndpointBuilder {
 		const _this = this;
 		return {
 			addSecurity: <TScheme extends string>(security: ChuoiSecurityBase<TScheme>, key: TScheme) => _this._addSecurity(security, key),
+			addGuard: (handler: Constructor<ChuoiGuardBase>) => _this._addGuard(handler),
 			addPipe: <TMetaNew extends object>(handler: Constructor<ChuoiPipeBase<TMetaNew>>) => _this._addPipe<{}, TMetaNew>(handler),
 			middleware: (...handlers: Constructor<IChuoiMiddleware>[]) => _this._middleware<{}>(...handlers),
 			schema: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._schema(schema),
@@ -153,6 +154,20 @@ class ChuoiEndpointBuilder {
 		const _this = this;
 		return {
 			addSecurity: <TScheme extends string>(security: ChuoiSecurityBase<TScheme>, key: TScheme) => _this._addSecurity(security, key),
+			addGuard: (handler: Constructor<ChuoiGuardBase>) => _this._addGuard(handler),
+			addPipe: <TMetaNew extends object>(handler: Constructor<ChuoiPipeBase<TMetaNew>>) => _this._addPipe<{}, TMetaNew>(handler),
+			middleware: (...handlers: Constructor<IChuoiMiddleware>[]) => _this._middleware<{}>(...handlers),
+			schema: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._schema(schema),
+			before: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => _this._before(handler),
+			handle: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._handle(handler),
+		}
+	}
+
+	private _methodGuard() {
+		const _this = this;
+		return {
+			addSecurity: <TScheme extends string>(security: ChuoiSecurityBase<TScheme>, key: TScheme) => _this._addSecurity(security, key),
+			addGuard: (handler: Constructor<ChuoiGuardBase>) => _this._addGuard(handler),
 			addPipe: <TMetaNew extends object>(handler: Constructor<ChuoiPipeBase<TMetaNew>>) => _this._addPipe<{}, TMetaNew>(handler),
 			middleware: (...handlers: Constructor<IChuoiMiddleware>[]) => _this._middleware<{}>(...handlers),
 			schema: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._schema(schema),
@@ -232,6 +247,11 @@ class ChuoiEndpointBuilder {
 		return this._methodSecurity();
 	}
 
+	private _addGuard(handler: Constructor<ChuoiGuardBase>) {
+		this.middlewares.push(handler);
+		return this._methodGuard();
+	}
+
 	private _addPipe<TMetaCurrent extends object, TMetaNew extends object>(handler: Constructor<ChuoiPipeBase<TMetaNew>>) {
 		this.middlewares.push(handler);
 		return this._methodPipe<TMetaCurrent & TMetaNew>();
@@ -274,14 +294,13 @@ class ChuoiEndpointBuilder {
 		return this._methodError();
 	}
 
-
 	/* 
 	 **********************************************
 	 * Handle part
 	 **********************************************
 	 */
 
-	private _handleWarpped: CallbackExpressHandler = async (req, res, next) => {
+	private _handleWarpped: AsyncCallbackExpressHandler = async (req, res, next) => {
 		try {
 			const metaData = (req as MetadataRequest)?.meta || {};
 			let { params, query, body, headers, meta } = {
@@ -315,6 +334,7 @@ class ChuoiEndpointBuilder {
 				await this.afterHandler(parsedResult, res);
 			}
 		} catch (error) {
+			// throw error;
 			next(error);
 		}
 	}
@@ -332,15 +352,20 @@ class ChuoiEndpointBuilder {
 		description?: string;
 		tags?: string[];
 	} = {}): void {
+		const _this = this;
 		this.router[this.method](
 			this.path,
 			...this.middlewares.map(
-				m => ChuoiContainer.retrieve(m).handle
+				m => {
+					const instance = ChuoiContainer.retrieve(m);
+					return instance.handle.bind(instance);
+				}
 			),
-			this._handleWarpped
+			(req, res, next) => _this._handleWarpped(req, res, next),
 		);
 		if (this.errorHandler) {
-			this.router.use(ChuoiContainer.retrieve(this.errorHandler).handle);
+			const instance = ChuoiContainer.retrieve(this.errorHandler);
+			this.router.use(instance.handle.bind(instance));
 		}
 
 		ChuoiDocument.addEndpointDocumentation(
