@@ -140,12 +140,12 @@ class ChuoiEndpointBuilder {
 	private _methodNext() {
 		const _this = this;
 		return {
-			addSecurity: <TScheme extends string>(security: ChuoiSecurityBase<TScheme>, key: TScheme) => _this._addSecurity(security, key),
+			addSecurityDocument: <TScheme extends string>(security: ChuoiSecurityBase<TScheme>, key: TScheme) => _this._addSecurity(security, key),
 			addGuard: (handler: Constructor<ChuoiGuardBase>) => _this._addGuard(handler),
 			addPipe: <TMetaNew extends object>(handler: Constructor<ChuoiPipeBase<TMetaNew>>) => _this._addPipe<{}, TMetaNew>(handler),
 			middleware: (...handlers: Constructor<IChuoiMiddleware>[]) => _this._middleware<{}>(...handlers),
 			schema: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(schema: FullSchema<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._schema(schema),
-			before: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => _this._before(handler),
+			before: <TParams, TQuery, TBody, THeader, TMeta>(handler: (data: RequestData<TParams, TQuery, TBody, THeader, TMeta>) => RequestData<TParams, TQuery, TBody, THeader, TMeta> | Promise<RequestData<TParams, TQuery, TBody, THeader, TMeta>>) => _this._before(handler),
 			handle: <TParams, TQuery, TBody, THeader, TMeta, TResponse>(handler: CallbackDataHandler<TParams, TQuery, TBody, THeader, TMeta, TResponse>) => _this._handle(handler),
 		}
 	}
@@ -153,7 +153,7 @@ class ChuoiEndpointBuilder {
 	private _methodSecurity() {
 		const _this = this;
 		return {
-			addSecurity: <TScheme extends string>(security: ChuoiSecurityBase<TScheme>, key: TScheme) => _this._addSecurity(security, key),
+			addSecurityDocument: <TScheme extends string>(security: ChuoiSecurityBase<TScheme>, key: TScheme) => _this._addSecurity(security, key),
 			addGuard: (handler: Constructor<ChuoiGuardBase>) => _this._addGuard(handler),
 			addPipe: <TMetaNew extends object>(handler: Constructor<ChuoiPipeBase<TMetaNew>>) => _this._addPipe<{}, TMetaNew>(handler),
 			middleware: (...handlers: Constructor<IChuoiMiddleware>[]) => _this._middleware<{}>(...handlers),
@@ -334,7 +334,6 @@ class ChuoiEndpointBuilder {
 				await this.afterHandler(parsedResult, res);
 			}
 		} catch (error) {
-			// throw error;
 			next(error);
 		}
 	}

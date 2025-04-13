@@ -3,6 +3,8 @@ import { DomainErrorResponse } from "../../controller/errors/domain.error";
 import { TagIdParamsSchema } from "../../controller/schemas/params";
 import Tag from "../../domain/models/tag";
 import { Chuoi } from "../../library/caychuoijs";
+import { ManagerGuard } from "../../controller/guards/manager.guard";
+import { securityDocument } from "../../controller/documents/security";
 
 const bodySchema = z.object({
 	name: z.string().nonempty()
@@ -32,7 +34,9 @@ export function tagsController() {
 		}).build({ tags: ["Tags"] });
 
 
-	router.endpoint().post("/tags")
+	router.endpoint().post("/manager/tags")
+		.addSecurityDocument(securityDocument, "roleId")
+		.addGuard(ManagerGuard)
 		.schema({
 			body: bodySchema
 		})
@@ -40,7 +44,9 @@ export function tagsController() {
 			return await Tag.create(data.body);
 		}).build({ tags: ["Tags"] });
 
-	router.endpoint().put("/tags/:tagId")
+	router.endpoint().put("/manager/tags/:tagId")
+		.addSecurityDocument(securityDocument, "roleId")
+		.addGuard(ManagerGuard)
 		.schema({
 			params: TagIdParamsSchema,
 			body: bodySchema
@@ -53,7 +59,9 @@ export function tagsController() {
 			return await tag.update(data.body);
 		}).build({ tags: ["Tags"] });
 
-	router.endpoint().delete("/tags/:tagId")
+	router.endpoint().delete("/manager/tags/:tagId")
+		.addSecurityDocument(securityDocument, "roleId")
+		.addGuard(ManagerGuard)
 		.schema({
 			params: TagIdParamsSchema
 		})

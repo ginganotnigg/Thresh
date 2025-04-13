@@ -12,10 +12,10 @@ export abstract class ChuoiPipeBase<TMeta extends object = {}> implements IChuoi
 }
 
 export abstract class ChuoiGuardBase implements IChuoiMiddleware {
-	abstract check(req: Request, next: NextFunction): void;
+	abstract check(req: Request): void;
 
 	handle(req: Request, res: Response, next: NextFunction): void {
-		this.check(req, next);
+		this.check(req);
 		next();
 	}
 }

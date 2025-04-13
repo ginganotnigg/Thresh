@@ -1,29 +1,25 @@
-import { NextFunction, Request } from "express";
+import { Request } from "express";
 import { ChuoiGuardBase } from "../../library/caychuoijs/main/contracts";
 import { env } from "../../utils/env";
-import { Role } from "./role";
 import { UnauthorizedErrorResponse } from "../errors/unauthorized.error";
 import { ForbidenErrorResponse } from "../errors/forbidden.error";
 
-export abstract class RoleGuardBaseHandler extends ChuoiGuardBase {
-	constructor(
-		private readonly role: Role
-	) { super(); }
+export abstract class RoleGuardBase extends ChuoiGuardBase {
+	protected abstract checkRole(role: number): boolean;
 
-	check(req: Request, next: NextFunction): void {
+	check(req: Request): void {
 		if (env.noAuth == true) {
-			next();
+			return;
 		}
-		else if (req.header('x-role-id') === undefined ||
+		if (
+			req.header('x-role-id') === undefined ||
 			isNaN(parseInt(req.header('x-role-id')!, 10))
 		) {
 			throw new UnauthorizedErrorResponse();
 		}
-		else if (parseInt(req.header('x-role-id')!, 10) !== this.role) {
+		const role = parseInt(req.header('x-role-id')!, 10);
+		if (!this.checkRole(role)) {
 			throw new ForbidenErrorResponse();
-		}
-		else {
-			next();
 		}
 	}
 } 

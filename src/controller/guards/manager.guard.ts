@@ -1,11 +1,11 @@
 import { ChuoiContainer } from "../../library/caychuoijs/utils/container";
 import { Role } from "./role";
-import { RoleGuardBaseHandler } from "./role-guard.base";
+import { RoleGuardBase as RoleGuardBase } from "./role-guard.base";
 
-export class ManagerGuardHandler extends RoleGuardBaseHandler {
-	constructor() {
-		super(Role.MANAGER);
+export class ManagerGuard extends RoleGuardBase {
+	protected checkRole(role: number): boolean {
+		return role === Role.MANAGER;
 	}
 }
 
-ChuoiContainer.register(ManagerGuardHandler);
+ChuoiContainer.register(ManagerGuard);

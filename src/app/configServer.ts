@@ -1,7 +1,7 @@
 import express, { json, Request, Response, NextFunction } from "express";
 import http from "http";
 import cors from "cors";
-import { ProcessModule } from "../modules/current/process.module";
+import { CurrentModule } from "../modules/current/current.module";
 import { ManageModule } from "../modules/manage/manage.module";
 import { ModuleBase } from "../library/cayduajs/module/module.base";
 import { HistoryModule } from "../modules/history/history.module";
@@ -60,7 +60,7 @@ export async function configServer() {
 
 	const modules: ModuleBase[] = [
 		new TagsModule(),
-		new ProcessModule(io),
+		new CurrentModule(io),
 		new ManageModule(),
 		new HistoryModule(),
 	];
