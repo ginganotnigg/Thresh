@@ -184,7 +184,7 @@ const getScoreSQL: [Literal, string] = [sequelize.literal(`(
 				ELSE 0 
 			END
 		), 0)
-	FROM attempts_answer_questions AS aaq 
+	FROM Attempts_answer_Questions AS aaq 
 	JOIN questions AS q
 	ON aaq.questionId = q.id
 	WHERE aaq.attemptId = Attempt.id
@@ -195,22 +195,22 @@ const getTotalScoreSQL: [Literal, string] = [sequelize.literal(`(
 	SELECT COALESCE(
 		SUM(q.points), 0
 	)
-	FROM questions AS q, tests AS t
+	FROM Questions AS q, Tests AS t
 	WHERE q.testId = t.id
 	)`), "totalScore"
 ];
 
 const getTotalQuestionSQL: [Literal, string] = [sequelize.literal(`(
 	SELECT COUNT(*)
-	FROM questions AS q, tests AS t
+	FROM Questions AS q, Tests AS t
 	WHERE q.testId = t.id
 	)`), "totalQuestions"
 ];
 
 const getTotalCorrectAnswerSQL: [Literal, string] = [sequelize.literal(`(
 	SELECT COUNT(*)
-	FROM attempts_answer_questions AS aaq
-	JOIN questions AS q
+	FROM Attempts_answer_Questions AS aaq
+	JOIN Questions AS q
 	ON aaq.questionId = q.id
 	WHERE aaq.attemptId = Attempt.id
 	AND aaq.chosenOption = q.correctOption
@@ -219,8 +219,8 @@ const getTotalCorrectAnswerSQL: [Literal, string] = [sequelize.literal(`(
 
 const getTotalWrongAnswerSQL: [Literal, string] = [sequelize.literal(`(
 	SELECT COUNT(*)
-	FROM attempts_answer_questions AS aaq
-	JOIN questions AS q
+	FROM Attempts_answer_Questions AS aaq
+	JOIN Questions AS q
 	ON aaq.questionId = q.id
 	WHERE aaq.attemptId = Attempt.id
 	AND aaq.chosenOption != q.correctOption

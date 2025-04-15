@@ -52,6 +52,7 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 		}, {
 			sequelize,
 			modelName: "Attempts_answer_Questions",
+			tableName: "Attempts_answer_Questions",
 			indexes: [
 				{
 					unique: true,

@@ -57,6 +57,7 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 		}, {
 			sequelize,
 			modelName: "Attempt",
+			tableName: "Attempts",
 		});
 	}
 

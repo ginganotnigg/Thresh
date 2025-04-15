@@ -4,8 +4,9 @@ import { removeNullFields } from "../../../utils/object";
 import Test from "../../../domain/models/test";
 import { DomainErrorResponse } from "../../../controller/errors/domain.error";
 import Question from "../../../domain/models/question";
+import Attempt from "../../../domain/models/attempt";
 
-export class CommandService {
+export class ManageCommandService {
 	static async createTest(managerId: string, param: TestCreateBody) {
 		const { questions, tagIds, ...testInfo } = param;
 		const transaction = await sequelize.transaction();
@@ -31,6 +32,13 @@ export class CommandService {
 		const notNullTestInfo = removeNullFields(testInfo);
 		const transaction = await sequelize.transaction();
 		try {
+			const attempt = await Attempt.findOne({
+				where: { testId },
+				transaction,
+			});
+			if (attempt != null) {
+				throw new DomainErrorResponse("Cannot update test that has attempts");
+			}
 			const test = await Test.findByPk(testId, { transaction });
 			if (test == null) {
 				throw new DomainErrorResponse("Test not found");
@@ -64,6 +72,13 @@ export class CommandService {
 	static async deleteTest(id: number) {
 		const transaction = await sequelize.transaction();
 		try {
+			const attempt = await Attempt.findOne({
+				where: { testId: id },
+				transaction,
+			});
+			if (attempt != null) {
+				throw new DomainErrorResponse("Cannot update test that has attempts");
+			}
 			const test = await Test.findByPk(id, { transaction });
 			if (test == null) {
 				throw new DomainErrorResponse("Test not found");

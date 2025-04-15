@@ -7,7 +7,7 @@ import { TestIdParamsSchema } from "../../controller/schemas/params";
 import { Chuoi } from "../../library/caychuoijs";
 import { TestCreateBodySchema, TestFilterQuerySchema, TestUpdateBodySchema } from "./schemas/request";
 import { TestItemResponseSchema, TestResponseSchema, QuestionResponseSchema } from "./schemas/response";
-import { CommandService } from "./services/command.service";
+import { ManageCommandService } from "./services/manage.command.service";
 import { ManageQueryService } from "./services/manage.query.service";
 import { z } from "zod";
 
@@ -61,7 +61,7 @@ export function manageController() {
 			body: TestCreateBodySchema,
 			meta: UserIdMeta,
 		}).handle(async data => {
-			await CommandService.createTest(data.meta.userId, data.body);
+			await ManageCommandService.createTest(data.meta.userId, data.body);
 			return { message: "Test created" };
 		}).build({ tags: ['Manage'] });
 
@@ -72,7 +72,7 @@ export function manageController() {
 			params: TestIdParamsSchema,
 			body: TestUpdateBodySchema,
 		}).handle(async data => {
-			await CommandService.updateTest(data.params.testId, data.body);
+			await ManageCommandService.updateTest(data.params.testId, data.body);
 			return { message: "Test updated" };
 		}).build({ tags: ['Manage'] });
 
@@ -82,7 +82,7 @@ export function manageController() {
 		.schema({
 			params: TestIdParamsSchema,
 		}).handle(async data => {
-			await CommandService.deleteTest(data.params.testId);
+			await ManageCommandService.deleteTest(data.params.testId);
 			return { message: "Test deleted" };
 		}).build({ tags: ['Manage'] });
 }

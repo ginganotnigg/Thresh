@@ -58,6 +58,7 @@ class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 			updatedAt: DataTypes.DATE,
 		}, {
 			sequelize,
+			tableName: "Tests",
 			modelName: "Test",
 		});
 	}

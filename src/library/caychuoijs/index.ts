@@ -101,12 +101,10 @@ export class Chuoi {
 		});
 	}
 
-	// TODO: split the doc into a different router on "/api-docs", not "/api/api-docs"
 	static doc<TScheme extends string>(security?: ChuoiSecurityBase<TScheme>, docPath: string = '/api-docs'): void {
 		if (!this._baseRouter) {
 			throw new Error("ChuoiController not initialized");
 		}
-
 		const url = `http://localhost:${env.port}`;
 		const swaggerSpec = ChuoiDocument.generateV31(security, {
 			info: {
@@ -121,7 +119,7 @@ export class Chuoi {
 			]
 		});
 		writeFileSync("openapi.json", JSON.stringify(swaggerSpec));
-		this._baseRouter.use(docPath, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+		this._app.use(docPath, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 		console.log(`API documentation is available at ${url}${this._config.basePath + docPath}`);
 	}
 }
