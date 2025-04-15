@@ -1,6 +1,6 @@
 import getTestsData from "./data/getTests";
 import { Application } from "express";
-import { validateResponse } from "../../../library/caymejs/test/validate-api-test";
+import { validateResult } from "../../../library/caymejs/test/validate-api-test";
 import { ManageModule } from "../manage.module";
 import request from "supertest";
 import { setupAfterAll, setupBeforeAll } from "../../../__tests__/api-setup";
@@ -16,13 +16,14 @@ describe(ManageModule.name, () => {
 		await setupAfterAll();
 	});
 
-	it.each(getTestsData)("GET /api/tests", async (data) => {
+	it.each(getTestsData)("GET /tests", async (data) => {
 		const response = await request(app)
-			.get('/api/tests')
+			.get('/tests')
 			.query(data.input)
 			.expect(200);
-		validateResponse(response, data);
+		validateResult(response, data);
 	});
+
 
 
 

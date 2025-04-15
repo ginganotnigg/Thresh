@@ -185,7 +185,7 @@ const getScoreSQL: [Literal, string] = [sequelize.literal(`(
 			END
 		), 0)
 	FROM Attempts_answer_Questions AS aaq 
-	JOIN questions AS q
+	JOIN Questions AS q
 	ON aaq.questionId = q.id
 	WHERE aaq.attemptId = Attempt.id
 	)`), "score"

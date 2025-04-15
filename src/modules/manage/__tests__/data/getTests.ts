@@ -1,5 +1,5 @@
-import { Paged } from "../../../../common/controller/schemas/base";
-import { TestDifficulty } from "../../../../common/domain/enum";
+import { Paged } from "../../../../controller/schemas/base";
+import { TestDifficulty } from "../../../../domain/enum";
 import { DataDriven } from "../../../../library/caymejs/test/data-driven.i";
 import { TestFilterQuery } from "../../schemas/request";
 import { TestItemResponse } from "../../schemas/response";
