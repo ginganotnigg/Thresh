@@ -84,20 +84,26 @@ export class ManageQueryService {
 	}
 }
 
-function getFilterCondition(filter: TestFilterQuery) {
+function getFilterCondition(filter: TestFilterQuery): {
+	whereClause: any;
+	includeTagsClause: any;
+} {
 	const difficultyArray = filter.difficulty != null && typeof filter.difficulty === "string" ? [filter.difficulty] : filter.difficulty;
 	const whereClase = {
+		// Search by title
 		...(filter.searchTitle && {
 			title: {
 				[Op.like]: `%${filter.searchTitle}%`
 			}
 		}),
+		// Filter by manager ids
 		...(filter.managerIds != null && filter.managerIds.length > 0 && {
 			managerId: {
 				[Op.in]: filter.managerIds
 			}
 		}),
 		// TODO: check conditions, min max is wrong (it is or, not and)
+		// Filter by minutes to answer
 		...(filter.minMinutesToAnswer !== undefined && {
 			minutesToAnswer: {
 				[Op.gte]: filter.minMinutesToAnswer
@@ -108,12 +114,14 @@ function getFilterCondition(filter: TestFilterQuery) {
 				[Op.lte]: filter.maxMinutesToAnswer
 			}
 		}),
+		// Filter by difficulty
 		...(filter.difficulty != null && filter.difficulty.length > 0 && {
 			difficulty: {
 				[Op.in]: difficultyArray
 			}
 		}),
 	};
+	// Filter by tags
 	const includeTagsClause = {
 		model: Tag,
 		where: filter.tags != null && filter.tags.length >= 0 ? {
@@ -123,11 +131,14 @@ function getFilterCondition(filter: TestFilterQuery) {
 		attributes: ["id", "name", "createdAt", "updatedAt"],
 		required: false,
 	};
-	const res = { whereClause: whereClase, includeTagsClause };
+	const res = {
+		whereClause: whereClase,
+		includeTagsClause,
+	};
 	return res;
 }
 
-async function findAllWithFilter(whereClause: any, includeTagClause: any, filter: { page: number, perPage: number }): Promise<Paged<TestItemResponse>> {
+async function findAllWithFilter(whereClause: any, includeTagClause: any, filter: TestFilterQuery): Promise<Paged<TestItemResponse>> {
 	const data = await Test.findAll({
 		where: whereClause,
 		include: [
@@ -146,6 +157,7 @@ async function findAllWithFilter(whereClause: any, includeTagClause: any, filter
 				]
 			]
 		},
+		order: filter.sortBy?.map(({ field, order }) => [field, order] as Sequelize.OrderItem),
 		offset: (filter.page - 1) * filter.perPage,
 		limit: filter.perPage,
 	});

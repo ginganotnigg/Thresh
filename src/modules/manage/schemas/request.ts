@@ -28,6 +28,55 @@ const TestFilterQuerySchema = z.object({
 			return str.split(',').map(Number).filter(n => !isNaN(n));
 		})
 	]).optional(),
+	sortBy: z.union([
+		z.array(z.object({
+			field: z.enum(['createdAt', 'updatedAt', 'title']),
+			order: z.enum(['asc', 'desc'])
+		})).optional().transform((sortBy) => {
+			if (!sortBy || sortBy.length === 0) return [{ field: 'createdAt', order: 'desc' }];
+			return sortBy.map(({ field, order }) => ({ field, order }));
+		}),
+		z.string().transform((str, ctx) => {
+			if (!str) return [{ field: 'createdAt', order: 'desc' }];
+			const obj = JSON.parse(str);
+			if (Array.isArray(obj)) {
+				if (z.array(z.object({
+					field: z.string(),
+					order: z.string()
+				})).safeParse(obj).success) {
+					return obj;
+				}
+			}
+			if (typeof obj === 'object') {
+				if (z.object({ field: z.string(), order: z.string() }).safeParse(obj).success) {
+					return [{ field: obj.field, order: obj.order }];
+				}
+			}
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Invalid sortBy format',
+			});
+			return z.NEVER;
+		}),
+		z.array(z.string()).transform((str, ctx) => {
+			if (!str || str.length === 0) return [{ field: 'createdAt', order: 'desc' }];
+			const objs = str.map((s) => {
+				const obj = JSON.parse(s);
+				if (z.object({ field: z.string(), order: z.string() }).safeParse(obj).success) {
+					return obj;
+				}
+				return z.NEVER;
+			});
+			if (objs.some((obj) => obj === z.NEVER)) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: 'Invalid sortBy format',
+				});
+				return z.NEVER;
+			}
+			return objs;
+		}),
+	]).default([{ field: 'createdAt', order: 'desc' }]).optional(),
 	page: z.coerce.number().min(1).default(1),
 	perPage: z.coerce.number().optional().default(5),
 });
