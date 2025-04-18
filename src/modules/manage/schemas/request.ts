@@ -21,6 +21,13 @@ const TestFilterQuerySchema = z.object({
 			return str.split(',').map(Number).filter(n => !isNaN(n));
 		})
 	]).optional(),
+	managerIds: z.union([
+		z.array(z.string()),
+		z.string().transform((str) => {
+			if (!str) return [];
+			return str.split(',').map(Number).filter(n => !isNaN(n));
+		})
+	]).optional(),
 	page: z.coerce.number().min(1).default(1),
 	perPage: z.coerce.number().optional().default(5),
 });

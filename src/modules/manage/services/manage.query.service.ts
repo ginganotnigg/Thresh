@@ -71,7 +71,8 @@ export class ManageQueryService {
 	static async getManagerTests(managerId: string, filter: TestFilterQuery): Promise<Paged<TestItemResponse>> {
 		const { whereClause, includeTagsClause } = getFilterCondition(filter);
 		const companyWhereClause = { ...whereClause, managerId };
-		return await findAllWithFilter(companyWhereClause, includeTagsClause, filter);
+		const res = await findAllWithFilter(companyWhereClause, includeTagsClause, filter);
+		return res;
 	}
 }
 
@@ -83,7 +84,12 @@ function getFilterCondition(filter: TestFilterQuery) {
 				[Op.like]: `%${filter.searchTitle}%`
 			}
 		}),
-		// Todo: check conditions, min max is wrong (it is or, not and)
+		...(filter.managerIds != null && filter.managerIds.length > 0 && {
+			managerId: {
+				[Op.in]: filter.managerIds
+			}
+		}),
+		// TODO: check conditions, min max is wrong (it is or, not and)
 		...(filter.minMinutesToAnswer !== undefined && {
 			minutesToAnswer: {
 				[Op.gte]: filter.minMinutesToAnswer
@@ -102,13 +108,15 @@ function getFilterCondition(filter: TestFilterQuery) {
 	};
 	const includeTagsClause = {
 		model: Tag,
-		where: filter.tags != null && filter.tags.length > 0 ? {
+		where: filter.tags != null && filter.tags.length >= 0 ? {
 			id: { [Op.in]: filter.tags! }
-		} : {},
+		} : undefined,
 		through: { attributes: [] },
-		attributes: ["id", "name", "createdAt", "updatedAt"]
+		attributes: ["id", "name", "createdAt", "updatedAt"],
+		required: false,
 	};
-	return { whereClause: whereClase, includeTagsClause };
+	const res = { whereClause: whereClase, includeTagsClause };
+	return res;
 }
 
 async function findAllWithFilter(whereClause: any, includeTagClause: any, filter: { page: number, perPage: number }): Promise<Paged<TestItemResponse>> {

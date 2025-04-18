@@ -24,15 +24,6 @@ describe(ManageModule.name, () => {
 		validateResult(response, data);
 	});
 
-
-
-
-
-
-
-
-
-
 	// it.each(detailData)(QueryService.prototype.getTest.name, async (data) => {
 	// 	const result = await queryService.getTest(data.input);
 

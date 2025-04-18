@@ -12,7 +12,7 @@ export class LoggerMiddleware implements IChuoiMiddleware {
 		const requestId = nanoid(6);
 		requestNamespace.run(() => {
 			requestNamespace.set("requestId", requestId);
-			logHttpRequest(`[${req.method}] ${req.url}`, { body: req.body, query: req.query, params: req.params });
+			logHttpRequest(`[${req.method}] ${req.url}`, { body: req.body, query: req.query, params: req.params, 'x-user-id': req.headers["x-user-id"] });
 			next();
 		});
 		const _originalJson = res.json;
