@@ -22,6 +22,13 @@ export function manageController() {
 			return await ManageQueryService.getTests(data.query);
 		}).build({ tags: ['Manage'] });
 
+	router.endpoint().get('/tests/challenge-of-the-day')
+		.schema({
+			response: TestResponseSchema
+		}).handle(async () => {
+			return await ManageQueryService.getChallengeOfTheDay();
+		}).build({ tags: ['Manage'], summary: 'Get one Test that is the challenge of the day (current is random by day)' });
+
 	router.endpoint().get('/tests/:testId')
 		.schema({
 			params: TestIdParamsSchema,

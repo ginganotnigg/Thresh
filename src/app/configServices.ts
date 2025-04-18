@@ -1,5 +1,7 @@
 import { IntervalService } from "../services/interval.service";
+import { RandomService } from "../services/random.service";
 
 export async function configServices() {
-	IntervalService.init();
+	await IntervalService.init();
+	await RandomService.init();
 }

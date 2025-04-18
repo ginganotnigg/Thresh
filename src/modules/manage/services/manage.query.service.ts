@@ -2,6 +2,7 @@ import { Paged } from "../../../controller/schemas/base";
 import Question from "../../../domain/models/question";
 import Tag from "../../../domain/models/tag";
 import Test from "../../../domain/models/test";
+import { RandomService } from "../../../services/random.service";
 import { TestFilterQuery } from "../schemas/request";
 import { QuestionResponse, TestItemResponse, TestResponse } from "../schemas/response";
 import { Op } from "sequelize";
@@ -51,6 +52,13 @@ export class ManageQueryService {
 			createdAt: row.createdAt!,
 			updatedAt: row.updatedAt!
 		};
+	}
+
+	static async getChallengeOfTheDay(): Promise<TestResponse | null> {
+		const randomId = RandomService.getTodayRandomTestId();
+		const test = await this.getTest(randomId);
+		if (!test) return null;
+		return test;
 	}
 
 	static async getQuestions(testId: number): Promise<QuestionResponse[]> {
