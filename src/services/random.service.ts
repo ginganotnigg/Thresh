@@ -1,9 +1,25 @@
 import Test from "../domain/models/test";
+import schedule from "node-schedule"
 
 export class RandomService {
 	private static _todayRandomTestId: number | null = null;
 
 	static async init() {
+		if (this._todayRandomTestId !== null) {
+			throw new Error("Random test ID already initialized. Call refreshRandomTestId() to refresh it.");
+		}
+		await this.refreshRandomTestId();
+		// Schedule the job to run at midnight every day
+		schedule.scheduleJob("0 0 * * *", () => {
+			this.refreshRandomTestId().then(() => {
+				console.log(`Random test ID refreshed to ${this._todayRandomTestId} at ${new Date()}`);
+			}).catch((error) => {
+				console.error("Error refreshing random test ID:", error);
+			});
+		});
+	}
+
+	private static async refreshRandomTestId() {
 		const testIds = await Test.findAll({
 			attributes: ["id"],
 		});
