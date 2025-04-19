@@ -57,7 +57,9 @@ export class ManageQueryService {
 	static async getChallengeOfTheDay(): Promise<TestResponse | null> {
 		const randomId = RandomService.getTodayRandomTestId();
 		const test = await this.getTest(randomId);
-		if (!test) return null;
+		if (!test) {
+			throw new Error("No test available for today");
+		}
 		return test;
 	}
 

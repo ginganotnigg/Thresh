@@ -8,8 +8,8 @@ export class RandomService {
 			attributes: ["id"],
 		});
 		if (testIds.length === 0) throw new Error("No test available");
-		const randomIndexByDate = new Date().getDate() % testIds.length;
-		const randomId = testIds[randomIndexByDate].id;
+		const randomIndex = Math.floor(Math.random() * testIds.length);
+		const randomId = testIds[randomIndex].id;
 		this._todayRandomTestId = randomId;
 	}
 
