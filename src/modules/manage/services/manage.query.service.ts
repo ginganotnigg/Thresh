@@ -56,7 +56,7 @@ export class ManageQueryService {
 
 	static async getChallengeOfTheDay(): Promise<TestResponse | null> {
 		const randomId = RandomService.getTodayRandomTestId();
-		if (!randomId) {
+		if (randomId === null) {
 			throw new Error("Out of random test id");
 		}
 		const test = await this.getTest(randomId);
