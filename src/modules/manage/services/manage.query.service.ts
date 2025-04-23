@@ -113,8 +113,6 @@ async function fetchFilteredTests(filter: TestFilterQuery): Promise<Paged<TestIt
 		}),
 	}).then(tests => tests.map(test => test.id!));
 
-	console.log("testByTagIds", testByTagIds);
-
 	// Fetch data with filters
 	const data = await Test.findAndCountAll({
 		where: {
@@ -123,12 +121,12 @@ async function fetchFilteredTests(filter: TestFilterQuery): Promise<Paged<TestIt
 					[Op.in]: testByTagIds
 				}
 			}),
-			...(filter.searchTitle && {
+			...(filter.searchTitle && filter.searchTitle.length > 0 && {
 				title: {
 					[Op.like]: `%${filter.searchTitle}%`
 				}
 			}),
-			...(filter.difficulty && {
+			...(filter.difficulty && filter.difficulty.length > 0 && {
 				difficulty: {
 					[Op.in]: typeof filter.difficulty === "string"
 						? [filter.difficulty]
