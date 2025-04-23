@@ -1,9 +1,9 @@
-import getTestsData from "./data/getTests";
+import getTestsData from "../data/getTests";
 import { Application } from "express";
-import { validateResult } from "../../../library/caymejs/test/validate-api-test";
-import { ManageModule } from "../manage.module";
+import { validateResult } from "../../../../library/caymejs/test/validate-api-test";
+import { ManageModule } from "../../manage.module";
 import request from "supertest";
-import { setupAfterAll, setupBeforeAll } from "../../../__tests__/api-setup";
+import { setupAfterAll, setupBeforeAll } from "../../../../__tests__/api-setup";
 
 describe(ManageModule.name, () => {
 	let app: Application;

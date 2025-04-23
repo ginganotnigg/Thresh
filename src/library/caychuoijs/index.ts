@@ -120,7 +120,7 @@ export class Chuoi {
 		});
 		writeFileSync("openapi.json", JSON.stringify(swaggerSpec));
 		this._app.use(docPath, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-		console.log(`API documentation is available at ${url}${this._config.basePath + docPath}`);
+		console.log(`API documentation is available at ${url}${docPath}`);
 	}
 }
 

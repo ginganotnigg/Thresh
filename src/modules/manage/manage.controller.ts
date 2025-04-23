@@ -55,7 +55,16 @@ export function manageController() {
 		.schema({
 			query: TestFilterQuerySchema,
 			response: PagedSchema(TestItemResponseSchema)
-		}).handle(async data => {
+		})
+		.before(data => {
+			if (data.query.minMinutesToAnswer && data.query.maxMinutesToAnswer) {
+				if (data.query.minMinutesToAnswer > data.query.maxMinutesToAnswer) {
+					throw new Error("minMinutesToAnswer must be less than maxMinutesToAnswer");
+				}
+			}
+			return data;
+		})
+		.handle(async data => {
 			return await ManageQueryService.getManagerTests(data.meta.userId, data.query);
 		}).build({ tags: ['Manage'], summary: "Get manager's tests" });
 

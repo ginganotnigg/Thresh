@@ -10,8 +10,7 @@ import Sequelize from "sequelize";
 
 export class ManageQueryService {
 	static async getTests(filter: TestFilterQuery): Promise<Paged<TestItemResponse>> {
-		const { whereClause, includeTagsClause } = getFilterCondition(filter);
-		return await findAllWithFilter(whereClause, includeTagsClause, filter);
+		return await fetchFilteredTests(filter);
 	}
 
 	static async getTest(id: number): Promise<TestResponse | null> {
@@ -82,72 +81,86 @@ export class ManageQueryService {
 	}
 
 	static async getManagerTests(managerId: string, filter: TestFilterQuery): Promise<Paged<TestItemResponse>> {
-		const { whereClause, includeTagsClause } = getFilterCondition(filter);
-		const companyWhereClause = { ...whereClause, managerId };
-		const res = await findAllWithFilter(companyWhereClause, includeTagsClause, filter);
-		return res;
+		const filterWithManager = { ...filter, managerIds: [managerId] };
+		return await fetchFilteredTests(filterWithManager);
 	}
 }
 
-function getFilterCondition(filter: TestFilterQuery): {
-	whereClause: any;
-	includeTagsClause: any;
-} {
-	const difficultyArray = filter.difficulty != null && typeof filter.difficulty === "string" ? [filter.difficulty] : filter.difficulty;
-	const whereClase = {
-		// Search by title
-		...(filter.searchTitle && {
-			title: {
-				[Op.like]: `%${filter.searchTitle}%`
-			}
-		}),
-		// Filter by manager ids
-		...(filter.managerIds != null && filter.managerIds.length > 0 && {
-			managerId: {
-				[Op.in]: filter.managerIds
-			}
-		}),
-		// TODO: check conditions, min max is wrong (it is or, not and)
-		// Filter by minutes to answer
-		...(filter.minMinutesToAnswer !== undefined && {
-			minutesToAnswer: {
-				[Op.gte]: filter.minMinutesToAnswer
-			}
-		}),
-		...(filter.maxMinutesToAnswer !== undefined && {
-			minutesToAnswer: {
-				[Op.lte]: filter.maxMinutesToAnswer
-			}
-		}),
-		// Filter by difficulty
-		...(filter.difficulty != null && filter.difficulty.length > 0 && {
-			difficulty: {
-				[Op.in]: difficultyArray
-			}
-		}),
-	};
-	// Filter by tags
-	const includeTagsClause = {
-		model: Tag,
-		where: filter.tags != null && filter.tags.length >= 0 ? {
-			id: { [Op.in]: filter.tags! }
-		} : undefined,
-		through: { attributes: [] },
-		attributes: ["id", "name", "createdAt", "updatedAt"],
-		required: false,
-	};
-	const res = {
-		whereClause: whereClase,
-		includeTagsClause,
-	};
-	return res;
-}
-
-async function findAllWithFilter(whereClause: any, includeTagClause: any, filter: TestFilterQuery): Promise<Paged<TestItemResponse>> {
-	const data = await Test.findAll({
-		where: whereClause,
+/**
+ * Fetches and filters tests based on the provided filter criteria
+ */
+async function fetchFilteredTests(filter: TestFilterQuery): Promise<Paged<TestItemResponse>> {
+	const testByTagIds = await Test.findAll({
+		attributes: ["id"],
 		include: [
-			includeTagClause
+			{
+				model: Tag,
+				where: {
+					...(filter.tags && filter.tags.length > 0 && {
+						id: {
+							[Op.in]: filter.tags
+						}
+					})
+				},
+				through: { attributes: [] },
+				required: true,
+				attributes: []
+			}
+		],
+	}).then(tests => tests.map(test => test.id!));
+
+	// Fetch data with filters
+	const data = await Test.findAndCountAll({
+		where: {
+			id: {
+				...(filter.tags && filter.tags.length > 0 && {
+					[Op.in]: testByTagIds
+				})
+			},
+			...(filter.searchTitle && {
+				title: {
+					[Op.like]: `%${filter.searchTitle}%`
+				}
+			}),
+			...(filter.difficulty && {
+				difficulty: {
+					[Op.in]: typeof filter.difficulty === "string"
+						? [filter.difficulty]
+						: filter.difficulty,
+				}
+			}),
+			// If there's only minMinute
+			...(filter.minMinutesToAnswer !== undefined && filter.maxMinutesToAnswer === undefined && {
+				minutesToAnswer: {
+					[Op.gte]: filter.minMinutesToAnswer
+				}
+			}),
+			// If there's only maxMinute
+			...(filter.maxMinutesToAnswer !== undefined && filter.minMinutesToAnswer === undefined && {
+				minutesToAnswer: {
+					[Op.lte]: filter.maxMinutesToAnswer
+				}
+			}),
+			// If there's both minMinute and maxMinute
+			...(filter.maxMinutesToAnswer !== undefined && filter.minMinutesToAnswer !== undefined && {
+				minutesToAnswer: {
+					[Op.gte]: filter.minMinutesToAnswer,
+					[Op.lte]: filter.maxMinutesToAnswer,
+				}
+			}),
+			...(filter.managerIds != null && filter.managerIds.length > 0 && {
+				managerId: {
+					[Op.in]: filter.managerIds
+				}
+			}),
+		},
+		include: [
+			{
+				model: Tag,
+				through: { attributes: [] },
+				required: false,
+				attributes: ["id", "name", "createdAt", "updatedAt"]
+			}
 		],
 		attributes: {
 			exclude: ["description"],
@@ -167,15 +180,7 @@ async function findAllWithFilter(whereClause: any, includeTagClause: any, filter
 		limit: filter.perPage,
 	});
 
-	const total = await Test.count({
-		where: whereClause,
-		include: [
-			{ ...includeTagClause, attributes: [] }
-		],
-		distinct: true
-	});
-
-	const castedData = data.map(record => ({
+	const castedData = data.rows.map(record => ({
 		id: record.id!,
 		managerId: record.managerId!,
 		title: record.title!,
@@ -190,11 +195,12 @@ async function findAllWithFilter(whereClause: any, includeTagClause: any, filter
 		createdAt: record.createdAt!,
 		updatedAt: record.updatedAt!
 	}));
+
 	return {
 		data: castedData,
-		total,
+		total: data.count,
 		page: filter.page,
 		perPage: filter.perPage,
-		totalPages: Math.ceil(total / filter.perPage)
+		totalPages: Math.ceil(data.count / filter.perPage)
 	};
 }
