@@ -255,8 +255,7 @@ const getTestsData: DataDriven<TestFilterQuery, Paged<TestItemResponse>>[] = [
 			data: []
 		},
 		name: 'Empty result with non-existent tag combination'
-	}
-
+	},
 ];
 
 export default getTestsData;

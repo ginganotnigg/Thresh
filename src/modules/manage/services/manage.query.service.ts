@@ -107,16 +107,22 @@ async function fetchFilteredTests(filter: TestFilterQuery): Promise<Paged<TestIt
 				attributes: []
 			}
 		],
+		group: ["Test.id"],
+		having: Sequelize.where(Sequelize.fn("COUNT", Sequelize.fn("DISTINCT", Sequelize.col("Tags.id"))), {
+			[Op.gte]: filter.tags?.length ?? 0
+		}),
 	}).then(tests => tests.map(test => test.id!));
+
+	console.log("testByTagIds", testByTagIds);
 
 	// Fetch data with filters
 	const data = await Test.findAndCountAll({
 		where: {
-			id: {
-				...(filter.tags && filter.tags.length > 0 && {
+			...(filter.tags && filter.tags.length > 0 && {
+				id: {
 					[Op.in]: testByTagIds
-				})
-			},
+				}
+			}),
 			...(filter.searchTitle && {
 				title: {
 					[Op.like]: `%${filter.searchTitle}%`
@@ -178,6 +184,7 @@ async function fetchFilteredTests(filter: TestFilterQuery): Promise<Paged<TestIt
 		order: filter.sortBy?.map(({ field, order }) => [field, order] as Sequelize.OrderItem),
 		offset: (filter.page - 1) * filter.perPage,
 		limit: filter.perPage,
+		distinct: true,
 	});
 
 	const castedData = data.rows.map(record => ({
