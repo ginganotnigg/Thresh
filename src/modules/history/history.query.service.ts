@@ -2,7 +2,7 @@ import { AttemptAnswerFilterQuery, AttemptFilterQuery } from "./schemas/request"
 import { AnswerQuestionResult, AttemptItemResult, AttemptResult } from "./schemas/response";
 import sequelize from "../../configs/orm/sequelize";
 import { Literal } from "sequelize/types/utils";
-import { InferAttributes, WhereOptions } from "sequelize";
+import { InferAttributes, Op, WhereOptions } from "sequelize";
 import Test from "../../domain/models/test";
 import { DomainErrorResponse } from "../../controller/errors/domain.error";
 import { Paged } from "../../controller/schemas/base";
@@ -63,12 +63,36 @@ export class HistoryQueryService {
 	}
 
 	static async getAttemptAnswers(attemptId: number, filter: AttemptAnswerFilterQuery): Promise<Paged<AnswerQuestionResult>> {
+		const questionsUsedInAttemptIds = (await Question.findAll({
+			attributes: ["id"],
+			include: [
+				{
+					model: Test,
+					required: true,
+					attributes: [],
+					include: [
+						{
+							model: Attempt,
+							required: true,
+							where: {
+								id: attemptId
+							},
+							attributes: [],
+						}
+					],
+				}
+			],
+		})).map(aaq => aaq.id!);
+
 		const questionsOfAttempts = await Question.findAndCountAll({
+			where: {
+				id: { [Op.in]: questionsUsedInAttemptIds }
+			},
 			include: [
 				{
 					model: AttemptsAnswerQuestions,
 					required: false,
-					attributes: [],
+					attributes: ["chosenOption"],
 					where: {
 						attemptId
 					}
