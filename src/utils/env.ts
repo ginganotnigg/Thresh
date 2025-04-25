@@ -33,7 +33,9 @@ const env = {
 	endpointLogging: process.env.ENDPOINT_LOGGING
 		? process.env.ENDPOINT_LOGGING === "true"
 		: true,
-	databaseLogging: process.env.DATABASE_LOGGING === "true",
+	databaseLogging: process.env.DATABASE_LOGGING
+		? process.env.DATABASE_LOGGING === "true"
+		: true,
 	restApiDocumentation: process.env.REST_API_DOCUMENTATION === "true",
 }
 

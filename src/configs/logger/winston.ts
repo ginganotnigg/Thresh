@@ -56,7 +56,7 @@ const logger = createLogger({
 	level: env.logLevel,
 	format: httpFormat,
 	transports: [
-		new transports.Console({ level: 'http' }),
+		new transports.Console({ level: 'info' }),
 		new transports.File({ filename: 'logs/error.log', level: 'error', options: { flags: 'w' } }),
 		new transports.File({ filename: 'logs/combined.log', options: { flags: 'w' } }),
 	],
@@ -106,7 +106,7 @@ const tickLogger = createLogger({
 
 export const logHttpRequest = (message: string, meta?: any) => {
 	httpRequestLogger.info(message, meta);
-	logger.log('http', message, meta);
+	logger.log('info', message, meta);
 };
 
 export const logHttpResponse = (message: string, meta?: any) => {

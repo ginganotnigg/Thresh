@@ -221,6 +221,7 @@ const getTotalScoreSQL: [Literal, string] = [sequelize.literal(`(
 	)
 	FROM Questions AS q, Tests AS t
 	WHERE q.testId = t.id
+	AND t.id = Attempt.testId
 	)`), "totalScore"
 ];
 
@@ -228,6 +229,7 @@ const getTotalQuestionSQL: [Literal, string] = [sequelize.literal(`(
 	SELECT COUNT(*)
 	FROM Questions AS q, Tests AS t
 	WHERE q.testId = t.id
+	AND t.id = Attempt.testId
 	)`), "totalQuestions"
 ];
 
