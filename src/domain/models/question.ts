@@ -4,7 +4,7 @@ import AttemptsAnswerQuestions from "./attempts_answer_questions";
 
 class Question extends Model<InferAttributes<Question>, InferCreationAttributes<Question>> {
 	declare id: CreationOptional<number>;
-	declare testId: number;
+	declare testId: string;
 	declare text: string;
 	declare options: string[];
 	declare points: number;
@@ -25,7 +25,7 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 				primaryKey: true,
 			},
 			testId: {
-				type: DataTypes.INTEGER,
+				type: DataTypes.UUID,
 				references: {
 					model: Test,
 					key: "id",

@@ -2,7 +2,7 @@ import express, { json, Request, Response, NextFunction } from "express";
 import http from "http";
 import cors from "cors";
 import { CurrentModule } from "../modules/current/current.module";
-import { ManageModule } from "../modules/manage/manage.module";
+import { ManageModule } from "../modules/pratice/module";
 import { ModuleBase } from "../library/cayduajs/module/module.base";
 import { HistoryModule } from "../modules/history/history.module";
 import { Chuoi } from "../library/caychuoijs";

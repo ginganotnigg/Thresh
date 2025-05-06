@@ -5,10 +5,11 @@ import { AttemptStatus } from "../enum";
 
 class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<Attempt>> {
 	declare id: CreationOptional<number>;
-	declare testId: number;
+	declare testId: string;
 	declare candidateId: string;
 	declare status: AttemptStatus;
 	declare secondsSpent: number;
+
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 
@@ -33,7 +34,7 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 				primaryKey: true,
 			},
 			testId: {
-				type: DataTypes.INTEGER,
+				type: DataTypes.UUID,
 				references: {
 					model: Test,
 					key: "id",

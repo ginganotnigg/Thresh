@@ -1,13 +1,13 @@
 import { z } from "zod";
 
 export const TestIdParamsSchema = z.object({
-	testId: z.coerce.number(),
+	testId: z.string(),
+});
+
+export const QuestionIdParamsSchema = z.object({
+	questionId: z.string(),
 });
 
 export const AttemptIdParamsSchema = z.object({
 	attemptId: z.coerce.number(),
-});
-
-export const TagIdParamsSchema = z.object({
-	tagId: z.coerce.number(),
 });

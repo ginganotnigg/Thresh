@@ -1,5 +1,5 @@
 import { DomainErrorResponse } from "../../../controller/errors/domain.error";
-import { TestCreateBody, TestUpdateBody } from "../schemas/request";
+import { TestCreateBody, TestUpdateBody } from "../schema/core.schema";
 
 export function validateCreateTestParam(param: TestCreateBody) {
 	if (param.tagIds.length === 0) {

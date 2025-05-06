@@ -1,42 +1,41 @@
 import { Association, CreationOptional, DataTypes, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Question from "./question";
-import Tag from "./tag";
 import Attempt from "./attempt";
+import PracticeTest from "./practice_test";
+import ExamTest from "./exam_test";
+import User from "./user";
 
 class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
-	declare id: CreationOptional<number>;
-	declare managerId: string;
+	declare id: CreationOptional<string>;
+	declare authorId: string;
 	declare title: string;
 	declare description: string;
 	declare minutesToAnswer: number;
-	declare difficulty: string;
+	declare language: string;
+	declare mode: string;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 
 	declare Questions?: NonAttribute<Question[]>;
-	declare Tags?: NonAttribute<Tag[]>;
 	declare Attempts?: NonAttribute<Attempt[]>;
-
-	declare answerCount?: NonAttribute<number>;
-
-	declare setTags: HasManySetAssociationsMixin<Tag, number>;
+	declare PracticeTest?: NonAttribute<PracticeTest>;
+	declare ExamTest?: NonAttribute<ExamTest>;
+	declare Author?: NonAttribute<User>;
 
 	declare static associations: {
 		questions: Association<Test, Question>;
-		tags: Association<Test, Tag>;
 		attempts: Association<Test, Attempt>;
+		practiceTest: Association<Test, PracticeTest>;
+		examTest: Association<Test, ExamTest>;
+		author: Association<Test, User>;
 	}
 
 	static initModel(sequelize: Sequelize) {
 		Test.init({
 			id: {
-				type: DataTypes.INTEGER,
-				autoIncrement: true,
+				type: DataTypes.UUID,
+				defaultValue: DataTypes.UUIDV4,
 				primaryKey: true,
-			},
-			managerId: {
-				type: DataTypes.STRING,
-				allowNull: false,
 			},
 			title: {
 				type: DataTypes.STRING,
@@ -50,9 +49,22 @@ class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 			},
-			difficulty: {
+			authorId: {
+				type: DataTypes.UUID,
+				allowNull: false,
+				references: {
+					model: User,
+					key: "id",
+				},
+			},
+			language: {
 				type: DataTypes.STRING,
-				allowNull: true,
+				allowNull: false,
+				defaultValue: "english",
+			},
+			mode: {
+				type: DataTypes.STRING,
+				allowNull: false,
 			},
 			createdAt: DataTypes.DATE,
 			updatedAt: DataTypes.DATE,
@@ -69,14 +81,19 @@ class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 			foreignKey: "testId",
 			onDelete: 'CASCADE',
 		});
-		Test.belongsToMany(Tag, {
-			through: "Tests_has_Tags",
-			foreignKey: "testId",
-			sourceKey: "id",
-			onDelete: 'CASCADE',
-			timestamps: false
-		});
 		Test.hasMany(Attempt, {
+			sourceKey: "id",
+			foreignKey: "testId",
+			onDelete: 'CASCADE',
+		});
+		// A Test may have zero or one PracticeTest
+		Test.hasOne(PracticeTest, {
+			sourceKey: "id",
+			foreignKey: "testId",
+			onDelete: 'CASCADE',
+		});
+		// A Test may have zero or one ExamTest
+		Test.hasOne(ExamTest, {
 			sourceKey: "id",
 			foreignKey: "testId",
 			onDelete: 'CASCADE',

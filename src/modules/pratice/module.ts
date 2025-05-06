@@ -1,8 +1,8 @@
 import { ModuleBase } from "../../library/cayduajs/module/module.base";
-import { tagsController } from "./tags.controller";
+import { manageController } from "./controller";
 
-export class TagsModule extends ModuleBase {
+export class ManageModule extends ModuleBase {
 	protected async _initialize(): Promise<void> {
-		tagsController();
+		manageController();
 	}
 }

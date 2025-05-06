@@ -2,7 +2,7 @@ import Test from "../domain/models/test";
 import schedule from "node-schedule"
 
 export class RandomService {
-	private static _todayRandomTestId: number | null = null;
+	private static _todayRandomTestId: string | null = null;
 
 	static async init() {
 		await this.refreshRandomTestId();
@@ -26,7 +26,7 @@ export class RandomService {
 		this._todayRandomTestId = randomId;
 	}
 
-	static getTodayRandomTestId(): number | null {
+	static getTodayRandomTestId(): string | null {
 		return this._todayRandomTestId;
 	}
 }
