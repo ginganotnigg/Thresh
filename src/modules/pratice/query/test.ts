@@ -1,8 +1,8 @@
 import Test from "../../../domain/models/test";
 import User from "../../../domain/models/user";
 import { DomainErrorResponse } from "../../../controller/errors/domain.error";
-import { TestId } from "../schema/query.schema";
-import { TestInfo } from "../../../domain/tests/schema/extend.schema";
+import { TestId } from "../../../domain/schema/id.schema";
+import { TestInfo } from "../../../domain/schema/info.schema";
 
 export async function queryTest(param: TestId): Promise<TestInfo> {
 	const { testId } = param;

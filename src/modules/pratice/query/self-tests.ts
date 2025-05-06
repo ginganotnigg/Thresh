@@ -2,7 +2,7 @@ import { sortBy } from "../../../controller/schemas/base";
 import Test from "../../../domain/models/test";
 import { Op } from "sequelize";
 import User from "../../../domain/models/user";
-import { GetSelfTestsQuery, GetSelfTestsResponse } from "../schema/query.schema";
+import { GetSelfTestsQuery, GetSelfTestsResponse } from "../schema";
 
 export async function querySelfTests(param: GetSelfTestsQuery): Promise<GetSelfTestsResponse> {
 	const { authorId, page, perPage, searchTitle, sort } = param;

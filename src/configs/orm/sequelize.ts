@@ -5,7 +5,6 @@ import Test from "../../domain/models/test";
 import Attempt from "../../domain/models/attempt";
 import AttemptsAnswerQuestions from "../../domain/models/attempts_answer_questions";
 import Question from "../../domain/models/question";
-import Tag from "../../domain/models/tag";
 import PracticeTest from "../../domain/models/practice_test";
 import ExamTest from "../../domain/models/exam_test";
 import User from "../../domain/models/user";
@@ -31,7 +30,6 @@ const sequelize = new Sequelize(
 // Define associations
 function configSequelize(sequelize: Sequelize) {
 	Test.initModel(sequelize);
-	Tag.initModel(sequelize);
 	Question.initModel(sequelize);
 	Attempt.initModel(sequelize);
 	AttemptsAnswerQuestions.initModel(sequelize);
@@ -40,7 +38,6 @@ function configSequelize(sequelize: Sequelize) {
 	User.initModel(sequelize);
 
 	Test.associate();
-	Tag.associate();
 	Question.associate();
 	Attempt.associate();
 	AttemptsAnswerQuestions.associate();
@@ -52,3 +49,15 @@ function configSequelize(sequelize: Sequelize) {
 configSequelize(sequelize);
 
 export default sequelize;
+
+export async function syncSequelizeForce() {
+	await sequelize.sync({ logging: false, force: true });
+	await sequelize.authenticate({ logging: false });
+	console.log("Database connection successful");
+}
+
+export async function syncSequelize() {
+	await sequelize.sync({ logging: false });
+	await sequelize.authenticate({ logging: false });
+	console.log("Database connection successful");
+}

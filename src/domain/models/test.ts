@@ -98,6 +98,10 @@ class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 			foreignKey: "testId",
 			onDelete: 'CASCADE',
 		});
+		Test.belongsTo(User, {
+			foreignKey: "authorId",
+			as: "Author",
+		});
 	}
 }
 

@@ -2,9 +2,8 @@ import "reflect-metadata";
 import { configServer } from "./app/configServer";
 import sequelize from "./configs/orm/sequelize";
 import { configServices } from "./app/configServices";
-import ensureDatabase from "./configs/orm/ensure-database";
 import { env } from "./utils/env";
-import recreateDatabase from "./configs/orm/recreate-database";
+import { ensureDatabase, recreateDatabase } from "./configs/orm/database-operations";
 
 ensureDatabase()
 	.then(async () => {

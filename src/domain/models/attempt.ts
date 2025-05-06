@@ -1,20 +1,22 @@
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
 import AttemptsAnswerQuestions from "./attempts_answer_questions";
-import { AttemptStatus } from "../enum";
+import User from "./user";
 
 class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<Attempt>> {
-	declare id: CreationOptional<number>;
+	declare id: CreationOptional<string>;
+	declare order: CreationOptional<number>;
 	declare testId: string;
 	declare candidateId: string;
-	declare status: AttemptStatus;
-	declare secondsSpent: number;
+	declare hasEnded: CreationOptional<boolean>;
+	declare secondsSpent: CreationOptional<number>;
 
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 
 	declare Attempts_answer_Questions?: NonAttribute<AttemptsAnswerQuestions[]>;
 	declare Test?: NonAttribute<Test>;
+	declare Candidate?: NonAttribute<User>;
 
 	declare score?: NonAttribute<number>;
 	declare totalQuestions?: NonAttribute<number>;
@@ -29,9 +31,14 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 	static initModel(sequelize: Sequelize) {
 		Attempt.init({
 			id: {
+				type: DataTypes.UUID,
+				defaultValue: DataTypes.UUIDV4,
+				primaryKey: true,
+			},
+			order: {
 				type: DataTypes.INTEGER,
 				autoIncrement: true,
-				primaryKey: true,
+				allowNull: false,
 			},
 			testId: {
 				type: DataTypes.UUID,
@@ -43,14 +50,19 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 			candidateId: {
 				type: DataTypes.STRING,
 				allowNull: false,
+				references: {
+					model: User,
+					key: "id",
+				},
 			},
-			status: {
-				type: DataTypes.ENUM,
-				values: Object.values(AttemptStatus),
+			hasEnded: {
+				type: DataTypes.BOOLEAN,
+				defaultValue: false,
 				allowNull: false,
 			},
 			secondsSpent: {
 				type: DataTypes.INTEGER,
+				defaultValue: 0,
 				allowNull: false,
 			},
 			createdAt: DataTypes.DATE,
@@ -59,6 +71,12 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 			sequelize,
 			modelName: "Attempt",
 			tableName: "Attempts",
+			indexes: [
+				{
+					unique: true,
+					fields: ["testId", "order"]
+				},
+			]
 		});
 	}
 
@@ -70,6 +88,9 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 		});
 		Attempt.belongsTo(Test, {
 			foreignKey: "testId",
+		});
+		Attempt.belongsTo(User, {
+			foreignKey: "candidateId",
 		});
 	}
 }

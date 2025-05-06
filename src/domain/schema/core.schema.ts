@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TestDifficulty } from "../../../domain/enum";
+import { AttemptStatus, TestDifficulty } from "../enum";
 
 export const TestCoreSchema = z.object({
 	id: z.string(),
@@ -36,7 +36,23 @@ export const PracticeTestCoreSchema = z.object({
 	outlines: z.array(z.string()),
 });
 
+export const AttemptCoreSchema = z.object({
+	id: z.string(),
+	order: z.number().int().positive(),
+	testId: z.string(),
+	candidateId: z.string(),
+	hasEnded: z.boolean(),
+	secondsSpent: z.number().int().positive(),
+});
+
+export const AnswerCoreSchema = z.object({
+	attemptId: z.number(),
+	questionId: z.number(),
+	chosenOption: z.number(),
+});
+
 export type TestCore = z.infer<typeof TestCoreSchema>;
 export type QuestionCore = z.infer<typeof QuestionCoreSchema>;
 export type UserCore = z.infer<typeof UserCoreSchema>;
 export type PracticeTestCore = z.infer<typeof PracticeTestCoreSchema>;
+export type AttemptCore = z.infer<typeof AttemptCoreSchema>;

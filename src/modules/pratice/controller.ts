@@ -2,8 +2,9 @@ import { QuestionIdParamsSchema, TestIdParamsSchema } from "../../controller/sch
 import { Chuoi } from "../../library/caychuoijs";
 import { z } from "zod";
 import { querySelfTests } from "./query/self-tests";
-import { GetSelfTestsResponseSchema, QuestionIdSchema } from "./schema/query.schema";
-import { GetSelfTestsQuerySchema } from "./schema/query.schema";
+import { GetSelfTestsResponseSchema } from "./schema";
+import { QuestionIdSchema } from "../../domain/schema/id.schema";
+import { GetSelfTestsQuerySchema } from "./schema";
 import { RandomService } from "../../services/random.service";
 import { queryTest } from "./query/test";
 import { DomainErrorResponse } from "../../controller/errors/domain.error";
@@ -11,10 +12,11 @@ import { queryTestQuestions } from "./query/test-questions";
 import { commandCreatePratice, CreatePraticeSchema } from "./command/create-pratice";
 import { deletePracticeCommand as commandDeletePractice } from "./command/delete-pratice";
 import { queryTestQuestionsNoAnswers } from "./query/test-questions-no-answers";
-import { TestInfoSchema, QuestionNoAnswerSchema } from "../../domain/tests/schema/extend.schema";
-import { QuestionCoreSchema } from "../../domain/tests/schema/core.schema";
+import { TestInfoSchema } from "../../domain/schema/info.schema";
+import { QuestionNoAnswerSchema } from "./schema";
+import { QuestionCoreSchema } from "../../domain/schema/core.schema";
 
-export function manageController() {
+export function controllerPractice() {
 	const router = Chuoi.newRoute();
 
 	router.endpoint().get('/tests/by-author')

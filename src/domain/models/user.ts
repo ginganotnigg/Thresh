@@ -5,7 +5,7 @@ import Test from "./test";
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
 	declare id: CreationOptional<string>;
 	declare name: string;
-	declare avatar: string | null;
+	declare avatar: string | undefined;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 

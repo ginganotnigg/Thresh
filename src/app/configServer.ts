@@ -2,9 +2,9 @@ import express, { json, Request, Response, NextFunction } from "express";
 import http from "http";
 import cors from "cors";
 import { CurrentModule } from "../modules/current/current.module";
-import { ManageModule } from "../modules/pratice/module";
+import { PracticeModule } from "../modules/pratice/module";
 import { ModuleBase } from "../library/cayduajs/module/module.base";
-import { HistoryModule } from "../modules/history/history.module";
+import { HistoryModule } from "../modules/attempt/module";
 import { Chuoi } from "../library/caychuoijs";
 import { TagsModule } from "../modules/tags/tags.module";
 import { env } from "../utils/env";
@@ -61,7 +61,7 @@ export async function configServer() {
 	const modules: ModuleBase[] = [
 		new TagsModule(),
 		new CurrentModule(io),
-		new ManageModule(),
+		new PracticeModule(),
 		new HistoryModule(),
 	];
 	for (const m of modules) {

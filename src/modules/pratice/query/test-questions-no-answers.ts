@@ -1,6 +1,6 @@
 import Question from "../../../domain/models/question";
-import { QuestionNoAnswer } from "../../../domain/tests/schema/extend.schema";
-import { TestId } from "../schema/query.schema";
+import { QuestionNoAnswer } from "../schema";
+import { TestId } from "../../../domain/schema/id.schema";
 
 export async function queryTestQuestionsNoAnswers(param: TestId): Promise<QuestionNoAnswer[]> {
 	const { testId } = param;

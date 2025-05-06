@@ -14,4 +14,3 @@ export const AttemptAnswerFilterQuerySchema = z.object({
 
 export type AttemptFilterQuery = z.infer<typeof AttemptFilterQuerySchema>;
 export type AttemptAnswerFilterQuery = z.infer<typeof AttemptAnswerFilterQuerySchema>;
-

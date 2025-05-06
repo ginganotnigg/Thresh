@@ -1,8 +1,8 @@
 import { ModuleBase } from "../../library/cayduajs/module/module.base";
-import { manageController } from "./controller";
+import { controllerPractice } from "./controller";
 
-export class ManageModule extends ModuleBase {
+export class PracticeModule extends ModuleBase {
 	protected async _initialize(): Promise<void> {
-		manageController();
+		controllerPractice();
 	}
 }

@@ -4,7 +4,7 @@ import sequelize from "../../../configs/orm/sequelize";
 import Test from "../../../domain/models/test";
 import User from "../../../domain/models/user";
 import Question from "../../../domain/models/question";
-import { PracticeTestCoreSchema, QuestionCoreSchema, TestCoreSchema, UserCoreSchema } from "../../../domain/tests/schema/core.schema";
+import { PracticeTestCoreSchema, QuestionCoreSchema, TestCoreSchema, UserCoreSchema } from "../../../domain/schema/core.schema";
 
 export const CreatePraticeSchema = TestCoreSchema.omit({
 	id: true,

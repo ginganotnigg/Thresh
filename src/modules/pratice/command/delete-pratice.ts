@@ -3,7 +3,7 @@ import sequelize from "../../../configs/orm/sequelize";
 import PracticeTest from "../../../domain/models/practice_test";
 import Test from "../../../domain/models/test";
 import Question from "../../../domain/models/question";
-import { TestId } from "../schema/query.schema";
+import { TestId } from "../../../domain/schema/id.schema";
 
 export async function deletePracticeCommand(params: TestId): Promise<void> {
 	const { testId: id } = params;

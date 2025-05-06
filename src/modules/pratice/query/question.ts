@@ -1,7 +1,7 @@
 import { DomainErrorResponse } from "../../../controller/errors/domain.error";
 import Question from "../../../domain/models/question";
-import { QuestionCore } from "../../../domain/tests/schema/core.schema";
-import { QuestionId } from "../schema/query.schema";
+import { QuestionCore } from "../../../domain/schema/core.schema";
+import { QuestionId } from "../../../domain/schema/id.schema";
 
 export async function questionQuery(param: QuestionId): Promise<QuestionCore> {
 	const { questionId } = param;
