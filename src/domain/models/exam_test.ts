@@ -3,7 +3,6 @@ import { Association, CreationOptional, DataTypes, InferAttributes, InferCreatio
 import Test from "./test";
 
 class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<ExamTest>> {
-	declare id: CreationOptional<number>;
 	declare testId: string;
 	declare roomId: string;
 	declare password: string | null;
@@ -23,12 +22,8 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 
 	static initModel(sequelize: Sequelize) {
 		ExamTest.init({
-			id: {
-				type: DataTypes.INTEGER,
-				autoIncrement: true,
-				primaryKey: true,
-			},
 			testId: {
+				primaryKey: true,
 				type: DataTypes.UUID,
 				allowNull: false,
 				unique: true,

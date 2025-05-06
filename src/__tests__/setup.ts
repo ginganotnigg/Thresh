@@ -1,14 +1,13 @@
-import { seed } from "../__init__/seed";
-import sequelize, { syncSequelizeForce } from "../configs/orm/sequelize";
-import { configServer } from "../app/configServer";
-
-export async function getApp() {
-	const { app } = await configServer();
-	return app;
-}
+import sequelize from "../configs/orm/sequelize/sequelize";
+import { prepareForTest } from "../configs/orm/sequelize/prepare";
 
 export async function setupBeforeAll() {
-	await syncSequelizeForce();
+	try {
+		await prepareForTest();
+	} catch (error) {
+		console.error("Unable to connect to the database:", error);
+		throw error;
+	}
 }
 
 export async function setupAfterAll() {

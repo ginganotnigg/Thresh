@@ -1,4 +1,4 @@
-import sequelize from "../../../configs/orm/sequelize";
+import sequelize from "../../../configs/orm/sequelize/sequelize";
 import { Paged, sortBy } from "../../../controller/schemas/base";
 import Attempt from "../../../domain/models/attempt";
 import Test from "../../../domain/models/test";

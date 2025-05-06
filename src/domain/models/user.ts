@@ -49,7 +49,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
 		});
 		User.hasMany(Test, {
 			sourceKey: "id",
-			foreignKey: "managerId",
+			foreignKey: "authorId",
 			onDelete: 'CASCADE',
 		})
 	}

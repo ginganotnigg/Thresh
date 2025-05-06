@@ -6,7 +6,6 @@ import { PracticeModule } from "../modules/pratice/module";
 import { ModuleBase } from "../library/cayduajs/module/module.base";
 import { HistoryModule } from "../modules/attempt/module";
 import { Chuoi } from "../library/caychuoijs";
-import { TagsModule } from "../modules/tags/tags.module";
 import { env } from "../utils/env";
 import { configSocket } from "./configSocket";
 import { AllExceptionFilter } from "../controller/defaults/all-exception.filter";
@@ -59,7 +58,6 @@ export async function configServer() {
 	// =====================
 
 	const modules: ModuleBase[] = [
-		new TagsModule(),
 		new CurrentModule(io),
 		new PracticeModule(),
 		new HistoryModule(),

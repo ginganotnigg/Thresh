@@ -1,6 +1,6 @@
 import { AttemptAnswerFilterQuery, AttemptFilterQuery } from "./schemas/request";
 import { AnswerQuestionResult, AttemptItemResult, AttemptResult } from "./schemas/response";
-import sequelize from "../../configs/orm/sequelize";
+import sequelize from "../../configs/orm/sequelize/sequelize";
 import { Literal } from "sequelize/types/utils";
 import { InferAttributes, Op, WhereOptions } from "sequelize";
 import Test from "../../domain/models/test";

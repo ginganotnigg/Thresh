@@ -18,10 +18,6 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 		Attempt: Association<AttemptsAnswerQuestions, Attempt>;
 	}
 
-	get isCorrect(): NonAttribute<boolean> {
-		return this.chosenOption === this.Question!.correctOption;
-	}
-
 	static initModel(sequelize: Sequelize) {
 		AttemptsAnswerQuestions.init({
 			id: {
@@ -30,7 +26,7 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 				primaryKey: true,
 			},
 			attemptId: {
-				type: DataTypes.STRING,
+				type: DataTypes.UUID,
 				references: {
 					model: Attempt,
 					key: "id",

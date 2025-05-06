@@ -1,5 +1,5 @@
 import { z } from "zod";
-import sequelize from "../../../configs/orm/sequelize";
+import sequelize from "../../../configs/orm/sequelize/sequelize";
 import PracticeTest from "../../../domain/models/practice_test";
 import Test from "../../../domain/models/test";
 import Question from "../../../domain/models/question";

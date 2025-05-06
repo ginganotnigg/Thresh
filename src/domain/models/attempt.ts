@@ -5,7 +5,7 @@ import User from "./user";
 
 class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<Attempt>> {
 	declare id: CreationOptional<string>;
-	declare order: CreationOptional<number>;
+	declare order: number;
 	declare testId: string;
 	declare candidateId: string;
 	declare hasEnded: CreationOptional<boolean>;
@@ -37,7 +37,6 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 			},
 			order: {
 				type: DataTypes.INTEGER,
-				autoIncrement: true,
 				allowNull: false,
 			},
 			testId: {
@@ -48,7 +47,7 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 				},
 			},
 			candidateId: {
-				type: DataTypes.STRING,
+				type: DataTypes.UUID,
 				allowNull: false,
 				references: {
 					model: User,

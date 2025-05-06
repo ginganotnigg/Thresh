@@ -1,12 +1,21 @@
+import sequelize from "../../../configs/orm/sequelize/sequelize";
 import { QueryTypes } from "sequelize";
-import sequelize from "../../../configs/orm/sequelize";
 import { AttemptAggregateQuery, AttemptAggregateResponse } from "../schema";
 import fs from "fs";
 import path from "path";
+import Attempt from "../../../domain/models/attempt";
 
 const sqlDir = path.join(__dirname, "sql");
 
 export async function queryAttemptAggregate(attemptId: string, option: AttemptAggregateQuery): Promise<AttemptAggregateResponse> {
+	const attempt = await Attempt.findOne({
+		where: { id: attemptId },
+		attributes: ["id"],
+	});
+	if (!attempt) {
+		throw new Error(`Attempt with ID ${attemptId} not found`);
+	}
+
 	const { score, answered, answeredCorrect } = option;
 	const result: AttemptAggregateResponse = {};
 
@@ -22,7 +31,7 @@ export async function queryAttemptAggregate(attemptId: string, option: AttemptAg
 				type: QueryTypes.SELECT,
 			}
 		);
-		result.score = (scoreResult[0] as any).res;
+		result.score = (scoreResult[0] as any)?.res || undefined;
 	}
 	if (answered) {
 		const answeredResult = await sequelize.query(
@@ -32,7 +41,7 @@ export async function queryAttemptAggregate(attemptId: string, option: AttemptAg
 				type: QueryTypes.SELECT,
 			}
 		);
-		result.answered = (answeredResult[0] as any).res;
+		result.answered = (answeredResult[0] as any)?.res || undefined;
 	}
 
 	if (answeredCorrect) {
@@ -42,7 +51,7 @@ export async function queryAttemptAggregate(attemptId: string, option: AttemptAg
 				type: QueryTypes.SELECT,
 			}
 		);
-		result.answeredCorrect = (answeredCorrectResult[0] as any).res;
+		result.answeredCorrect = (answeredCorrectResult[0] as any)?.res || undefined;
 	}
 
 	return result;

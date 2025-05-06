@@ -3,7 +3,6 @@ import { TestDifficulty } from "../enum";
 import Test from "./test";
 
 class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAttributes<PracticeTest>> {
-	declare id: CreationOptional<number>;
 	declare testId: string;
 	declare difficulty: TestDifficulty;
 	declare tags: string[];
@@ -21,12 +20,8 @@ class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAtt
 
 	static initModel(sequelize: Sequelize) {
 		PracticeTest.init({
-			id: {
-				type: DataTypes.INTEGER,
-				autoIncrement: true,
-				primaryKey: true,
-			},
 			testId: {
+				primaryKey: true,
 				type: DataTypes.UUID,
 				unique: true,
 				allowNull: false,

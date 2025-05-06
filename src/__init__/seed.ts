@@ -1,24 +1,26 @@
-import sequelize from "../configs/orm/sequelize";
-import { load } from "./load";
+import sequelize from "../configs/orm/sequelize/sequelize";
+import attempts from "./data/attempts";
+import attemptsAnswerQuestions from "./data/attempts_answer_questions";
+import examTests from "./data/exam_tests";
+import practiceTests from "./data/practice_tests";
+import questions from "./data/questions";
+import tests from "./data/tests";
+import users from "./data/users";
 
-// FUCK MYSQL
-// https://stackoverflow.com/questions/6134006/are-table-names-in-mysql-case-sensitive
-
-async function seed() {
-	console.log("Seeding database...");
-	await sequelize.sync({
-		force: true,
-		logging: false,
-	});
-	const data = await load();
-	const query = sequelize.getQueryInterface();
-	await query.bulkInsert("Tags", data.tags, { logging: false });
-	await query.bulkInsert("Tests", data.tests, { logging: false });
-	await query.bulkInsert("Tests_has_Tags", data.testsHasTags, { logging: false });
-	await query.bulkInsert("Questions", data.questions, { logging: false });
-	await query.bulkInsert("Attempts", data.attempts, { logging: false });
-	await query.bulkInsert("Attempts_answer_Questions", data.attemptsAnswerQuestions, { logging: false });
-	console.log("Database seed successfully");
-};
-
-export { seed };
+export async function seed() {
+	try {
+		console.log("Seeding database...");
+		const query = sequelize.getQueryInterface();
+		await query.bulkInsert("Users", users, { logging: false });
+		await query.bulkInsert("Tests", tests, { logging: false });
+		await query.bulkInsert("Questions", questions, { logging: false });
+		await query.bulkInsert("Attempts", attempts, { logging: false });
+		await query.bulkInsert("Attempts_answer_Questions", attemptsAnswerQuestions, { logging: false });
+		await query.bulkInsert("ExamTests", examTests, { logging: false });
+		await query.bulkInsert("PracticeTests", practiceTests, { logging: false });
+		console.log("Seeding completed.");
+	} catch (error) {
+		console.error("Error seeding database:", error);
+		throw error; // Rethrow the error to be handled by the caller
+	}
+}
