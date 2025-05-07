@@ -1,3 +1,4 @@
+import { recreateDatabase } from "../configs/orm/database-operations";
 import sequelize from "../configs/orm/sequelize/sequelize";
 import attempts from "./data/attempts";
 import attemptsAnswerQuestions from "./data/attempts_answer_questions";
@@ -9,6 +10,10 @@ import users from "./data/users";
 
 export async function seed() {
 	try {
+		await recreateDatabase();
+		await sequelize.sync({ logging: false, force: true });
+		await sequelize.authenticate({ logging: false });
+
 		console.log("Seeding database...");
 		const query = sequelize.getQueryInterface();
 		await query.bulkInsert("Users", users, { logging: false });

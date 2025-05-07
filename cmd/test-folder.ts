@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import { env } from '../src/utils/env';
+import { env } from '../src/configs/env';
 
 const testDir = env.testDir;
 

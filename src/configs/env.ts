@@ -20,6 +20,7 @@ const env = {
 		host: process.env.DB_HOST || "localhost",
 		port: Number(process.env.DB_PORT) || 3300,
 	},
+	seedDatabase: process.env.SEED_DATABASE === "true",
 	resetDatabase: process.env.RESET_DATABASE === "true",
 	corsOrigin: process.env.CORS_ORIGIN || "*",
 	port: process.env.PORT || 3000,

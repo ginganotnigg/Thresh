@@ -1,7 +1,7 @@
 import http from "http";
 import { PracticeModule } from "../modules/pratice/module";
 import { ModuleBase } from "../library/cayduajs/module/module.base";
-import { HistoryModule } from "../modules/attempt/module";
+import { AttemptsModule } from "../modules/attempt/module";
 import { Chuoi } from "../library/caychuoijs";
 import { env } from "../configs/env";
 import { AllExceptionFilter } from "../controller/defaults/all-exception.filter";
@@ -29,7 +29,7 @@ export async function main() {
 
 	const modules: ModuleBase[] = [
 		new PracticeModule(),
-		new HistoryModule(),
+		new AttemptsModule(),
 	];
 	for (const m of modules) {
 		await m.initialize();

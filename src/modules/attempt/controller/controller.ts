@@ -104,7 +104,6 @@ export function attemptController() {
 				questionId: z.number(),
 				chosenOption: z.number().nullable(),
 			}),
-			response: z.void(),
 		})
 		.handle(async (data) => {
 			const attemptId = data.params.attemptId;
@@ -117,7 +116,6 @@ export function attemptController() {
 	router.endpoint().patch('/attempts/:attemptId/submit')
 		.schema({
 			params: AttemptIdParamsSchema,
-			response: z.void(),
 		})
 		.handle(async (data) => {
 			const attemptId = data.params.attemptId;
