@@ -2,7 +2,7 @@ import Attempt from "../../../../domain/models/attempt";
 import Test from "../../../../domain/models/test";
 import User from "../../../../domain/models/user";
 import { AttemptInfo } from "../../../../domain/schema/info.schema";
-import { DomainErrorResponse } from "../../../../controller/errors/domain.error";
+import { DomainError } from "../../../../controller/errors/domain.error";
 
 export async function queryAttempt(id: string): Promise<AttemptInfo> {
 	const attempt = await Attempt.findByPk(id, {
@@ -18,7 +18,7 @@ export async function queryAttempt(id: string): Promise<AttemptInfo> {
 	});
 
 	if (!attempt) {
-		throw new DomainErrorResponse(`Attempt with id ${id} not found`);
+		throw new DomainError(`Attempt with id ${id} not found`);
 	}
 
 	return {

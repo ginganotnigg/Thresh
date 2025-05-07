@@ -1,5 +1,5 @@
 import sequelize from "../../../../configs/orm/sequelize/sequelize";
-import { DomainErrorResponse } from "../../../../controller/errors/domain.error";
+import { DomainError } from "../../../../controller/errors/domain.error";
 import Attempt from "../../../../domain/models/attempt";
 import AttemptsAnswerQuestions from "../../../../domain/models/attempts_answer_questions";
 
@@ -9,10 +9,10 @@ export async function commandAnswerAttempt(attemptId: string, questionId: number
 	try {
 		const attempt = await Attempt.findByPk(attemptId, { transaction });
 		if (!attempt) {
-			throw new DomainErrorResponse("Attempt not found");
+			throw new DomainError("Attempt not found");
 		}
 		if (attempt.hasEnded) {
-			throw new DomainErrorResponse("Attempt already submitted");
+			throw new DomainError("Attempt already submitted");
 		}
 
 		if (chosenOption === null) {

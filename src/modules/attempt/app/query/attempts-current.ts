@@ -1,4 +1,4 @@
-import { DomainErrorResponse } from "../../../../controller/errors/domain.error";
+import { DomainError } from "../../../../controller/errors/domain.error";
 import Attempt from "../../../../domain/models/attempt";
 import Test from "../../../../domain/models/test";
 import User from "../../../../domain/models/user";
@@ -22,10 +22,10 @@ export async function queryAttemptsCurrent(params: AttemptsCurrentQuery): Promis
 		],
 	});
 	if (attempts.length === 0) {
-		throw new DomainErrorResponse("No current attempt found for this test and candidate");
+		throw new DomainError("No current attempt found for this test and candidate");
 	}
 	if (attempts.length > 1) {
-		throw new DomainErrorResponse("Multiple current attempts found for this test and candidate");
+		throw new DomainError("Multiple current attempts found for this test and candidate");
 	}
 	const attempt = attempts[0];
 	return {

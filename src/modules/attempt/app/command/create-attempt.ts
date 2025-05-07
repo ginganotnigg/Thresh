@@ -1,5 +1,5 @@
 import sequelize from "../../../../configs/orm/sequelize/sequelize";
-import { DomainErrorResponse } from "../../../../controller/errors/domain.error";
+import { DomainError } from "../../../../controller/errors/domain.error";
 import Attempt from "../../../../domain/models/attempt";
 import Test from "../../../../domain/models/test";
 import User from "../../../../domain/models/user";
@@ -12,11 +12,11 @@ export async function commandCreateAttempt(params: CreateAttemptBody): Promise<v
 	try {
 		const test = await Test.findByPk(testId);
 		if (!test) {
-			throw new DomainErrorResponse("Test not found");
+			throw new DomainError("Test not found");
 		}
 		const candidate = await User.findByPk(candidateId);
 		if (!candidate) {
-			throw new DomainErrorResponse("Candidate not found");
+			throw new DomainError("Candidate not found");
 		}
 
 		const numberOfPreviousAttempts = await Attempt.count({

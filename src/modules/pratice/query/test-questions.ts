@@ -1,5 +1,5 @@
 import Question from "../../../domain/models/question";
-import { DomainErrorResponse } from "../../../controller/errors/domain.error";
+import { DomainError } from "../../../controller/errors/domain.error";
 import { TestId } from "../../../domain/schema/id.schema";
 import { QuestionCore } from "../../../domain/schema/core.schema";
 
@@ -14,7 +14,7 @@ export async function queryTestQuestions(param: TestId): Promise<QuestionCore[]>
 	});
 
 	if (!questions || questions.length === 0) {
-		throw new DomainErrorResponse(`No questions found for test with ID ${testId}`);
+		throw new DomainError(`No questions found for test with ID ${testId}`);
 	}
 
 	return questions;

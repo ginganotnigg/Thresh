@@ -1,4 +1,4 @@
-import { setupAfterAll, setupBeforeAll } from "../../../../../__tests__/setup";
+import { setupAfterAll, setupBeforeAll } from "../../../../../tests/setup";
 import { queryAttemptAggregate } from "../attempt-aggregate";
 
 describe('Attempt Query', () => {

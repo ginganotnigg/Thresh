@@ -72,7 +72,7 @@ export class Chuoi {
 		this._app.use(instance.handle.bind(instance));
 	}
 
-	static log(logger: (message: string, isWarning: boolean) => void, router: Application | Router | undefined = this._baseRouter, parentPath = ''): void {
+	static logRouterStack(logger: (message: string, isWarning: boolean) => void, router: Application | Router | undefined = this._baseRouter, parentPath = ''): void {
 		if (!router || !('_router' in router || 'stack' in router)) {
 			logger('Invalid router object', true);
 			return;
@@ -96,12 +96,12 @@ export class Chuoi {
 			} else if (layer.name === 'router' && layer.handle.stack) {
 				const extractedPath = extractPathFromRegex(layer.regexp);
 				const subPath = parentPath + extractedPath;
-				this.log(logger, layer.handle, subPath);
+				this.logRouterStack(logger, layer.handle, subPath);
 			}
 		});
 	}
 
-	static doc<TScheme extends string>(security?: ChuoiSecurityBase<TScheme>, docPath: string = '/api-docs'): void {
+	static generateApiDocumentation<TScheme extends string>(security?: ChuoiSecurityBase<TScheme>, docPath: string = '/api-docs'): void {
 		if (!this._baseRouter) {
 			throw new Error("ChuoiController not initialized");
 		}

@@ -1,6 +1,6 @@
 import { ErrorResponseBase, ErrorResponseCodes } from "./error-response.base";
 
-export class DomainErrorResponse extends ErrorResponseBase {
+export class DomainError extends ErrorResponseBase {
 	constructor(message: string, context?: any) {
 		super(
 			400,

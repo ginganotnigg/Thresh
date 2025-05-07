@@ -1,6 +1,6 @@
 import Test from "../../../domain/models/test";
 import User from "../../../domain/models/user";
-import { DomainErrorResponse } from "../../../controller/errors/domain.error";
+import { DomainError } from "../../../controller/errors/domain.error";
 import { TestId } from "../../../domain/schema/id.schema";
 import { TestInfo } from "../../../domain/schema/info.schema";
 
@@ -12,7 +12,7 @@ export async function queryTest(param: TestId): Promise<TestInfo> {
 	});
 
 	if (!test) {
-		throw new DomainErrorResponse(`Test with ID ${testId} not found`);
+		throw new DomainError(`Test with ID ${testId} not found`);
 	}
 
 	return {

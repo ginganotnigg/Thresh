@@ -1,7 +1,7 @@
 import "reflect-metadata";
-import { configServer } from "./app/configServer";
+import { main } from "./app/main";
 import sequelize from "./configs/orm/sequelize/sequelize";
-import { configServices } from "./app/configServices";
+import { appServices } from "./app/services";
 import { env } from "./configs/env";
 import { ensureDatabase, recreateDatabase } from "./configs/orm/database-operations";
 
@@ -12,8 +12,8 @@ ensureDatabase()
 		}
 		await sequelize.sync({ logging: false });
 		await sequelize.authenticate({ logging: false });
-		await configServices();
-		await configServer();
+		await appServices();
+		await main();
 	}).catch((err) => {
 		console.error(err);
 		console.error("Unable to start server, shutting down...");

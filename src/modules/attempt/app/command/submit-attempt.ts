@@ -1,5 +1,5 @@
 import sequelize from "../../../../configs/orm/sequelize/sequelize";
-import { DomainErrorResponse } from "../../../../controller/errors/domain.error";
+import { DomainError } from "../../../../controller/errors/domain.error";
 import Attempt from "../../../../domain/models/attempt";
 
 export async function commandSubmitAttempt(attemptId: string): Promise<void> {
@@ -8,10 +8,10 @@ export async function commandSubmitAttempt(attemptId: string): Promise<void> {
 	try {
 		const attempt = await Attempt.findByPk(attemptId, { transaction });
 		if (!attempt) {
-			throw new DomainErrorResponse("Attempt not found");
+			throw new DomainError("Attempt not found");
 		}
 		if (attempt.hasEnded) {
-			throw new DomainErrorResponse("Attempt already submitted");
+			throw new DomainError("Attempt already submitted");
 		}
 		const now = new Date();
 		const secondsSpent = Math.floor((now.getTime() - attempt.createdAt.getTime()) / 1000);

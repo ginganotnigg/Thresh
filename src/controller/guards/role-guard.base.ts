@@ -1,8 +1,8 @@
 import { Request } from "express";
 import { ChuoiGuardBase } from "../../library/caychuoijs/main/contracts";
 import { env } from "../../configs/env";
-import { UnauthorizedErrorResponse } from "../errors/unauthorized.error";
-import { ForbidenErrorResponse } from "../errors/forbidden.error";
+import { UnauthorizedError } from "../errors/unauthorized.error";
+import { ForbidenError } from "../errors/forbidden.error";
 
 export abstract class RoleGuardBase extends ChuoiGuardBase {
 	protected abstract checkRole(role: number): boolean;
@@ -15,11 +15,11 @@ export abstract class RoleGuardBase extends ChuoiGuardBase {
 			req.header('x-role-id') === undefined ||
 			isNaN(parseInt(req.header('x-role-id')!, 10))
 		) {
-			throw new UnauthorizedErrorResponse();
+			throw new UnauthorizedError();
 		}
 		const role = parseInt(req.header('x-role-id')!, 10);
 		if (!this.checkRole(role)) {
-			throw new ForbidenErrorResponse();
+			throw new ForbidenError();
 		}
 	}
 } 

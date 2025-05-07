@@ -1,6 +1,6 @@
 import { ErrorResponseBase, ErrorResponseCodes } from "./error-response.base";
 
-export class ForbidenErrorResponse extends ErrorResponseBase {
+export class ForbidenError extends ErrorResponseBase {
 	constructor() {
 		super(
 			403,

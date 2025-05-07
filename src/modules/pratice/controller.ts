@@ -6,7 +6,7 @@ import { GetSelfTestsResponseSchema, TestAggregateQuerySchema, TestAggregateResp
 import { GetSelfTestsQuerySchema } from "./schema";
 import { RandomService } from "../../services/random.service";
 import { queryTest } from "./query/test";
-import { DomainErrorResponse } from "../../controller/errors/domain.error";
+import { DomainError } from "../../controller/errors/domain.error";
 import { queryTestQuestions } from "./query/test-questions";
 import { commandCreatePractice, CreatePracticeSchema } from "./command/create-practice";
 import { commandDeletePractice } from "./command/delete-practice";
@@ -33,7 +33,7 @@ export function controllerPractice() {
 		}).handle(async () => {
 			const testId = RandomService.getTodayRandomTestId();
 			if (!testId) {
-				throw new DomainErrorResponse("No test found for today");
+				throw new DomainError("No test found for today");
 			}
 			return await queryTest({ testId });
 		}).build({

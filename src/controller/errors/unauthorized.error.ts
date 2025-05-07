@@ -1,6 +1,6 @@
 import { ErrorResponseBase, ErrorResponseCodes } from "./error-response.base";
 
-export class UnauthorizedErrorResponse extends ErrorResponseBase {
+export class UnauthorizedError extends ErrorResponseBase {
 	constructor() {
 		super(
 			401,

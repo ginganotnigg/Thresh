@@ -1,4 +1,4 @@
-import { setupAfterAll, setupBeforeAll } from "../../../__tests__/service-setup";
+import { setupAfterAll, setupBeforeAll } from "../../../tests/service-setup";
 import { ManageQueryService } from "../services/manage.query.service";
 import getTestsData from "./data/getTests.set";
 

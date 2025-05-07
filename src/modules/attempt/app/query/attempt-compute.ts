@@ -1,4 +1,4 @@
-import { DomainErrorResponse } from "../../../../controller/errors/domain.error";
+import { DomainError } from "../../../../controller/errors/domain.error";
 import Attempt from "../../../../domain/models/attempt";
 import { AttemptComputeQuery, AttemptComputeResponse } from "../../schema/controller-schema";
 
@@ -10,10 +10,10 @@ export async function queryAttemptCompute(attemptId: string, query: AttemptCompu
 			include: ["Test"],
 		});
 		if (!attempt) {
-			throw new DomainErrorResponse(`Attempt with ID ${attemptId} not found`);
+			throw new DomainError(`Attempt with ID ${attemptId} not found`);
 		}
 		if (attempt.hasEnded === true) {
-			throw new DomainErrorResponse(`Attempt with ID ${attemptId} has already ended`);
+			throw new DomainError(`Attempt with ID ${attemptId} has already ended`);
 		}
 		const now = new Date();
 		const startTime = attempt.createdAt.getTime();
