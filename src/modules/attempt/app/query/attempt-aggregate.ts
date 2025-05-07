@@ -1,9 +1,9 @@
-import sequelize from "../../../configs/orm/sequelize/sequelize";
+import sequelize from "../../../../configs/orm/sequelize/sequelize";
 import { QueryTypes } from "sequelize";
-import { AttemptAggregateQuery, AttemptAggregateResponse } from "../schema/controller-schema";
+import { AttemptAggregateQuery, AttemptAggregateResponse } from "../../schema/controller-schema";
 import fs from "fs";
 import path from "path";
-import Attempt from "../../../domain/models/attempt";
+import Attempt from "../../../../domain/models/attempt";
 
 const sqlDir = path.join(__dirname, "sql");
 

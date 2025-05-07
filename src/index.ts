@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { configServer } from "./app/configServer";
 import sequelize from "./configs/orm/sequelize/sequelize";
 import { configServices } from "./app/configServices";
-import { env } from "./utils/env";
+import { env } from "./configs/env";
 import { ensureDatabase, recreateDatabase } from "./configs/orm/database-operations";
 
 ensureDatabase()

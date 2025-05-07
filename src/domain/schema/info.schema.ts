@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { AttemptCoreSchema, TestCoreSchema, UserCoreSchema } from "./core.schema";
 
+// Models for client-side usage
+// These models are used to define the structure of the data that is sent to the client
+
 export const TestInfoSchema = TestCoreSchema
 	.omit({ authorId: true })
 	.extend({

@@ -1,9 +1,9 @@
-import { DomainErrorResponse } from "../../../controller/errors/domain.error";
-import Attempt from "../../../domain/models/attempt";
-import Test from "../../../domain/models/test";
-import User from "../../../domain/models/user";
-import { AttemptInfo } from "../../../domain/schema/info.schema";
-import { AttemptsCurrentQuery } from "../schema/controller-schema";
+import { DomainErrorResponse } from "../../../../controller/errors/domain.error";
+import Attempt from "../../../../domain/models/attempt";
+import Test from "../../../../domain/models/test";
+import User from "../../../../domain/models/user";
+import { AttemptInfo } from "../../../../domain/schema/info.schema";
+import { AttemptsCurrentQuery } from "../../schema/controller-schema";
 
 export async function queryAttemptsCurrent(params: AttemptsCurrentQuery): Promise<AttemptInfo> {
 	const { testId, candidateId } = params;

@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { SortParamSchema, PagingSchema } from "../../../controller/schemas/base";
-import { AttemptCoreSchema } from "../../../domain/schema/core.schema";
+import { AnswerCoreSchema, AttemptCoreSchema, QuestionCoreSchema } from "../../../domain/schema/core.schema";
 
-export const TestAttemptsQuerySchema = z.object({
+export const AttemptsQuerySchema = z.object({
 	sort: SortParamSchema(['createdAt', 'score']).optional().default('-createdAt'),
 	authorId: z.string().optional(),
 	testId: z.string().optional(),
@@ -32,14 +32,14 @@ export const AttemptsCurrentQuerySchema = z.object({
 });
 
 export const AttemptComputeQuerySchema = z.object({
-	timeLeft: z.boolean().optional(),
+	secondsLeft: z.boolean().optional(),
 });
 
 export const AttemptComputeResponseSchema = z.object({
-	timeLeft: z.number().optional(),
+	secondsLeft: z.number().optional(),
 });
 
-export type TestAttemptsQuery = z.infer<typeof TestAttemptsQuerySchema>;
+export type AttemptsQuery = z.infer<typeof AttemptsQuerySchema>;
 export type AttemptAggregateQuery = z.infer<typeof AttemptAggregateQuerySchema>;
 export type AttemptAggregateResponse = z.infer<typeof AttemptAggregateResponseSchema>;
 export type CreateAttemptBody = z.infer<typeof CreateAttemptBodySchema>;

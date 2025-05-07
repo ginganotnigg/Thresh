@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { env } from "../utils/env";
+import { env } from "../configs/env";
 import { instrument } from "@socket.io/admin-ui";
 import { logSocket } from "../configs/logger/winston";
 

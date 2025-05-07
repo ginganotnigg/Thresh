@@ -1,7 +1,7 @@
-import sequelize from "../../../configs/orm/sequelize/sequelize";
-import { DomainErrorResponse } from "../../../controller/errors/domain.error";
-import Attempt from "../../../domain/models/attempt";
-import AttemptsAnswerQuestions from "../../../domain/models/attempts_answer_questions";
+import sequelize from "../../../../configs/orm/sequelize/sequelize";
+import { DomainErrorResponse } from "../../../../controller/errors/domain.error";
+import Attempt from "../../../../domain/models/attempt";
+import AttemptsAnswerQuestions from "../../../../domain/models/attempts_answer_questions";
 
 export async function commandAnswerAttempt(attemptId: string, questionId: number, chosenOption: number | null): Promise<void> {
 	const transaction = await sequelize.transaction();

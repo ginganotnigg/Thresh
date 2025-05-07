@@ -1,6 +1,6 @@
 import { Kysely, MysqlDialect, sql } from 'kysely';
 import * as mysql from 'mysql2';
-import { env } from "../../utils/env";
+import { env } from "../env";
 import { logSqlCommand } from '../logger/winston';
 
 // Initialize database interface - empty for now

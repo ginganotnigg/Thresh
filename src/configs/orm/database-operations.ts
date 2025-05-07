@@ -1,5 +1,5 @@
 import mysql from 'mysql2/promise';
-import { env } from '../../utils/env';
+import { env } from '../env';
 
 export async function recreateDatabase() {
 	try {

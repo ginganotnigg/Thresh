@@ -8,7 +8,7 @@ import { ChuoiDocument } from "./documentation/open-api";
 import { writeFileSync } from "fs";
 import swaggerUi from 'swagger-ui-express';
 import { ChuoiContainer } from "./utils/container";
-import { env } from "../../utils/env";
+import { env } from "../../configs/env";
 import { ChuoiSecurityBase } from "./documentation/security";
 
 export class Chuoi {

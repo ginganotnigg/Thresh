@@ -40,6 +40,7 @@
 		"sequelize": "^6.37.5",
 		"sequelize-typescript": "^2.1.6",
 		"socket.io": "^4.8.1",
+		"strict-event-emitter": "^0.5.1",
 		"swagger-jsdoc": "^6.2.8",
 		"swagger-ui-express": "^5.0.1",
 		"typescript": "^5.7.3",

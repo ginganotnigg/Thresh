@@ -9,5 +9,5 @@ export const QuestionIdParamsSchema = z.object({
 });
 
 export const AttemptIdParamsSchema = z.object({
-	attemptId: z.coerce.number(),
+	attemptId: z.string(),
 });

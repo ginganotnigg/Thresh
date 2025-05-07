@@ -6,7 +6,7 @@ import { PracticeModule } from "../modules/pratice/module";
 import { ModuleBase } from "../library/cayduajs/module/module.base";
 import { HistoryModule } from "../modules/attempt/module";
 import { Chuoi } from "../library/caychuoijs";
-import { env } from "../utils/env";
+import { env } from "../configs/env";
 import { configSocket } from "./configSocket";
 import { AllExceptionFilter } from "../controller/defaults/all-exception.filter";
 import { LoggerMiddleware } from "../controller/defaults/http-logger.middleware";

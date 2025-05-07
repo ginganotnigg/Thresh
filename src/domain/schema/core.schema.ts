@@ -46,7 +46,7 @@ export const AttemptCoreSchema = z.object({
 });
 
 export const AnswerCoreSchema = z.object({
-	attemptId: z.number(),
+	attemptId: z.string(),
 	questionId: z.number(),
 	chosenOption: z.number(),
 });
@@ -56,3 +56,4 @@ export type QuestionCore = z.infer<typeof QuestionCoreSchema>;
 export type UserCore = z.infer<typeof UserCoreSchema>;
 export type PracticeTestCore = z.infer<typeof PracticeTestCoreSchema>;
 export type AttemptCore = z.infer<typeof AttemptCoreSchema>;
+export type AnswerCore = z.infer<typeof AnswerCoreSchema>;

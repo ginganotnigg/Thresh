@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize";
 import { logSqlCommand } from "../../logger/winston";
-import { env } from "../../../utils/env";
+import { env } from "../../env";
 import Test from "../../../domain/models/test";
 import Attempt from "../../../domain/models/attempt";
 import AttemptsAnswerQuestions from "../../../domain/models/attempts_answer_questions";

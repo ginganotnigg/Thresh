@@ -1,6 +1,6 @@
-import sequelize from "../../../configs/orm/sequelize/sequelize";
-import { DomainErrorResponse } from "../../../controller/errors/domain.error";
-import Attempt from "../../../domain/models/attempt";
+import sequelize from "../../../../configs/orm/sequelize/sequelize";
+import { DomainErrorResponse } from "../../../../controller/errors/domain.error";
+import Attempt from "../../../../domain/models/attempt";
 
 export async function commandSubmitAttempt(attemptId: string): Promise<void> {
 	const transaction = await sequelize.transaction();

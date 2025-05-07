@@ -1,8 +1,8 @@
-import Attempt from "../../../domain/models/attempt";
-import Test from "../../../domain/models/test";
-import User from "../../../domain/models/user";
-import { AttemptInfo } from "../../../domain/schema/info.schema";
-import { DomainErrorResponse } from "../../../controller/errors/domain.error";
+import Attempt from "../../../../domain/models/attempt";
+import Test from "../../../../domain/models/test";
+import User from "../../../../domain/models/user";
+import { AttemptInfo } from "../../../../domain/schema/info.schema";
+import { DomainErrorResponse } from "../../../../controller/errors/domain.error";
 
 export async function queryAttempt(id: string): Promise<AttemptInfo> {
 	const attempt = await Attempt.findByPk(id, {
