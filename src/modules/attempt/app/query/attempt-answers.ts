@@ -8,9 +8,7 @@ export async function queryAttemptAnswers(attemptId: string): Promise<AnswerCore
 	if (!attempt) {
 		throw new DomainError("Attempt not found");
 	}
-	if (attempt.hasEnded === false) {
-		throw new DomainError("Attempt is not submitted");
-	}
+
 	const answers = await AttemptsAnswerQuestions.findAll({
 		where: {
 			attemptId,

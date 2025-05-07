@@ -14,7 +14,7 @@ export async function scheduleOngoingAttempts() {
 	const now = new Date();
 	for (const attempt of notEndedAttempts) {
 		const endDate = new Date(attempt.createdAt.getTime() + (attempt.Test!.minutesToAnswer * 60 * 1000));
-		if (endDate >= now) {
+		if (endDate <= now) {
 			await commandSubmitAttempt(attempt.id);
 		}
 		else {

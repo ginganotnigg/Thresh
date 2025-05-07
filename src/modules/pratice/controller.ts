@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { Chuoi } from "../../library/caychuoijs";
 import { QuestionIdParamsSchema, TestIdParamsSchema } from "../../controller/schemas/params";
-import { querySelfTests } from "./query/self-tests";
-import { GetSelfTestsResponseSchema, TestAggregateQuerySchema, TestAggregateResponseSchema } from "./schema";
-import { GetSelfTestsQuerySchema } from "./schema";
+import { queryTests } from "./query/tests";
+import { GetTestsResponseSchema, TestAggregateQuerySchema, TestAggregateResponseSchema } from "./schema";
+import { GetTestsQuerySchema } from "./schema";
 import { RandomService } from "../../services/random.service";
 import { queryTest } from "./query/test";
 import { DomainError } from "../../controller/errors/domain.error";
@@ -15,16 +15,17 @@ import { TestInfoSchema } from "../../domain/schema/info.schema";
 import { QuestionNoAnswerSchema } from "./schema";
 import { QuestionCoreSchema } from "../../domain/schema/core.schema";
 import { queryTestAggregate } from "./query/test-aggregate";
+import { queryQuestion } from "./query/question";
 
 export function controllerPractice() {
 	const router = Chuoi.newRoute();
 
-	router.endpoint().get('/tests/by-author')
+	router.endpoint().get('/tests')
 		.schema({
-			query: GetSelfTestsQuerySchema,
-			response: GetSelfTestsResponseSchema,
+			query: GetTestsQuerySchema,
+			response: GetTestsResponseSchema,
 		}).handle(async data => {
-			return await querySelfTests(data.query);
+			return await queryTests(data.query);
 		}).build({ tags: ['Practice'] });
 
 	router.endpoint().get('/tests/challenge-of-the-day')
@@ -90,7 +91,7 @@ export function controllerPractice() {
 			response: QuestionCoreSchema,
 		})
 		.handle(async data => {
-			return await queryTestQuestions({ testId: data.params.questionId });
+			return await queryQuestion({ questionId: data.params.questionId });
 		}).build({
 			tags: ['Practice'],
 			summary: 'Return question (full) by questionId.',

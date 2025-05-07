@@ -10,8 +10,8 @@
 		"start": "ts-node --require ./src/configs/openapi/extends-zod.ts src/index.ts",
 		"start:prod": "cross-env NODE_ENV=production && npm run start",
 		"migrate": "node cmd/migrate.mjs",
-		"seed": "ts-node src/__script__/seed.ts",
-		"seed:prod": "cross-env NODE_ENV=production && ts-node src/__script__/seed.ts",
+		"seed": "ts-node src/__scripts__/seed.ts",
+		"seed:prod": "cross-env NODE_ENV=production && ts-node src/__scripts__/seed.ts",
 		"test": "cross-env NODE_ENV=test && jest",
 		"test:folder": "cross-env NODE_ENV=test && ts-node cmd/test-folder.ts"
 	},

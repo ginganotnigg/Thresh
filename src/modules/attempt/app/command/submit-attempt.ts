@@ -4,7 +4,6 @@ import Attempt from "../../../../domain/models/attempt";
 
 export async function commandSubmitAttempt(attemptId: string): Promise<void> {
 	const transaction = await sequelize.transaction();
-
 	try {
 		const attempt = await Attempt.findByPk(attemptId, { transaction });
 		if (!attempt) {
@@ -20,6 +19,8 @@ export async function commandSubmitAttempt(attemptId: string): Promise<void> {
 			hasEnded: true,
 			secondsSpent,
 		}, { transaction });
+
+		await transaction.commit();
 	} catch (error) {
 		await transaction.rollback();
 		throw error;

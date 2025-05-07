@@ -1,17 +1,18 @@
 import { z } from "zod";
 import { SortParamSchema, PagingSchema } from "../../../controller/schemas/base";
-import { AnswerCoreSchema, AttemptCoreSchema, QuestionCoreSchema } from "../../../domain/schema/core.schema";
+import { AttemptCoreSchema } from "../../../domain/schema/core.schema";
+import { BooleanStringSchema } from "../../../controller/schemas/query";
 
 export const AttemptsQuerySchema = z.object({
 	sort: SortParamSchema(['createdAt', 'score']).optional().default('-createdAt'),
-	authorId: z.string().optional(),
+	candidateId: z.string().optional(),
 	testId: z.string().optional(),
 }).merge(PagingSchema);
 
 export const AttemptAggregateQuerySchema = z.object({
-	score: z.boolean().optional(),
-	answered: z.boolean().optional(),
-	answeredCorrect: z.boolean().optional(),
+	score: BooleanStringSchema.optional().default("true"),
+	answered: BooleanStringSchema.optional().default("true"),
+	answeredCorrect: BooleanStringSchema.optional().default("true"),
 });
 
 export const AttemptAggregateResponseSchema = z.object({
@@ -32,7 +33,7 @@ export const AttemptsCurrentQuerySchema = z.object({
 });
 
 export const AttemptComputeQuerySchema = z.object({
-	secondsLeft: z.boolean().optional(),
+	secondsLeft: BooleanStringSchema.optional().default("true"),
 });
 
 export const AttemptComputeResponseSchema = z.object({

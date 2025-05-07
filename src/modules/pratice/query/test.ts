@@ -8,7 +8,10 @@ export async function queryTest(param: TestId): Promise<TestInfo> {
 	const { testId } = param;
 
 	const test = await Test.findByPk(testId, {
-		include: [{ model: User }]
+		include: [{
+			model: User,
+			as: 'Author',
+		}]
 	});
 
 	if (!test) {

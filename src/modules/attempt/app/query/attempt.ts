@@ -1,6 +1,5 @@
 import Attempt from "../../../../domain/models/attempt";
 import Test from "../../../../domain/models/test";
-import User from "../../../../domain/models/user";
 import { AttemptInfo } from "../../../../domain/schema/info.schema";
 import { DomainError } from "../../../../controller/errors/domain.error";
 
@@ -9,11 +8,9 @@ export async function queryAttempt(id: string): Promise<AttemptInfo> {
 		include: [
 			{
 				model: Test,
-				include: [User],
+				include: ["Author"],
 			},
-			{
-				model: User,
-			}
+			"Candidate",
 		]
 	});
 

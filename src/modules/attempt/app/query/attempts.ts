@@ -2,17 +2,16 @@ import sequelize from "../../../../configs/orm/sequelize/sequelize";
 import { Paged, sortBy } from "../../../../controller/schemas/base";
 import Attempt from "../../../../domain/models/attempt";
 import Test from "../../../../domain/models/test";
-import User from "../../../../domain/models/user";
 import { AttemptInfo } from "../../../../domain/schema/info.schema";
 import { AttemptsQuery } from "../../schema/controller-schema";
 
 export async function queryAttempts(param: AttemptsQuery): Promise<Paged<AttemptInfo>> {
-	const { authorId, testId, sort, page, perPage } = param;
+	const { candidateId, testId, sort, page, perPage } = param;
 
 	const { rows: attempts, count } = await Attempt.findAndCountAll({
 		where: {
-			...(authorId ? { authorId } : {}),
-			...(testId ? { testId } : {}),
+			...(candidateId ? { candidateId: candidateId } : {}),
+			...(testId ? { testId: testId } : {}),
 		},
 		include: [
 			{

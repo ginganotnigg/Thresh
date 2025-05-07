@@ -5,7 +5,7 @@ import { AttemptInfoSchema } from "../../../domain/schema/info.schema";
 import { Chuoi } from "../../../library/caychuoijs";
 import { queryAttempt } from "../app/query/attempt";
 import { queryAttempts } from "../app/query/attempts";
-import { AttemptAggregateQuerySchema, AttemptComputeQuerySchema, AttemptComputeResponseSchema, AttemptsCurrentQuerySchema, AttemptsQuerySchema, CreateAttemptBodySchema } from "../schema/controller-schema";
+import { AttemptAggregateQuerySchema, AttemptAggregateResponseSchema, AttemptComputeQuerySchema, AttemptComputeResponseSchema, AttemptsCurrentQuerySchema, AttemptsQuerySchema, CreateAttemptBodySchema } from "../schema/controller-schema";
 import { AnswerCoreSchema } from "../../../domain/schema/core.schema";
 import { queryAttemptAnswers } from "../app/query/attempt-answers";
 import { queryAttemptsCurrent } from "../app/query/attempts-current";
@@ -68,7 +68,7 @@ export function attemptController() {
 		.schema({
 			params: AttemptIdParamsSchema,
 			query: AttemptAggregateQuerySchema,
-			response: AttemptComputeResponseSchema,
+			response: AttemptAggregateResponseSchema,
 		}).handle(async (data) => {
 			return await queryAttemptAggregate(data.params.attemptId, data.query);
 		}).build({
@@ -101,8 +101,8 @@ export function attemptController() {
 		.schema({
 			params: AttemptIdParamsSchema,
 			query: z.object({
-				questionId: z.number(),
-				chosenOption: z.number().nullable(),
+				questionId: z.coerce.number(),
+				chosenOption: z.coerce.number().optional(),
 			}),
 		})
 		.handle(async (data) => {

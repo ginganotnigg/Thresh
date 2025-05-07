@@ -7,6 +7,15 @@ import { AttemptsCurrentQuery } from "../../schema/controller-schema";
 
 export async function queryAttemptsCurrent(params: AttemptsCurrentQuery): Promise<AttemptInfo> {
 	const { testId, candidateId } = params;
+	const candidate = await User.findByPk(candidateId);
+	if (!candidate) {
+		throw new DomainError("Candidate not found");
+	}
+	const test = await Test.findByPk(testId);
+	if (!test) {
+		throw new DomainError("Test not found");
+	}
+
 	const attempts = await Attempt.findAll({
 		where: {
 			testId,

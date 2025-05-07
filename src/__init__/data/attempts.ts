@@ -25,9 +25,9 @@ const attempts = [
 		testId: 'e57f29b5-3b6d-4d4e-82c9-f155a7e02a6c', // JavaScript Fundamentals test
 		candidateId: '3f9e8d7c-6b5a-4d3c-2e1f-0a9b8c7d6e5f', // Alex Johnson
 		hasEnded: false,
-		secondsSpent: 780, // 13 minutes so far
-		createdAt: new Date('2025-05-01T10:15:00Z'),
-		updatedAt: new Date('2025-05-01T10:28:00Z')
+		secondsSpent: 0,
+		createdAt: new Date(),
+		updatedAt: new Date()
 	},
 
 	// First attempt for React Component Architecture test (completed)

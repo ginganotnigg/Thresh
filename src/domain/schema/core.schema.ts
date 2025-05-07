@@ -42,7 +42,7 @@ export const AttemptCoreSchema = z.object({
 	testId: z.string(),
 	candidateId: z.string(),
 	hasEnded: z.boolean(),
-	secondsSpent: z.number().int().positive(),
+	secondsSpent: z.number().int().nonnegative(),
 });
 
 export const AnswerCoreSchema = z.object({

@@ -3,7 +3,7 @@ import { DomainError } from "../../../../controller/errors/domain.error";
 import Attempt from "../../../../domain/models/attempt";
 import AttemptsAnswerQuestions from "../../../../domain/models/attempts_answer_questions";
 
-export async function commandAnswerAttempt(attemptId: string, questionId: number, chosenOption: number | null): Promise<void> {
+export async function commandAnswerAttempt(attemptId: string, questionId: number, chosenOption?: number): Promise<void> {
 	const transaction = await sequelize.transaction();
 
 	try {
@@ -15,7 +15,7 @@ export async function commandAnswerAttempt(attemptId: string, questionId: number
 			throw new DomainError("Attempt already submitted");
 		}
 
-		if (chosenOption === null) {
+		if (chosenOption == null) {
 			await AttemptsAnswerQuestions.destroy({
 				where: {
 					attemptId: attemptId,
@@ -31,6 +31,7 @@ export async function commandAnswerAttempt(attemptId: string, questionId: number
 				chosenOption: chosenOption,
 			}, { transaction });
 		}
+		await transaction.commit();
 	} catch (error) {
 		await transaction.rollback();
 		throw error;

@@ -4,16 +4,19 @@ import { AttemptAggregateQuery, AttemptAggregateResponse } from "../../schema/co
 import fs from "fs";
 import path from "path";
 import Attempt from "../../../../domain/models/attempt";
+import { DomainError } from "../../../../controller/errors/domain.error";
 
 const sqlDir = path.join(__dirname, "sql");
 
 export async function queryAttemptAggregate(attemptId: string, option: AttemptAggregateQuery): Promise<AttemptAggregateResponse> {
 	const attempt = await Attempt.findOne({
 		where: { id: attemptId },
-		attributes: ["id"],
 	});
 	if (!attempt) {
-		throw new Error(`Attempt with ID ${attemptId} not found`);
+		throw new DomainError(`Attempt with ID ${attemptId} not found`);
+	}
+	if (attempt.hasEnded === false) {
+		throw new DomainError(`Attempt is not ended, cannot aggregate results`);
 	}
 
 	const { score, answered, answeredCorrect } = option;
@@ -31,7 +34,7 @@ export async function queryAttemptAggregate(attemptId: string, option: AttemptAg
 				type: QueryTypes.SELECT,
 			}
 		);
-		result.score = (scoreResult[0] as any)?.res || undefined;
+		result.score = parseInt((scoreResult[0] as any)?.res) || undefined;
 	}
 	if (answered) {
 		const answeredResult = await sequelize.query(
@@ -41,7 +44,7 @@ export async function queryAttemptAggregate(attemptId: string, option: AttemptAg
 				type: QueryTypes.SELECT,
 			}
 		);
-		result.answered = (answeredResult[0] as any)?.res || undefined;
+		result.answered = parseInt((answeredResult[0] as any)?.res) || undefined;
 	}
 
 	if (answeredCorrect) {
@@ -51,7 +54,7 @@ export async function queryAttemptAggregate(attemptId: string, option: AttemptAg
 				type: QueryTypes.SELECT,
 			}
 		);
-		result.answeredCorrect = (answeredCorrectResult[0] as any)?.res || undefined;
+		result.answeredCorrect = parseInt((answeredCorrectResult[0] as any)?.res) || undefined;
 	}
 
 	return result;

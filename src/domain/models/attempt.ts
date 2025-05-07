@@ -69,7 +69,7 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 			indexes: [
 				{
 					unique: true,
-					fields: ["testId", "order"]
+					fields: ["testId", "order", "candidateId"],
 				},
 			]
 		});

@@ -9,8 +9,9 @@ export const QuestionIdSchema = z.object({
 });
 
 export const AttemtpIdSchema = z.object({
-	attemptId: z.number(),
+	attemptId: z.string(),
 });
 
 export type TestId = z.infer<typeof TestIdSchema>;
 export type QuestionId = z.infer<typeof QuestionIdSchema>;
+export type AttemptId = z.infer<typeof AttemtpIdSchema>;

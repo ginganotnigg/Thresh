@@ -5,7 +5,7 @@ export const TestIdParamsSchema = z.object({
 });
 
 export const QuestionIdParamsSchema = z.object({
-	questionId: z.string(),
+	questionId: z.coerce.number(),
 });
 
 export const AttemptIdParamsSchema = z.object({

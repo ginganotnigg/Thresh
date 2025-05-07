@@ -12,14 +12,11 @@ export async function queryAttemptCompute(attemptId: string, query: AttemptCompu
 		if (!attempt) {
 			throw new DomainError(`Attempt with ID ${attemptId} not found`);
 		}
-		if (attempt.hasEnded === true) {
-			throw new DomainError(`Attempt with ID ${attemptId} has already ended`);
-		}
 		const now = new Date();
 		const startTime = attempt.createdAt.getTime();
 		const endTime = attempt.Test!.minutesToAnswer * 60 * 1000 + startTime;
 		const timeLeft = endTime - now.getTime();
-		res.secondsLeft = timeLeft > 0 ? timeLeft : 0;
+		res.secondsLeft = timeLeft > 0 ? (timeLeft / 1000) : 0;
 	}
 	return res;
 }

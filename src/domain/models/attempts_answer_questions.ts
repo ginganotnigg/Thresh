@@ -52,7 +52,7 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 			indexes: [
 				{
 					unique: true,
-					fields: ["attemptId", "questionId"]
+					fields: ["attemptId", "questionId"],
 				}
 			]
 		});
