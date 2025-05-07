@@ -1,11 +1,10 @@
-import { z } from "zod";
 import sequelize from "../../../configs/orm/sequelize/sequelize";
 import PracticeTest from "../../../domain/models/practice_test";
 import Test from "../../../domain/models/test";
 import Question from "../../../domain/models/question";
 import { TestId } from "../../../domain/schema/id.schema";
 
-export async function deletePracticeCommand(params: TestId): Promise<void> {
+export async function commandDeletePractice(params: TestId): Promise<void> {
 	const { testId: id } = params;
 	const transaction = await sequelize.transaction();
 

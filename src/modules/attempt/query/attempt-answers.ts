@@ -1,7 +1,7 @@
 import { DomainErrorResponse } from "../../../controller/errors/domain.error";
 import AttemptsAnswerQuestions from "../../../domain/models/attempts_answer_questions";
 import Question from "../../../domain/models/question";
-import { QuestionResult } from "../schema";
+import { QuestionResult } from "../schema/domain-schema";
 
 export async function queryAttemptAnswers(attemptId: string): Promise<QuestionResult[]> {
 	const answers = await AttemptsAnswerQuestions.findAll({

@@ -4,7 +4,7 @@ import Attempt from "../../../domain/models/attempt";
 import Test from "../../../domain/models/test";
 import User from "../../../domain/models/user";
 import { AttemptInfo } from "../../../domain/schema/info.schema";
-import { TestAttemptsQuery } from "../schema";
+import { TestAttemptsQuery } from "../schema/controller-schema";
 
 export async function queryTestAttempts(param: TestAttemptsQuery): Promise<Paged<AttemptInfo>> {
 	const { authorId, testId, sort, page, perPage } = param;
@@ -17,11 +17,9 @@ export async function queryTestAttempts(param: TestAttemptsQuery): Promise<Paged
 		include: [
 			{
 				model: Test,
-				include: [User],
+				include: ["Author"],
 			},
-			{
-				model: User,
-			}
+			"Candidate",
 		],
 		limit: perPage,
 		offset: (page - 1) * perPage,

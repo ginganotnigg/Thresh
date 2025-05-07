@@ -18,14 +18,10 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 	declare Test?: NonAttribute<Test>;
 	declare Candidate?: NonAttribute<User>;
 
-	declare score?: NonAttribute<number>;
-	declare totalQuestions?: NonAttribute<number>;
-	declare totalCorrectAnswers?: NonAttribute<number>;
-	declare totalWrongAnswers?: NonAttribute<number>;
-
 	declare static associations: {
 		Attempts_answer_Questions: Association<Attempt, AttemptsAnswerQuestions>;
 		Test: Association<Attempt, Test>;
+		Candidate: Association<Attempt, User>;
 	}
 
 	static initModel(sequelize: Sequelize) {
@@ -90,6 +86,7 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 		});
 		Attempt.belongsTo(User, {
 			foreignKey: "candidateId",
+			as: "Candidate",
 		});
 	}
 }

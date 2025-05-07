@@ -1,6 +1,6 @@
 import sequelize from "../../../configs/orm/sequelize/sequelize";
 import { QueryTypes } from "sequelize";
-import { AttemptAggregateQuery, AttemptAggregateResponse } from "../schema";
+import { AttemptAggregateQuery, AttemptAggregateResponse } from "../schema/controller-schema";
 import fs from "fs";
 import path from "path";
 import Attempt from "../../../domain/models/attempt";

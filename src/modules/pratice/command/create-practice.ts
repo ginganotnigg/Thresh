@@ -6,7 +6,7 @@ import User from "../../../domain/models/user";
 import Question from "../../../domain/models/question";
 import { PracticeTestCoreSchema, QuestionCoreSchema, TestCoreSchema, UserCoreSchema } from "../../../domain/schema/core.schema";
 
-export const CreatePraticeSchema = TestCoreSchema.omit({
+export const CreatePracticeSchema = TestCoreSchema.omit({
 	id: true,
 	authorId: true,
 }).extend({
@@ -20,9 +20,9 @@ export const CreatePraticeSchema = TestCoreSchema.omit({
 	testId: true,
 }));
 
-export type CreatePractice = z.infer<typeof CreatePraticeSchema>;
+export type CreatePractice = z.infer<typeof CreatePracticeSchema>;
 
-export async function commandCreatePratice(params: CreatePractice): Promise<{ id: string }> {
+export async function commandCreatePractice(params: CreatePractice): Promise<{ id: string }> {
 	const {
 		author,
 		title,

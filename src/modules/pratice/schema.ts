@@ -11,10 +11,19 @@ export const GetSelfTestsQuerySchema = PagingSchema.extend({
 
 export const GetSelfTestsResponseSchema = PagedSchema(TestInfoSchema);
 
-export type GetSelfTestsQuery = z.infer<typeof GetSelfTestsQuerySchema>;
-export type GetSelfTestsResponse = z.infer<typeof GetSelfTestsResponseSchema>;
-
 export const QuestionNoAnswerSchema = QuestionCoreSchema.omit({ correctOption: true });
 
+export const TestAggregateQuerySchema = z.object({
+	numberOfQuestions: z.boolean().optional(),
+});
+
+export const TestAggregateResponseSchema = z.object({
+	numberOfQuestions: z.number().optional(),
+});
+
+export type GetSelfTestsQuery = z.infer<typeof GetSelfTestsQuerySchema>;
+export type GetSelfTestsResponse = z.infer<typeof GetSelfTestsResponseSchema>;
 export type QuestionNoAnswer = z.infer<typeof QuestionNoAnswerSchema>;
+export type TestAggregateQuery = z.infer<typeof TestAggregateQuerySchema>;
+export type TestAggregateResponse = z.infer<typeof TestAggregateResponseSchema>;
 
