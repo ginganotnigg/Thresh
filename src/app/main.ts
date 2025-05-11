@@ -1,5 +1,5 @@
 import http from "http";
-import { PracticeModule } from "../modules/pratice/module";
+import { TestModule } from "../modules/tests/module";
 import { ModuleBase } from "../library/cayduajs/module/module.base";
 import { AttemptsModule } from "../modules/attempt/module";
 import { Chuoi } from "../library/caychuoijs";
@@ -28,7 +28,7 @@ export async function main() {
 	// =====================
 
 	const modules: ModuleBase[] = [
-		new PracticeModule(),
+		new TestModule(),
 		new AttemptsModule(),
 	];
 	for (const m of modules) {

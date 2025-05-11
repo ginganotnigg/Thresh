@@ -1,9 +1,9 @@
 import Attempt from "../../../../domain/models/attempt";
 import Test from "../../../../domain/models/test";
-import { emitter } from "../../controller/emitter";
+import { attemptEmitter } from "../../init/emitter";
 import { AttemptScheduleService } from "../../services/attempt-schedule-service";
 
-emitter.addListener("ATTEMPT_CREATED", async (attemptId) => {
+attemptEmitter.addListener("ATTEMPT_CREATED", async (attemptId) => {
 	const attempt = await Attempt.findByPk(attemptId, {
 		include: [Test],
 	});

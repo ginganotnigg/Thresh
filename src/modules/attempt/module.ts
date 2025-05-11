@@ -1,5 +1,5 @@
 import { ModuleBase } from "../../library/cayduajs/module/module.base";
-import { attemptController } from "./controller/controller";
+import { attemptController } from "./controller";
 import { scheduleOngoingAttempts } from "./init/schedule-ongoing-attempts";
 
 export class AttemptsModule extends ModuleBase {

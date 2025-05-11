@@ -5,4 +5,4 @@ type AttemptEvents = {
 	ATTEMPT_SUBMITTED: [attemptId: string];
 }
 
-export const emitter = new Emitter<AttemptEvents>();
+export const attemptEmitter = new Emitter<AttemptEvents>();
