@@ -1,5 +1,6 @@
 import { number, z } from "zod";
 import { TestDifficulty } from "../enum";
+import { FeedbackProblemsEnum } from "../models/feedback";
 
 export const TestCoreSchema = z.object({
 	id: z.string(),
@@ -64,6 +65,13 @@ export const AnswerCoreSchema = z.object({
 	chosenOption: z.number(),
 });
 
+export const FeedbackCoreSchema = z.object({
+	practiceTestId: z.string(),
+	rating: z.number().min(1).max(10),
+	problems: z.array(z.nativeEnum(FeedbackProblemsEnum)),
+	comment: z.string(),
+});
+
 export type TestCore = z.infer<typeof TestCoreSchema>;
 export type QuestionCore = z.infer<typeof QuestionCoreSchema>;
 export type UserCore = z.infer<typeof UserCoreSchema>;
@@ -71,3 +79,4 @@ export type PracticeTestCore = z.infer<typeof PracticeTestCoreSchema>;
 export type ExamTestCore = z.infer<typeof ExamTestCoreSchema>;
 export type AttemptCore = z.infer<typeof AttemptCoreSchema>;
 export type AnswerCore = z.infer<typeof AnswerCoreSchema>;
+export type FeedbackCore = z.infer<typeof FeedbackCoreSchema>;

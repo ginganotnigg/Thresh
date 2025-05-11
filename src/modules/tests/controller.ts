@@ -8,8 +8,6 @@ import { RandomService } from "../../services/random.service";
 import { queryTest } from "./query/test";
 import { DomainError } from "../../controller/errors/domain.error";
 import { queryTestQuestions } from "./query/test-questions";
-import { commandCreatePractice, CreatePracticeSchema } from "../pratice/command/create-practice";
-import { commandDeletePractice } from "../pratice/command/delete-practice";
 import { queryTestQuestionsNoAnswers } from "./query/test-questions-no-answers";
 import { TestInfoSchema } from "../../domain/schema/info.schema";
 import { QuestionNoAnswerSchema } from "./schema";
@@ -26,7 +24,7 @@ export function controller() {
 			response: GetTestsResponseSchema,
 		}).handle(async data => {
 			return await queryTests(data.query);
-		}).build({ tags: ['Practice'] });
+		}).build({ tags: ['Test'] });
 
 	router.endpoint().get('/tests/challenge-of-the-day')
 		.schema({
@@ -38,7 +36,7 @@ export function controller() {
 			}
 			return await queryTest({ testId });
 		}).build({
-			tags: ['Practice'],
+			tags: ['Test'],
 			summary: 'Get one Test that is the challenge of the day (current is random by day)',
 		});
 
@@ -48,7 +46,7 @@ export function controller() {
 			response: TestInfoSchema,
 		}).handle(async data => {
 			return await queryTest({ testId: data.params.testId });
-		}).build({ tags: ['Practice'] });
+		}).build({ tags: ['Test'] });
 
 	router.endpoint().get('/tests/:testId/questions')
 		.schema({
@@ -57,7 +55,7 @@ export function controller() {
 		}).handle(async data => {
 			return await queryTestQuestions({ testId: data.params.testId });
 		}).build({
-			tags: ['Practice'],
+			tags: ['Test'],
 			summary: 'Return questions with answers.',
 		});
 
@@ -68,7 +66,7 @@ export function controller() {
 		}).handle(async data => {
 			return await queryTestQuestionsNoAnswers({ testId: data.params.testId });
 		}).build({
-			tags: ['Practice'],
+			tags: ['Test'],
 			summary: 'Return questions without answers.',
 		});
 
@@ -82,7 +80,7 @@ export function controller() {
 			return await queryTestAggregate(data.params.testId, data.query);
 		})
 		.build({
-			tags: ['Practice'],
+			tags: ['Test'],
 		})
 
 	router.endpoint().get('/questions/:questionId')
@@ -93,26 +91,7 @@ export function controller() {
 		.handle(async data => {
 			return await queryQuestion({ questionId: data.params.questionId });
 		}).build({
-			tags: ['Practice'],
+			tags: ['Test'],
 			summary: 'Return question (full) by questionId.',
 		});
-
-	router.endpoint().post('/tests')
-		.schema({
-			body: CreatePracticeSchema,
-			response: z.object({
-				id: z.string(),
-			}),
-		}).handle(async data => {
-			return await commandCreatePractice(data.body);
-		}).build({ tags: ['Practice'] });
-
-	router.endpoint().delete('/tests/:testId')
-		.schema({
-			params: TestIdParamsSchema,
-		}).handle(async data => {
-			await commandDeletePractice({ testId: data.params.testId });
-		}).build({ tags: ['Practice'] });
-
-
 }

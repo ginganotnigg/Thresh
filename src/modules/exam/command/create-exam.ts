@@ -15,8 +15,6 @@ const CreateExamSchema = CreateTestSchema.extend({
 export type CreateExamType = z.infer<typeof CreateExamSchema>;
 
 export default async function commandCreateExam(param: CreateExamType): Promise<{ testId: string }> {
-
-
 	const transaction = await sequelize.transaction();
 	try {
 		const duplicateTest = await ExamTest.findOne({

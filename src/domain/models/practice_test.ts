@@ -1,6 +1,7 @@
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import { TestDifficulty } from "../enum";
 import Test from "./test";
+import Feedback from "./feedback";
 
 class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAttributes<PracticeTest>> {
 	declare testId: string;
@@ -13,6 +14,7 @@ class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAtt
 	declare updatedAt: CreationOptional<Date>;
 
 	declare Test?: NonAttribute<Test>;
+	declare Feedback?: NonAttribute<Feedback>;
 
 	declare static associations: {
 		test: Association<PracticeTest, Test>;
@@ -79,6 +81,12 @@ class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAtt
 		PracticeTest.belongsTo(Test, {
 			foreignKey: 'testId',
 		});
+
+		PracticeTest.hasOne(Feedback, {
+			foreignKey: 'practiceTestId',
+			onDelete: 'CASCADE',
+			onUpdate: 'CASCADE',
+		})
 	}
 }
 

@@ -22,7 +22,7 @@ export const CreatePracticeSchema = TestCoreSchema.omit({
 
 export type CreatePractice = z.infer<typeof CreatePracticeSchema>;
 
-export async function commandCreatePractice(params: CreatePractice): Promise<{ id: string }> {
+export async function commandCreatePractice(params: CreatePractice): Promise<{ testId: string }> {
 	const {
 		author,
 		title,
@@ -65,7 +65,7 @@ export async function commandCreatePractice(params: CreatePractice): Promise<{ i
 			...question,
 		})), { transaction });
 		await transaction.commit();
-		return { id: test.get("id") as string };
+		return { testId: test.get("id") as string };
 	} catch (error) {
 		await transaction.rollback();
 		throw error;
