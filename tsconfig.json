@@ -17,6 +17,10 @@
 		"src/**/*.json"
 	],
 	"exclude": [
+		"**/__tests__/**",
+		"**/__test__/**",
+		"**/__specs__/**",
+		"**/__spec__/**",
 		"node_modules",
 		"**/__draft__/**",
 		"**/__drafts__/**",
