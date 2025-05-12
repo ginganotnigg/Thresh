@@ -4,9 +4,9 @@ import queryFind from "./query/find";
 import commandJoin from "./command/join";
 
 export default function controllerExam() {
-	const router = Chuoi.newRoute("/exam");
+	const router = Chuoi.newRoute();
 
-	router.endpoint().get("/find")
+	router.endpoint().get("/exam-test/find")
 		.schema({
 			query: z.object({
 				roomId: z.string(),
@@ -20,7 +20,7 @@ export default function controllerExam() {
 			summary: "Find exam",
 		});
 
-	router.endpoint().post("/join")
+	router.endpoint().post("/exam-test/join")
 		.schema({
 			body: z.object({
 				testId: z.string(),
@@ -35,5 +35,9 @@ export default function controllerExam() {
 				password,
 				candidateId,
 			});
+		})
+		.build({
+			tags: ["Exam"],
+			summary: "Join exam with password (optional)",
 		});
 }

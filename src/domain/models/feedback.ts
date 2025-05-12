@@ -33,7 +33,7 @@ class Feedback extends Model<InferAttributes<Feedback>, InferCreationAttributes<
 				allowNull: false,
 				references: {
 					model: PracticeTest,
-					key: "id",
+					key: "testId",
 				},
 			},
 			rating: {

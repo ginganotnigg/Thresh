@@ -96,11 +96,11 @@ export function attemptController() {
 		.handle(async (data) => {
 			return await commandAnswerAttempt(data.body);
 		}).build({
-			tags: ['Attempts', "Current"],
+			tags: ["Current"],
 			summary: 'Answer question in current attempt',
 		});
 
-	router.endpoint().patch('/current-attempts/answer/')
+	router.endpoint().patch('/current-attempts/submit/')
 		.schema({
 			body: z.object({
 				testId: z.string(),
@@ -110,7 +110,7 @@ export function attemptController() {
 		.handle(async (data) => {
 			return await commandSubmitAttempt(data.body);
 		}).build({
-			tags: ['Attempts', "Current"],
+			tags: ["Current"],
 			summary: 'Submit current attempt',
 		});
 

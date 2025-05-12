@@ -10,6 +10,8 @@ import { UserPipe } from "../controller/pipes/user.pipe";
 import { securityDocument } from "../controller/documents/security";
 import app from "./servers/app";
 import io from "./servers/io";
+import { ExamModule } from "../modules/exam/module";
+import { PracticeModule } from "../modules/pratice/module";
 
 export async function main() {
 	Chuoi.init(app, {
@@ -30,6 +32,8 @@ export async function main() {
 	const modules: ModuleBase[] = [
 		new TestModule(),
 		new AttemptsModule(),
+		new ExamModule(),
+		new PracticeModule(),
 	];
 	for (const m of modules) {
 		await m.initialize();
