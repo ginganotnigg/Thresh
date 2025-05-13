@@ -1,9 +1,5 @@
 import { z } from "zod";
 import { AttemptCoreSchema, ExamTestCoreSchema, FeedbackCoreSchema, PracticeTestCoreSchema, TestCoreSchema } from "./core.schema";
-import { UserCoreSchema } from "../core/proxy/schema";
-
-// Models for client-side usage
-// These models are used to define the structure of the data that is sent to the client
 
 export const TestInfoSchema = TestCoreSchema
 	.extend({
@@ -13,11 +9,9 @@ export const TestInfoSchema = TestCoreSchema
 
 export const AttemptInfoSchema = AttemptCoreSchema
 	.omit({
-		candidateId: true,
 		testId: true,
 	})
 	.extend({
-		candidate: UserCoreSchema,
 		test: TestInfoSchema,
 		createdAt: z.date(),
 		updatedAt: z.date(),

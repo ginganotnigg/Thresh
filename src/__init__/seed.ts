@@ -6,7 +6,6 @@ import examTests from "./data/exam_tests";
 import practiceTests from "./data/practice_tests";
 import questions from "./data/questions";
 import tests from "./data/tests";
-import users from "./data/users";
 
 export async function seed() {
 	try {
@@ -16,7 +15,6 @@ export async function seed() {
 
 		console.log("Seeding database...");
 		const query = sequelize.getQueryInterface();
-		await query.bulkInsert("Users", users, { logging: false });
 		await query.bulkInsert("Tests", tests, { logging: false });
 		await query.bulkInsert("Questions", questions, { logging: false });
 		await query.bulkInsert("Attempts", attempts, { logging: false });

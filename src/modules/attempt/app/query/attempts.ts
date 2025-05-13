@@ -18,7 +18,6 @@ export async function queryAttempts(param: AttemptsQuery): Promise<Paged<Attempt
 				model: Test,
 				include: ["Author"],
 			},
-			"Candidate",
 		],
 		limit: perPage,
 		offset: (page - 1) * perPage,
@@ -37,9 +36,7 @@ export async function queryAttempts(param: AttemptsQuery): Promise<Paged<Attempt
 			...attempt.toJSON(),
 			test: {
 				...attempt.Test!.toJSON(),
-				author: attempt.Test!.Author!.toJSON(),
 			},
-			candidate: attempt.Candidate!.toJSON(),
 		})),
 	}
 

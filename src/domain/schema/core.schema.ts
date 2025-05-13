@@ -1,6 +1,7 @@
 import { number, z } from "zod";
 import { TestDifficulty } from "../enum";
 import { FeedbackProblemsEnum } from "../models/feedback";
+import { PagedSchema } from "../../controller/schemas/base";
 
 export const TestCoreSchema = z.object({
 	id: z.string(),
@@ -65,6 +66,21 @@ export const FeedbackCoreSchema = z.object({
 	comment: z.string(),
 });
 
+export const TemplateCoreSchema = z.object({
+	id: z.string(),
+	userId: z.string(),
+	name: z.string(),
+	title: z.string(),
+	description: z.string(),
+	difficulty: z.string(),
+	tags: z.array(z.string()),
+	numberOfQuestions: z.number(),
+	numberOfOptions: z.number(),
+	outlines: z.array(z.string()),
+	createdAt: z.date(),
+	updatedAt: z.date(),
+});
+
 export type TestCore = z.infer<typeof TestCoreSchema>;
 export type QuestionCore = z.infer<typeof QuestionCoreSchema>;
 export type PracticeTestCore = z.infer<typeof PracticeTestCoreSchema>;
@@ -72,3 +88,4 @@ export type ExamTestCore = z.infer<typeof ExamTestCoreSchema>;
 export type AttemptCore = z.infer<typeof AttemptCoreSchema>;
 export type AnswerCore = z.infer<typeof AnswerCoreSchema>;
 export type FeedbackCore = z.infer<typeof FeedbackCoreSchema>;
+export type TemplateCore = z.infer<typeof TemplateCoreSchema>;

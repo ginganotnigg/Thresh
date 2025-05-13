@@ -7,7 +7,6 @@ import AttemptsAnswerQuestions from "../../../domain/models/attempts_answer_ques
 import Question from "../../../domain/models/question";
 import PracticeTest from "../../../domain/models/practice_test";
 import ExamTest from "../../../domain/models/exam_test";
-import User from "../../../domain/models/user";
 import Feedback from "../../../domain/models/feedback";
 import Template from "../../../domain/models/template";
 
@@ -31,7 +30,6 @@ const sequelize = new Sequelize(
 
 // Define associations
 function configSequelize(sequelize: Sequelize) {
-	User.initModel(sequelize);
 	Test.initModel(sequelize);
 	Question.initModel(sequelize);
 	Attempt.initModel(sequelize);
@@ -41,7 +39,6 @@ function configSequelize(sequelize: Sequelize) {
 	Template.initModel(sequelize);
 	Feedback.initModel(sequelize);
 
-	User.associate();
 	Test.associate();
 	Question.associate();
 	Attempt.associate();

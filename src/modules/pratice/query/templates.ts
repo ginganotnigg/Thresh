@@ -2,31 +2,19 @@ import { z } from "zod";
 import { PagedSchema, PagingSchema } from "../../../controller/schemas/base";
 import Template from "../../../domain/models/template";
 import { Op } from "sequelize";
+import { TemplateCoreSchema } from "../../../domain/schema/core.schema";
 
-export const QueryTemplatesParamSchema = z.object({
+export const GetTemplatesQuerySchema = z.object({
 	searchName: z.string().optional(),
 }).merge(PagingSchema);
 
-export type QueryTemplatesParam = z.infer<typeof QueryTemplatesParamSchema>;
+export type GetTemplateQuery = z.infer<typeof GetTemplatesQuerySchema>;
 
-export const QueryTemplatesResponseSchema = PagedSchema(z.object({
-	id: z.string(),
-	userId: z.string(),
-	name: z.string(),
-	title: z.string(),
-	description: z.string(),
-	difficulty: z.string(),
-	tags: z.array(z.string()),
-	numberOfQuestions: z.number(),
-	numberOfOptions: z.number(),
-	outlines: z.array(z.string()),
-	createdAt: z.date(),
-	updatedAt: z.date(),
-}));
+export const GetTemplatesResponseSchema = PagedSchema(TemplateCoreSchema);
 
-export type QueryTemplatesResponse = z.infer<typeof QueryTemplatesResponseSchema>;
+export type GetTemplatesResponse = z.infer<typeof GetTemplatesResponseSchema>;
 
-export default async function queryTemplates(params: QueryTemplatesParam): Promise<QueryTemplatesResponse> {
+export default async function queryTemplates(params: GetTemplateQuery): Promise<GetTemplatesResponse> {
 	const { searchName, page, perPage } = params;
 	const { count, rows: templates } = await Template.findAndCountAll({
 		where: {

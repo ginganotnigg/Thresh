@@ -10,7 +10,6 @@ export async function queryAttempt(id: string): Promise<AttemptInfo> {
 				model: Test,
 				include: ["Author"],
 			},
-			"Candidate",
 		]
 	});
 
@@ -22,8 +21,6 @@ export async function queryAttempt(id: string): Promise<AttemptInfo> {
 		...attempt.toJSON(),
 		test: {
 			...attempt.Test!.toJSON(),
-			author: attempt.Test!.Author!.toJSON(),
 		},
-		candidate: attempt.Candidate!.toJSON(),
 	};
 }

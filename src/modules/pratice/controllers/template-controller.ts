@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { Chuoi } from "../../../library/caychuoijs";
-import queryTemplates, { QueryTemplatesParamSchema, QueryTemplatesResponseSchema } from "../query/templates";
+import queryTemplates, { GetTemplatesResponseSchema, GetTemplatesQuerySchema } from "../query/templates";
+import { TemplateCoreSchema } from "../../../domain/schema/core.schema";
 import { commandCreateTemplate, CreateTemplateSchema } from "../command/templates/create-template";
 import { commandDeleteTemplate } from "../command/templates/delete-template";
 import { commandUpdateTemplate, UpdateTemplateSchema } from "../command/templates/update-template";
@@ -10,8 +11,8 @@ export default function controllerTemplate() {
 
 	router.endpoint().get('/templates')
 		.schema({
-			query: QueryTemplatesParamSchema,
-			response: QueryTemplatesResponseSchema,
+			query: GetTemplatesQuerySchema,
+			response: GetTemplatesResponseSchema,
 		})
 		.handle(async data => {
 			return await queryTemplates(data.query);
