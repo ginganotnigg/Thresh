@@ -1,17 +1,12 @@
 import { sortBy } from "../../../controller/schemas/base";
 import Test from "../../../domain/models/test";
 import { Op } from "sequelize";
-import User from "../../../domain/models/user";
-import { GetTestsQuery, GetTestsResponse } from "../schema";
+import { GetPracticeTestsQuery, GetPracticeTestsResponse } from "../schema";
+import PracticeTest from "../../../domain/models/practice_test";
+import Feedback from "../../../domain/models/feedback";
 
-export async function queryTests(param: GetTestsQuery): Promise<GetTestsResponse> {
+export async function queryPracticeTests(param: GetPracticeTestsQuery): Promise<GetPracticeTestsResponse> {
 	const { authorId, page, perPage, searchTitle, sort } = param;
-	if (authorId) {
-		const author = await User.findByPk(authorId);
-		if (!author) {
-			throw new Error(`User with ID ${authorId} not found`);
-		}
-	}
 	const tests = await Test.findAndCountAll({
 		where: {
 			...(authorId && {
@@ -22,10 +17,15 @@ export async function queryTests(param: GetTestsQuery): Promise<GetTestsResponse
 					[Op.like]: `%${searchTitle}%`,
 				},
 			}),
+			mode: "practice",
 		},
 		include: [{
-			model: User,
-			as: 'Author',
+			model: PracticeTest,
+			required: true,
+			include: [{
+				model: Feedback,
+				required: false,
+			}],
 		}],
 		order: sort.map((s) => {
 			const { field, order } = sortBy(s);
@@ -41,11 +41,8 @@ export async function queryTests(param: GetTestsQuery): Promise<GetTestsResponse
 		totalPages: Math.ceil(tests.count / perPage),
 		data: tests.rows.map((test) => ({
 			...test.toJSON(),
-			author: {
-				id: test.Author!.id,
-				name: test.Author!.name,
-				avatar: test.Author?.avatar ?? undefined,
-			},
+			...test.PracticeTest!.toJSON(),
+			feedback: test.PracticeTest?.Feedback,
 		})),
 	}
 }

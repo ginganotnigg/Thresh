@@ -21,14 +21,7 @@ export const QuestionCoreSchema = z.object({
 	correctOption: z.number(),
 });
 
-export const UserCoreSchema = z.object({
-	id: z.string(),
-	name: z.string(),
-	avatar: z.string().optional(),
-});
-
 export const PracticeTestCoreSchema = z.object({
-	id: z.number(),
 	testId: z.string(),
 	difficulty: z.nativeEnum(TestDifficulty),
 	tags: z.array(z.string()),
@@ -74,7 +67,6 @@ export const FeedbackCoreSchema = z.object({
 
 export type TestCore = z.infer<typeof TestCoreSchema>;
 export type QuestionCore = z.infer<typeof QuestionCoreSchema>;
-export type UserCore = z.infer<typeof UserCoreSchema>;
 export type PracticeTestCore = z.infer<typeof PracticeTestCoreSchema>;
 export type ExamTestCore = z.infer<typeof ExamTestCoreSchema>;
 export type AttemptCore = z.infer<typeof AttemptCoreSchema>;

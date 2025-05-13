@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { PagedSchema, PagingSchema } from "../../../controller/schemas/base";
-import PromptTemplate from "../../../domain/models/prompt_template";
+import Template from "../../../domain/models/template";
 import { Op } from "sequelize";
 
 export const QueryTemplatesParamSchema = z.object({
@@ -11,6 +11,7 @@ export type QueryTemplatesParam = z.infer<typeof QueryTemplatesParamSchema>;
 
 export const QueryTemplatesResponseSchema = PagedSchema(z.object({
 	id: z.string(),
+	userId: z.string(),
 	name: z.string(),
 	title: z.string(),
 	description: z.string(),
@@ -19,19 +20,21 @@ export const QueryTemplatesResponseSchema = PagedSchema(z.object({
 	numberOfQuestions: z.number(),
 	numberOfOptions: z.number(),
 	outlines: z.array(z.string()),
+	createdAt: z.date(),
+	updatedAt: z.date(),
 }));
 
 export type QueryTemplatesResponse = z.infer<typeof QueryTemplatesResponseSchema>;
 
 export default async function queryTemplates(params: QueryTemplatesParam): Promise<QueryTemplatesResponse> {
 	const { searchName, page, perPage } = params;
-	const { count, rows: templates } = await PromptTemplate.findAndCountAll({
+	const { count, rows: templates } = await Template.findAndCountAll({
 		where: {
-			...(searchName ? {
+			...(searchName && {
 				name: {
 					[Op.like]: `%${searchName}%`,
 				},
-			} : {}),
+			}),
 		},
 		limit: perPage,
 		offset: (page - 1) * perPage,

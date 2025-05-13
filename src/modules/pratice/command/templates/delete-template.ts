@@ -1,6 +1,6 @@
 import { z } from "zod";
 import sequelize from "../../../../configs/orm/sequelize/sequelize";
-import PromptTemplate from "../../../../domain/models/prompt_template";
+import Template from "../../../../domain/models/template";
 import { DomainError } from "../../../../controller/errors/domain.error";
 
 export const DeleteTemplateSchema = z.object({
@@ -14,7 +14,7 @@ export async function commandDeleteTemplate(params: DeleteTemplate): Promise<{ s
 
 	const transaction = await sequelize.transaction();
 	try {
-		const template = await PromptTemplate.findByPk(id, { transaction });
+		const template = await Template.findByPk(id, { transaction });
 
 		if (!template) {
 			await transaction.rollback();

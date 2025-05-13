@@ -1,0 +1,282 @@
+syntax = "proto3";
+
+package bulbasaur;
+
+option go_package = "bulbasaur/api;bulbasaur";
+
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+
+service Bulbasaur {
+  rpc SignUp (SignUpRequest) returns (SignUpResponse) {
+    option (google.api.http) = {
+      post: "/bulbasaur/register"
+      body: "*"
+    };
+  };
+
+  rpc SignIn (SignInRequest) returns (SignInResponse) {
+    option (google.api.http) = {
+      post: "/bulbasaur/login"
+      body: "*"
+    };
+  };
+
+  rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse) {
+    option (google.api.http) = {
+      post: "/bulbasaur/refresh"
+      body: "*"
+    };
+  };
+
+  rpc ListUsers (ListUsersRequest) returns (ListUsersResponse) {
+    option (google.api.http) = {
+      post: "/bulbasaur/list"
+      body: "*"
+    };
+  };
+
+  rpc FindUserByMetadata (FindUserByMetadataRequest) returns (FindUserByMetadataResponse) {
+    option (google.api.http) = {
+      post: "/bulbasaur/find"
+      body: "*"
+    };
+  };
+
+  rpc EmailVerification (EmailVerificationRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/bulbasaur/verify/email"
+      body: "*"
+    };
+  };
+
+  rpc ResetCodeVerification (ResetCodeVerificationRequest) returns (ResetCodeVerificationResponse) {
+    option (google.api.http) = {
+      post: "/bulbasaur/verify/resetcode"
+      body: "*"
+    };
+  };
+
+  rpc GenerateResetCode (GenerateResetCodeRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/bulbasaur/generate/resetcode"
+      body: "*"
+    };
+  };
+
+  rpc ResetPassword (ResetPasswordRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/bulbasaur/resetpassword"
+      body: "*"
+    };
+  };
+}
+
+service Ivysaur {
+  rpc UpdateMetadata (UpdateMetadataRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/ivysaur/update"
+      body: "*"
+    };
+  };
+
+  rpc Me (google.protobuf.Empty) returns (MeResponse) {
+    option (google.api.http) = {
+      get: "/ivysaur/me"
+    };
+  };
+
+  rpc ChangePassword (ChangePasswordRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/ivysaur/changepassword"
+      body: "*"
+    };
+  };
+
+  rpc LogOut (google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      get: "/ivysaur/logout"
+    };
+  };
+}
+
+service Venusaur {
+  rpc FindUserByName (FindUserByNameRequest) returns (FindUserByNameResponse) {
+    option (google.api.http) = {
+      post: "/venusaur/finduserbyname"
+      body: "*"
+    };
+  };
+}
+
+//======================================== ENUM =======================================
+
+enum TokenType {
+  TOKEN_TYPE_UNKNOWN = 0;
+  TOKEN_TYPE_ACCESS_TOKEN = 1;
+  TOKEN_TYPE_REFRESH_TOKEN = 2;
+}
+
+enum Role {
+  ROLE_UNKNOWN = 0;
+  ROLE_CANDIDATE = 1;
+  ROLE_BUSINESS_MANAGER = 2; 
+}
+
+//======================================== MESSAGE ========================================
+
+message TokenInfo {
+  string safe_id = 1;
+  string refresh_token = 2;
+  string access_token = 3;
+  Role role = 4;
+  uint64 user_id = 5;
+}
+
+message User {
+  string username = 1;
+  string email = 2;
+  Role role = 3;
+  uint64 id = 4;
+  optional metadata metadata = 5;
+}
+
+message MeResponse{
+  User user = 1;
+}
+
+message ListUsersRequest {
+  repeated uint64 user_ids = 1;
+}
+
+message ListUsersResponse {
+  repeated User users = 1;
+}
+
+message SignUpRequest {
+  oneof credential {
+      Local local = 1;
+      Google google = 2;
+  }
+  optional string device_id = 3;
+  optional string device_name = 4;
+  Role role = 5;
+  metadata metadata = 6;
+
+  message Local {
+      string username = 1;
+      string password = 2;
+      string confirm_password = 3;
+      string email = 4;
+      string otp = 9;
+  }
+
+  message Google {
+      string credential = 1;
+  }
+}
+
+message SignUpResponse {
+  User user = 1;
+  TokenInfo token_info = 2;
+}
+
+message SignInRequest {
+  oneof credential {
+      Local local = 1;
+      Google google = 2;
+  }
+  optional string device_id = 3;
+  optional string device_name = 4;
+
+  message Local {
+      string email = 1;
+      string password = 2;
+  }
+
+  message Google {
+      string credential = 1;
+  }
+}
+
+message SignInResponse {
+  User user = 1;
+  TokenInfo token_info = 2;
+}
+
+message RefreshTokenRequest {
+  TokenInfo token_info = 1;
+}
+
+message RefreshTokenResponse {
+  TokenInfo token_info = 1;
+}
+
+message UpdateMetadataRequest {
+  metadata metadata = 1;
+}
+
+message EmailVerificationRequest {
+  string email = 1;
+}
+
+message ResetCodeVerificationRequest {
+  string resetCode = 1;
+}
+
+message ResetCodeVerificationResponse {
+  string email = 1;
+}
+
+message GenerateResetCodeRequest {
+  string email = 1;
+}
+
+message ResetPasswordRequest {
+  string email = 1;
+  string resetCode = 2;
+  string newPassword = 3;
+}
+
+message metadata {
+  optional string fullname = 1;
+  optional string company = 2;
+  optional string country = 3;
+  optional string jobTitle = 4; 
+  optional string avatarPath = 5;
+  optional string gender = 6;
+  optional string birthday = 7;
+  optional string summary = 8;
+  optional string website = 9;
+  optional string linkedIn = 10;
+  optional string education = 11;
+}
+
+message ChangePasswordRequest {
+  string oldPassword = 1;
+  string newPassword = 2;
+  string confirmNewPassword = 3;
+}
+
+message FindUserByNameRequest {
+  string name = 1;
+  repeated Role roles = 2;
+}
+
+message FindUserByNameResponse {
+  repeated uint64 ids = 1;
+}
+
+message FindUserByMetadataRequest {
+  oneof metadata {
+    string name = 1;
+    string company = 2;
+    string country = 3;
+    string jobTitle = 4;
+  }
+  repeated Role roles = 5;
+}
+
+message FindUserByMetadataResponse {
+  repeated uint64 ids = 1;
+}

@@ -28,7 +28,7 @@ export default async function commandCreateExam(param: CreateExamType): Promise<
 		const { testId } = await TestRepo.createTest({
 			test: param.test,
 			questions: param.questions,
-		})
+		}, transaction);
 
 		await ExamTest.create({
 			...param.exam,

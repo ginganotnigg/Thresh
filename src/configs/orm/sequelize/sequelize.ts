@@ -9,6 +9,7 @@ import PracticeTest from "../../../domain/models/practice_test";
 import ExamTest from "../../../domain/models/exam_test";
 import User from "../../../domain/models/user";
 import Feedback from "../../../domain/models/feedback";
+import Template from "../../../domain/models/template";
 
 const sequelize = new Sequelize(
 	env.db.database,
@@ -37,6 +38,7 @@ function configSequelize(sequelize: Sequelize) {
 	AttemptsAnswerQuestions.initModel(sequelize);
 	PracticeTest.initModel(sequelize);
 	ExamTest.initModel(sequelize);
+	Template.initModel(sequelize);
 	Feedback.initModel(sequelize);
 
 	User.associate();
@@ -46,6 +48,7 @@ function configSequelize(sequelize: Sequelize) {
 	AttemptsAnswerQuestions.associate();
 	PracticeTest.associate();
 	ExamTest.associate();
+	Template.associate();
 	Feedback.associate();
 }
 

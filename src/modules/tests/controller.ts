@@ -1,11 +1,9 @@
 import { z } from "zod";
 import { Chuoi } from "../../library/caychuoijs";
 import { QuestionIdParamsSchema, TestIdParamsSchema } from "../../controller/schemas/params";
-import { queryTests } from "./query/tests";
 import { GetTestsResponseSchema, TestAggregateQuerySchema, TestAggregateResponseSchema } from "./schema";
 import { GetTestsQuerySchema } from "./schema";
 import { RandomService } from "../../services/random.service";
-import { queryTest } from "./query/test";
 import { DomainError } from "../../controller/errors/domain.error";
 import { queryTestQuestions } from "./query/test-questions";
 import { queryTestQuestionsNoAnswers } from "./query/test-questions-no-answers";
@@ -17,36 +15,6 @@ import { queryQuestion } from "./query/question";
 
 export function controller() {
 	const router = Chuoi.newRoute();
-
-	router.endpoint().get('/tests')
-		.schema({
-			query: GetTestsQuerySchema,
-			response: GetTestsResponseSchema,
-		}).handle(async data => {
-			return await queryTests(data.query);
-		}).build({ tags: ['Test'] });
-
-	router.endpoint().get('/tests/challenge-of-the-day')
-		.schema({
-			response: TestInfoSchema,
-		}).handle(async () => {
-			const testId = RandomService.getTodayRandomTestId();
-			if (!testId) {
-				throw new DomainError("No test found for today");
-			}
-			return await queryTest({ testId });
-		}).build({
-			tags: ['Test'],
-			summary: 'Get one Test that is the challenge of the day (current is random by day)',
-		});
-
-	router.endpoint().get('/tests/:testId')
-		.schema({
-			params: TestIdParamsSchema,
-			response: TestInfoSchema,
-		}).handle(async data => {
-			return await queryTest({ testId: data.params.testId });
-		}).build({ tags: ['Test'] });
 
 	router.endpoint().get('/tests/:testId/questions')
 		.schema({

@@ -19,10 +19,16 @@
 	"license": "ISC",
 	"dependencies": {
 		"@asteasolutions/zod-to-openapi": "^7.3.0",
+		"@bufbuild/protobuf": "^2.4.0",
+		"@connectrpc/connect": "^2.0.2",
+		"@connectrpc/connect-node": "^2.0.2",
+		"@grpc/grpc-js": "^1.13.3",
+		"@grpc/proto-loader": "^0.7.15",
 		"@openapi-contrib/json-schema-to-openapi-schema": "^3.0.3",
 		"@socket.io/admin-ui": "^0.5.1",
 		"@types/cls-hooked": "^4.3.9",
 		"@types/sequelize": "^4.28.20",
+		"axios": "^1.9.0",
 		"class-transformer": "^0.5.1",
 		"class-validator": "^0.14.1",
 		"class-validator-jsonschema": "^5.0.1",
@@ -50,6 +56,8 @@
 		"zod-to-json-schema": "^3.24.3"
 	},
 	"devDependencies": {
+		"@bufbuild/buf": "^1.53.0",
+		"@bufbuild/protoc-gen-es": "^2.4.0",
 		"@types/express": "^5.0.0",
 		"@types/jest": "^29.5.14",
 		"@types/node-schedule": "^2.1.7",

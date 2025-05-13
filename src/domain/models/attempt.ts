@@ -1,7 +1,6 @@
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
 import AttemptsAnswerQuestions from "./attempts_answer_questions";
-import User from "./user";
 
 class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<Attempt>> {
 	declare id: CreationOptional<string>;
@@ -16,12 +15,10 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 
 	declare Attempts_answer_Questions?: NonAttribute<AttemptsAnswerQuestions[]>;
 	declare Test?: NonAttribute<Test>;
-	declare Candidate?: NonAttribute<User>;
 
 	declare static associations: {
 		Attempts_answer_Questions: Association<Attempt, AttemptsAnswerQuestions>;
 		Test: Association<Attempt, Test>;
-		Candidate: Association<Attempt, User>;
 	}
 
 	static initModel(sequelize: Sequelize) {
@@ -43,12 +40,8 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 				},
 			},
 			candidateId: {
-				type: DataTypes.UUID,
+				type: DataTypes.STRING,
 				allowNull: false,
-				references: {
-					model: User,
-					key: "id",
-				},
 			},
 			hasEnded: {
 				type: DataTypes.BOOLEAN,
@@ -83,10 +76,6 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 		});
 		Attempt.belongsTo(Test, {
 			foreignKey: "testId",
-		});
-		Attempt.belongsTo(User, {
-			foreignKey: "candidateId",
-			as: "Candidate",
 		});
 	}
 }

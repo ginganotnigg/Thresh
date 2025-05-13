@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TestCoreSchema, QuestionCoreSchema, ExamTestCoreSchema } from "./core.schema";
+import { TestCoreSchema, QuestionCoreSchema } from "./core.schema";
 
 
 export const CreateTestSchema = z.object({

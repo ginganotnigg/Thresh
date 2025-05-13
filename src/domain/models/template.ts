@@ -1,7 +1,8 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, Sequelize } from "sequelize";
 
-class PromptTemplate extends Model<InferAttributes<PromptTemplate>, InferCreationAttributes<PromptTemplate>> {
+class Template extends Model<InferAttributes<Template>, InferCreationAttributes<Template>> {
 	declare id: CreationOptional<string>;
+	declare userId: string;
 	declare name: string;
 	declare title: string;
 	declare description: string;
@@ -14,11 +15,15 @@ class PromptTemplate extends Model<InferAttributes<PromptTemplate>, InferCreatio
 	declare updatedAt: CreationOptional<Date>;
 
 	static initModel(sequelize: Sequelize) {
-		PromptTemplate.init({
+		Template.init({
 			id: {
 				type: DataTypes.UUID,
 				defaultValue: DataTypes.UUIDV4,
 				primaryKey: true,
+			},
+			userId: {
+				type: DataTypes.STRING,
+				allowNull: false,
 			},
 			name: {
 				type: DataTypes.STRING,
@@ -37,7 +42,7 @@ class PromptTemplate extends Model<InferAttributes<PromptTemplate>, InferCreatio
 				allowNull: false,
 			},
 			tags: {
-				type: DataTypes.ARRAY(DataTypes.STRING),
+				type: DataTypes.JSON,
 				allowNull: false,
 				defaultValue: [],
 			},
@@ -50,7 +55,7 @@ class PromptTemplate extends Model<InferAttributes<PromptTemplate>, InferCreatio
 				allowNull: false,
 			},
 			outlines: {
-				type: DataTypes.ARRAY(DataTypes.TEXT),
+				type: DataTypes.JSON,
 				allowNull: false,
 				defaultValue: [],
 			},
@@ -58,8 +63,8 @@ class PromptTemplate extends Model<InferAttributes<PromptTemplate>, InferCreatio
 			updatedAt: DataTypes.DATE,
 		}, {
 			sequelize,
-			tableName: "PromptTemplates",
-			modelName: "PromptTemplate",
+			tableName: "Templates",
+			modelName: "Template",
 		});
 	}
 
@@ -68,4 +73,4 @@ class PromptTemplate extends Model<InferAttributes<PromptTemplate>, InferCreatio
 	}
 }
 
-export default PromptTemplate;
+export default Template;

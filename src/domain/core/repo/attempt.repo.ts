@@ -3,7 +3,6 @@ import { DomainError } from "../../../controller/errors/domain.error";
 import Attempt from "../../models/attempt";
 import AttemptsAnswerQuestions from "../../models/attempts_answer_questions";
 import Test from "../../models/test";
-import User from "../../models/user";
 import { AttemptCore } from "../../schema/core.schema";
 import { AttemptId } from "../../schema/id.schema";
 import { attemptEmitter } from "../../../modules/attempt/init/emitter";
@@ -19,11 +18,6 @@ export class AttemptRepo {
 			const test = await Test.findByPk(testId, { transaction });
 			if (!test) {
 				throw new DomainError("Test not found");
-			}
-
-			const candidate = await User.findByPk(candidateId, { transaction });
-			if (!candidate) {
-				throw new DomainError("Candidate not found");
 			}
 
 			const currentAttempt = await Attempt.findOne({
@@ -64,10 +58,6 @@ export class AttemptRepo {
 	}
 
 	static async loadCurrentAttempt(testId: string, candidateId: string): Promise<AttemptCore | null> {
-		const candidate = await User.findByPk(candidateId);
-		if (!candidate) {
-			throw new DomainError("Candidate not found");
-		}
 		const test = await Test.findByPk(testId);
 		if (!test) {
 			throw new DomainError("Test not found");

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import sequelize from "../../../../configs/orm/sequelize/sequelize";
-import PromptTemplate from "../../../../domain/models/prompt_template";
+import Template from "../../../../domain/models/template";
 
 export const CreateTemplateSchema = z.object({
 	name: z.string(),
@@ -29,7 +29,7 @@ export async function commandCreateTemplate(params: CreateTemplate): Promise<voi
 
 	const transaction = await sequelize.transaction();
 	try {
-		const promptTemplate = await PromptTemplate.create({
+		const promptTemplate = await Template.create({
 			name,
 			title,
 			description,
