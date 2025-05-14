@@ -3,25 +3,35 @@ import PracticeTest from "../../../../domain/models/practice_test";
 import Test from "../../../../domain/models/test";
 import Question from "../../../../domain/models/question";
 import { TestId } from "../../../../domain/schema/id.schema";
+import { DomainError } from "../../../../controller/errors/domain.error";
 
-export async function commandDeletePractice(params: TestId): Promise<void> {
-	const { testId: id } = params;
+export async function commandDeletePractice(authorId: string, testId: string): Promise<void> {
 	const transaction = await sequelize.transaction();
 
 	try {
 		// Find the practice test by test ID
 		const practiceTest = await PracticeTest.findOne({
-			where: { testId: id },
+			where: {
+				testId,
+			},
+			include: [{
+				model: Test,
+				required: true,
+			}],
 			transaction
 		});
 
 		if (!practiceTest) {
-			throw new Error(`Practice test with ID ${id} not found`);
+			throw new DomainError(`Practice test with ID ${testId} not found`);
+		}
+
+		if (practiceTest.Test!.authorId !== authorId) {
+			throw new DomainError(`Test with ID ${testId} does not belong to author with ID ${authorId}`);
 		}
 
 		// Delete associated questions
 		await Question.destroy({
-			where: { testId: id },
+			where: { testId: testId },
 			transaction
 		});
 
@@ -30,7 +40,7 @@ export async function commandDeletePractice(params: TestId): Promise<void> {
 
 		// Delete the base test
 		await Test.destroy({
-			where: { id },
+			where: { id: testId },
 			transaction
 		});
 

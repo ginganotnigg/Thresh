@@ -33,8 +33,8 @@ export const PracticeTestCoreSchema = z.object({
 
 export const ExamTestCoreSchema = z.object({
 	testId: z.string(),
+	hasPassword: z.boolean(),
 	roomId: z.string(),
-	password: z.string().nullable(),
 	numberOfAttemptsAllowed: z.number().int().positive(),
 	isAnswerVisible: z.boolean(),
 	isAllowedToSeeOtherResults: z.boolean(),
@@ -49,6 +49,7 @@ export const AttemptCoreSchema = z.object({
 	candidateId: z.string(),
 	hasEnded: z.boolean(),
 	secondsSpent: z.number().int().nonnegative(),
+	score: z.number().int().nonnegative(),
 	createdAt: z.date(),
 	updatedAt: z.date(),
 });

@@ -5,6 +5,7 @@ import { TestRepo } from "../../../domain/core/repo/test.repo";
 import { CreateTestSchema } from "../../../domain/schema/create.schema";
 import { ExamTestCoreSchema } from "../../../domain/schema/core.schema";
 import { z } from "zod";
+import { Op } from "sequelize";
 
 const CreateExamSchema = CreateTestSchema.extend({
 	exam: ExamTestCoreSchema.omit({
@@ -17,9 +18,16 @@ export type CreateExamType = z.infer<typeof CreateExamSchema>;
 export default async function commandCreateExam(param: CreateExamType): Promise<{ testId: string }> {
 	const transaction = await sequelize.transaction();
 	try {
+		const now = new Date();
 		const duplicateTest = await ExamTest.findOne({
 			where: {
 				roomId: param.exam.roomId,
+				openDate: {
+					[Op.lte]: now,
+				},
+				closeDate: {
+					[Op.gte]: now,
+				},
 			},
 		});
 		if (duplicateTest) {

@@ -1,0 +1,21 @@
+{
+	"camelCase": false,
+	"dateParser": "timestamp",
+	"defaultSchemas": [],
+	"dialect": "mysql",
+	"domains": true,
+	"envFile": ".env.development",
+	"excludePattern": null,
+	"includePattern": null,
+	"logLevel": "warn",
+	"numericParser": "string",
+	"outFile": "./src/configs/orm/kysely/generated.ts",
+	"overrides": {},
+	"partitions": false,
+	"print": false,
+	"runtimeEnums": false,
+	"singularize": false,
+	"typeOnlyImports": true,
+	"url": "env(DATABASE_URL)",
+	"verify": false
+}

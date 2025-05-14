@@ -13,11 +13,15 @@ export const CreatePracticeSchema = CreateTestSchema.extend({
 
 export type CreatePractice = z.infer<typeof CreatePracticeSchema>;
 
-export async function commandCreatePractice(params: CreatePractice): Promise<{ testId: string }> {
+export async function commandCreatePractice(authorId: string, params: CreatePractice): Promise<{ testId: string }> {
 	const transaction = await sequelize.transaction();
 	try {
 		const { testId } = await TestRepo.createTest({
-			test: params.test,
+			test: {
+				...params.test,
+				authorId,
+				mode: "practice",
+			},
 			questions: params.questions,
 		}, transaction);
 		await PracticeTest.create({

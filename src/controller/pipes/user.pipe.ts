@@ -4,6 +4,7 @@ import { Request } from "express";
 
 export class UserPipe extends ChuoiPipeBase<{ userId: string }> {
 	extract(req: Request): { userId: string } {
+
 		const userId = req.headers['x-user-id'] as string;
 		return { userId };
 	}

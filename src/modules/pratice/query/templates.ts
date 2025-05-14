@@ -14,10 +14,11 @@ export const GetTemplatesResponseSchema = PagedSchema(TemplateCoreSchema);
 
 export type GetTemplatesResponse = z.infer<typeof GetTemplatesResponseSchema>;
 
-export default async function queryTemplates(params: GetTemplateQuery): Promise<GetTemplatesResponse> {
+export default async function queryTemplates(userId: string, params: GetTemplateQuery): Promise<GetTemplatesResponse> {
 	const { searchName, page, perPage } = params;
 	const { count, rows: templates } = await Template.findAndCountAll({
 		where: {
+			userId,
 			...(searchName && {
 				name: {
 					[Op.like]: `%${searchName}%`,

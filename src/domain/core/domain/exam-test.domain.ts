@@ -8,6 +8,7 @@ export class ExamTestDomain {
 	private constructor(
 		private readonly candidateId: string,
 		private readonly examTest: ExamTestCore,
+		private readonly password: string | null = null,
 		private readonly currentAttempt: AttemptCore | null = null,
 		private readonly numberOfPreviousAttempts: number = 0,
 	) { }
@@ -26,7 +27,11 @@ export class ExamTestDomain {
 		const attempt = await AttemptRepo.loadCurrentAttempt(examTest.testId, candidateId);
 		return new ExamTestDomain(
 			candidateId,
-			examTest.get(),
+			{
+				...examTest.get(),
+				hasPassword: examTest.password != null,
+			},
+			examTest.password,
 			attempt,
 			attempt ? attempt.order : 0
 		);
@@ -51,7 +56,7 @@ export class ExamTestDomain {
 			this.numberOfPreviousAttempts >= this.examTest.numberOfAttemptsAllowed) {
 			throw new DomainError("Candidate has reached the maximum number of attempts allowed");
 		}
-		if (this.examTest.password != null && this.examTest.password !== password) {
+		if (this.password != null && this.password !== password) {
 			throw new DomainError("Invalid password");
 		}
 		await AttemptRepo.createAttempt({

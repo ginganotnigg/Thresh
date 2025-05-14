@@ -5,17 +5,32 @@ import { TemplateCoreSchema } from "../../../domain/schema/core.schema";
 import { commandCreateTemplate, CreateTemplateSchema } from "../command/templates/create-template";
 import { commandDeleteTemplate } from "../command/templates/delete-template";
 import { commandUpdateTemplate, UpdateTemplateSchema } from "../command/templates/update-template";
+import { CredentialsMetaSchema } from "../../../controller/schemas/meta";
+import queryTemplate from "../query/template";
 
 export default function controllerTemplate() {
 	const router = Chuoi.newRoute();
 
 	router.endpoint().get('/templates')
 		.schema({
+			meta: CredentialsMetaSchema,
 			query: GetTemplatesQuerySchema,
 			response: GetTemplatesResponseSchema,
 		})
 		.handle(async data => {
-			return await queryTemplates(data.query);
+			return await queryTemplates(data.meta.userId, data.query);
+		}).build({ tags: ['Template'] });
+
+	router.endpoint().get('/templates/:templateId')
+		.schema({
+			meta: CredentialsMetaSchema,
+			params: z.object({
+				templateId: z.string(),
+			}),
+			response: TemplateCoreSchema,
+		})
+		.handle(async data => {
+			return await queryTemplate(data.meta.userId, data.params.templateId);
 		}).build({ tags: ['Template'] });
 
 	router.endpoint().post('/templates')

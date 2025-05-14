@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { ExamTestDomain } from "../../../domain/core/domain/exam-test.domain";
 
 export default async function commandJoin({

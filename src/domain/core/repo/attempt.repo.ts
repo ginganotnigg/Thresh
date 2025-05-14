@@ -5,7 +5,7 @@ import AttemptsAnswerQuestions from "../../models/attempts_answer_questions";
 import Test from "../../models/test";
 import { AttemptCore } from "../../schema/core.schema";
 import { AttemptId } from "../../schema/id.schema";
-import { attemptEmitter } from "../../../modules/attempt/init/emitter";
+import { attemptEmitter } from "../../../modules/attempts/init/emitter";
 
 export class AttemptRepo {
 	static async createAttempt(params: {

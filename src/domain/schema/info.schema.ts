@@ -12,7 +12,6 @@ export const AttemptInfoSchema = AttemptCoreSchema
 		testId: true,
 	})
 	.extend({
-		test: TestInfoSchema,
 		createdAt: z.date(),
 		updatedAt: z.date(),
 	});
@@ -25,7 +24,6 @@ export const TestPracticeInfoSchema = TestInfoSchema
 
 export const ExamTestInfoSchema = TestInfoSchema
 	.merge(ExamTestCoreSchema.omit({ testId: true }));
-
 
 export type TestInfo = z.infer<typeof TestInfoSchema>;
 export type AttemptInfo = z.infer<typeof AttemptInfoSchema>;

@@ -16,5 +16,6 @@ export async function queryExamTest(testId: string): Promise<ExamTestInfo> {
 	return {
 		...test.get(),
 		...test.ExamTest!.get(),
+		hasPassword: test.ExamTest!.password !== null,
 	}
 }

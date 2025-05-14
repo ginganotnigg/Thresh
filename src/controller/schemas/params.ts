@@ -11,3 +11,7 @@ export const QuestionIdParamsSchema = z.object({
 export const AttemptIdParamsSchema = z.object({
 	attemptId: z.string(),
 });
+
+export const UserIdParamsSchema = z.object({
+	userId: z.string(),
+});

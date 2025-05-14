@@ -1,17 +1,17 @@
 import http from "http";
-import { TestModule } from "../modules/tests/module";
 import { ModuleBase } from "../library/cayduajs/module/module.base";
-import { AttemptsModule } from "../modules/attempt/module";
+import { AttemptsModule } from "../modules/attempts/module";
 import { Chuoi } from "../library/caychuoijs";
 import { env } from "../configs/env";
 import { AllExceptionFilter } from "../controller/defaults/all-exception.filter";
-import { LoggerMiddleware } from "../controller/defaults/http-logger.middleware";
+import { LoggerMiddleware } from "../controller/defaults/http-logger.mdw";
 import { UserPipe } from "../controller/pipes/user.pipe";
 import { securityDocument } from "../controller/documents/security";
 import app from "./servers/app";
 import io from "./servers/io";
 import { ExamModule } from "../modules/exam/module";
 import { PracticeModule } from "../modules/pratice/module";
+import { DecoderMiddleware } from "../controller/defaults/decoder.mdw";
 
 export async function main() {
 	Chuoi.init(app, {
@@ -22,6 +22,7 @@ export async function main() {
 
 	Chuoi.middleware(
 		LoggerMiddleware,
+		DecoderMiddleware,
 		UserPipe,
 	);
 
@@ -30,7 +31,6 @@ export async function main() {
 	// =====================
 
 	const modules: ModuleBase[] = [
-		new TestModule(),
 		new AttemptsModule(),
 		new ExamModule(),
 		new PracticeModule(),

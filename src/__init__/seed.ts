@@ -10,7 +10,7 @@ import tests from "./data/tests";
 export async function seed() {
 	try {
 		await recreateDatabase();
-		await sequelize.sync({ logging: false, force: true });
+		await sequelize.sync({ logging: true, force: true });
 		await sequelize.authenticate({ logging: false });
 
 		console.log("Seeding database...");

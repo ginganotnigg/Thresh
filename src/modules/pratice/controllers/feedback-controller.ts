@@ -1,7 +1,6 @@
 import { Chuoi } from "../../../library/caychuoijs";
 import { TestIdParamsSchema } from "../../../controller/schemas/params";
 import { UpdateTemplateSchema } from "../command/templates/update-template";
-import queryFeedback from "../query/feedback";
 import { FeedbackCoreSchema } from "../../../domain/schema/core.schema";
 import { commandCreateFeedback, CreateFeedbackSchema } from "../command/feedbacks/create-feedback";
 import { commandUpdateFeedback } from "../command/feedbacks/update-feedback";
@@ -9,15 +8,6 @@ import { commandDeleteFeedback } from "../command/feedbacks/delete-feedback";
 
 export default function controllerFeedback() {
 	const router = Chuoi.newRoute();
-
-	router.endpoint().get('/practice-tests/:testId/feedback')
-		.schema({
-			params: TestIdParamsSchema,
-			response: FeedbackCoreSchema.nullable(),
-		})
-		.handle(async data => {
-			return await queryFeedback({ practiceTestId: data.params.testId });
-		}).build({ tags: ['Feedback'] });
 
 	router.endpoint().post('/practice-tests/:testId/feedback')
 		.schema({

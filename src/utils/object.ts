@@ -4,4 +4,11 @@ function removeNullFields<T extends object>(obj: T): Partial<T> {
 	) as Partial<T>;
 }
 
-export { removeNullFields };
+type MakeRequired<T, K extends keyof T> = T & {
+	[P in K]-?: T[P];
+};
+
+export {
+	removeNullFields,
+	MakeRequired,
+};
