@@ -4,7 +4,7 @@ import { z } from "zod";
 export type Constructor<T = any> = new (...args: any[]) => T;
 export type HttpMethod = "get" | "post" | "put" | "delete" | "patch" | "options" | "head" | "trace";
 
-export type CallbackDataHandler<TParams, TQuery, TBody, THeaders, TMeta, TResponse> = (requestData: RequestData<TParams, TQuery, TBody, THeaders, TMeta>) => TResponse | Promise<TResponse> | any;
+export type CallbackDataHandler<TParams, TQuery, TBody, THeaders, TMeta, TResponse> = (requestData: RequestData<TParams, TQuery, TBody, THeaders, TMeta>) => TResponse | Promise<TResponse>; // TODO: this used to have "| any (or any)" response type
 
 export type CallbackExpressHandler = (req: Request, res: Response, next: NextFunction) => void;
 export type AsyncCallbackExpressHandler = (req: Request, res: Response, next: NextFunction) => Promise<void>;
@@ -34,5 +34,5 @@ export type RequestSchema<
 };
 
 export type FullSchema<TParams, TQuery, TBody, THeaders, TMeta, TResponse> = RequestSchema<TParams, TQuery, TBody, THeaders, TMeta> & {
-	response?: z.ZodType<TResponse> | z.ZodObject<any, any, any, TResponse> | z.ZodArray<z.ZodType<TResponse>>;
+	response?: z.ZodType<TResponse>;
 }

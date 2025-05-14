@@ -3,7 +3,6 @@ import { Paged, sortBy } from "../../../../controller/schemas/base";
 import Attempt from "../../../../domain/models/attempt";
 import Test from "../../../../domain/models/test";
 import { AttemptInfo } from "../../../../domain/schema/info.schema";
-import { db } from "../../../../configs/orm/kysely/db";
 
 export type AttemptsQueryParams = {
 	sort: string[];
@@ -14,16 +13,7 @@ export type AttemptsQueryParams = {
 	authorId?: string | undefined;
 };
 
-export type AttemptsAggregateParams = {
-	candidateId?: string | undefined;
-	totalAttempts?: boolean | undefined;
-	averageScore?: boolean | undefined;
-	averageSecondsSpent?: boolean | undefined;
-	highestScore?: boolean | undefined;
-	lowestScore?: boolean | undefined;
-};
-
-export class AttemptQuery {
+export class AttemptQueryRepo {
 	static async getAttemptsQuery({
 		candidateId,
 		testId,
@@ -63,8 +53,5 @@ export class AttemptQuery {
 				...attempt.toJSON(),
 			})),
 		}
-	}
-
-	static async getAttemptsAggregate(params: AttemptsAggregateParams): Promise<any> {
 	}
 }

@@ -27,6 +27,7 @@ export interface Attempts {
   hasEnded: Generated<number>;
   id: string;
   order: number;
+  score: Generated<number>;
   secondsSpent: Generated<number>;
   testId: string | null;
   updatedAt: Date | null;
@@ -41,7 +42,7 @@ export interface AttemptsAnswerQuestions {
   updatedAt: Date | null;
 }
 
-export interface Examtests {
+export interface ExamTests {
   closeDate: Date;
   createdAt: Date | null;
   isAllowedToSeeOtherResults: Generated<number>;
@@ -63,7 +64,7 @@ export interface Feedbacks {
   updatedAt: Date | null;
 }
 
-export interface Practicetests {
+export interface PracticeTests {
   createdAt: Date | null;
   difficulty: "easy" | "hard" | "medium";
   numberOfOptions: number;
@@ -111,12 +112,12 @@ export interface Tests {
 }
 
 export interface DB {
-  attempts: Attempts;
-  attempts_answer_questions: AttemptsAnswerQuestions;
-  examtests: Examtests;
-  feedbacks: Feedbacks;
-  practicetests: Practicetests;
-  questions: Questions;
-  templates: Templates;
-  tests: Tests;
+  Attempts: Attempts;
+  Attempts_answer_Questions: AttemptsAnswerQuestions;
+  ExamTests: ExamTests;
+  Feedbacks: Feedbacks;
+  PracticeTests: PracticeTests;
+  Questions: Questions;
+  Templates: Templates;
+  Tests: Tests;
 }

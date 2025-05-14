@@ -1,5 +1,3 @@
-import sequelize from "../../../../configs/orm/sequelize/sequelize";
-import { QueryTypes } from "sequelize";
 import { DomainError } from "../../../../controller/errors/domain.error";
 import Attempt from "../../../../domain/models/attempt";
 import Test from "../../../../domain/models/test";
@@ -10,21 +8,18 @@ import {
 	AttemptAggregateQuery,
 	AttemptAggregateResponse
 } from "../../schema";
-import fs from "fs";
-import path from "path";
 import ExamTest from "../../../../domain/models/exam_test";
 import { CredentialsMeta } from "../../../../controller/schemas/meta";
-import Question from "../../../../domain/models/question";
 import { db } from "../../../../configs/orm/kysely/db";
+import { sql } from "kysely";
+import { AttemptAggregate } from "../../schema/exam.schema";
 
 /**
  * Query class for attempts that has ended
  * @param attempt Attempt object
  * @throws DomainError if attempt is not ended
  */
-export class AttemptOfTestQuery {
-	private sqlDir = path.join(__dirname, "../app/query/sql");
-
+export class AttemptOfExamRead {
 	private constructor(
 		private readonly attempt: Attempt,
 		private readonly credentials: CredentialsMeta,
@@ -53,7 +48,7 @@ export class AttemptOfTestQuery {
 		}
 	}
 
-	static async retrive(attemptId: string, credentials: CredentialsMeta): Promise<AttemptOfTestQuery> {
+	static async create(attemptId: string, credentials: CredentialsMeta): Promise<AttemptOfExamRead> {
 		const attempt = await Attempt.findByPk(attemptId, {
 			include: [{
 				model: Test,
@@ -67,52 +62,36 @@ export class AttemptOfTestQuery {
 		if (!attempt) {
 			throw new DomainError(`Attempt not found`);
 		}
-		return new AttemptOfTestQuery(attempt, credentials);
+		return new AttemptOfExamRead(attempt, credentials);
 	}
 
-	/**
-	 * Get aggregated information about an attempt
-	 */
-	async getAttemptAggregate(option: AttemptAggregateQuery): Promise<AttemptAggregateResponse> {
+	async getAttemptAggregate(): Promise<AttemptAggregate> {
 		if (this.attempt.hasEnded === false) {
-			throw new DomainError(`Attempt is not ended, cannot sumarize results`);
+			throw new DomainError(`Attempt is not ended, cannot summarize results`);
 		}
-		const { score, answered, answeredCorrect } = option;
-		const result: AttemptAggregateResponse = {};
+		const attemptId = this.attempt.id;
+		const answeredResult = await db
+			.selectFrom('Attempts_answer_Questions')
+			.where('Attempts_answer_Questions.attemptId', '=', attemptId)
+			.select(
+				sql<number>`COUNT(DISTINCT \`Attempts_answer_Questions\`.\`questionId\`)`.as('res')
+			)
+			.executeTakeFirst();
 
-		if (score) {
-			const getScoreSql = fs.readFileSync(path.join(this.sqlDir, "getScore.sql"), "utf8");
-			const scoreResult = await sequelize.query(getScoreSql,
-				{
-					replacements: { attemptId: this.attempt.id },
-					type: QueryTypes.SELECT,
-				}
-			);
-			result.score = parseInt((scoreResult[0] as any)?.res) || undefined;
-		}
-		if (answered) {
-			const getNumberOfAnswers = fs.readFileSync(path.join(this.sqlDir, "getNumberOfAnswers.sql"), "utf8");
-			const answeredResult = await sequelize.query(
-				getNumberOfAnswers,
-				{
-					replacements: { attemptId: this.attempt.id },
-					type: QueryTypes.SELECT,
-				}
-			);
-			result.answered = parseInt((answeredResult[0] as any)?.res) || undefined;
-		}
-		if (answeredCorrect) {
-			const getNumberOfCorrectAnswers = fs.readFileSync(path.join(this.sqlDir, "getNumberOfCorrectAnswers.sql"), "utf8");
-			const answeredCorrectResult = await sequelize.query(getNumberOfCorrectAnswers,
-				{
-					replacements: { attemptId: this.attempt.id },
-					type: QueryTypes.SELECT,
-				}
-			);
-			result.answeredCorrect = parseInt((answeredCorrectResult[0] as any)?.res) || undefined;
-		}
+		const answeredCorrectResult = await db
+			.selectFrom('Attempts_answer_Questions')
+			.innerJoin('Questions', 'Questions.id', 'Attempts_answer_Questions.questionId')
+			.where('Attempts_answer_Questions.attemptId', '=', attemptId)
+			.whereRef('Attempts_answer_Questions.chosenOption', '=', 'Questions.correctOption')
+			.select(
+				sql<number>`COUNT(DISTINCT \`Attempts_answer_Questions\`.\`questionId\`)`.as('res')
+			)
+			.executeTakeFirst();
 
-		return result;
+		return {
+			answered: answeredResult?.res ?? 0,
+			answeredCorrect: answeredCorrectResult?.res ?? 0,
+		};
 	}
 
 	/**

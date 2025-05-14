@@ -9,7 +9,7 @@ const dialect = new MysqlDialect({
 	pool: mysql.createPool({
 		host: env.db.host || 'localhost',
 		user: env.db.username || 'root',
-		password: env.db.password || '',
+		password: env.db.password || '123456',
 		database: env.db.database || 'skillsharp',
 		port: env.db.port || 3306,
 		connectionLimit: 10,
