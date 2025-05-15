@@ -81,7 +81,7 @@ class ChuoiEndpointBuilder {
 
 	private path: string;
 	private method: "get" | "post" | "put" | "delete" | "patch" | "options" | "head" | "trace";
-	private securities: string[] = [];
+	private securities?: string[] = undefined;
 	private middlewares: Constructor<IChuoiMiddleware>[] = [];
 	private errorHandler: Constructor<IChuoiExceptionHandler> | undefined;
 	private requestSchema: RequestSchema<any, any, any, any, any> | undefined;
@@ -243,6 +243,9 @@ class ChuoiEndpointBuilder {
 	 */
 
 	private _addSecurity<TScheme extends string>(security: ChuoiSecurityBase<TScheme>, key: TScheme) {
+		if (!this.securities) {
+			this.securities = [];
+		}
 		this.securities.push(key);
 		return this._methodSecurity();
 	}

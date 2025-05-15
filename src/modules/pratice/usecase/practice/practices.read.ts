@@ -35,7 +35,6 @@ export class PracticesRead {
 			data: tests.rows.map((test) => ({
 				...test.get(),
 				...test.PracticeTest!.get(),
-				hasPassword: test.ExamTest!.password !== null,
 			})),
 		}
 	}

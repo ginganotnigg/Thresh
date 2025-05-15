@@ -20,6 +20,11 @@ export class ChuoiDocument {
 				title: 'My API',
 				description: 'This is the API',
 			},
+			security: security ? security.getSecuritySchemes().map(scheme => {
+				return {
+					[scheme.name]: []
+				}
+			}) : undefined,
 		}
 
 		if (security) {
@@ -54,11 +59,13 @@ export class ChuoiDocument {
 			method,
 			summary,
 			description,
-			security: schema ? securitySchemeKeys?.map(k => {
-				return {
-					[k]: []
-				}
-			}) : undefined,
+			...(schema != null ? {
+				security: securitySchemeKeys?.map(k => {
+					return {
+						[k]: []
+					}
+				})
+			} : {}),
 			tags: tags || [],
 			request: schema ? {
 				params: schema.params,

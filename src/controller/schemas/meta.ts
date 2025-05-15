@@ -5,8 +5,8 @@ export const UserIdMeta = z.object({
 });
 
 export const CredentialsMetaSchema = z.object({
-	userId: z.coerce.string(),
-	role: z.coerce.number(),
+	userId: z.coerce.string({ message: "User ID is required" }),
+	role: z.coerce.number({ message: "Role ID is required or invalid" }),
 });
 
 export type CredentialsMeta = z.infer<typeof CredentialsMetaSchema>;

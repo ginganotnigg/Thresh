@@ -11,6 +11,7 @@ import { QuestionToDoSchema } from "../../../domain/schema/variants.schema";
 import { QuestionCoreSchema } from "../../../domain/schema/core.schema";
 import { PracticeWrite } from "../usecase/practice/practices.write";
 import { CreatePracticeBodySchema } from "../schema";
+import { securityDocument } from "../../../controller/documents/security";
 
 export default function controllerPractice() {
 	const router = Chuoi.newRoute("/practices");
@@ -56,6 +57,7 @@ export default function controllerPractice() {
 		});
 
 	router.endpoint().post()
+		.addSecurityDocument(securityDocument, "authorization")
 		.schema({
 			meta: CredentialsMetaSchema,
 			body: CreatePracticeBodySchema,

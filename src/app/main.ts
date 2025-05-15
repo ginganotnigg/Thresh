@@ -5,7 +5,6 @@ import { Chuoi } from "../library/caychuoijs";
 import { env } from "../configs/env";
 import { AllExceptionFilter } from "../controller/defaults/all-exception.filter";
 import { LoggerMiddleware } from "../controller/defaults/http-logger.mdw";
-import { UserPipe } from "../controller/pipes/user.pipe";
 import { securityDocument } from "../controller/documents/security";
 import app from "./servers/app";
 import io from "./servers/io";
@@ -23,7 +22,6 @@ export async function main() {
 	Chuoi.middleware(
 		LoggerMiddleware,
 		DecoderMiddleware,
-		UserPipe,
 	);
 
 	// =====================
