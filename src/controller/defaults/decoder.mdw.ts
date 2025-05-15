@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { IChuoiMiddleware } from "../../library/caychuoijs/main/contracts";
 import { ChuoiMeta } from "../../library/caychuoijs/utils/meta";
+import { ChuoiContainer } from "../../library/caychuoijs/utils/container";
 
 export class DecoderMiddleware implements IChuoiMiddleware {
 	handle(req: Request, res: Response, next: NextFunction): void {
@@ -39,3 +40,5 @@ export class DecoderMiddleware implements IChuoiMiddleware {
 		return JSON.parse(decoded);
 	}
 }
+
+ChuoiContainer.register(DecoderMiddleware);

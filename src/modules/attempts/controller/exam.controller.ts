@@ -109,7 +109,6 @@ export function examController() {
 			params: z.object({
 				testId: z.string(),
 			}),
-			response: z.void(),
 		})
 		.handle(async (data) => {
 			const write = await AttemptsOfExamWrite.load(data.params.testId, data.meta);

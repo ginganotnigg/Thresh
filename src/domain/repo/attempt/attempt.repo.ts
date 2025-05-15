@@ -1,16 +1,22 @@
 import { db } from "../../../configs/orm/kysely/db";
 import sequelize from "../../../configs/orm/sequelize/sequelize";
 import { DomainError } from "../../../controller/errors/domain.error";
-import { CredentialsMeta } from "../../../controller/schemas/meta";
 import Attempt from "../../models/attempt";
 import AttemptsAnswerQuestions from "../../models/attempts_answer_questions";
-import Test from "../../models/test";
 import { attemptEmitter } from "../../../modules/attempts/init/emitter";
 
 export class AttemptRepo {
 	constructor(
 		private readonly attempt: Attempt,
 	) { }
+
+	static async load(attemptId: string): Promise<AttemptRepo> {
+		const attempt = await Attempt.findByPk(attemptId);
+		if (!attempt) {
+			throw new DomainError("Attempt not found");
+		}
+		return new AttemptRepo(attempt);
+	}
 
 	static async start({
 		testId,

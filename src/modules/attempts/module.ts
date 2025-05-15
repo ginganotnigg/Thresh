@@ -1,5 +1,5 @@
 import { ModuleBase } from "../../library/cayduajs/module/module.base";
-import examController from "../exam/controller";
+import { examController } from "./controller/exam.controller";
 import { currentController } from "./controller/current.controller";
 import { historyController } from "./controller/history.controller";
 import { practiceController } from "./controller/practice.controller";

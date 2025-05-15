@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { Chuoi } from "../../../library/caychuoijs";
-import { CreatePracticeSchema } from "../usecase/practice/create-practice";
 import { TestIdParamsSchema } from "../../../controller/schemas/params";
 import { PracticeTestInfoSchema } from "../../../domain/schema/info.schema";
 import { CredentialsMetaSchema } from "../../../controller/schemas/meta";
@@ -11,6 +10,7 @@ import { PracticeRead } from "../usecase/practice/practice.read";
 import { QuestionToDoSchema } from "../../../domain/schema/variants.schema";
 import { QuestionCoreSchema } from "../../../domain/schema/core.schema";
 import { PracticeWrite } from "../usecase/practice/practices.write";
+import { CreatePracticeBodySchema } from "../schema";
 
 export default function controllerPractice() {
 	const router = Chuoi.newRoute("/practices");
@@ -58,7 +58,7 @@ export default function controllerPractice() {
 	router.endpoint().post()
 		.schema({
 			meta: CredentialsMetaSchema,
-			body: CreatePracticeSchema,
+			body: CreatePracticeBodySchema,
 			response: z.object({
 				testId: z.string(),
 			}),

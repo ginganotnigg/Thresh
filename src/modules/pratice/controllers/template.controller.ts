@@ -46,16 +46,19 @@ export default function controllerTemplate() {
 			return await TemplatesWrite.load(data.meta).create(data.body);
 		}).build({ tags: ['Template'] });
 
-	router.endpoint().put()
+	router.endpoint().put('/:templateId')
 		.schema({
 			meta: CredentialsMetaSchema,
+			params: z.object({
+				templateId: z.string(),
+			}),
 			body: UpdateTemplateBodySchema,
 		})
 		.handle(async data => {
-			await TemplatesWrite.load(data.meta).update(data.body);
+			await TemplatesWrite.load(data.meta).update(data.params.templateId, data.body);
 		}).build({ tags: ['Template'] });
 
-	router.endpoint().delete('/templates/:templateId')
+	router.endpoint().delete('/:templateId')
 		.schema({
 			meta: CredentialsMetaSchema,
 			params: z.object({

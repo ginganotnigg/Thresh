@@ -1,5 +1,5 @@
 import { cancelJob, scheduleJob } from "node-schedule";
-import commandEndAttempt from "../app/command/end-attempt";
+import { AttemptRepo } from "../../../domain/repo/attempt/attempt.repo";
 
 export class AttemptScheduleService {
 	static scheduleAttempt(attemptId: string, endDate: Date) {
@@ -8,7 +8,7 @@ export class AttemptScheduleService {
 			return;
 		}
 		scheduleJob(`attempt:${attemptId}`, endDate, async () => {
-			await commandEndAttempt({ attemptId });
+			await (await AttemptRepo.load(attemptId)).submit();
 		});
 	}
 

@@ -77,7 +77,6 @@ export function practiceController() {
 		.schema({
 			meta: CredentialsMetaSchema,
 			params: TestIdParamsSchema,
-			response: z.void(),
 		})
 		.handle(async data => {
 			const write = await AttemptsOfPracticeWrite.load(data.params.testId, data.meta);

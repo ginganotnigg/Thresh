@@ -10,7 +10,7 @@ import { CredentialsMetaSchema } from "../../../controller/schemas/meta";
 export default function controllerFeedback() {
 	const router = Chuoi.newRoute();
 
-	router.endpoint().get('/practice-tests/:testId/feedback')
+	router.endpoint().get('/practices/:testId/feedback')
 		.schema({
 			meta: CredentialsMetaSchema,
 			params: TestIdParamsSchema,
@@ -19,7 +19,7 @@ export default function controllerFeedback() {
 			return (await FeedbackOfPracticeRead.load(data.params.testId, data.meta)).get();
 		}).build({ tags: ['Feedback'] });
 
-	router.endpoint().post('/practice-tests/:testId/feedback')
+	router.endpoint().post('/practices/:testId/feedback')
 		.schema({
 			meta: CredentialsMetaSchema,
 			params: TestIdParamsSchema,
@@ -29,7 +29,7 @@ export default function controllerFeedback() {
 			await (await FeedbacksWrite.load(data.params.testId, data.meta)).create(data.body);
 		}).build({ tags: ['Feedback'] });
 
-	router.endpoint().put('/practice-tests/:testId/feedback')
+	router.endpoint().put('/practices/:testId/feedback')
 		.schema({
 			meta: CredentialsMetaSchema,
 			params: TestIdParamsSchema,
@@ -39,7 +39,7 @@ export default function controllerFeedback() {
 			await (await FeedbacksWrite.load(data.params.testId, data.meta)).update(data.body);
 		}).build({ tags: ['Feedback'] });
 
-	router.endpoint().delete('/practice-tests/:testId/feedback')
+	router.endpoint().delete('/practices/:testId/feedback')
 		.schema({
 			meta: CredentialsMetaSchema,
 			params: TestIdParamsSchema,

@@ -61,7 +61,6 @@ export function currentController() {
 				questionId: z.coerce.number(),
 				chosenOption: z.coerce.number().optional(),
 			}),
-			response: z.void(),
 		})
 		.handle(async (data) => {
 			await (await CurrentAttemptWrite.load(data.params.attemptId, data.meta)).answerQuestion({

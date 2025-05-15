@@ -29,9 +29,7 @@ export const CreateTemplateBodySchema = z.object({
 	outlines: z.array(z.string()),
 });
 
-export const UpdateTemplateBodySchema = CreateTemplateBodySchema.partial().extend({
-	id: z.string(),
-});
+export const UpdateTemplateBodySchema = CreateTemplateBodySchema.partial();
 
 export const CreateFeedbackBodySchema = z.object({
 	rating: z.number().min(1).max(10),

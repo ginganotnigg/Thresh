@@ -1,6 +1,6 @@
 import Attempt from "../../../domain/models/attempt";
 import Test from "../../../domain/models/test";
-import commandEndAttempt from "../app/command/end-attempt";
+import { AttemptRepo } from "../../../domain/repo/attempt/attempt.repo";
 import { AttemptScheduleService } from "../services/attempt-schedule-service";
 
 export async function scheduleOngoingAttempts() {
@@ -15,7 +15,7 @@ export async function scheduleOngoingAttempts() {
 	for (const attempt of notEndedAttempts) {
 		const endDate = new Date(attempt.createdAt.getTime() + (attempt.Test!.minutesToAnswer * 60 * 1000));
 		if (endDate <= now) {
-			await commandEndAttempt({ attemptId: attempt.id });
+			await (new AttemptRepo(attempt)).submit();
 		}
 		else {
 			AttemptScheduleService.scheduleAttempt(attempt.id, endDate);

@@ -30,8 +30,7 @@ export class TemplatesWrite {
 		}
 	}
 
-	async update(body: UpdateTemplateBody) {
-		const templateId = body.id;
+	async update(templateId: string, body: UpdateTemplateBody) {
 		const transaction = await sequelize.transaction();
 		try {
 			const template = await Template.findByPk(templateId, { transaction });
