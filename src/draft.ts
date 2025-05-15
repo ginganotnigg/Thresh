@@ -2,7 +2,7 @@ import { createClient } from "@connectrpc/connect";
 import { createGrpcTransport } from "@connectrpc/connect-node";
 import { Bulbasaur } from "./proto-gen/user/bulbasaur_pb";
 import axios from "axios";
-import { UserProxy } from "./domain/core/proxy/user.proxy";
+import { UserProxy } from "./domain/proxy/user.proxy";
 
 async function main() {
 	const transport = createGrpcTransport({

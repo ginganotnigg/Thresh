@@ -1,6 +1,7 @@
 // filepath: d:\Projects\skillsharp\Thresh\src\domain\models\exam_test.ts
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
+import ExamParticipants from "./exam_participants";
 
 class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<ExamTest>> {
 	declare testId: string;
@@ -15,6 +16,7 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 	declare updatedAt: CreationOptional<Date>;
 
 	declare Test?: NonAttribute<Test>;
+	declare ExamParticipants?: NonAttribute<ExamParticipants[]>;
 
 	declare static associations: {
 		test: Association<ExamTest, Test>;
@@ -77,6 +79,9 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 		ExamTest.belongsTo(Test, {
 			foreignKey: "testId",
 			targetKey: "id",
+		});
+		ExamTest.hasMany(ExamParticipants, {
+			foreignKey: "testId",
 		});
 	}
 }

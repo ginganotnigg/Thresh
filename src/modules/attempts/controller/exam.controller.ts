@@ -2,24 +2,25 @@ import { z } from "zod";
 import { CredentialsMetaSchema } from "../../../controller/schemas/meta";
 import { AttemptIdParamsSchema, TestIdParamsSchema } from "../../../controller/schemas/params";
 import { Chuoi } from "../../../library/caychuoijs";
-import { AttemptsOfExamRead } from "../domain/exam/attempts-of-exam.read";
-import { AttemptAggregateSchema, AttemptsListSchema, AttemptsOfExamAggregateSchema, AttemptsOfExamQuerySchema } from "../schema/exam.schema";
-import { AttemptOfExamRead } from "../domain/exam/attempt-of-exam.read";
+import { AttemptsOfExamRead } from "../usecase/exam/attempts-of-exam.read";
+import { AttemptAggregateSchema, AttemptsListSchema, AttemptsOfCandidateInTestAggregateSchema, AttemptsOfTestAggregateSchema, AttemptsOfTestQuerySchema } from "../schema/test.schema";
+import { AttemptOfExamRead } from "../usecase/exam/attempt-of-exam.read";
 import { AttemptInfoSchema } from "../../../domain/schema/info.schema";
-import { AnswerCore, AnswerCoreSchema } from "../../../domain/schema/core.schema";
+import { AnswerCoreSchema } from "../../../domain/schema/core.schema";
+import { AttemptsOfExamWrite } from "../usecase/exam/attempts-of-exam.write";
 
-export function historyController() {
+export function examController() {
 	const router = Chuoi.newRoute("/exam");
 
 	router.endpoint().get("/:testId/attempts")
 		.schema({
 			meta: CredentialsMetaSchema,
 			params: TestIdParamsSchema,
-			query: AttemptsOfExamQuerySchema,
+			query: AttemptsOfTestQuerySchema,
 			response: AttemptsListSchema,
 		})
 		.handle(async data => {
-			return await (await AttemptsOfExamRead.create(data.params.testId, data.meta)).getCandidatesAttempts(data.query);
+			return await (await AttemptsOfExamRead.load(data.params.testId, data.meta)).getAttemptsOfTest(data.query);
 		})
 		.build({ tags: ["Attempts of Exam"] });
 
@@ -27,11 +28,11 @@ export function historyController() {
 		.schema({
 			meta: CredentialsMetaSchema,
 			params: TestIdParamsSchema,
-			query: AttemptsOfExamQuerySchema,
+			query: AttemptsOfTestQuerySchema,
 			response: AttemptsListSchema,
 		})
 		.handle(async data => {
-			return await (await AttemptsOfExamRead.create(data.params.testId, data.meta)).getSelfAttempts(data.query);
+			return await (await AttemptsOfExamRead.load(data.params.testId, data.meta)).getSelfAttempts(data.query);
 		})
 		.build({ tags: ["Attempts of Exam"] });
 
@@ -43,10 +44,27 @@ export function historyController() {
 			query: z.object({
 				candidateId: z.string().optional(),
 			}),
-			response: AttemptsOfExamAggregateSchema,
+			response: AttemptsOfTestAggregateSchema,
 		})
 		.handle(async data => {
-			return await (await AttemptsOfExamRead.create(data.params.testId, data.meta)).getAttemptsAggregate(data.query.candidateId);
+			return await (await AttemptsOfExamRead.load(data.params.testId, data.meta)).getAttemptsAggregate();
+		})
+		.build({ tags: ["Attempts of Exam"] });
+
+	router.endpoint().get("/:testId/candidate/:candidateId/attempts/aggregate")
+		.schema({
+			meta: CredentialsMetaSchema,
+			params: z.object({
+				testId: z.string(),
+				candidateId: z.string(),
+			}),
+			query: z.object({
+				candidateId: z.string().optional(),
+			}),
+			response: AttemptsOfCandidateInTestAggregateSchema,
+		})
+		.handle(async data => {
+			return await (await AttemptsOfExamRead.load(data.params.testId, data.meta)).getAttemptsOfCandidateInTestAggregate(data.params.candidateId);
 		})
 		.build({ tags: ["Attempts of Exam"] });
 
@@ -82,6 +100,21 @@ export function historyController() {
 			const read = await AttemptOfExamRead.create(data.params.attemptId, data.meta);
 			const answers = await read.getAttemptAnswers();
 			return answers;
+		})
+		.build({ tags: ["Attempts of Exam"] });
+
+	router.endpoint().post("/:testId/attempts/start")
+		.schema({
+			meta: CredentialsMetaSchema,
+			params: z.object({
+				testId: z.string(),
+			}),
+			response: z.void(),
+		})
+		.handle(async (data) => {
+			const write = await AttemptsOfExamWrite.load(data.params.testId, data.meta);
+			await write.start();
+			return;
 		})
 		.build({ tags: ["Attempts of Exam"] });
 

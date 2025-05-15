@@ -1,15 +1,33 @@
 import { z } from "zod";
 import { Chuoi } from "../../library/caychuoijs";
-import queryFind from "./query/find";
-import commandJoin from "./command/join";
 import { ExamTestInfoSchema } from "../../domain/schema/info.schema";
 import { TestIdParamsSchema } from "../../controller/schemas/params";
-import { queryExamTest } from "./query/exam-test";
+import { CreateExamSchema } from "./schema";
+import { CredentialsMetaSchema } from "../../controller/schemas/meta";
+import { ExamsRead } from "./usecase/exams.read";
+import { ExamRead } from "./usecase/exam.read";
+import { PagedSchema } from "../../controller/schemas/base";
+import { ExamsWrite } from "./usecase/exams.write";
+import { TestsQuerySchema } from "../../domain/schema/query.schema";
 
 export default function controllerExam() {
-	const router = Chuoi.newRoute();
+	const router = Chuoi.newRoute("/exams");
 
-	router.endpoint().get("/exam-test/find")
+	router.endpoint().get()
+		.schema({
+			meta: CredentialsMetaSchema,
+			query: TestsQuerySchema,
+			response: PagedSchema(ExamTestInfoSchema),
+		})
+		.handle(async (data) => {
+			const { query, meta } = data;
+			return await (ExamsRead.load()).getSelf(query, meta);
+		})
+		.build({
+			tags: ["Exam"],
+		});
+
+	router.endpoint().get("/find")
 		.schema({
 			query: z.object({
 				roomId: z.string(),
@@ -17,42 +35,73 @@ export default function controllerExam() {
 			response: ExamTestInfoSchema,
 		})
 		.handle(async (data) => {
-			return await queryFind(data.query.roomId);
+			return await ExamsRead.load().find(data.query.roomId);
 		})
 		.build({
 			tags: ["Exam"],
-			summary: "Find exam",
 		});
 
-	router.endpoint().get("/exam-test/:testId")
+	router.endpoint().get("/:testId")
 		.schema({
 			params: TestIdParamsSchema,
 			response: ExamTestInfoSchema,
 		})
 		.handle(async (data) => {
 			const { params: { testId } } = data;
-			return await queryExamTest(testId);
+			return await ExamsRead.load().get(testId);
 		})
 		.build({
 			tags: ["Exam"],
-			summary: "Get exam test by ID",
 		});
 
-	router.endpoint().post("/exam-test/join")
+	router.endpoint().get("/:testId/participants")
 		.schema({
-			body: z.object({
+			meta: CredentialsMetaSchema,
+			params: TestIdParamsSchema,
+			query: z.object({
+				page: z.number().optional().default(1),
+				perPage: z.number().optional().default(10),
+			}),
+			response: PagedSchema(z.string()),
+		})
+		.handle(async (data) => {
+			const { params: { testId }, query: { page, perPage } } = data;
+			return await (await ExamRead.load(testId, data.meta)).getParticipants({
+				page,
+				perPage,
+			});
+		})
+		.build({
+			tags: ["Exam"],
+		})
+
+	router.endpoint().post()
+		.schema({
+			meta: CredentialsMetaSchema,
+			body: CreateExamSchema,
+			response: z.object({
 				testId: z.string(),
-				password: z.string(),
-				candidateId: z.string(),
 			}),
 		})
 		.handle(async (data) => {
-			const { body: { testId, password, candidateId } } = data;
-			return await commandJoin({
-				testId,
-				password,
-				candidateId,
-			});
+			const { body } = data;
+			return await ExamsWrite.create(body);
+		})
+		.build({
+			tags: ["Exam"],
+		});
+
+	router.endpoint().post("/join")
+		.schema({
+			meta: CredentialsMetaSchema,
+			body: z.object({
+				testId: z.string(),
+				password: z.string(),
+			}),
+		})
+		.handle(async (data) => {
+			const { body: { testId, password } } = data;
+			return await (await (ExamsWrite.load(testId, data.meta))).join(password);
 		})
 		.build({
 			tags: ["Exam"],

@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { QuestionCoreSchema } from "./core.schema";
 
-export const QuestionNoAnswerSchema = QuestionCoreSchema.omit({
+export const QuestionToDoSchema = QuestionCoreSchema.omit({
 	correctOption: true,
 });
 
-export type QuestionNoAnswer = z.infer<typeof QuestionNoAnswerSchema>;
+export type QuestionToDo = z.infer<typeof QuestionToDoSchema>;

@@ -1,0 +1,109 @@
+import { Transaction } from "sequelize";
+import { DomainError } from "../../controller/errors/domain.error";
+import { CredentialsMeta } from "../../controller/schemas/meta";
+import Test from "../models/test";
+import Attempt from "../models/attempt";
+import { AttemptQueryRepo } from "../repo/attempt/attempt.query-repo";
+import { AttemptsQueryRepo } from "../repo/attempt/attempts.query-repo";
+
+export class ExamPolicy {
+	constructor(
+		private readonly test: Test,
+		private readonly credentials: CredentialsMeta,
+	) {
+		if (this.test.ExamTest == null || this.test.ExamTest.ExamParticipants == null) {
+			throw new DomainError(`This test is not an exam`);
+		}
+	}
+
+	private isAuthor(): boolean {
+		return this.test.authorId === this.credentials.userId;
+	}
+
+	private isParticipant(): boolean {
+		return (
+			this.test.ExamTest?.ExamParticipants?.findIndex(
+				(participant) => participant.candidateId === this.credentials.userId,
+			) !== -1
+		);
+	}
+
+	async checkAllowedToJoin(password: string | null, transaction?: Transaction): Promise<void> {
+		if (this.test.ExamTest!.password != null && this.test.ExamTest!.password !== password) {
+			throw new DomainError(`Password is incorrect`);
+		}
+		const now = new Date();
+		if (this.test.ExamTest!.get("openDate") > now) {
+			throw new DomainError(`Exam has not started yet`);
+		}
+		if (this.test.ExamTest!.get("closeDate") < now) {
+			throw new DomainError(`Exam has already ended`);
+		}
+		const numberOfAttempts = await Attempt.count({
+			where: {
+				testId: this.test.id,
+				candidateId: this.credentials.userId,
+			},
+			transaction,
+		});
+		if (numberOfAttempts >= this.test.ExamTest!.numberOfAttemptsAllowed) {
+			throw new DomainError(`Max attempts reached`);
+		}
+	}
+
+	checkAllowedToStart(): void {
+		if (
+			this.isAuthor() === false &&
+			this.isParticipant() === false
+		) {
+			throw new DomainError(`You are not allowed to join this exam`);
+		}
+		const now = new Date();
+		if (this.test.ExamTest!.get("openDate") > now) {
+			throw new DomainError(`Exam has not started yet`);
+		}
+		if (this.test.ExamTest!.get("closeDate") < now) {
+			throw new DomainError(`Exam has already ended`);
+		}
+	}
+
+	checkAllowedToSeeOtherResults(): void {
+		if (
+			this.test.ExamTest!.isAllowedToSeeOtherResults === false &&
+			!this.isAuthor() &&
+			!this.isParticipant()
+		) {
+			throw new DomainError(`You are not allowed to see other results`);
+		}
+	}
+
+	checkAllowedToSeeParticipants(): void {
+		if (
+			this.isAuthor() === false &&
+			this.isParticipant() === false &&
+			this.test.ExamTest!.isAllowedToSeeOtherResults === false
+		) {
+			throw new DomainError(`You are not allowed to see this exam`);
+		}
+	}
+
+	async checkIsAllowedToSeeQuestions(): Promise<void> {
+		if (
+			this.isAuthor() === false &&
+			this.isParticipant() === false
+		) {
+			throw new DomainError(`You are not allowed to see this exam`);
+		}
+		const currentAttempt = await new AttemptsQueryRepo().getCurrentAttemptByTestAndCandidate(this.test.id, this.credentials.userId);
+		if (currentAttempt == null) {
+			throw new DomainError(`You have not started this exam yet`);
+		}
+	}
+
+	async checkIsAllowedToSeeAnswers(): Promise<void> {
+		await this.checkIsAllowedToSeeQuestions();
+		if (this.test.ExamTest!.isAnswerVisible === false) {
+			throw new DomainError(`Answers are not visible`);
+		}
+	}
+}

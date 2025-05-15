@@ -21,6 +21,8 @@ export const PagingSchema = z.object({
 	perPage: z.coerce.number().optional().default(5),
 });
 
+export type Paging = z.infer<typeof PagingSchema>;
+
 export const SortParamSchema = (sortFields: string[]) => z
 	.string()
 	.transform((val) => val.split(','))

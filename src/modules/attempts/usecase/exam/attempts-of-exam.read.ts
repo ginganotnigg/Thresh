@@ -1,0 +1,90 @@
+import Test from "../../../../domain/models/test";
+import { AttemptInfo } from "../../../../domain/schema/info.schema";
+import { Paged } from "../../../../controller/schemas/base";
+import { CredentialsMeta } from "../../../../controller/schemas/meta";
+import ExamTest from "../../../../domain/models/exam_test";
+import { DomainError } from "../../../../controller/errors/domain.error";
+import { TestAttemptsQueryRepo } from "../../../../domain/repo/attempt/test-attemps.query-repo";
+import { AttemptsOfTestAggregate, AttemptsOfTestQuery, AttemptsOfCandidateInTestAggregate } from "../../schema/test.schema";
+import { AttemptsQueryRepo } from "../../../../domain/repo/attempt/attempts.query-repo";
+import ExamParticipants from "../../../../domain/models/exam_participants";
+import { ExamPolicy } from "../../../../domain/policy/exam.policy";
+
+export class AttemptsOfExamRead {
+	private readonly attemptsQueryRepo: AttemptsQueryRepo;
+	private readonly testAttemptsQueryRepo: TestAttemptsQueryRepo;
+	private readonly policy: ExamPolicy;
+
+	private constructor(
+		private readonly test: Test,
+		private readonly credentials: CredentialsMeta,
+	) {
+		this.attemptsQueryRepo = new AttemptsQueryRepo();
+		this.testAttemptsQueryRepo = new TestAttemptsQueryRepo(this.test);
+		this.policy = new ExamPolicy(this.test, this.credentials);
+	}
+
+	static async load(testId: string, credentials: CredentialsMeta): Promise<AttemptsOfExamRead> {
+		const test = await Test.findByPk(testId, {
+			include: [{
+				model: ExamTest,
+				required: true,
+				include: [{
+					model: ExamParticipants,
+					where: {
+						candidateId: credentials.userId,
+					},
+				}],
+			}]
+		});
+		if (!test) {
+			throw new DomainError(`Exam test not found`);
+		}
+		return new AttemptsOfExamRead(test, credentials);
+	}
+
+	private isAllowedToSeeOtherResults(): boolean {
+		return (
+			this.test.ExamTest!.isAllowedToSeeOtherResults === true ||
+			this.credentials.userId === this.test.authorId
+		);
+	}
+
+	async getSelfAttempts(params: AttemptsOfTestQuery): Promise<Paged<AttemptInfo>> {
+		const res = await this.attemptsQueryRepo.getAttemptsQuery({
+			candidateId: this.credentials.userId,
+			testId: this.test.id,
+			...params,
+		})
+		return res;
+	}
+
+	async getAttemptsOfTest(params: AttemptsOfTestQuery): Promise<Paged<AttemptInfo>> {
+		if (!this.isAllowedToSeeOtherResults()) {
+			throw new DomainError(`You are not allowed to see other results`);
+		}
+		const res = await this.attemptsQueryRepo.getAttemptsQuery({
+			testId: this.test.id,
+			...params,
+		})
+		return res;
+	}
+
+	async getAttemptsAggregate(): Promise<AttemptsOfTestAggregate> {
+		if (!this.isAllowedToSeeOtherResults()) {
+			throw new DomainError(`You are not allowed to see other results`);
+		}
+		return await this.testAttemptsQueryRepo.getAttemptsOfTestAggregate();
+	}
+
+	async getAttemptsOfCandidateInTestAggregate(candidateId: string): Promise<AttemptsOfCandidateInTestAggregate> {
+		if (
+			candidateId !== this.credentials.userId &&
+			this.isAllowedToSeeOtherResults() === false
+		) {
+			throw new DomainError(`You are not allowed to see other results`);
+		}
+		return await this.testAttemptsQueryRepo.getAttemptsOfCandidateInTestAggregate(candidateId);
+	}
+}
+

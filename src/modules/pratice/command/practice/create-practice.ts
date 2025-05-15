@@ -3,7 +3,7 @@ import PracticeTest from "../../../../domain/models/practice_test";
 import sequelize from "../../../../configs/orm/sequelize/sequelize";
 import { PracticeTestCoreSchema } from "../../../../domain/schema/core.schema";
 import { CreateTestSchema } from "../../../../domain/schema/create.schema";
-import { TestRepo } from "../../../../domain/core/repo/test.repo";
+import { TestRepo } from "../../../../domain/repo/test/test.repo";
 
 export const CreatePracticeSchema = CreateTestSchema.extend({
 	practice: PracticeTestCoreSchema.omit({

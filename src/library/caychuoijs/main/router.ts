@@ -115,14 +115,14 @@ class ChuoiEndpointBuilder {
 
 	public endpoint() {
 		return {
-			get: (path: string) => this._createMethod("get", path),
-			post: (path: string) => this._createMethod("post", path),
-			put: (path: string) => this._createMethod("put", path),
-			delete: (path: string) => this._createMethod("delete", path),
-			patch: (path: string) => this._createMethod("patch", path),
-			options: (path: string) => this._createMethod("options", path),
-			head: (path: string) => this._createMethod("head", path),
-			trace: (path: string) => this._createMethod("trace", path),
+			get: (path: string = "") => this._createMethod("get", path),
+			post: (path: string = "") => this._createMethod("post", path),
+			put: (path: string = "") => this._createMethod("put", path),
+			delete: (path: string = "") => this._createMethod("delete", path),
+			patch: (path: string = "") => this._createMethod("patch", path),
+			options: (path: string = "") => this._createMethod("options", path),
+			head: (path: string = "") => this._createMethod("head", path),
+			trace: (path: string = "") => this._createMethod("trace", path),
 		}
 	}
 
