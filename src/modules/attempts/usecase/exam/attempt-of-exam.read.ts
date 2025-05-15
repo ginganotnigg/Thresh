@@ -18,30 +18,8 @@ export class AttemptOfExamRead {
 		private readonly attempt: Attempt,
 		private readonly credentials: CredentialsMeta,
 	) {
-		this.checkSelf();
-		this.checkAllowedToSeeOtherResults();
 		this.attemptQueryRepo = new AttemptQueryRepo(this.attempt);
 		this.examPolicy = new ExamPolicy(this.attempt.Test!, this.credentials);
-	}
-
-	private checkSelf(): void {
-		if (this.credentials.userId !== this.attempt.candidateId) {
-			throw new DomainError(`This is not your attempt`);
-		}
-	}
-	private checkAuthor(): void {
-		if (this.credentials.userId !== this.attempt.Test!.authorId) {
-			throw new DomainError(`You are not the author of this test`);
-		}
-	}
-	private checkAllowedToSeeOtherResults(): void {
-		if (
-			this.attempt.Test!.ExamTest!.isAllowedToSeeOtherResults === false &&
-			this.credentials.userId !== this.attempt.candidateId &&
-			this.credentials.userId !== this.attempt.Test!.authorId
-		) {
-			throw new DomainError(`You are not allowed to see other results`);
-		}
 	}
 
 	static async create(attemptId: string, credentials: CredentialsMeta): Promise<AttemptOfExamRead> {
@@ -72,7 +50,7 @@ export class AttemptOfExamRead {
 	}
 
 	async getAttemptAnswers(): Promise<AnswerCore[]> {
-		this.checkAuthor();
+		this.examPolicy.checkIsSelfAttempt(this.attempt);
 		return this.attemptQueryRepo.getAttemptAnswers();
 	}
 
@@ -82,3 +60,4 @@ export class AttemptOfExamRead {
 		};
 	}
 }
+

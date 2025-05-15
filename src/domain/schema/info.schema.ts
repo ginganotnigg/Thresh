@@ -16,17 +16,14 @@ export const AttemptInfoSchema = AttemptCoreSchema
 		updatedAt: z.date(),
 	});
 
-export const TestPracticeInfoSchema = TestInfoSchema
-	.merge(PracticeTestCoreSchema.omit({ testId: true }))
-	.extend({
-		feedback: FeedbackCoreSchema.omit({ practiceTestId: true }).optional(),
-	});
+export const PracticeTestInfoSchema = TestInfoSchema
+	.merge(PracticeTestCoreSchema.omit({ testId: true }));
 
 export const ExamTestInfoSchema = TestInfoSchema
 	.merge(ExamTestCoreSchema.omit({ testId: true }));
 
 export type TestInfo = z.infer<typeof TestInfoSchema>;
 export type AttemptInfo = z.infer<typeof AttemptInfoSchema>;
-export type TestPracticeInfo = z.infer<typeof TestPracticeInfoSchema>;
+export type PracticeTestInfo = z.infer<typeof PracticeTestInfoSchema>;
 export type ExamTestInfo = z.infer<typeof ExamTestInfoSchema>;
 

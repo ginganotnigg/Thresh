@@ -100,10 +100,44 @@ export class ExamPolicy {
 		}
 	}
 
-	async checkIsAllowedToSeeAnswers(): Promise<void> {
+	checkIsSelfAttempt(attempt: Attempt): void {
+		if (this.credentials.userId !== attempt.candidateId) {
+			throw new DomainError(`This is not your attempt`);
+		}
+	}
+
+	async checkIsAllowedToSeeCorrectAnswers(): Promise<void> {
 		await this.checkIsAllowedToSeeQuestions();
 		if (this.test.ExamTest!.isAnswerVisible === false) {
 			throw new DomainError(`Answers are not visible`);
+		}
+	}
+
+	async checkIsAllowedToDelete(): Promise<void> {
+		if (this.isAuthor() === false) {
+			throw new DomainError(`You are not allowed to delete this exam`);
+		}
+		const attempts = await Attempt.count({
+			where: {
+				testId: this.test.id,
+			},
+		});
+		if (attempts > 0) {
+			throw new DomainError(`You cannot delete this exam because it has attempts`);
+		}
+	}
+
+	async checkIsAllowedToEdit(): Promise<void> {
+		if (this.isAuthor() === false) {
+			throw new DomainError(`You are not allowed to edit this exam`);
+		}
+		const attempts = await Attempt.count({
+			where: {
+				testId: this.test.id,
+			},
+		});
+		if (attempts > 0) {
+			throw new DomainError(`You cannot edit this exam because it has attempts`);
 		}
 	}
 }

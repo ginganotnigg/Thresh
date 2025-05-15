@@ -2,10 +2,10 @@ import { z } from "zod";
 import PracticeTest from "../../../../domain/models/practice_test";
 import sequelize from "../../../../configs/orm/sequelize/sequelize";
 import { PracticeTestCoreSchema } from "../../../../domain/schema/core.schema";
-import { CreateTestSchema } from "../../../../domain/schema/create.schema";
+import { CreateTestBodySchema } from "../../../../domain/schema/create.schema";
 import { TestRepo } from "../../../../domain/repo/test/test.repo";
 
-export const CreatePracticeSchema = CreateTestSchema.extend({
+export const CreatePracticeSchema = CreateTestBodySchema.extend({
 	practice: PracticeTestCoreSchema.omit({
 		testId: true,
 	}),

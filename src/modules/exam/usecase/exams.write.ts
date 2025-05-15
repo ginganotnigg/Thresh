@@ -7,7 +7,7 @@ import Test from "../../../domain/models/test";
 import { ExamPolicy } from "../../../domain/policy/exam.policy";
 import { Op } from "sequelize";
 import { TestRepo } from "../../../domain/repo/test/test.repo";
-import { CreateExamType } from "../schema";
+import { CreateExamBody, UpdateExamBody } from "../schema";
 
 export class ExamsWrite {
 	private readonly examPolicy: ExamPolicy;
@@ -30,12 +30,12 @@ export class ExamsWrite {
 			}]
 		});
 		if (!test || !test.ExamTest || !test.ExamTest.ExamParticipants) {
-			throw new DomainError(`Test not found`);
+			throw new DomainError(`Exam test not found`);
 		}
 		return new ExamsWrite(test, credentials);
 	}
 
-	static async create(param: CreateExamType) {
+	static async create(param: CreateExamBody, credentials: CredentialsMeta) {
 		const transaction = await sequelize.transaction();
 		try {
 			const now = new Date();
@@ -53,7 +53,7 @@ export class ExamsWrite {
 			if (duplicateTest) {
 				throw new DomainError("Room ID already exists");
 			}
-			const { testId } = await TestRepo.createTest({
+			const { testId } = await TestRepo.createTest(credentials, {
 				test: param.test,
 				questions: param.questions,
 			}, transaction);
@@ -86,5 +86,37 @@ export class ExamsWrite {
 			testId: this.test.id,
 			candidateId: this.credentials.userId,
 		});
+	}
+
+	async edit(param: UpdateExamBody): Promise<void> {
+		await this.examPolicy.checkIsAllowedToEdit();
+		const transaction = await sequelize.transaction();
+		try {
+			await TestRepo.updateTest(param, transaction);
+			await ExamTest.update({
+				...param.exam,
+			}, {
+				where: {
+					testId: this.test.id,
+				},
+				transaction,
+			});
+			await transaction.commit();
+		} catch (error) {
+			await transaction.rollback();
+			throw error;
+		}
+	}
+
+	async delete(): Promise<void> {
+		await this.examPolicy.checkIsAllowedToDelete();
+		const transaction = await sequelize.transaction();
+		try {
+			await TestRepo.deleteTest(this.test.id, transaction);
+			await transaction.commit();
+		} catch (error) {
+			await transaction.rollback();
+			throw error;
+		}
 	}
 }

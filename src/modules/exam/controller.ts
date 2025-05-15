@@ -2,15 +2,17 @@ import { z } from "zod";
 import { Chuoi } from "../../library/caychuoijs";
 import { ExamTestInfoSchema } from "../../domain/schema/info.schema";
 import { TestIdParamsSchema } from "../../controller/schemas/params";
-import { CreateExamSchema } from "./schema";
+import { CreateExamBodySchema, UpdateExamBodySchema } from "./schema";
 import { CredentialsMetaSchema } from "../../controller/schemas/meta";
 import { ExamsRead } from "./usecase/exams.read";
 import { ExamRead } from "./usecase/exam.read";
 import { PagedSchema } from "../../controller/schemas/base";
 import { ExamsWrite } from "./usecase/exams.write";
 import { TestsQuerySchema } from "../../domain/schema/query.schema";
+import { QuestionCoreSchema } from "../../domain/schema/core.schema";
+import { QuestionToDoSchema } from "../../domain/schema/variants.schema";
 
-export default function controllerExam() {
+export default function examController() {
 	const router = Chuoi.newRoute("/exams");
 
 	router.endpoint().get()
@@ -75,17 +77,72 @@ export default function controllerExam() {
 			tags: ["Exam"],
 		})
 
+	router.endpoint().get("/:testId/questions-to-do")
+		.schema({
+			meta: CredentialsMetaSchema,
+			params: TestIdParamsSchema,
+			response: z.array(QuestionToDoSchema),
+		})
+		.handle(async (data) => {
+			const { params: { testId } } = data;
+			return await (await ExamRead.load(testId, data.meta)).getQuestionsToDo();
+		})
+		.build({
+			tags: ["Exam"],
+		});
+
+	router.endpoint().get("/:testId/questions-with-answer")
+		.schema({
+			meta: CredentialsMetaSchema,
+			params: TestIdParamsSchema,
+			response: z.array(QuestionCoreSchema),
+		})
+		.handle(async (data) => {
+			const { params: { testId } } = data;
+			return await (await ExamRead.load(testId, data.meta)).getQuestionsWithAnswers();
+		})
+		.build({
+			tags: ["Exam"],
+		});
+
 	router.endpoint().post()
 		.schema({
 			meta: CredentialsMetaSchema,
-			body: CreateExamSchema,
+			body: CreateExamBodySchema,
 			response: z.object({
 				testId: z.string(),
 			}),
 		})
 		.handle(async (data) => {
 			const { body } = data;
-			return await ExamsWrite.create(body);
+			return await ExamsWrite.create(body, data.meta);
+		})
+		.build({
+			tags: ["Exam"],
+		});
+
+	router.endpoint().put("/:testId")
+		.schema({
+			meta: CredentialsMetaSchema,
+			params: TestIdParamsSchema,
+			body: UpdateExamBodySchema,
+		})
+		.handle(async (data) => {
+			const { params: { testId }, body } = data;
+			return await (await ExamsWrite.load(testId, data.meta)).edit(body);
+		})
+		.build({
+			tags: ["Exam"],
+		});
+
+	router.endpoint().delete("/:testId")
+		.schema({
+			meta: CredentialsMetaSchema,
+			params: TestIdParamsSchema,
+		})
+		.handle(async (data) => {
+			const { params: { testId } } = data;
+			return (await ExamsWrite.load(testId, data.meta)).delete();
 		})
 		.build({
 			tags: ["Exam"],

@@ -1,13 +1,53 @@
 import { z } from "zod";
-import { PagedSchema, PagingSchema, SortParamSchema } from "../../controller/schemas/base";
-import { TestPracticeInfoSchema } from "../../domain/schema/info.schema";
+import { PracticeTestCoreSchema } from "../../domain/schema/core.schema";
+import { CreateTestBodySchema } from "../../domain/schema/create.schema";
+import { PagingSchema } from "../../controller/schemas/base";
+import { FeedbackProblemsEnum } from "../../domain/models/feedback";
 
-export const GetPracticeTestsQuerySchema = PagingSchema.extend({
-	searchTitle: z.string().optional(),
-	sort: SortParamSchema(['createdAt', 'minutesToAnswer', 'title']).optional().default('-createdAt'),
+export const CreatePracticeBodySchema = CreateTestBodySchema.extend({
+	practice: PracticeTestCoreSchema.omit({
+		testId: true,
+	}),
 });
 
-export const GetPracticeTestsResponseSchema = PagedSchema(TestPracticeInfoSchema);
+export const UpdatePracticeBodySchema = CreatePracticeBodySchema.extend({
+	testId: z.string(),
+});
 
-export type GetPracticeTestsQuery = z.infer<typeof GetPracticeTestsQuerySchema>;
-export type GetPracticeTestsResponse = z.infer<typeof GetPracticeTestsResponseSchema>;
+export const TemplatesQuerySchema = z.object({
+	searchName: z.string().optional(),
+}).merge(PagingSchema);
+
+export const CreateTemplateBodySchema = z.object({
+	name: z.string(),
+	title: z.string(),
+	description: z.string(),
+	difficulty: z.string(),
+	tags: z.array(z.string()),
+	numberOfQuestions: z.number(),
+	numberOfOptions: z.number(),
+	outlines: z.array(z.string()),
+});
+
+export const UpdateTemplateBodySchema = CreateTemplateBodySchema.partial().extend({
+	id: z.string(),
+});
+
+export const CreateFeedbackBodySchema = z.object({
+	rating: z.number().min(1).max(10),
+	problems: z.array(z.nativeEnum(FeedbackProblemsEnum)).optional().default([]),
+	comment: z.string().optional().default(""),
+});
+
+export const UpdateFeedbackBodySchema = CreateFeedbackBodySchema.partial().extend({
+});
+
+export type CreatePracticeBody = z.infer<typeof CreatePracticeBodySchema>;
+export type UpdatePracticeBody = z.infer<typeof UpdatePracticeBodySchema>;
+
+export type TemplatesQuery = z.infer<typeof TemplatesQuerySchema>;
+export type CreateTemplateBody = z.infer<typeof CreateTemplateBodySchema>;
+export type UpdateTemplateBody = z.infer<typeof UpdateTemplateBodySchema>;
+
+export type CreateFeedbackBody = z.infer<typeof CreateFeedbackBodySchema>;
+export type UpdateFeedbackBody = z.infer<typeof UpdateFeedbackBodySchema>;

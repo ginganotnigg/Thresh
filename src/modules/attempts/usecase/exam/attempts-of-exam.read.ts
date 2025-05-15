@@ -8,12 +8,10 @@ import { TestAttemptsQueryRepo } from "../../../../domain/repo/attempt/test-atte
 import { AttemptsOfTestAggregate, AttemptsOfTestQuery, AttemptsOfCandidateInTestAggregate } from "../../schema/test.schema";
 import { AttemptsQueryRepo } from "../../../../domain/repo/attempt/attempts.query-repo";
 import ExamParticipants from "../../../../domain/models/exam_participants";
-import { ExamPolicy } from "../../../../domain/policy/exam.policy";
 
 export class AttemptsOfExamRead {
 	private readonly attemptsQueryRepo: AttemptsQueryRepo;
 	private readonly testAttemptsQueryRepo: TestAttemptsQueryRepo;
-	private readonly policy: ExamPolicy;
 
 	private constructor(
 		private readonly test: Test,
@@ -21,7 +19,6 @@ export class AttemptsOfExamRead {
 	) {
 		this.attemptsQueryRepo = new AttemptsQueryRepo();
 		this.testAttemptsQueryRepo = new TestAttemptsQueryRepo(this.test);
-		this.policy = new ExamPolicy(this.test, this.credentials);
 	}
 
 	static async load(testId: string, credentials: CredentialsMeta): Promise<AttemptsOfExamRead> {
@@ -85,6 +82,10 @@ export class AttemptsOfExamRead {
 			throw new DomainError(`You are not allowed to see other results`);
 		}
 		return await this.testAttemptsQueryRepo.getAttemptsOfCandidateInTestAggregate(candidateId);
+	}
+
+	async getNumberOfSelfAttempts(): Promise<number> {
+		return await this.testAttemptsQueryRepo.getNumberOfSelfAttempts(this.credentials.userId);
 	}
 }
 

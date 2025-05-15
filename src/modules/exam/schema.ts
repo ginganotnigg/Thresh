@@ -1,12 +1,16 @@
 import { z } from "zod";
 import { ExamTestCoreSchema } from "../../domain/schema/core.schema";
-import { CreateTestSchema } from "../../domain/schema/create.schema";
+import { CreateTestBodySchema } from "../../domain/schema/create.schema";
 
-export const CreateExamSchema = CreateTestSchema.extend({
+export const CreateExamBodySchema = CreateTestBodySchema.extend({
 	exam: ExamTestCoreSchema.omit({
 		testId: true,
 	}),
 });
 
-export type CreateExamType = z.infer<typeof CreateExamSchema>;
+export const UpdateExamBodySchema = CreateExamBodySchema.extend({
+	testId: z.string(),
+});
 
+export type CreateExamBody = z.infer<typeof CreateExamBodySchema>;
+export type UpdateExamBody = z.infer<typeof UpdateExamBodySchema>;

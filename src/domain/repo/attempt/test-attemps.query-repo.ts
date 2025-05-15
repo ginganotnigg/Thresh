@@ -7,6 +7,18 @@ export class TestAttemptsQueryRepo {
 		private readonly test: Test,
 	) { }
 
+	async getNumberOfSelfAttempts(candidateId: string): Promise<number> {
+		let query = db.selectFrom("Attempts")
+			.select((eb) => [
+				eb.fn.count('id').as('totalAttempts'),
+			])
+			.where('testId', '=', this.test.id)
+			.where('candidateId', '=', candidateId);
+
+		const result = await query.executeTakeFirst();
+		return Number(result?.totalAttempts ?? 0);
+	}
+
 	async getAttemptsOfTestAggregate(): Promise<AttemptsOfTestAggregate> {
 		// Create the base query
 		let query = db.selectFrom("Attempts")

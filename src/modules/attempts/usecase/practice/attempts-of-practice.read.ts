@@ -14,6 +14,7 @@ export class AttemptsOfPracticeRead {
 
 	private constructor(
 		private readonly test: Test,
+		private readonly credentials: CredentialsMeta,
 	) {
 		this.attemptsQueryRepo = new AttemptsQueryRepo();
 		this.testAttemptsQueryRepo = new TestAttemptsQueryRepo(this.test);
@@ -32,7 +33,7 @@ export class AttemptsOfPracticeRead {
 		if (test.authorId !== credentials.userId) {
 			throw new DomainError(`You are not the author of this test`);
 		}
-		return new AttemptsOfPracticeRead(test);
+		return new AttemptsOfPracticeRead(test, credentials);
 	}
 
 	async getAttemptsOfTest(params: AttemptsOfTestQuery): Promise<Paged<AttemptInfo>> {
@@ -45,6 +46,10 @@ export class AttemptsOfPracticeRead {
 
 	async getAttemptsAggregate(): Promise<AttemptsOfTestAggregate> {
 		return await this.testAttemptsQueryRepo.getAttemptsOfTestAggregate();
+	}
+
+	async getNumberOfSelfAttempts(): Promise<number> {
+		return await this.testAttemptsQueryRepo.getNumberOfSelfAttempts(this.credentials.userId);
 	}
 }
 

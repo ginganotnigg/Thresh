@@ -6,7 +6,6 @@ import ExamTest from "../../../domain/models/exam_test";
 import Test from "../../../domain/models/test";
 import { ExamPolicy } from "../../../domain/policy/exam.policy";
 import { TestQueryRepo } from "../../../domain/repo/test/test.query-repo";
-import { TestRepo } from "../../../domain/repo/test/test.repo";
 import { QuestionCore } from "../../../domain/schema/core.schema";
 import { QuestionToDo } from "../../../domain/schema/variants.schema";
 
@@ -63,7 +62,7 @@ export class ExamRead {
 	}
 
 	async getQuestionsWithAnswers(): Promise<QuestionCore[]> {
-		await this.examPolicy.checkIsAllowedToSeeAnswers();
+		await this.examPolicy.checkIsAllowedToSeeCorrectAnswers();
 		return await TestQueryRepo.getQuestions(this.test.id);
 	}
 }
