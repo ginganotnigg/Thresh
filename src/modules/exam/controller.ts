@@ -31,13 +31,16 @@ export default function examController() {
 
 	router.endpoint().get("/find")
 		.schema({
+			meta: CredentialsMetaSchema,
 			query: z.object({
 				roomId: z.string(),
 			}),
-			response: ExamTestInfoSchema,
+			response: ExamTestInfoSchema.extend({
+				hasJoined: z.boolean(),
+			}),
 		})
 		.handle(async (data) => {
-			return await ExamsRead.load().find(data.query.roomId);
+			return await ExamsRead.load().find(data.query.roomId, data.meta);
 		})
 		.build({
 			tags: ["Exam"],
@@ -51,6 +54,23 @@ export default function examController() {
 		.handle(async (data) => {
 			const { params: { testId } } = data;
 			return await ExamsRead.load().get(testId);
+		})
+		.build({
+			tags: ["Exam"],
+		});
+
+	router.endpoint().get("/:testId/aggregate")
+		.schema({
+			meta: CredentialsMetaSchema,
+			params: TestIdParamsSchema,
+			response: z.object({
+				numberOfQuestions: z.number(),
+				totalPoints: z.number(),
+			}),
+		})
+		.handle(async (data) => {
+			const { params: { testId } } = data;
+			return await (await ExamRead.load(testId, data.meta)).getAggregate();
 		})
 		.build({
 			tags: ["Exam"],
@@ -153,7 +173,7 @@ export default function examController() {
 			meta: CredentialsMetaSchema,
 			body: z.object({
 				testId: z.string(),
-				password: z.string(),
+				password: z.string().optional(),
 			}),
 		})
 		.handle(async (data) => {

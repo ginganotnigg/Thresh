@@ -28,33 +28,14 @@ export class FeedbacksWrite {
 		return new FeedbacksWrite(credentials, test);
 	}
 
-	async create(body: CreateFeedbackBody) {
+	async submit(body: CreateFeedbackBody) {
 		const transaction = await sequelize.transaction();
 		try {
-			await Feedback.create({
+			await Feedback.upsert({
 				...body,
 				practiceTestId: this.test.id,
 			}, { transaction });
 
-			await transaction.commit();
-		} catch (error) {
-			await transaction.rollback();
-			throw error;
-		}
-	}
-
-	async update(body: UpdateFeedbackBody) {
-		const transaction = await sequelize.transaction();
-		try {
-			const feedback = await Feedback.findByPk(this.test.id, { transaction });
-			if (!feedback) {
-				throw new DomainError(`Feedback with of test with id ${this.test.id} not found`);
-			}
-			await feedback.update({
-				...body,
-			}, { transaction });
-
-			await feedback.save();
 			await transaction.commit();
 		} catch (error) {
 			await transaction.rollback();

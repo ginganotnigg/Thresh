@@ -6,6 +6,7 @@ import ExamTest from "../../../domain/models/exam_test";
 import Test from "../../../domain/models/test";
 import { ExamPolicy } from "../../../domain/policy/exam.policy";
 import { TestQueryRepo } from "../../../domain/repo/test/test.query-repo";
+import { TestAggregateResponse } from "../../../domain/schema/aggregate.schema";
 import { QuestionCore } from "../../../domain/schema/core.schema";
 import { QuestionToDo } from "../../../domain/schema/variants.schema";
 
@@ -34,7 +35,7 @@ export class ExamRead {
 	}
 
 	async getParticipants(paging: Paging): Promise<Paged<string>> {
-		this.examPolicy.checkAllowedToSeeParticipants();
+		this.examPolicy.checkAllowedToSeeOthers();
 		const { page, perPage } = paging;
 		const testId = this.test.id;
 		const { rows, count } = await ExamParticipants.findAndCountAll({
@@ -64,5 +65,11 @@ export class ExamRead {
 	async getQuestionsWithAnswers(): Promise<QuestionCore[]> {
 		await this.examPolicy.checkIsAllowedToSeeCorrectAnswers();
 		return await TestQueryRepo.getQuestions(this.test.id);
+	}
+
+	async getAggregate(): Promise<TestAggregateResponse> {
+		this.examPolicy.checkIsAllowedToSeeExam();
+		const testAggregate = await TestQueryRepo.getTestAggregate(this.test.id);
+		return testAggregate;
 	}
 }

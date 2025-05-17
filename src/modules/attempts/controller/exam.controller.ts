@@ -3,14 +3,14 @@ import { CredentialsMetaSchema } from "../../../controller/schemas/meta";
 import { AttemptIdParamsSchema, TestIdParamsSchema } from "../../../controller/schemas/params";
 import { Chuoi } from "../../../library/caychuoijs";
 import { AttemptsOfExamRead } from "../usecase/exam/attempts-of-exam.read";
-import { AttemptAggregateSchema, AttemptsListSchema, AttemptsOfCandidateInTestAggregateSchema, AttemptsOfTestAggregateSchema, AttemptsOfTestQuerySchema } from "../schema/test.schema";
+import { AttemptAggregateSchema, AttemptsListSchema, AttemptsOfCandidateInTestAggregateSchema, AttemptsOfTestAggregateSchema, AttemptsOfTestQuerySchema } from "../schema/of-test.schema";
 import { AttemptOfExamRead } from "../usecase/exam/attempt-of-exam.read";
 import { AttemptInfoSchema } from "../../../domain/schema/info.schema";
 import { AnswerCoreSchema } from "../../../domain/schema/core.schema";
 import { AttemptsOfExamWrite } from "../usecase/exam/attempts-of-exam.write";
 
 export function examController() {
-	const router = Chuoi.newRoute("/exam");
+	const router = Chuoi.newRoute("/exams");
 
 	router.endpoint().get("/:testId/attempts")
 		.schema({
@@ -41,9 +41,6 @@ export function examController() {
 		.schema({
 			meta: CredentialsMetaSchema,
 			params: TestIdParamsSchema,
-			query: z.object({
-				candidateId: z.string().optional(),
-			}),
 			response: AttemptsOfTestAggregateSchema,
 		})
 		.handle(async data => {
@@ -57,9 +54,6 @@ export function examController() {
 			params: z.object({
 				testId: z.string(),
 				candidateId: z.string(),
-			}),
-			query: z.object({
-				candidateId: z.string().optional(),
 			}),
 			response: AttemptsOfCandidateInTestAggregateSchema,
 		})

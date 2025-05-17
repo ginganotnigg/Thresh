@@ -4,7 +4,7 @@ import Test from "../../../../domain/models/test";
 import { AnswerCore } from "../../../../domain/schema/core.schema";
 import { AttemptInfo } from "../../../../domain/schema/info.schema";
 import { CredentialsMeta } from "../../../../controller/schemas/meta";
-import { AttemptAggregate } from "../../schema/test.schema";
+import { AttemptAggregate } from "../../schema/of-test.schema";
 import { AttemptQueryRepo } from "../../../../domain/repo/attempt/attempt.query-repo";
 import PracticeTest from "../../../../domain/models/practice_test";
 

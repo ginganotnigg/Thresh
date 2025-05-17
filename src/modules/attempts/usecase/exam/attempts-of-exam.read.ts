@@ -5,7 +5,7 @@ import { CredentialsMeta } from "../../../../controller/schemas/meta";
 import ExamTest from "../../../../domain/models/exam_test";
 import { DomainError } from "../../../../controller/errors/domain.error";
 import { TestAttemptsQueryRepo } from "../../../../domain/repo/attempt/test-attemps.query-repo";
-import { AttemptsOfTestAggregate, AttemptsOfTestQuery, AttemptsOfCandidateInTestAggregate } from "../../schema/test.schema";
+import { AttemptsOfTestAggregate, AttemptsOfTestQuery, AttemptsOfCandidateInTestAggregate } from "../../schema/of-test.schema";
 import { AttemptsQueryRepo } from "../../../../domain/repo/attempt/attempts.query-repo";
 import ExamParticipants from "../../../../domain/models/exam_participants";
 

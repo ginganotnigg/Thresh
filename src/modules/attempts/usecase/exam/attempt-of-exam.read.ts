@@ -5,7 +5,7 @@ import { AnswerCore } from "../../../../domain/schema/core.schema";
 import { AttemptInfo } from "../../../../domain/schema/info.schema";
 import ExamTest from "../../../../domain/models/exam_test";
 import { CredentialsMeta } from "../../../../controller/schemas/meta";
-import { AttemptAggregate } from "../../schema/test.schema";
+import { AttemptAggregate } from "../../schema/of-test.schema";
 import { AttemptQueryRepo } from "../../../../domain/repo/attempt/attempt.query-repo";
 import ExamParticipants from "../../../../domain/models/exam_participants";
 import { ExamPolicy } from "../../../../domain/policy/exam.policy";

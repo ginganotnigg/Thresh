@@ -28,4 +28,6 @@ export class TestsQueryRepo {
 			offset: (page - 1) * perPage,
 		}
 	}
+
+	async getAggregate() { }
 }

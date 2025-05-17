@@ -1,5 +1,5 @@
 import Test from "../../models/test";
-import { AttemptsOfCandidateInTestAggregate, AttemptsOfTestAggregate } from "../../../modules/attempts/schema/test.schema";
+import { AttemptsOfCandidateInTestAggregate, AttemptsOfTestAggregate } from "../../../modules/attempts/schema/of-test.schema";
 import { db } from "../../../configs/orm/kysely/db";
 
 export class TestAttemptsQueryRepo {

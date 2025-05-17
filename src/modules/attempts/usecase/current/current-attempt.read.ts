@@ -8,14 +8,12 @@ import { AttemptQueryRepo } from "../../../../domain/repo/attempt/attempt.query-
 import { AttemptsQueryRepo } from "../../../../domain/repo/attempt/attempts.query-repo";
 
 export class CurrentAttemptRead {
-	private readonly attemptsQueryRepo: AttemptsQueryRepo;
-	private readonly attemptQueryRepo: AttemptQueryRepo;
+	private readonly attemptQueryRepo: AttemptQueryRepo | null;
 
 	private constructor(
-		private readonly attempt: Attempt,
+		private readonly attempt: Attempt | null,
 	) {
-		this.attemptsQueryRepo = new AttemptsQueryRepo();
-		this.attemptQueryRepo = new AttemptQueryRepo(this.attempt);
+		this.attemptQueryRepo = attempt ? new AttemptQueryRepo(attempt) : null;
 	}
 
 	static async load(attemptId: string, credentials: CredentialsMeta): Promise<CurrentAttemptRead> {
@@ -26,24 +24,27 @@ export class CurrentAttemptRead {
 			}],
 		});
 		if (!attempt || attempt.hasEnded === true || attempt.candidateId !== credentials.userId) {
-			throw new DomainError(`Attempt not found or has ended`);
+			return new CurrentAttemptRead(null);
 		}
 		return new CurrentAttemptRead(attempt);
 	}
 
 	static async loadByTestId(testId: string, credentials: CredentialsMeta): Promise<CurrentAttemptRead> {
 		const attempt = await new AttemptsQueryRepo().getCurrentAttemptByTestAndCandidate(testId, credentials.userId);
-		if (!attempt) {
-			throw new DomainError(`Attempt not found or has ended`);
-		}
 		return new CurrentAttemptRead(attempt);
 	}
 
 	async getAnswers(): Promise<AnswerCore[]> {
+		if (!this.attemptQueryRepo || !this.attempt) {
+			throw new DomainError(`Current attempt not found`);
+		}
 		return this.attemptQueryRepo.getAttemptAnswers();
 	}
 
-	getAttemptWithTest(): AttemptWithTest {
+	getAttemptWithTest(): AttemptWithTest | null {
+		if (!this.attempt) {
+			return null;
+		}
 		return {
 			...this.attempt.toJSON(),
 			test: this.attempt.Test!.toJSON(),

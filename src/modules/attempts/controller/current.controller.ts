@@ -15,7 +15,7 @@ export function currentController() {
 			params: z.object({
 				attemptId: z.string(),
 			}),
-			response: AttemptWithTestSchema,
+			response: AttemptWithTestSchema.nullable(),
 		})
 		.handle(async (data) => {
 			return (await CurrentAttemptRead.load(data.params.attemptId, data.meta)).getAttemptWithTest();
@@ -29,7 +29,7 @@ export function currentController() {
 			params: z.object({
 				testId: z.string(),
 			}),
-			response: AttemptWithTestSchema,
+			response: AttemptWithTestSchema.nullable(),
 		})
 		.handle(async (data) => {
 			return (await CurrentAttemptRead.loadByTestId(data.params.testId, data.meta)).getAttemptWithTest();

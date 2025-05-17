@@ -8,9 +8,6 @@ export const TestInfoSchema = TestCoreSchema
 	});
 
 export const AttemptInfoSchema = AttemptCoreSchema
-	.omit({
-		testId: true,
-	})
 	.extend({
 		createdAt: z.date(),
 		updatedAt: z.date(),

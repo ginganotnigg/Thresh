@@ -26,18 +26,9 @@ export default function controllerFeedback() {
 			body: CreateFeedbackBodySchema,
 		})
 		.handle(async data => {
-			await (await FeedbacksWrite.load(data.params.testId, data.meta)).create(data.body);
+			await (await FeedbacksWrite.load(data.params.testId, data.meta)).submit(data.body);
 		}).build({ tags: ['Feedback'] });
 
-	router.endpoint().put('/practices/:testId/feedback')
-		.schema({
-			meta: CredentialsMetaSchema,
-			params: TestIdParamsSchema,
-			body: UpdateFeedbackBodySchema,
-		})
-		.handle(async data => {
-			await (await FeedbacksWrite.load(data.params.testId, data.meta)).update(data.body);
-		}).build({ tags: ['Feedback'] });
 
 	router.endpoint().delete('/practices/:testId/feedback')
 		.schema({

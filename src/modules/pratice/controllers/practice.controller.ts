@@ -11,7 +11,6 @@ import { QuestionToDoSchema } from "../../../domain/schema/variants.schema";
 import { QuestionCoreSchema } from "../../../domain/schema/core.schema";
 import { PracticeWrite } from "../usecase/practice/practices.write";
 import { CreatePracticeBodySchema } from "../schema";
-import { securityDocument } from "../../../controller/documents/security";
 
 export default function controllerPractice() {
 	const router = Chuoi.newRoute("/practices");
@@ -32,6 +31,18 @@ export default function controllerPractice() {
 			response: PracticeTestInfoSchema,
 		}).handle(async data => {
 			return await PracticesRead.load(data.meta).get(data.params.testId);
+		}).build({ tags: ['Practice'] });
+
+	router.endpoint().get('/:testId/aggregate')
+		.schema({
+			meta: CredentialsMetaSchema,
+			params: TestIdParamsSchema,
+			response: z.object({
+				numberOfQuestions: z.number(),
+				totalPoints: z.number(),
+			}),
+		}).handle(async data => {
+			return (await PracticeRead.load(data.params.testId, data.meta)).getAggregate();
 		}).build({ tags: ['Practice'] });
 
 	router.endpoint().get('/:testId/questions-to-do')
@@ -57,7 +68,6 @@ export default function controllerPractice() {
 		});
 
 	router.endpoint().post()
-		.addSecurityDocument(securityDocument, "authorization")
 		.schema({
 			meta: CredentialsMetaSchema,
 			body: CreatePracticeBodySchema,

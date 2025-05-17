@@ -3,7 +3,7 @@ import AttemptsAnswerQuestions from "../../models/attempts_answer_questions";
 import { AnswerCore } from "../../schema/core.schema";
 import { db } from "../../../configs/orm/kysely/db";
 import { sql } from "kysely";
-import { AttemptAggregate } from "../../../modules/attempts/schema/test.schema";
+import { AttemptAggregate } from "../../../modules/attempts/schema/of-test.schema";
 import Attempt from "../../models/attempt";
 
 export class AttemptQueryRepo {

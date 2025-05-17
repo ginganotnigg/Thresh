@@ -4,7 +4,7 @@ import { Paged } from "../../../../controller/schemas/base";
 import { CredentialsMeta } from "../../../../controller/schemas/meta";
 import { DomainError } from "../../../../controller/errors/domain.error";
 import { TestAttemptsQueryRepo } from "../../../../domain/repo/attempt/test-attemps.query-repo";
-import { AttemptsOfTestAggregate, AttemptsOfTestQuery } from "../../schema/test.schema";
+import { AttemptsOfTestAggregate, AttemptsOfTestQuery } from "../../schema/of-test.schema";
 import { AttemptsQueryRepo } from "../../../../domain/repo/attempt/attempts.query-repo";
 import PracticeTest from "../../../../domain/models/practice_test";
 

@@ -7,6 +7,7 @@ import { ExamTestInfo } from "../../../domain/schema/info.schema";
 import { Op } from "sequelize";
 import { TestsQuery } from "../../../domain/schema/query.schema";
 import { TestsQueryRepo } from "../../../domain/repo/test/tests.query-repo";
+import ExamParticipants from "../../../domain/models/exam_participants";
 
 export class ExamsRead {
 	private constructor(
@@ -57,7 +58,7 @@ export class ExamsRead {
 		}
 	}
 
-	async find(roomId: string): Promise<ExamTestInfo> {
+	async find(roomId: string, credentials: CredentialsMeta): Promise<ExamTestInfo & { hasJoined: boolean }> {
 		const now = new Date();
 		const examTest = await ExamTest.findAll({
 			where: {
@@ -72,6 +73,12 @@ export class ExamsRead {
 			include: [{
 				model: Test,
 				required: true,
+			}, {
+				model: ExamParticipants,
+				required: false,
+				where: {
+					userId: credentials.userId,
+				},
 			}]
 		});
 		if (examTest.length === 0) {
@@ -80,10 +87,12 @@ export class ExamsRead {
 		if (examTest.length > 1) {
 			throw new Error("Multiple exam tests found");
 		}
+		const examTestParticipants = examTest[0].ExamParticipants!.find((p) => p.candidateId === credentials.userId);
 		return {
 			...examTest[0].get(),
 			...examTest[0].Test!.get(),
-			hasPassword: examTest[0].password !== null,
+			hasPassword: examTest[0].password != null,
+			hasJoined: examTestParticipants != null,
 		};
 	}
 }

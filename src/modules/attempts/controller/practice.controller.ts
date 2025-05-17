@@ -2,7 +2,7 @@ import { z } from "zod";
 import { CredentialsMetaSchema } from "../../../controller/schemas/meta";
 import { AttemptIdParamsSchema, TestIdParamsSchema } from "../../../controller/schemas/params";
 import { Chuoi } from "../../../library/caychuoijs";
-import { AttemptAggregateSchema, AttemptsListSchema, AttemptsOfTestAggregateSchema, AttemptsOfTestQuerySchema } from "../schema/test.schema";
+import { AttemptAggregateSchema, AttemptsListSchema, AttemptsOfTestAggregateSchema, AttemptsOfTestQuerySchema } from "../schema/of-test.schema";
 import { AttemptInfoSchema } from "../../../domain/schema/info.schema";
 import { AnswerCoreSchema } from "../../../domain/schema/core.schema";
 import { AttemptsOfPracticeRead } from "../usecase/practice/attempts-of-practice.read";
@@ -10,7 +10,7 @@ import { AttemptOfPracticeRead } from "../usecase/practice/attempt-of-practice.r
 import { AttemptsOfPracticeWrite } from "../usecase/practice/attempts-of-practice.write";
 
 export function practiceController() {
-	const router = Chuoi.newRoute("/practice");
+	const router = Chuoi.newRoute("/practices");
 
 	router.endpoint().get("/:testId/attempts")
 		.schema({
@@ -28,9 +28,6 @@ export function practiceController() {
 		.schema({
 			meta: CredentialsMetaSchema,
 			params: TestIdParamsSchema,
-			query: z.object({
-				candidateId: z.string().optional(),
-			}),
 			response: AttemptsOfTestAggregateSchema,
 		})
 		.handle(async data => {

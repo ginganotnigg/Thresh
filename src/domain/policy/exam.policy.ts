@@ -67,23 +67,13 @@ export class ExamPolicy {
 		}
 	}
 
-	checkAllowedToSeeOtherResults(): void {
+	checkAllowedToSeeOthers(): void {
 		if (
 			this.test.ExamTest!.isAllowedToSeeOtherResults === false &&
 			!this.isAuthor() &&
 			!this.isParticipant()
 		) {
 			throw new DomainError(`You are not allowed to see other results`);
-		}
-	}
-
-	checkAllowedToSeeParticipants(): void {
-		if (
-			this.isAuthor() === false &&
-			this.isParticipant() === false &&
-			this.test.ExamTest!.isAllowedToSeeOtherResults === false
-		) {
-			throw new DomainError(`You are not allowed to see this exam`);
 		}
 	}
 
@@ -138,6 +128,15 @@ export class ExamPolicy {
 		});
 		if (attempts > 0) {
 			throw new DomainError(`You cannot edit this exam because it has attempts`);
+		}
+	}
+
+	checkIsAllowedToSeeExam(): void {
+		if (
+			this.isAuthor() === false &&
+			this.isParticipant() === false
+		) {
+			throw new DomainError(`You are not allowed to see this exam`);
 		}
 	}
 }
