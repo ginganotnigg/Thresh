@@ -20,6 +20,7 @@ export class AttemptsQueryRepo {
 			where: {
 				...(candidateId ? { candidateId: candidateId } : {}),
 				...(testId ? { testId: testId } : {}),
+				hasEnded: true,
 			},
 			include: [
 				{
@@ -75,6 +76,7 @@ export class AttemptsQueryRepo {
 			where: {
 				...(candidateId ? { candidateId: candidateId } : {}),
 				...(testId ? { testId: testId } : {}),
+				hasEnded: true,
 			},
 			include: [
 				{

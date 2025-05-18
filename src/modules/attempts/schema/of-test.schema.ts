@@ -18,6 +18,7 @@ export const AttemptsOfTestAggregateSchema = z.object({
 });
 
 export const AttemptsOfCandidateInTestAggregateSchema = z.object({
+	candidateId: z.string(),
 	rank: z.number(),
 	totalAttempts: z.number(),
 	averageScore: z.number(),
@@ -30,7 +31,6 @@ export const AttemptAggregateSchema = z.object({
 	answered: z.number(),
 	answeredCorrect: z.number(),
 });
-
 
 export type AttemptsOfTestQuery = z.infer<typeof AttemptsOfTestQuerySchema>;
 export type AttemptsList = z.infer<typeof AttemptsListSchema>;

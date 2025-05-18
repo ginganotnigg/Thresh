@@ -22,6 +22,8 @@ export const CreateTemplateBodySchema = z.object({
 	name: z.string(),
 	title: z.string(),
 	description: z.string(),
+	language: z.string(),
+	minutesToAnswer: z.number().min(1).max(10000),
 	difficulty: z.string(),
 	tags: z.array(z.string()),
 	numberOfQuestions: z.number(),

@@ -8,6 +8,7 @@ import { AttemptOfExamRead } from "../usecase/exam/attempt-of-exam.read";
 import { AttemptInfoSchema } from "../../../domain/schema/info.schema";
 import { AnswerCoreSchema } from "../../../domain/schema/core.schema";
 import { AttemptsOfExamWrite } from "../usecase/exam/attempts-of-exam.write";
+import { PagedSchema, PagingSchema } from "../../../controller/schemas/base";
 
 export function examController() {
 	const router = Chuoi.newRoute("/exams");
@@ -45,6 +46,33 @@ export function examController() {
 		})
 		.handle(async data => {
 			return await (await AttemptsOfExamRead.load(data.params.testId, data.meta)).getAttemptsAggregate();
+		})
+		.build({ tags: ["Attempts of Exam"] });
+
+	router.endpoint().get("/:testId/participants/aggregate")
+		.schema({
+			meta: CredentialsMetaSchema,
+			params: TestIdParamsSchema,
+			query: PagingSchema,
+			response: PagedSchema(AttemptsOfCandidateInTestAggregateSchema),
+		})
+		.handle(async data => {
+			return await (await AttemptsOfExamRead.load(data.params.testId, data.meta)).getParticipantsAggregate(data.query);
+		})
+		.build({ tags: ["Attempts of Exam"] });
+
+	router.endpoint().get("/:testId/candidate/:candidateId/attempts/")
+		.schema({
+			meta: CredentialsMetaSchema,
+			params: z.object({
+				testId: z.string(),
+				candidateId: z.string(),
+			}),
+			query: AttemptsOfTestQuerySchema,
+			response: AttemptsListSchema,
+		})
+		.handle(async data => {
+			return await (await AttemptsOfExamRead.load(data.params.testId, data.meta)).getAttemptsOfCandidateInTest(data.params.candidateId, data.query);
 		})
 		.build({ tags: ["Attempts of Exam"] });
 

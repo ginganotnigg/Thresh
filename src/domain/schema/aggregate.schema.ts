@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-export const TestAggregateResponseSchema = z.object({
+export const TestAggregateSchema = z.object({
 	numberOfQuestions: z.number(),
 	totalPoints: z.number(),
 });
 
-export type TestAggregateResponse = z.infer<typeof TestAggregateResponseSchema>;
+export type TestAggregate = z.infer<typeof TestAggregateSchema>;

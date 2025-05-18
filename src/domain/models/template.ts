@@ -6,6 +6,8 @@ class Template extends Model<InferAttributes<Template>, InferCreationAttributes<
 	declare name: string;
 	declare title: string;
 	declare description: string;
+	declare language: string;
+	declare minutesToAnswer: number;
 	declare difficulty: string;
 	declare tags: string[];
 	declare numberOfQuestions: number;
@@ -35,6 +37,14 @@ class Template extends Model<InferAttributes<Template>, InferCreationAttributes<
 			},
 			description: {
 				type: DataTypes.TEXT,
+				allowNull: false,
+			},
+			language: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
+			minutesToAnswer: {
+				type: DataTypes.INTEGER,
 				allowNull: false,
 			},
 			difficulty: {

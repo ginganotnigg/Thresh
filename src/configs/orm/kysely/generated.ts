@@ -42,6 +42,14 @@ export interface AttemptsAnswerQuestions {
   updatedAt: Date | null;
 }
 
+export interface ExamParticipants {
+  candidateId: string;
+  createdAt: Date | null;
+  id: string;
+  testId: string;
+  updatedAt: Date | null;
+}
+
 export interface ExamTests {
   closeDate: Date;
   createdAt: Date | null;
@@ -114,6 +122,7 @@ export interface Tests {
 export interface DB {
   Attempts: Attempts;
   Attempts_answer_Questions: AttemptsAnswerQuestions;
+  ExamParticipants: ExamParticipants;
   ExamTests: ExamTests;
   Feedbacks: Feedbacks;
   PracticeTests: PracticeTests;

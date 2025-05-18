@@ -11,7 +11,7 @@ import io from "./servers/io";
 import { ExamModule } from "../modules/exam/module";
 import { PracticeModule } from "../modules/pratice/module";
 import { DecoderMiddleware } from "../controller/defaults/decoder.mdw";
-import { TestModule } from "../modules/test/module";
+import { TestModule } from "../modules/self/module";
 
 export async function main() {
 	Chuoi.init(app, {
@@ -21,8 +21,8 @@ export async function main() {
 	});
 
 	Chuoi.middleware(
-		LoggerMiddleware,
 		DecoderMiddleware,
+		LoggerMiddleware,
 	);
 
 	// =====================

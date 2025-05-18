@@ -52,6 +52,7 @@ export class PracticeWrite {
 			await transaction.commit();
 			return { testId };
 		} catch (error) {
+			console.log("error", error);
 			await transaction.rollback();
 			throw error;
 		}

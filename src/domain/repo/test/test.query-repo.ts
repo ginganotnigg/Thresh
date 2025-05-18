@@ -1,7 +1,7 @@
 import { DomainError } from "../../../controller/errors/domain.error";
 import Question from "../../models/question";
 import Test from "../../models/test";
-import { TestAggregateResponse } from "../../schema/aggregate.schema";
+import { TestAggregate } from "../../schema/aggregate.schema";
 import { QuestionCore } from "../../schema/core.schema";
 import { QuestionToDo } from "../../schema/variants.schema";
 
@@ -30,22 +30,18 @@ export class TestQueryRepo {
 	}
 
 	static async getQuestionsToDo(testId: string): Promise<QuestionToDo[]> {
-		const attributes = Question.getAttributes();
-		type Keys = keyof typeof attributes;
-		const excludeKeys: Keys[] = ["correctOption"];
-
 		const questions = await Question.findAll({
 			where: {
 				testId: testId
 			},
-			attributes: { exclude: excludeKeys },
+			attributes: { exclude: ["correctOption"] },
 			order: [['id', 'ASC']],
 		});
 
 		return questions;
 	}
 
-	static async getTestAggregate(testId: string): Promise<TestAggregateResponse> {
+	static async getTestAggregate(testId: string): Promise<TestAggregate> {
 		const numberOfQuestions = await Question.count({
 			where: {
 				testId: testId

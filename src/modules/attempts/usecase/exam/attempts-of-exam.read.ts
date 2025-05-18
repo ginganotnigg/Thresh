@@ -1,6 +1,6 @@
 import Test from "../../../../domain/models/test";
 import { AttemptInfo } from "../../../../domain/schema/info.schema";
-import { Paged } from "../../../../controller/schemas/base";
+import { Paged, Paging } from "../../../../controller/schemas/base";
 import { CredentialsMeta } from "../../../../controller/schemas/meta";
 import ExamTest from "../../../../domain/models/exam_test";
 import { DomainError } from "../../../../controller/errors/domain.error";
@@ -74,6 +74,21 @@ export class AttemptsOfExamRead {
 		return await this.testAttemptsQueryRepo.getAttemptsOfTestAggregate();
 	}
 
+	async getAttemptsOfCandidateInTest(candidateId: string, params: AttemptsOfTestQuery): Promise<Paged<AttemptInfo>> {
+		if (
+			candidateId !== this.credentials.userId &&
+			this.isAllowedToSeeOtherResults() === false
+		) {
+			throw new DomainError(`You are not allowed to see other results`);
+		}
+		const res = await this.attemptsQueryRepo.getAttemptsQuery({
+			...params,
+			candidateId: candidateId,
+			testId: this.test.id,
+		});
+		return res;
+	}
+
 	async getAttemptsOfCandidateInTestAggregate(candidateId: string): Promise<AttemptsOfCandidateInTestAggregate> {
 		if (
 			candidateId !== this.credentials.userId &&
@@ -86,6 +101,16 @@ export class AttemptsOfExamRead {
 
 	async getNumberOfSelfAttempts(): Promise<number> {
 		return await this.testAttemptsQueryRepo.getNumberOfSelfAttempts(this.credentials.userId);
+	}
+
+	async getParticipantsAggregate(paging: Paging): Promise<Paged<AttemptsOfCandidateInTestAggregate>> {
+		if (!this.isAllowedToSeeOtherResults()) {
+			throw new DomainError(`You are not allowed to see other results`);
+		}
+		return await this.testAttemptsQueryRepo.getParticipantsAggregate({
+			page: paging.page,
+			perPage: paging.perPage,
+		});
 	}
 }
 

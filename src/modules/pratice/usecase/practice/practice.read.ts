@@ -4,7 +4,7 @@ import PracticeTest from "../../../../domain/models/practice_test";
 import Test from "../../../../domain/models/test";
 import { PracticePolicy } from "../../../../domain/policy/practice.policy";
 import { TestQueryRepo } from "../../../../domain/repo/test/test.query-repo";
-import { TestAggregateResponse } from "../../../../domain/schema/aggregate.schema";
+import { TestAggregate } from "../../../../domain/schema/aggregate.schema";
 import { QuestionCore } from "../../../../domain/schema/core.schema";
 import { QuestionToDo } from "../../../../domain/schema/variants.schema";
 
@@ -41,7 +41,7 @@ export class PracticeRead {
 		return await TestQueryRepo.getQuestions(this.test.id);
 	}
 
-	async getAggregate(): Promise<TestAggregateResponse> {
+	async getAggregate(): Promise<TestAggregate> {
 		this.practicePolicy.checkAuthor();
 		const testAggregate = await TestQueryRepo.getTestAggregate(this.test.id);
 		return testAggregate;

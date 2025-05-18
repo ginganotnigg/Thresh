@@ -77,7 +77,7 @@ export class ExamsRead {
 				model: ExamParticipants,
 				required: false,
 				where: {
-					userId: credentials.userId,
+					candidateId: credentials.userId,
 				},
 			}]
 		});
