@@ -1,5 +1,5 @@
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
-import { TestDifficulty } from "../enum";
+import { TestDifficulty } from "../../domain/enum";
 import Test from "./test";
 import Feedback from "./feedback";
 

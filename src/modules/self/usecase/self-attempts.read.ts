@@ -2,13 +2,13 @@ import { FindAndCountOptions } from "sequelize";
 import { DomainError } from "../../../shared/controller/errors/domain.error";
 import { Paged } from "../../../shared/controller/schemas/base";
 import { CredentialsMeta } from "../../../shared/controller/schemas/meta";
-import Attempt from "../../../domain/models/attempt";
-import Test from "../../../domain/models/test";
+import Attempt from "../../../infrastructure/models/attempt";
+import Test from "../../../infrastructure/models/test";
 import { AttemptWithTest } from "../../attempts/schema/history.schema";
 import { AttemptsOfCandidateQuery } from "../../attempts/schema/history.schema";
-import { AttemptsQueryRepo } from "../../../domain/repo/attempt/attempts.query-repo";
+import { AttemptsQueryRepo } from "../../../infrastructure/read/attempts.query-repo";
 import { AttemptAggregate } from "../../attempts/schema/of-test.schema";
-import { AttemptQueryRepo } from "../../../domain/repo/attempt/attempt.query-repo";
+import { AttemptQueryRepo } from "../../../infrastructure/read/attempt.query-repo";
 import { AnswerCore } from "../../../domain/schema/core.schema";
 
 export class SelfAttemptsRead {

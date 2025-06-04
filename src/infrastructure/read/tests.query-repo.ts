@@ -1,7 +1,7 @@
 import { FindAndCountOptions, Op } from "sequelize";
-import { TestsQuery } from "../../schema/query.schema";
-import Test from "../../models/test";
-import { sortBy } from "../../../shared/controller/schemas/base";
+import { TestsQuery } from "../../domain/schema/query.schema";
+import Test from "../models/test";
+import { sortBy } from "../../shared/controller/schemas/base";
 
 export class TestsQueryRepo {
 	static buildQuery(query: TestsQuery): FindAndCountOptions<Test> {

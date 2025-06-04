@@ -11,6 +11,7 @@ import { ExamsWrite } from "./usecase/exams.write";
 import { TestsQuerySchema } from "../../domain/schema/query.schema";
 import { QuestionCoreSchema } from "../../domain/schema/core.schema";
 import { QuestionToDoSchema } from "../../domain/schema/variants.schema";
+import { TestQuestionsAggregateSchema } from "../../domain/schema/aggregate.schema";
 
 export default function examController() {
 	const router = Chuoi.newRoute("/exams");
@@ -123,6 +124,17 @@ export default function examController() {
 		})
 		.build({
 			tags: ["Exam"],
+		});
+
+	router.endpoint().get("/:testId/questions-aggregate")
+		.schema({
+			meta: CredentialsMetaSchema,
+			params: TestIdParamsSchema,
+			response: z.array(TestQuestionsAggregateSchema),
+		})
+		.handle(async (data) => {
+			const { params: { testId } } = data;
+			return await (await ExamRead.load(testId, data.meta)).getTestQuestionsAggregate();
 		});
 
 	router.endpoint().post()

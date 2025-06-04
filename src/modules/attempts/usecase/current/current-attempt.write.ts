@@ -1,7 +1,7 @@
 import { DomainError } from "../../../../shared/controller/errors/domain.error";
 import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
-import Attempt from "../../../../domain/models/attempt";
-import { AttemptRepo } from "../../../../domain/repo/attempt/attempt.repo";
+import Attempt from "../../../../infrastructure/models/attempt";
+import { AttemptRepo } from "../../../../infrastructure/write/attempt.repo";
 
 export class CurrentAttemptWrite {
 	private readonly attemptRepo: AttemptRepo;

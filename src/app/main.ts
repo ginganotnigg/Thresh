@@ -11,7 +11,7 @@ import io from "./servers/io";
 import { ExamModule } from "../modules/exam/module";
 import { PracticeModule } from "../modules/pratice/module";
 import { DecoderMiddleware } from "../shared/controller/defaults/decoder.mdw";
-import { TestModule } from "../modules/self/module";
+import { SelfModule } from "../modules/self/module";
 
 export async function main() {
 	Chuoi.init(app, {
@@ -33,7 +33,7 @@ export async function main() {
 		new AttemptsModule(),
 		new ExamModule(),
 		new PracticeModule(),
-		new TestModule(),
+		new SelfModule(),
 	];
 	for (const m of modules) {
 		await m.initialize();

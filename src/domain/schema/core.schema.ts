@@ -1,6 +1,6 @@
 import { number, z } from "zod";
 import { TestDifficulty } from "../enum";
-import { FeedbackProblemsEnum } from "../models/feedback";
+import { FeedbackProblemsEnum } from "../../infrastructure/models/feedback";
 import { PagedSchema } from "../../shared/controller/schemas/base";
 
 export const TestCoreSchema = z.object({

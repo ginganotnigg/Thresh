@@ -1,6 +1,6 @@
 import { DomainError } from "../../shared/controller/errors/domain.error";
 import { CredentialsMeta } from "../../shared/controller/schemas/meta";
-import Test from "../models/test";
+import Test from "../../infrastructure/models/test";
 
 export class PracticePolicy {
 	constructor(

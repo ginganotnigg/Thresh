@@ -1,12 +1,12 @@
-import Test from "../../../../domain/models/test";
+import Test from "../../../../infrastructure/models/test";
 import { AttemptInfo } from "../../../../domain/schema/info.schema";
 import { Paged } from "../../../../shared/controller/schemas/base";
 import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
 import { DomainError } from "../../../../shared/controller/errors/domain.error";
-import { TestAttemptsQueryRepo } from "../../../../domain/repo/attempt/test-attemps.query-repo";
+import { TestAttemptsQueryRepo } from "../../../../infrastructure/read/test-attemps.query-repo";
 import { AttemptsOfTestAggregate, AttemptsOfTestQuery } from "../../schema/of-test.schema";
-import { AttemptsQueryRepo } from "../../../../domain/repo/attempt/attempts.query-repo";
-import PracticeTest from "../../../../domain/models/practice_test";
+import { AttemptsQueryRepo } from "../../../../infrastructure/read/attempts.query-repo";
+import PracticeTest from "../../../../infrastructure/models/practice_test";
 
 export class AttemptsOfPracticeRead {
 	private readonly attemptsQueryRepo: AttemptsQueryRepo;

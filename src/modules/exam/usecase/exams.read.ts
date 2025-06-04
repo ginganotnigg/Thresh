@@ -1,13 +1,13 @@
 import { DomainError } from "../../../shared/controller/errors/domain.error";
 import { Paged } from "../../../shared/controller/schemas/base";
 import { CredentialsMeta } from "../../../shared/controller/schemas/meta";
-import ExamTest from "../../../domain/models/exam_test";
-import Test from "../../../domain/models/test";
+import ExamTest from "../../../infrastructure/models/exam_test";
+import Test from "../../../infrastructure/models/test";
 import { ExamTestInfo } from "../../../domain/schema/info.schema";
 import { Op } from "sequelize";
 import { TestsQuery } from "../../../domain/schema/query.schema";
-import { TestsQueryRepo } from "../../../domain/repo/test/tests.query-repo";
-import ExamParticipants from "../../../domain/models/exam_participants";
+import { TestsQueryRepo } from "../../../infrastructure/read/tests.query-repo";
+import ExamParticipants from "../../../infrastructure/models/exam_participants";
 
 export class ExamsRead {
 	private constructor(

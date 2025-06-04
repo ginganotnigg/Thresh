@@ -1,9 +1,9 @@
 import { DomainError } from "../../../../shared/controller/errors/domain.error";
 import { Paged } from "../../../../shared/controller/schemas/base";
 import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
-import PracticeTest from "../../../../domain/models/practice_test";
-import Test from "../../../../domain/models/test";
-import { TestsQueryRepo } from "../../../../domain/repo/test/tests.query-repo";
+import PracticeTest from "../../../../infrastructure/models/practice_test";
+import Test from "../../../../infrastructure/models/test";
+import { TestsQueryRepo } from "../../../../infrastructure/read/tests.query-repo";
 import { ExamTestInfo, PracticeTestInfo } from "../../../../domain/schema/info.schema";
 import { TestsQuery } from "../../../../domain/schema/query.schema";
 

@@ -1,8 +1,8 @@
 import { DomainError } from "../../../../shared/controller/errors/domain.error";
 import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
-import PracticeTest from "../../../../domain/models/practice_test";
-import Test from "../../../../domain/models/test";
-import { AttemptRepo } from "../../../../domain/repo/attempt/attempt.repo";
+import PracticeTest from "../../../../infrastructure/models/practice_test";
+import Test from "../../../../infrastructure/models/test";
+import { AttemptRepo } from "../../../../infrastructure/write/attempt.repo";
 
 export class AttemptsOfPracticeWrite {
 	private constructor(

@@ -1,10 +1,10 @@
 import { Transaction } from "sequelize";
 import { DomainError } from "../../shared/controller/errors/domain.error";
 import { CredentialsMeta } from "../../shared/controller/schemas/meta";
-import Test from "../models/test";
-import Attempt from "../models/attempt";
-import { AttemptQueryRepo } from "../repo/attempt/attempt.query-repo";
-import { AttemptsQueryRepo } from "../repo/attempt/attempts.query-repo";
+import Test from "../../infrastructure/models/test";
+import Attempt from "../../infrastructure/models/attempt";
+import { AttemptQueryRepo } from "../../infrastructure/read/attempt.query-repo";
+import { AttemptsQueryRepo } from "../../infrastructure/read/attempts.query-repo";
 
 export class ExamPolicy {
 	constructor(
@@ -139,4 +139,6 @@ export class ExamPolicy {
 			throw new DomainError(`You are not allowed to see this exam`);
 		}
 	}
+
+
 }

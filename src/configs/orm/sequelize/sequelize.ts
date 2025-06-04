@@ -1,15 +1,15 @@
 import { Sequelize } from "sequelize";
 import { logSqlCommand } from "../../logger/winston";
 import { env } from "../../env";
-import Test from "../../../domain/models/test";
-import Attempt from "../../../domain/models/attempt";
-import AttemptsAnswerQuestions from "../../../domain/models/attempts_answer_questions";
-import Question from "../../../domain/models/question";
-import PracticeTest from "../../../domain/models/practice_test";
-import ExamTest from "../../../domain/models/exam_test";
-import Feedback from "../../../domain/models/feedback";
-import Template from "../../../domain/models/template";
-import ExamParticipants from "../../../domain/models/exam_participants";
+import Test from "../../../infrastructure/models/test";
+import Attempt from "../../../infrastructure/models/attempt";
+import AttemptsAnswerQuestions from "../../../infrastructure/models/attempts_answer_questions";
+import Question from "../../../infrastructure/models/question";
+import PracticeTest from "../../../infrastructure/models/practice_test";
+import ExamTest from "../../../infrastructure/models/exam_test";
+import Feedback from "../../../infrastructure/models/feedback";
+import Template from "../../../infrastructure/models/template";
+import ExamParticipants from "../../../infrastructure/models/exam_participants";
 
 const sequelize = new Sequelize(
 	env.db.database,

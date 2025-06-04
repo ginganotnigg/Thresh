@@ -1,12 +1,12 @@
 import { DomainError } from "../../../shared/controller/errors/domain.error";
 import { Paged, Paging } from "../../../shared/controller/schemas/base";
 import { CredentialsMeta } from "../../../shared/controller/schemas/meta";
-import ExamParticipants from "../../../domain/models/exam_participants";
-import ExamTest from "../../../domain/models/exam_test";
-import Test from "../../../domain/models/test";
+import ExamParticipants from "../../../infrastructure/models/exam_participants";
+import ExamTest from "../../../infrastructure/models/exam_test";
+import Test from "../../../infrastructure/models/test";
 import { ExamPolicy } from "../../../domain/policy/exam.policy";
-import { TestQueryRepo } from "../../../domain/repo/test/test.query-repo";
-import { TestAggregate } from "../../../domain/schema/aggregate.schema";
+import { TestQueryRepo } from "../../../infrastructure/read/test.query-repo";
+import { TestAggregate, TestQuestionsAggregate } from "../../../domain/schema/aggregate.schema";
 import { QuestionCore } from "../../../domain/schema/core.schema";
 import { QuestionToDo } from "../../../domain/schema/variants.schema";
 
@@ -65,6 +65,12 @@ export class ExamRead {
 	async getQuestionsWithAnswers(): Promise<QuestionCore[]> {
 		await this.examPolicy.checkIsAllowedToSeeCorrectAnswers();
 		return await TestQueryRepo.getQuestions(this.test.id);
+	}
+
+	async getTestQuestionsAggregate(): Promise<TestQuestionsAggregate[]> {
+		await this.examPolicy.checkIsAllowedToSeeCorrectAnswers();
+		const testQuestionsAggregate = await TestQueryRepo.getTestQuestionsAggregate(this.test.id);
+		return testQuestionsAggregate;
 	}
 
 	async getAggregate(): Promise<TestAggregate> {

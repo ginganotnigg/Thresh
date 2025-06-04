@@ -1,7 +1,7 @@
 import { ensureDatabase } from "./configs/orm/database-operations";
 import sequelize from "./configs/orm/sequelize/sequelize";
-import Test from "./domain/models/test";
-import { TestAttemptsQueryRepo } from "./domain/repo/attempt/test-attemps.query-repo";
+import Test from "./infrastructure/models/test";
+import { TestAttemptsQueryRepo } from "./infrastructure/read/test-attemps.query-repo";
 
 ensureDatabase()
 	.then(async () => {

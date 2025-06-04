@@ -1,8 +1,8 @@
 import { Transaction } from "sequelize";
-import Question from "../../models/question";
-import Test from "../../models/test";
-import { CreateTestBody, UpdateTestBody } from "../../schema/create.schema";
-import { CredentialsMeta } from "../../../shared/controller/schemas/meta";
+import Question from "../models/question";
+import Test from "../models/test";
+import { CreateTestBody, UpdateTestBody } from "../../domain/schema/create.schema";
+import { CredentialsMeta } from "../../shared/controller/schemas/meta";
 
 export class TestRepo {
 	static async createTest(credentials: CredentialsMeta, param: CreateTestBody, transaction: Transaction): Promise<{ testId: string }> {

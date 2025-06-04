@@ -1,10 +1,10 @@
-import { DomainError } from "../../../shared/controller/errors/domain.error";
-import AttemptsAnswerQuestions from "../../models/attempts_answer_questions";
-import { AnswerCore } from "../../schema/core.schema";
-import { db } from "../../../configs/orm/kysely/db";
+import { DomainError } from "../../shared/controller/errors/domain.error";
+import AttemptsAnswerQuestions from "../models/attempts_answer_questions";
+import { AnswerCore } from "../../domain/schema/core.schema";
+import { db } from "../../configs/orm/kysely/db";
 import { sql } from "kysely";
-import { AttemptAggregate } from "../../../modules/attempts/schema/of-test.schema";
-import Attempt from "../../models/attempt";
+import { AttemptAggregate } from "../../modules/attempts/schema/of-test.schema";
+import Attempt from "../models/attempt";
 
 export class AttemptQueryRepo {
 	constructor(

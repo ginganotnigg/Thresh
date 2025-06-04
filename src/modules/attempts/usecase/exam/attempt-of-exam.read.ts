@@ -1,13 +1,13 @@
 import { DomainError } from "../../../../shared/controller/errors/domain.error";
-import Attempt from "../../../../domain/models/attempt";
-import Test from "../../../../domain/models/test";
+import Attempt from "../../../../infrastructure/models/attempt";
+import Test from "../../../../infrastructure/models/test";
 import { AnswerCore } from "../../../../domain/schema/core.schema";
 import { AttemptInfo } from "../../../../domain/schema/info.schema";
-import ExamTest from "../../../../domain/models/exam_test";
+import ExamTest from "../../../../infrastructure/models/exam_test";
 import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
 import { AttemptAggregate } from "../../schema/of-test.schema";
-import { AttemptQueryRepo } from "../../../../domain/repo/attempt/attempt.query-repo";
-import ExamParticipants from "../../../../domain/models/exam_participants";
+import { AttemptQueryRepo } from "../../../../infrastructure/read/attempt.query-repo";
+import ExamParticipants from "../../../../infrastructure/models/exam_participants";
 import { ExamPolicy } from "../../../../domain/policy/exam.policy";
 
 export class AttemptOfExamRead {

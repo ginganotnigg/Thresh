@@ -11,7 +11,7 @@ import { AttemptAggregateSchema } from "../attempts/schema/of-test.schema";
 import { AnswerCoreSchema, QuestionCoreSchema } from "../../domain/schema/core.schema";
 import { QuestionToDoSchema } from "../../domain/schema/variants.schema";
 
-export function testController() {
+export function selfController() {
 	const router = Chuoi.newRoute("/self");
 
 	router.endpoint().get("/tests/:testId")

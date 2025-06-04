@@ -1,5 +1,5 @@
-import Attempt from "../../../domain/models/attempt";
-import Test from "../../../domain/models/test";
+import Attempt from "../../../infrastructure/models/attempt";
+import Test from "../../../infrastructure/models/test";
 import { attemptEmitter } from "../init/emitter";
 import { AttemptScheduleService } from "../services/attempt-schedule-service";
 

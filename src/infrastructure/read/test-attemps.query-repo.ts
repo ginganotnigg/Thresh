@@ -1,7 +1,7 @@
-import Test from "../../models/test";
-import { AttemptsOfCandidateInTestAggregate, AttemptsOfTestAggregate } from "../../../modules/attempts/schema/of-test.schema";
-import { db } from "../../../configs/orm/kysely/db";
-import { Paged } from "../../../shared/controller/schemas/base";
+import Test from "../models/test";
+import { AttemptsOfCandidateInTestAggregate, AttemptsOfTestAggregate } from "../../modules/attempts/schema/of-test.schema";
+import { db } from "../../configs/orm/kysely/db";
+import { Paged } from "../../shared/controller/schemas/base";
 import { sql } from "kysely";
 
 export class TestAttemptsQueryRepo {

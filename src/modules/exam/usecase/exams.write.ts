@@ -1,12 +1,12 @@
 import sequelize from "../../../configs/orm/sequelize/sequelize";
 import { DomainError } from "../../../shared/controller/errors/domain.error";
 import { CredentialsMeta } from "../../../shared/controller/schemas/meta";
-import ExamParticipants from "../../../domain/models/exam_participants";
-import ExamTest from "../../../domain/models/exam_test";
-import Test from "../../../domain/models/test";
+import ExamParticipants from "../../../infrastructure/models/exam_participants";
+import ExamTest from "../../../infrastructure/models/exam_test";
+import Test from "../../../infrastructure/models/test";
 import { ExamPolicy } from "../../../domain/policy/exam.policy";
 import { Op } from "sequelize";
-import { TestRepo } from "../../../domain/repo/test/test.repo";
+import { TestRepo } from "../../../infrastructure/write/test.repo";
 import { CreateExamBody, UpdateExamBody } from "../schema";
 
 export class ExamsWrite {
