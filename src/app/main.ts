@@ -3,14 +3,14 @@ import { ModuleBase } from "../library/cayduajs/module/module.base";
 import { AttemptsModule } from "../modules/attempts/module";
 import { Chuoi } from "../library/caychuoijs";
 import { env } from "../configs/env";
-import { AllExceptionFilter } from "../controller/defaults/all-exception.filter";
-import { LoggerMiddleware } from "../controller/defaults/http-logger.mdw";
-import { securityDocument } from "../controller/documents/security";
+import { AllExceptionFilter } from "../shared/controller/defaults/all-exception.filter";
+import { LoggerMiddleware } from "../shared/controller/defaults/http-logger.mdw";
+import { securityDocument } from "../shared/controller/documents/security";
 import app from "./servers/app";
 import io from "./servers/io";
 import { ExamModule } from "../modules/exam/module";
 import { PracticeModule } from "../modules/pratice/module";
-import { DecoderMiddleware } from "../controller/defaults/decoder.mdw";
+import { DecoderMiddleware } from "../shared/controller/defaults/decoder.mdw";
 import { TestModule } from "../modules/self/module";
 
 export async function main() {

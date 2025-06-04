@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { CredentialsMetaSchema } from "../../../controller/schemas/meta";
-import { AttemptIdParamsSchema, TestIdParamsSchema } from "../../../controller/schemas/params";
+import { CredentialsMetaSchema } from "../../../shared/controller/schemas/meta";
+import { AttemptIdParamsSchema, TestIdParamsSchema } from "../../../shared/controller/schemas/params";
 import { Chuoi } from "../../../library/caychuoijs";
 import { AttemptsOfExamRead } from "../usecase/exam/attempts-of-exam.read";
 import { AttemptAggregateSchema, AttemptsListSchema, AttemptsOfCandidateInTestAggregateSchema, AttemptsOfTestAggregateSchema, AttemptsOfTestQuerySchema } from "../schema/of-test.schema";
@@ -8,7 +8,7 @@ import { AttemptOfExamRead } from "../usecase/exam/attempt-of-exam.read";
 import { AttemptInfoSchema } from "../../../domain/schema/info.schema";
 import { AnswerCoreSchema } from "../../../domain/schema/core.schema";
 import { AttemptsOfExamWrite } from "../usecase/exam/attempts-of-exam.write";
-import { PagedSchema, PagingSchema } from "../../../controller/schemas/base";
+import { PagedSchema, PagingSchema } from "../../../shared/controller/schemas/base";
 
 export function examController() {
 	const router = Chuoi.newRoute("/exams");

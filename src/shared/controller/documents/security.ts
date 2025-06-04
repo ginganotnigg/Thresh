@@ -1,4 +1,4 @@
-import { ChuoiSecurityBase } from "../../library/caychuoijs/documentation/security";
+import { ChuoiSecurityBase } from "../../../library/caychuoijs/documentation/security";
 
 export type SecurityScheme = "userId" | "roleId" | "authorization";
 

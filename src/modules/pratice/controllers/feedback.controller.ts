@@ -1,11 +1,11 @@
 import { Chuoi } from "../../../library/caychuoijs";
-import { TestIdParamsSchema } from "../../../controller/schemas/params";
+import { TestIdParamsSchema } from "../../../shared/controller/schemas/params";
 import { UpdateFeedbackBodySchema } from "../schema";
 import { FeedbackCoreSchema } from "../../../domain/schema/core.schema";
 import { CreateFeedbackBodySchema } from "../schema";
 import { FeedbackOfPracticeRead } from "../usecase/feedbacks/feedback-of-practice.read";
 import { FeedbacksWrite } from "../usecase/feedbacks/feedbacks.write";
-import { CredentialsMetaSchema } from "../../../controller/schemas/meta";
+import { CredentialsMetaSchema } from "../../../shared/controller/schemas/meta";
 
 export default function controllerFeedback() {
 	const router = Chuoi.newRoute();

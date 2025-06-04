@@ -1,4 +1,4 @@
-import { ChuoiContainer } from "../../library/caychuoijs/utils/container";
+import { ChuoiContainer } from "../../../library/caychuoijs/utils/container";
 import { Role } from "./role";
 import { RoleGuardBase } from "./role-guard.base";
 

@@ -1,6 +1,6 @@
 import { Request } from "express";
-import { ChuoiGuardBase } from "../../library/caychuoijs/main/contracts";
-import { env } from "../../configs/env";
+import { ChuoiGuardBase } from "../../../library/caychuoijs/main/contracts";
+import { env } from "../../../configs/env";
 import { UnauthorizedError } from "../errors/unauthorized.error";
 import { ForbidenError } from "../errors/forbidden.error";
 

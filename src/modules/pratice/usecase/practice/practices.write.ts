@@ -2,8 +2,8 @@ import PracticeTest from "../../../../domain/models/practice_test";
 import sequelize from "../../../../configs/orm/sequelize/sequelize";
 import { TestRepo } from "../../../../domain/repo/test/test.repo";
 import Test from "../../../../domain/models/test";
-import { DomainError } from "../../../../controller/errors/domain.error";
-import { CredentialsMeta } from "../../../../controller/schemas/meta";
+import { DomainError } from "../../../../shared/controller/errors/domain.error";
+import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
 import { PracticePolicy } from "../../../../domain/policy/practice.policy";
 import { CreatePracticeBody } from "../../schema";
 

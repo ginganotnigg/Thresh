@@ -1,4 +1,4 @@
-import { logTickError } from "../configs/logger/winston";
+import { logTickError } from "../../configs/logger/winston";
 
 // Todo: make global and handlers configurable
 

@@ -1,6 +1,6 @@
-import { DomainError } from "../../../../controller/errors/domain.error";
-import { Paged } from "../../../../controller/schemas/base";
-import { CredentialsMeta } from "../../../../controller/schemas/meta";
+import { DomainError } from "../../../../shared/controller/errors/domain.error";
+import { Paged } from "../../../../shared/controller/schemas/base";
+import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
 import PracticeTest from "../../../../domain/models/practice_test";
 import Test from "../../../../domain/models/test";
 import { TestsQueryRepo } from "../../../../domain/repo/test/tests.query-repo";

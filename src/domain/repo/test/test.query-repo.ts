@@ -1,4 +1,4 @@
-import { DomainError } from "../../../controller/errors/domain.error";
+import { DomainError } from "../../../shared/controller/errors/domain.error";
 import Question from "../../models/question";
 import Test from "../../models/test";
 import { TestAggregate } from "../../schema/aggregate.schema";

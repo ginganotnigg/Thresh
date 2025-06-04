@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PagedSchema, PagingSchema, SortParamSchema } from "../../../controller/schemas/base";
+import { PagedSchema, PagingSchema, SortParamSchema } from "../../../shared/controller/schemas/base";
 import { AttemptInfoSchema } from "../../../domain/schema/info.schema";
 
 export const AttemptsOfTestQuerySchema = PagingSchema.extend({

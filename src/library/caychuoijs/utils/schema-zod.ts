@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ValidationError } from "../../../controller/errors/validation.error";
+import { ValidationError } from "../../../shared/controller/errors/validation.error";
 
 export function zodParse<TParsed>(schema: z.ZodObject<any, any, any, TParsed, any> | z.ZodType<TParsed>, obj: any): TParsed {
 	const result = schema.safeParse(obj);

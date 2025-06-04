@@ -1,5 +1,5 @@
 import { createLogger, format, transports } from 'winston';
-import { getRequestId } from '../../controller/defaults/http-logger.mdw';
+import { getRequestId } from '../../shared/controller/defaults/http-logger.mdw';
 import { env } from '../env';
 
 const levels = {

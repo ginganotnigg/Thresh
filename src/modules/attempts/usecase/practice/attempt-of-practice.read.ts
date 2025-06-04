@@ -1,9 +1,9 @@
-import { DomainError } from "../../../../controller/errors/domain.error";
+import { DomainError } from "../../../../shared/controller/errors/domain.error";
 import Attempt from "../../../../domain/models/attempt";
 import Test from "../../../../domain/models/test";
 import { AnswerCore } from "../../../../domain/schema/core.schema";
 import { AttemptInfo } from "../../../../domain/schema/info.schema";
-import { CredentialsMeta } from "../../../../controller/schemas/meta";
+import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
 import { AttemptAggregate } from "../../schema/of-test.schema";
 import { AttemptQueryRepo } from "../../../../domain/repo/attempt/attempt.query-repo";
 import PracticeTest from "../../../../domain/models/practice_test";

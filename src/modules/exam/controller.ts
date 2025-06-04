@@ -1,12 +1,12 @@
 import { z } from "zod";
 import { Chuoi } from "../../library/caychuoijs";
 import { ExamTestInfoSchema } from "../../domain/schema/info.schema";
-import { TestIdParamsSchema } from "../../controller/schemas/params";
+import { TestIdParamsSchema } from "../../shared/controller/schemas/params";
 import { CreateExamBodySchema, UpdateExamBodySchema } from "./schema";
-import { CredentialsMetaSchema } from "../../controller/schemas/meta";
+import { CredentialsMetaSchema } from "../../shared/controller/schemas/meta";
 import { ExamsRead } from "./usecase/exams.read";
 import { ExamRead } from "./usecase/exam.read";
-import { PagedSchema } from "../../controller/schemas/base";
+import { PagedSchema } from "../../shared/controller/schemas/base";
 import { ExamsWrite } from "./usecase/exams.write";
 import { TestsQuerySchema } from "../../domain/schema/query.schema";
 import { QuestionCoreSchema } from "../../domain/schema/core.schema";

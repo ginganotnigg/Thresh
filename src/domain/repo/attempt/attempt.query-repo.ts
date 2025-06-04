@@ -1,4 +1,4 @@
-import { DomainError } from "../../../controller/errors/domain.error";
+import { DomainError } from "../../../shared/controller/errors/domain.error";
 import AttemptsAnswerQuestions from "../../models/attempts_answer_questions";
 import { AnswerCore } from "../../schema/core.schema";
 import { db } from "../../../configs/orm/kysely/db";

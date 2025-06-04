@@ -1,8 +1,8 @@
 import Test from "../../../../domain/models/test";
 import { AttemptInfo } from "../../../../domain/schema/info.schema";
-import { Paged } from "../../../../controller/schemas/base";
-import { CredentialsMeta } from "../../../../controller/schemas/meta";
-import { DomainError } from "../../../../controller/errors/domain.error";
+import { Paged } from "../../../../shared/controller/schemas/base";
+import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
+import { DomainError } from "../../../../shared/controller/errors/domain.error";
 import { TestAttemptsQueryRepo } from "../../../../domain/repo/attempt/test-attemps.query-repo";
 import { AttemptsOfTestAggregate, AttemptsOfTestQuery } from "../../schema/of-test.schema";
 import { AttemptsQueryRepo } from "../../../../domain/repo/attempt/attempts.query-repo";

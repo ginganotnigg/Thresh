@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { Chuoi } from "../../../library/caychuoijs";
-import { TestIdParamsSchema } from "../../../controller/schemas/params";
+import { TestIdParamsSchema } from "../../../shared/controller/schemas/params";
 import { PracticeTestInfoSchema } from "../../../domain/schema/info.schema";
-import { CredentialsMetaSchema } from "../../../controller/schemas/meta";
+import { CredentialsMetaSchema } from "../../../shared/controller/schemas/meta";
 import { TestsQuerySchema } from "../../../domain/schema/query.schema";
-import { PagedSchema } from "../../../controller/schemas/base";
+import { PagedSchema } from "../../../shared/controller/schemas/base";
 import { PracticesRead } from "../usecase/practice/practices.read";
 import { PracticeRead } from "../usecase/practice/practice.read";
 import { QuestionToDoSchema } from "../../../domain/schema/variants.schema";

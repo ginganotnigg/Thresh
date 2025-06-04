@@ -1,6 +1,6 @@
 import { Transaction } from "sequelize";
-import { DomainError } from "../../controller/errors/domain.error";
-import { CredentialsMeta } from "../../controller/schemas/meta";
+import { DomainError } from "../../shared/controller/errors/domain.error";
+import { CredentialsMeta } from "../../shared/controller/schemas/meta";
 import Test from "../models/test";
 import Attempt from "../models/attempt";
 import { AttemptQueryRepo } from "../repo/attempt/attempt.query-repo";

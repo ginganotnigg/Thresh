@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { IChuoiMiddleware } from "../../library/caychuoijs/main/contracts";
-import { ChuoiMeta } from "../../library/caychuoijs/utils/meta";
-import { ChuoiContainer } from "../../library/caychuoijs/utils/container";
+import { IChuoiMiddleware } from "../../../library/caychuoijs/main/contracts";
+import { ChuoiMeta } from "../../../library/caychuoijs/utils/meta";
+import { ChuoiContainer } from "../../../library/caychuoijs/utils/container";
 import { UnauthorizedError } from "../errors/unauthorized.error";
 
 export class DecoderMiddleware implements IChuoiMiddleware {

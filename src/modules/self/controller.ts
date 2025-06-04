@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { PagedSchema } from "../../controller/schemas/base";
-import { CredentialsMetaSchema } from "../../controller/schemas/meta";
-import { TestIdParamsSchema } from "../../controller/schemas/params";
+import { PagedSchema } from "../../shared/controller/schemas/base";
+import { CredentialsMetaSchema } from "../../shared/controller/schemas/meta";
+import { TestIdParamsSchema } from "../../shared/controller/schemas/params";
 import { TestAggregateSchema } from "../../domain/schema/aggregate.schema";
 import { Chuoi } from "../../library/caychuoijs";
 import { AttemptsOfCandidateQuerySchema, AttemptWithTestSchema } from "../attempts/schema/history.schema";

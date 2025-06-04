@@ -1,9 +1,9 @@
 import { Op } from "sequelize";
-import { CredentialsMeta } from "../../../../controller/schemas/meta";
+import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
 import Template from "../../../../domain/models/template";
 import { TemplateCore } from "../../../../domain/schema/core.schema";
 import { TemplatesQuery } from "../../schema";
-import { Paged } from "../../../../controller/schemas/base";
+import { Paged } from "../../../../shared/controller/schemas/base";
 
 export class TemplatesRead {
 	private constructor(
