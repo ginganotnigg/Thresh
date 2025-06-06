@@ -38,8 +38,8 @@ export const ExamTestCoreSchema = z.object({
 	numberOfAttemptsAllowed: z.number().int().positive(),
 	isAnswerVisible: z.boolean(),
 	isAllowedToSeeOtherResults: z.boolean(),
-	openDate: z.date(),
-	closeDate: z.date(),
+	openDate: z.coerce.date(),
+	closeDate: z.coerce.date(),
 });
 
 export const AttemptCoreSchema = z.object({

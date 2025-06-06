@@ -135,6 +135,9 @@ export default function examController() {
 		.handle(async (data) => {
 			const { params: { testId } } = data;
 			return await (await ExamRead.load(testId, data.meta)).getTestQuestionsAggregate();
+		})
+		.build({
+			tags: ["Exam"],
 		});
 
 	router.endpoint().post()
