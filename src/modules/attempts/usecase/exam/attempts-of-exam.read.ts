@@ -28,9 +28,7 @@ export class AttemptsOfExamRead {
 				required: true,
 				include: [{
 					model: ExamParticipants,
-					where: {
-						candidateId: credentials.userId,
-					},
+					required: false,
 				}],
 			}]
 		});

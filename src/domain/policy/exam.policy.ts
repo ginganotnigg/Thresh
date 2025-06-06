@@ -12,7 +12,7 @@ export class ExamPolicy {
 		private readonly credentials: CredentialsMeta,
 	) {
 		if (this.test.ExamTest == null || this.test.ExamTest.ExamParticipants == null) {
-			throw new DomainError(`This test is not an exam`);
+			throw new DomainError(`Not fully loaded exam test`);
 		}
 	}
 

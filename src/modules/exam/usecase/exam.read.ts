@@ -25,6 +25,10 @@ export class ExamRead {
 			include: [{
 				model: ExamTest,
 				required: true,
+				include: [{
+					model: ExamParticipants,
+					required: false,
+				}],
 			}]
 		});
 		if (!test) {
