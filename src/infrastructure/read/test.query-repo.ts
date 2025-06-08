@@ -4,6 +4,7 @@ import { TestAggregate, TestQuestionsAggregate } from "../../shared/resource/tes
 import { QuestionCore } from "../../shared/resource/question.schema";
 import { QuestionToDo } from "../../shared/resource/question.schema";
 import { db } from "../../configs/orm/kysely/db";
+import { sql } from "kysely";
 
 export class TestQueryRepo {
 	static async getQuestions(testId: string): Promise<QuestionCore[]> {
@@ -62,18 +63,14 @@ export class TestQueryRepo {
 		const questions = await db.selectFrom("Questions")
 			.leftJoin(
 				"Attempts_answer_Questions",
-				"Questions.id", "Attempts_answer_Questions.questionId"
+				"Questions.id",
+				"Attempts_answer_Questions.questionId"
 			)
 			.select(e => [
 				"Questions.id",
 				"Questions.points",
-				e.fn.count<number>("Attempts_answer_Questions.id")
-					.distinct()
-					.as("numberOfAnswers"),
-				e.fn.count<number>("Attempts_answer_Questions.id")
-					.distinct()
-					.filterWhereRef("Attempts_answer_Questions.chosenOption", "=", "Questions.correctOption")
-					.as("numberOfCorrectAnswers"),
+				sql<number>`COUNT(DISTINCT Attempts_answer_Questions.id)`.as('numberOfAnswers'),
+				sql<number>`SUM(CASE WHEN Attempts_answer_Questions.chosenOption = Questions.correctOption THEN 1 ELSE 0 END)`.as('numberOfCorrectAnswers'),
 			])
 			.where("testId", "=", testId)
 			.groupBy("id")
@@ -81,10 +78,10 @@ export class TestQueryRepo {
 
 		return questions.map(question => ({
 			questionId: question.id,
-			numberOfAnswers: question.numberOfAnswers,
-			numberOfCorrectAnswers: question.numberOfCorrectAnswers,
+			numberOfAnswers: Number(question.numberOfAnswers),
+			numberOfCorrectAnswers: Number(question.numberOfCorrectAnswers),
 			averagePoints: question.numberOfAnswers > 0
-				? (question.numberOfCorrectAnswers / question.numberOfAnswers) * question.points
+				? (Number(question.numberOfCorrectAnswers) / Number(question.numberOfAnswers)) * question.points
 				: 0,
 		}));
 	}

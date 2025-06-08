@@ -21,8 +21,15 @@ export const db = new Kysely<DB>({
 	dialect,
 	log(event) {
 		if (event.level === 'query') {
-			logSqlCommand(event.query.sql, event.query.parameters);
-			logSqlCommand('Query duration:', event.queryDurationMillis);
+			let combinedSql = event.query.sql;
+			if (event.query.parameters && event.query.parameters.length > 0) {
+				event.query.parameters.forEach((param) => {
+					const value = typeof param === 'string' ? `\'${param}\'` : param;
+					combinedSql = combinedSql.replace('?', String(value));
+				});
+			}
+			logSqlCommand('Kysely SQL Query: ' + combinedSql);
+			logSqlCommand('Query duration:' + event.queryDurationMillis);
 		}
 		if (event.level === 'error') {
 			console.error(event.error);

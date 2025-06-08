@@ -37,7 +37,6 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 			roomId: {
 				type: DataTypes.STRING,
 				allowNull: false,
-				unique: true,
 			},
 			password: {
 				type: DataTypes.STRING,

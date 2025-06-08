@@ -78,11 +78,9 @@ export class ExamPolicy {
 	}
 
 	async checkIsAllowedToSeeQuestions(): Promise<void> {
-		if (
-			this.isAuthor() === false &&
-			this.isParticipant() === false
-		) {
-			throw new DomainError(`You are not allowed to see this exam`);
+		if (this.isAuthor()) return;
+		if (this.isParticipant() === false) {
+			throw new DomainError(`You are not a participant of this exam`);
 		}
 		const currentAttempt = await new AttemptsQueryRepo().getCurrentAttemptByTestAndCandidate(this.test.id, this.credentials.userId);
 		if (currentAttempt == null) {

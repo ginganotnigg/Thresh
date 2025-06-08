@@ -51,7 +51,7 @@ export class ExamsWrite {
 				},
 			});
 			if (duplicateTest) {
-				throw new DomainError("Room ID already exists");
+				throw new DomainError(`Room ID already exists in currently open exam (${duplicateTest.openDate.toDateString()} - ${duplicateTest.closeDate.toDateString()}). Please use a different room ID.`);
 			}
 			const { testId } = await TestRepo.createTest(credentials, {
 				test: param.test,
