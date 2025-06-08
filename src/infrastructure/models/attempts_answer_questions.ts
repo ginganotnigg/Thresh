@@ -26,6 +26,7 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 				primaryKey: true,
 			},
 			attemptId: {
+				allowNull: false,
 				type: DataTypes.UUID,
 				references: {
 					model: Attempt,
@@ -33,6 +34,7 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 				},
 			},
 			questionId: {
+				allowNull: false,
 				type: DataTypes.INTEGER,
 				references: {
 					model: Question,

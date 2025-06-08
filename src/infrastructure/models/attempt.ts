@@ -35,6 +35,7 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 			},
 			testId: {
 				type: DataTypes.UUID,
+				allowNull: false,
 				references: {
 					model: Test,
 					key: "id",

@@ -26,6 +26,7 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 			},
 			testId: {
 				type: DataTypes.UUID,
+				allowNull: false,
 				references: {
 					model: Test,
 					key: "id",

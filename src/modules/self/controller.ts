@@ -12,6 +12,8 @@ import { AnswerCoreSchema } from "../../shared/resource/attempt.schema";
 import { QuestionCoreSchema } from "../../shared/resource/question.schema";
 import { QuestionToDoSchema } from "../../shared/resource/question.schema";
 import { TestInfoSchema } from "../../shared/resource/test.schema";
+import { TestAggregateQuery } from "../v2_migrate/query/test-aggregate";
+import { QuestionsToDoQuery } from "../v2_migrate/query/questions-to-do";
 
 export function selfController() {
 	const router = Chuoi.newRoute("/self");
@@ -36,7 +38,8 @@ export function selfController() {
 			response: TestAggregateSchema,
 		})
 		.handle(async data => {
-			return (await SelfTestRead.load(data.params.testId, data.meta)).getTestAggregate();
+			const query = new TestAggregateQuery(data.meta);
+			return await query.query(data.params);
 		})
 		.build({ tags: ["Self"] });
 
@@ -47,7 +50,8 @@ export function selfController() {
 			response: z.array(QuestionToDoSchema),
 		})
 		.handle(async data => {
-			return (await SelfTestRead.load(data.params.testId, data.meta)).getTestQuestionsToDo();
+			const query = new QuestionsToDoQuery(data.meta);
+			return await query.query(data.params);
 		})
 		.build({ tags: ["Self"] });
 

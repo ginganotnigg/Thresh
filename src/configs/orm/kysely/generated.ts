@@ -29,16 +29,16 @@ export interface Attempts {
   order: number;
   score: Generated<number>;
   secondsSpent: Generated<number>;
-  testId: string | null;
+  testId: string;
   updatedAt: Date | null;
 }
 
 export interface AttemptsAnswerQuestions {
-  attemptId: string | null;
+  attemptId: string;
   chosenOption: number;
   createdAt: Date | null;
   id: Generated<number>;
-  questionId: number | null;
+  questionId: number;
   updatedAt: Date | null;
 }
 
@@ -74,7 +74,7 @@ export interface Feedbacks {
 
 export interface PracticeTests {
   createdAt: Date | null;
-  difficulty: "easy" | "hard" | "medium";
+  difficulty: string;
   numberOfOptions: number;
   numberOfQuestions: number;
   outlines: Json;
@@ -88,7 +88,7 @@ export interface Questions {
   id: Generated<number>;
   options: Json;
   points: number;
-  testId: string | null;
+  testId: string;
   text: string;
 }
 
@@ -97,6 +97,8 @@ export interface Templates {
   description: string;
   difficulty: string;
   id: string;
+  language: string;
+  minutesToAnswer: number;
   name: string;
   numberOfOptions: number;
   numberOfQuestions: number;
