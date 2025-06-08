@@ -5,7 +5,6 @@ import { QueryWithCredentialsBase } from "../base/query.base";
 import { ParticipantPolicyFactory } from "../policy/participant/ParticipantPolicyFactory";
 
 export class TestAggregateQuery extends QueryWithCredentialsBase<TestId, TestAggregate> {
-
 	async query(param: TestId): Promise<TestAggregate> {
 		const test = await db.selectFrom("Tests")
 			.selectAll()
@@ -33,8 +32,8 @@ export class TestAggregateQuery extends QueryWithCredentialsBase<TestId, TestAgg
 			.where("testId", "=", test.id)
 			.executeTakeFirstOrThrow();
 		return {
-			numberOfQuestions: res.numberOfQuestions,
-			totalPoints: res.totalPoints,
+			numberOfQuestions: Number(res.numberOfQuestions),
+			totalPoints: Number(res.totalPoints),
 		};
 	}
 }
