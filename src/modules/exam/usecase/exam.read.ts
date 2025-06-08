@@ -39,7 +39,7 @@ export class ExamRead {
 	}
 
 	async getParticipants(paging: Paging): Promise<Paged<string>> {
-		this.examPolicy.checkAllowedToSeeOthers();
+		this.examPolicy.checkAllowedToSeeOthersResults();
 		const { page, perPage } = paging;
 		const testId = this.test.id;
 		const { rows, count } = await ExamParticipants.findAndCountAll({

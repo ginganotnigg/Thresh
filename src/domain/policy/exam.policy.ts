@@ -28,6 +28,15 @@ export class ExamPolicy {
 		);
 	}
 
+	private _checkBaseRights(): void {
+		if (
+			this.isParticipant() === false &&
+			this.isAuthor() === false
+		) {
+			throw new DomainError(`You are not a participant of this exam`);
+		}
+	}
+
 	async checkAllowedToJoin(password: string | null, transaction?: Transaction): Promise<void> {
 		if (this.test.ExamTest!.password != null && this.test.ExamTest!.password !== password) {
 			throw new DomainError(`Password is incorrect`);
@@ -52,6 +61,7 @@ export class ExamPolicy {
 	}
 
 	checkAllowedToStart(): void {
+		if (this.isAuthor()) return;
 		if (
 			this.isAuthor() === false &&
 			this.isParticipant() === false
@@ -67,11 +77,11 @@ export class ExamPolicy {
 		}
 	}
 
-	checkAllowedToSeeOthers(): void {
+	checkAllowedToSeeOthersResults(): void {
+		if (this.isAuthor()) return;
+		this._checkBaseRights();
 		if (
-			this.test.ExamTest!.isAllowedToSeeOtherResults === false &&
-			!this.isAuthor() &&
-			!this.isParticipant()
+			this.test.ExamTest!.isAllowedToSeeOtherResults === false
 		) {
 			throw new DomainError(`You are not allowed to see other results`);
 		}
@@ -79,9 +89,7 @@ export class ExamPolicy {
 
 	async checkIsAllowedToSeeQuestions(): Promise<void> {
 		if (this.isAuthor()) return;
-		if (this.isParticipant() === false) {
-			throw new DomainError(`You are not a participant of this exam`);
-		}
+		this._checkBaseRights();
 		const currentAttempt = await new AttemptsQueryRepo().getCurrentAttemptByTestAndCandidate(this.test.id, this.credentials.userId);
 		if (currentAttempt == null) {
 			throw new DomainError(`You have not started this exam yet`);
@@ -89,12 +97,14 @@ export class ExamPolicy {
 	}
 
 	checkIsSelfAttempt(attempt: Attempt): void {
+		if (this.isAuthor()) return;
 		if (this.credentials.userId !== attempt.candidateId) {
 			throw new DomainError(`This is not your attempt`);
 		}
 	}
 
 	async checkIsAllowedToSeeCorrectAnswers(): Promise<void> {
+		if (this.isAuthor()) return;
 		await this.checkIsAllowedToSeeQuestions();
 		if (this.test.ExamTest!.isAnswerVisible === false) {
 			throw new DomainError(`Answers are not visible`);
@@ -130,6 +140,7 @@ export class ExamPolicy {
 	}
 
 	checkIsAllowedToSeeExam(): void {
+		if (this.isAuthor()) return;
 		if (
 			this.isAuthor() === false &&
 			this.isParticipant() === false
