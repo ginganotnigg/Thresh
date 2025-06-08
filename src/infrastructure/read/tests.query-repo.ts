@@ -4,7 +4,7 @@ import Test from "../models/test";
 import { sortBy } from "../../shared/controller/schemas/base";
 
 export class TestsQueryRepo {
-	static buildQuery(query: TestsQuery): FindAndCountOptions<Test> {
+	static buildQuery(query: TestsQuery, mode: string = "practice"): FindAndCountOptions<Test> {
 		const {
 			page,
 			perPage,
@@ -18,7 +18,7 @@ export class TestsQueryRepo {
 						[Op.like]: `%${searchTitle}%`,
 					},
 				}),
-				mode: "practice",
+				mode: mode,
 			},
 			order: sort.map((s) => {
 				const { field, order } = sortBy(s);

@@ -18,7 +18,7 @@ export class ExamsRead {
 	}
 
 	async getSelf(query: TestsQuery, credentials: CredentialsMeta): Promise<Paged<ExamTestInfo>> {
-		const queryOptions = TestsQueryRepo.buildQuery(query);
+		const queryOptions = TestsQueryRepo.buildQuery(query, "exam");
 		queryOptions.where = {
 			...queryOptions.where,
 			authorId: credentials.userId,
