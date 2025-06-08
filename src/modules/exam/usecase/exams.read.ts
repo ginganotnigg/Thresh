@@ -3,11 +3,11 @@ import { Paged } from "../../../shared/controller/schemas/base";
 import { CredentialsMeta } from "../../../shared/controller/schemas/meta";
 import ExamTest from "../../../infrastructure/models/exam_test";
 import Test from "../../../infrastructure/models/test";
-import { ExamTestInfo } from "../../../domain/schema/info.schema";
 import { Op } from "sequelize";
-import { TestsQuery } from "../../../domain/schema/query.schema";
+import { TestsQuery } from "../../../shared/query/filter/test.query-schema";
 import { TestsQueryRepo } from "../../../infrastructure/read/tests.query-repo";
 import ExamParticipants from "../../../infrastructure/models/exam_participants";
+import { ExamTestInfo } from "../../../shared/resource/exam.schema";
 
 export class ExamsRead {
 	private constructor(

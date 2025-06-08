@@ -4,9 +4,9 @@ import PracticeTest from "../../../../infrastructure/models/practice_test";
 import Test from "../../../../infrastructure/models/test";
 import { PracticePolicy } from "../../../../domain/policy/practice.policy";
 import { TestQueryRepo } from "../../../../infrastructure/read/test.query-repo";
-import { TestAggregate } from "../../../../domain/schema/aggregate.schema";
-import { QuestionCore } from "../../../../domain/schema/core.schema";
-import { QuestionToDo } from "../../../../domain/schema/variants.schema";
+import { TestAggregate } from "../../../../shared/resource/test.schema";
+import { QuestionCore } from "../../../../shared/resource/question.schema";
+import { QuestionToDo } from "../../../../shared/resource/question.schema";
 
 export class PracticeRead {
 	private readonly practicePolicy: PracticePolicy;

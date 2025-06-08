@@ -1,6 +1,6 @@
 import { DomainError } from "../../shared/controller/errors/domain.error";
 import AttemptsAnswerQuestions from "../models/attempts_answer_questions";
-import { AnswerCore } from "../../domain/schema/core.schema";
+import { AnswerCore } from "../../shared/resource/attempt.schema";
 import { db } from "../../configs/orm/kysely/db";
 import { sql } from "kysely";
 import { AttemptAggregate } from "../../modules/attempts/schema/of-test.schema";

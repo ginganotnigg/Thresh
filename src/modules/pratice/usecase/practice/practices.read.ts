@@ -4,8 +4,8 @@ import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
 import PracticeTest from "../../../../infrastructure/models/practice_test";
 import Test from "../../../../infrastructure/models/test";
 import { TestsQueryRepo } from "../../../../infrastructure/read/tests.query-repo";
-import { ExamTestInfo, PracticeTestInfo } from "../../../../domain/schema/info.schema";
-import { TestsQuery } from "../../../../domain/schema/query.schema";
+import { PracticeTestInfo } from "../../../../shared/resource/practice.schema";
+import { TestsQuery } from "../../../../shared/query/filter/test.query-schema";
 
 export class PracticesRead {
 	private constructor(

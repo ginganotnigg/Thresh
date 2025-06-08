@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { PagedSchema, PagingSchema, SortParamSchema } from "../../../shared/controller/schemas/base";
-import { AttemptInfoSchema } from "../../../domain/schema/info.schema";
+import { AttemptInfoSchema } from "../../../shared/resource/attempt.schema";
 
 export const AttemptsOfTestQuerySchema = PagingSchema.extend({
 	sort: SortParamSchema(["createdAt", "score"]),

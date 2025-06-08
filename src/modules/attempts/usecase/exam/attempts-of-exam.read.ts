@@ -1,5 +1,5 @@
 import Test from "../../../../infrastructure/models/test";
-import { AttemptInfo } from "../../../../domain/schema/info.schema";
+import { AttemptInfo } from "../../../../shared/resource/attempt.schema";
 import { Paged, Paging } from "../../../../shared/controller/schemas/base";
 import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
 import ExamTest from "../../../../infrastructure/models/exam_test";

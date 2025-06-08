@@ -6,9 +6,9 @@ import ExamTest from "../../../infrastructure/models/exam_test";
 import Test from "../../../infrastructure/models/test";
 import { ExamPolicy } from "../../../domain/policy/exam.policy";
 import { TestQueryRepo } from "../../../infrastructure/read/test.query-repo";
-import { TestAggregate, TestQuestionsAggregate } from "../../../domain/schema/aggregate.schema";
-import { QuestionCore } from "../../../domain/schema/core.schema";
-import { QuestionToDo } from "../../../domain/schema/variants.schema";
+import { TestAggregate, TestQuestionsAggregate } from "../../../shared/resource/test.schema";
+import { QuestionCore } from "../../../shared/resource/question.schema";
+import { QuestionToDo } from "../../../shared/resource/question.schema";
 
 export class ExamRead {
 	private readonly examPolicy: ExamPolicy;

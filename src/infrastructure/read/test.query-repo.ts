@@ -1,8 +1,8 @@
 import { DomainError } from "../../shared/controller/errors/domain.error";
 import Question from "../models/question";
-import { TestAggregate, TestQuestionsAggregate } from "../../domain/schema/aggregate.schema";
-import { QuestionCore } from "../../domain/schema/core.schema";
-import { QuestionToDo } from "../../domain/schema/variants.schema";
+import { TestAggregate, TestQuestionsAggregate } from "../../shared/resource/test.schema";
+import { QuestionCore } from "../../shared/resource/question.schema";
+import { QuestionToDo } from "../../shared/resource/question.schema";
 import { db } from "../../configs/orm/kysely/db";
 
 export class TestQueryRepo {

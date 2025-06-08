@@ -1,8 +1,8 @@
 import { DomainError } from "../../../../shared/controller/errors/domain.error";
 import Attempt from "../../../../infrastructure/models/attempt";
 import Test from "../../../../infrastructure/models/test";
-import { AnswerCore } from "../../../../domain/schema/core.schema";
-import { AttemptInfo } from "../../../../domain/schema/info.schema";
+import { AnswerCore } from "../../../../shared/resource/attempt.schema";
+import { AttemptInfo } from "../../../../shared/resource/attempt.schema";
 import ExamTest from "../../../../infrastructure/models/exam_test";
 import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
 import { AttemptAggregate } from "../../schema/of-test.schema";

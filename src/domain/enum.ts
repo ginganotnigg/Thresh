@@ -1,10 +1,12 @@
-export enum AttemptStatus {
-	IN_PROGRESS = 'In Progress',
-	COMPLETED = 'Finished',
-}
+export const FeedbackProblemsAsConst = [
+	"inaccurate",
+	"un-related",
+	"poor content",
+	"incomplete",
+	"repeated",
+	"error",
+	"other",
+	""
+] as const;
 
-export enum TestDifficulty {
-	EASY = 'easy',
-	MEDIUM = 'medium',
-	HARD = 'hard',
-}
+export type FeedbackProblemsType = typeof FeedbackProblemsAsConst[number];

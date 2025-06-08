@@ -9,7 +9,7 @@ import { AttemptsOfCandidateQuery } from "../../attempts/schema/history.schema";
 import { AttemptsQueryRepo } from "../../../infrastructure/read/attempts.query-repo";
 import { AttemptAggregate } from "../../attempts/schema/of-test.schema";
 import { AttemptQueryRepo } from "../../../infrastructure/read/attempt.query-repo";
-import { AnswerCore } from "../../../domain/schema/core.schema";
+import { AnswerCore } from "../../../shared/resource/attempt.schema";
 
 export class SelfAttemptsRead {
 	private readonly attemptsQueryRepo: AttemptsQueryRepo;

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PagingSchema, SortParamSchema } from "../../shared/controller/schemas/base";
+import { PagingSchema, SortParamSchema } from "../../controller/schemas/base";
 
 export const TestsQuerySchema = PagingSchema.extend({
 	searchTitle: z.string().optional(),

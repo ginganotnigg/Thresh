@@ -1,7 +1,7 @@
 import sequelize, { FindAndCountOptions } from "sequelize";
 import { Paged, sortBy } from "../../shared/controller/schemas/base";
 import Attempt from "../models/attempt";
-import { AttemptInfo } from "../../domain/schema/info.schema";
+import { AttemptInfo } from "../../shared/resource/attempt.schema";
 import { AttemptsQueryParams } from "./test-attemps.query-repo";
 import Test from "../models/test";
 

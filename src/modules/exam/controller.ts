@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { Chuoi } from "../../library/caychuoijs";
-import { ExamTestInfoSchema } from "../../domain/schema/info.schema";
 import { TestIdParamsSchema } from "../../shared/controller/schemas/params";
 import { CreateExamBodySchema, UpdateExamBodySchema } from "./schema";
 import { CredentialsMetaSchema } from "../../shared/controller/schemas/meta";
@@ -8,10 +7,11 @@ import { ExamsRead } from "./usecase/exams.read";
 import { ExamRead } from "./usecase/exam.read";
 import { PagedSchema } from "../../shared/controller/schemas/base";
 import { ExamsWrite } from "./usecase/exams.write";
-import { TestsQuerySchema } from "../../domain/schema/query.schema";
-import { QuestionCoreSchema } from "../../domain/schema/core.schema";
-import { QuestionToDoSchema } from "../../domain/schema/variants.schema";
-import { TestQuestionsAggregateSchema } from "../../domain/schema/aggregate.schema";
+import { TestsQuerySchema } from "../../shared/query/filter/test.query-schema";
+import { QuestionCoreSchema } from "../../shared/resource/question.schema";
+import { QuestionToDoSchema } from "../../shared/resource/question.schema";
+import { TestQuestionsAggregateSchema } from "../../shared/resource/test.schema";
+import { ExamTestInfoSchema } from "../../shared/resource/exam.schema";
 
 export default function examController() {
 	const router = Chuoi.newRoute("/exams");

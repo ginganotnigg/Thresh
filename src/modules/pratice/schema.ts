@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { PracticeTestCoreSchema } from "../../domain/schema/core.schema";
-import { CreateTestBodySchema } from "../../domain/schema/create.schema";
+import { PracticeTestCoreSchema } from "../../shared/resource/practice.schema";
+import { CreateTestBodySchema } from "../../shared/resource/test.schema";
 import { PagingSchema } from "../../shared/controller/schemas/base";
-import { FeedbackProblemsEnum } from "../../infrastructure/models/feedback";
+import { FeedbackProblemsAsConst } from "../../domain/enum";
 
 export const CreatePracticeBodySchema = CreateTestBodySchema.extend({
 	practice: PracticeTestCoreSchema.omit({
@@ -35,7 +35,7 @@ export const UpdateTemplateBodySchema = CreateTemplateBodySchema.partial();
 
 export const CreateFeedbackBodySchema = z.object({
 	rating: z.number().min(1).max(10),
-	problems: z.array(z.nativeEnum(FeedbackProblemsEnum)).optional().default([]),
+	problems: z.array(z.enum(FeedbackProblemsAsConst)).optional().default([]),
 	comment: z.string().optional().default(""),
 });
 

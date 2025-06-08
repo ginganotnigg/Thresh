@@ -1,20 +1,11 @@
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import PracticeTest from "./practice_test";
-
-export enum FeedbackProblemsEnum {
-	"Inaccurate" = "inaccurate",
-	"UnRelated" = "un-related",
-	"PoorContent" = "poor content",
-	"Incomplete" = "incomplete",
-	"Repeated" = "repeated",
-	"Error" = "error",
-	"Other" = "other",
-};
+import { FeedbackProblemsType } from "../../domain/enum";
 
 class Feedback extends Model<InferAttributes<Feedback>, InferCreationAttributes<Feedback>> {
 	declare practiceTestId: string;
 	declare rating: number;
-	declare problems: FeedbackProblemsEnum[];
+	declare problems: FeedbackProblemsType[];
 	declare comment: string;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;

@@ -11,6 +11,10 @@ function convertExpressPathToOpenAPI(path: string): string {
 export class ChuoiDocument {
 	public static readonly documentRegistry = new OpenAPIRegistry();
 
+	static registerSchema<T extends z.ZodRawShape>(schema: z.ZodObject<T>, name: string) {
+		return this.documentRegistry.register(name, schema);
+	}
+
 	static generateV31<TScheme extends string>(security?: ChuoiSecurityBase<TScheme>, config?: Partial<Omit<OpenAPIObjectConfigV31, 'openapi'>>) {
 		const _config: OpenAPIObjectConfigV31 = {
 			...config,

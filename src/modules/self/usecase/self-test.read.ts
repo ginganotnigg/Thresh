@@ -2,10 +2,10 @@ import { DomainError } from "../../../shared/controller/errors/domain.error";
 import { CredentialsMeta } from "../../../shared/controller/schemas/meta";
 import Test from "../../../infrastructure/models/test";
 import { TestQueryRepo } from "../../../infrastructure/read/test.query-repo";
-import { TestAggregate } from "../../../domain/schema/aggregate.schema";
-import { QuestionCore } from "../../../domain/schema/core.schema";
-import { TestInfo } from "../../../domain/schema/info.schema";
-import { QuestionToDo } from "../../../domain/schema/variants.schema";
+import { TestAggregate } from "../../../shared/resource/test.schema";
+import { QuestionCore } from "../../../shared/resource/question.schema";
+import { TestInfo } from "../../../shared/resource/test.schema";
+import { QuestionToDo } from "../../../shared/resource/question.schema";
 
 export class SelfTestRead {
 	private checkSelf() {

@@ -1,7 +1,7 @@
 import { Transaction } from "sequelize";
 import Question from "../models/question";
 import Test from "../models/test";
-import { CreateTestBody, UpdateTestBody } from "../../domain/schema/create.schema";
+import { CreateTestBody, UpdateTestBody } from "../../shared/resource/test.schema";
 import { CredentialsMeta } from "../../shared/controller/schemas/meta";
 
 export class TestRepo {

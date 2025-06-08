@@ -1,7 +1,7 @@
 import { Op } from "sequelize";
 import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
 import Template from "../../../../infrastructure/models/template";
-import { TemplateCore } from "../../../../domain/schema/core.schema";
+import { TemplateCore } from "../../../../shared/resource/template.schema";
 import { TemplatesQuery } from "../../schema";
 import { Paged } from "../../../../shared/controller/schemas/base";
 

@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { AttemptInfoSchema, TestInfoSchema } from "../../../domain/schema/info.schema";
+import { AttemptInfoSchema } from "../../../shared/resource/attempt.schema";
+import { TestInfoSchema } from "../../../shared/resource/test.schema";
 import { PagingSchema, SortParamSchema } from "../../../shared/controller/schemas/base";
 
 export const AttemptsOfCandidateQuerySchema = PagingSchema.extend({

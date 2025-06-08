@@ -2,14 +2,16 @@ import { z } from "zod";
 import { PagedSchema } from "../../shared/controller/schemas/base";
 import { CredentialsMetaSchema } from "../../shared/controller/schemas/meta";
 import { TestIdParamsSchema } from "../../shared/controller/schemas/params";
-import { TestAggregateSchema } from "../../domain/schema/aggregate.schema";
+import { TestAggregateSchema } from "../../shared/resource/test.schema";
 import { Chuoi } from "../../library/caychuoijs";
 import { AttemptsOfCandidateQuerySchema, AttemptWithTestSchema } from "../attempts/schema/history.schema";
 import { SelfTestRead } from "./usecase/self-test.read";
 import { SelfAttemptsRead } from "./usecase/self-attempts.read";
 import { AttemptAggregateSchema } from "../attempts/schema/of-test.schema";
-import { AnswerCoreSchema, QuestionCoreSchema } from "../../domain/schema/core.schema";
-import { QuestionToDoSchema } from "../../domain/schema/variants.schema";
+import { AnswerCoreSchema } from "../../shared/resource/attempt.schema";
+import { QuestionCoreSchema } from "../../shared/resource/question.schema";
+import { QuestionToDoSchema } from "../../shared/resource/question.schema";
+import { TestInfoSchema } from "../../shared/resource/test.schema";
 
 export function selfController() {
 	const router = Chuoi.newRoute("/self");
@@ -18,11 +20,14 @@ export function selfController() {
 		.schema({
 			meta: CredentialsMetaSchema,
 			params: TestIdParamsSchema,
+			response: TestInfoSchema,
 		})
 		.handle(async data => {
 			return (await SelfTestRead.load(data.params.testId, data.meta)).getTest();
 		})
-		.build({ tags: ["Self"] });
+		.build({
+			tags: ["Self"]
+		});
 
 	router.endpoint().get("/tests/:testId/aggregate")
 		.schema({

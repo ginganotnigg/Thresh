@@ -1,7 +1,7 @@
 import { Chuoi } from "../../../library/caychuoijs";
 import { TestIdParamsSchema } from "../../../shared/controller/schemas/params";
 import { UpdateFeedbackBodySchema } from "../schema";
-import { FeedbackCoreSchema } from "../../../domain/schema/core.schema";
+import { FeedbackCoreSchema } from "../../../shared/resource/practice.schema";
 import { CreateFeedbackBodySchema } from "../schema";
 import { FeedbackOfPracticeRead } from "../usecase/feedbacks/feedback-of-practice.read";
 import { FeedbacksWrite } from "../usecase/feedbacks/feedbacks.write";

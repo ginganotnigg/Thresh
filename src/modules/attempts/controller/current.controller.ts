@@ -3,7 +3,7 @@ import { CredentialsMetaSchema } from "../../../shared/controller/schemas/meta";
 import { Chuoi } from "../../../library/caychuoijs";
 import { AttemptWithTestSchema } from "../schema/history.schema";
 import { CurrentAttemptRead } from "../usecase/current/current-attempt.read";
-import { AnswerCoreSchema } from "../../../domain/schema/core.schema";
+import { AnswerCoreSchema } from "../../../shared/resource/attempt.schema";
 import { CurrentAttemptWrite } from "../usecase/current/current-attempt.write";
 
 export function currentController() {

@@ -1,5 +1,5 @@
 import { FindAndCountOptions, Op } from "sequelize";
-import { TestsQuery } from "../../domain/schema/query.schema";
+import { TestsQuery } from "../../shared/query/filter/test.query-schema";
 import Test from "../models/test";
 import { sortBy } from "../../shared/controller/schemas/base";
 

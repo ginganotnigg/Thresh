@@ -1,11 +1,10 @@
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
-import { TestDifficulty } from "../../domain/enum";
 import Test from "./test";
 import Feedback from "./feedback";
 
 class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAttributes<PracticeTest>> {
 	declare testId: string;
-	declare difficulty: TestDifficulty;
+	declare difficulty: string;
 	declare tags: string[];
 	declare numberOfQuestions: number;
 	declare numberOfOptions: number;
@@ -33,8 +32,7 @@ class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAtt
 				},
 			},
 			difficulty: {
-				type: DataTypes.ENUM,
-				values: Object.values(TestDifficulty),
+				type: DataTypes.STRING,
 				allowNull: false,
 			},
 			tags: {

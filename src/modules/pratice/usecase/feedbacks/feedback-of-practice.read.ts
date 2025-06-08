@@ -3,7 +3,7 @@ import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
 import Feedback from "../../../../infrastructure/models/feedback";
 import PracticeTest from "../../../../infrastructure/models/practice_test";
 import Test from "../../../../infrastructure/models/test";
-import { FeedbackCore } from "../../../../domain/schema/core.schema";
+import { FeedbackCore } from "../../../../shared/resource/practice.schema";
 
 export class FeedbackOfPracticeRead {
 	private constructor(

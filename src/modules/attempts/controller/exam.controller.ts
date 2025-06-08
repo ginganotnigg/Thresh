@@ -5,8 +5,8 @@ import { Chuoi } from "../../../library/caychuoijs";
 import { AttemptsOfExamRead } from "../usecase/exam/attempts-of-exam.read";
 import { AttemptAggregateSchema, AttemptsListSchema, AttemptsOfCandidateInTestAggregateSchema, AttemptsOfTestAggregateSchema, AttemptsOfTestQuerySchema } from "../schema/of-test.schema";
 import { AttemptOfExamRead } from "../usecase/exam/attempt-of-exam.read";
-import { AttemptInfoSchema } from "../../../domain/schema/info.schema";
-import { AnswerCoreSchema } from "../../../domain/schema/core.schema";
+import { AttemptInfoSchema } from "../../../shared/resource/attempt.schema";
+import { AnswerCoreSchema } from "../../../shared/resource/attempt.schema";
 import { AttemptsOfExamWrite } from "../usecase/exam/attempts-of-exam.write";
 import { PagedSchema, PagingSchema } from "../../../shared/controller/schemas/base";
 

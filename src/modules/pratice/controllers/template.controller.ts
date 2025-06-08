@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Chuoi } from "../../../library/caychuoijs";
 import { TemplatesQuerySchema } from "../schema";
-import { TemplateCoreSchema } from "../../../domain/schema/core.schema";
+import { TemplateCoreSchema } from "../../../shared/resource/template.schema";
 import { CreateTemplateBodySchema } from "../schema";
 import { UpdateTemplateBodySchema } from "../schema";
 import { CredentialsMetaSchema } from "../../../shared/controller/schemas/meta";
