@@ -9,48 +9,6 @@ import { CurrentAttemptWrite } from "../usecase/current/current-attempt.write";
 export function currentController() {
 	const router = Chuoi.newRoute("/current");
 
-	router.endpoint().get('/attempts/:attemptId')
-		.schema({
-			meta: CredentialsMetaSchema,
-			params: z.object({
-				attemptId: z.string(),
-			}),
-			response: AttemptWithTestSchema.nullable(),
-		})
-		.handle(async (data) => {
-			return (await CurrentAttemptRead.load(data.params.attemptId, data.meta)).getAttemptWithTest();
-		}).build({
-			tags: ['Current Attempt'],
-		});
-
-	router.endpoint().get('/tests/:testId')
-		.schema({
-			meta: CredentialsMetaSchema,
-			params: z.object({
-				testId: z.string(),
-			}),
-			response: AttemptWithTestSchema.nullable(),
-		})
-		.handle(async (data) => {
-			return (await CurrentAttemptRead.loadByTestId(data.params.testId, data.meta)).getAttemptWithTest();
-		}).build({
-			tags: ['Current Attempt'],
-		});
-
-	router.endpoint().get('/attempts/:attemptId/answers')
-		.schema({
-			meta: CredentialsMetaSchema,
-			params: z.object({
-				attemptId: z.string(),
-			}),
-			response: z.array(AnswerCoreSchema),
-		})
-		.handle(async (data) => {
-			return (await CurrentAttemptRead.load(data.params.attemptId, data.meta)).getAnswers();
-		}).build({
-			tags: ['Current Attempt'],
-		});
-
 	router.endpoint().patch('/attempts/:attemptId/answers')
 		.schema({
 			meta: CredentialsMetaSchema,

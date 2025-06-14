@@ -18,7 +18,7 @@ export const PagedSchema = <T>(dataSchema: z.ZodType<T>) => z.object({
 
 export const PagingSchema = z.object({
 	page: z.coerce.number().min(1).default(1),
-	perPage: z.coerce.number().optional().default(5),
+	perPage: z.coerce.number().optional().default(100),
 });
 
 export type Paging = z.infer<typeof PagingSchema>;
@@ -42,4 +42,10 @@ export const sortBy = (sortField: string) => {
 	const field = sortField.startsWith('-') ? sortField.slice(1) : sortField;
 	const order = sortField.startsWith('-') ? 'desc' : 'asc';
 	return { field, order: order as 'asc' | 'desc' };
-}
+};
+
+// New Schemas
+
+export const QueryBooleanSchema = z.enum(["1", "0"]).optional().default("0");
+export const NonNegativeNumberSchema = z.number().int().nonnegative();
+export const QuerySortOptionsSchema = z.enum(["asc", "desc"]).optional();

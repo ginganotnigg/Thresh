@@ -30,7 +30,7 @@ export class FeedbackOfPracticeRead {
 	async get(): Promise<FeedbackCore | null> {
 		const feedback = await Feedback.findOne({
 			where: {
-				practiceTestId: this.test.id,
+				testId: this.test.id,
 			},
 		});
 		return feedback;

@@ -3,10 +3,9 @@ import Attempt from "./attempt";
 import Question from "./question";
 
 class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuestions>, InferCreationAttributes<AttemptsAnswerQuestions>> {
-	declare id: CreationOptional<number>;
+	declare id: CreationOptional<string>;
 	declare attemptId: string;
 	declare questionId: number;
-	declare chosenOption: number;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 
@@ -21,29 +20,20 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 	static initModel(sequelize: Sequelize) {
 		AttemptsAnswerQuestions.init({
 			id: {
-				type: DataTypes.INTEGER,
-				autoIncrement: true,
+				type: DataTypes.UUID,
+				defaultValue: DataTypes.UUIDV4,
+				allowNull: false,
 				primaryKey: true,
 			},
 			attemptId: {
 				allowNull: false,
 				type: DataTypes.UUID,
-				references: {
-					model: Attempt,
-					key: "id",
-				},
+				references: { model: Attempt },
 			},
 			questionId: {
 				allowNull: false,
 				type: DataTypes.INTEGER,
-				references: {
-					model: Question,
-					key: "id",
-				},
-			},
-			chosenOption: {
-				type: DataTypes.INTEGER,
-				allowNull: false,
+				references: { model: Question },
 			},
 			createdAt: DataTypes.DATE,
 			updatedAt: DataTypes.DATE,
@@ -56,7 +46,8 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 					unique: true,
 					fields: ["attemptId", "questionId"],
 				}
-			]
+			],
+			timestamps: true,
 		});
 	}
 
@@ -64,7 +55,6 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 		AttemptsAnswerQuestions.belongsTo(Question, {
 			foreignKey: "questionId",
 		});
-
 		AttemptsAnswerQuestions.belongsTo(Attempt, {
 			foreignKey: "attemptId",
 		});

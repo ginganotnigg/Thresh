@@ -1,31 +1,34 @@
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
-import PracticeTest from "./practice_test";
 import { FeedbackProblemsType } from "../../domain/enum";
+import Test from "./test";
 
 class Feedback extends Model<InferAttributes<Feedback>, InferCreationAttributes<Feedback>> {
-	declare practiceTestId: string;
+	declare id: CreationOptional<string>;
+	declare testId: string;
 	declare rating: number;
 	declare problems: FeedbackProblemsType[];
 	declare comment: string;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 
-	declare PracticeTest?: NonAttribute<PracticeTest>;
+	declare Test?: NonAttribute<Test>;
 
 	declare static associations: {
-		practiceTest: Association<Feedback, PracticeTest>;
+		practiceTest: Association<Feedback, Test>;
 	};
 
 	static initModel(sequelize: Sequelize) {
 		Feedback.init({
-			practiceTestId: {
+			id: {
+				type: DataTypes.UUID,
+				defaultValue: DataTypes.UUIDV4,
 				primaryKey: true,
+				allowNull: false,
+			},
+			testId: {
 				type: DataTypes.UUID,
 				allowNull: false,
-				references: {
-					model: PracticeTest,
-					key: "testId",
-				},
+				references: { model: Test }
 			},
 			rating: {
 				type: DataTypes.INTEGER,
@@ -63,9 +66,7 @@ class Feedback extends Model<InferAttributes<Feedback>, InferCreationAttributes<
 	}
 
 	static associate() {
-		Feedback.belongsTo(PracticeTest, {
-			foreignKey: "practiceTestId",
-		});
+		Feedback.belongsTo(Test);
 	}
 }
 

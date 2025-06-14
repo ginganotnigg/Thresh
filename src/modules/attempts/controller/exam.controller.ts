@@ -13,42 +13,6 @@ import { PagedSchema, PagingSchema } from "../../../shared/controller/schemas/ba
 export function examController() {
 	const router = Chuoi.newRoute("/exams");
 
-	router.endpoint().get("/:testId/attempts")
-		.schema({
-			meta: CredentialsMetaSchema,
-			params: TestIdParamsSchema,
-			query: AttemptsOfTestQuerySchema,
-			response: AttemptsListSchema,
-		})
-		.handle(async data => {
-			return await (await AttemptsOfExamRead.load(data.params.testId, data.meta)).getAttemptsOfTest(data.query);
-		})
-		.build({ tags: ["Attempts of Exam"] });
-
-	router.endpoint().get("/:testId/attempts/self")
-		.schema({
-			meta: CredentialsMetaSchema,
-			params: TestIdParamsSchema,
-			query: AttemptsOfTestQuerySchema,
-			response: AttemptsListSchema,
-		})
-		.handle(async data => {
-			return await (await AttemptsOfExamRead.load(data.params.testId, data.meta)).getSelfAttempts(data.query);
-		})
-		.build({ tags: ["Attempts of Exam"] });
-
-
-	router.endpoint().get("/:testId/attempts/aggregate")
-		.schema({
-			meta: CredentialsMetaSchema,
-			params: TestIdParamsSchema,
-			response: AttemptsOfTestAggregateSchema,
-		})
-		.handle(async data => {
-			return await (await AttemptsOfExamRead.load(data.params.testId, data.meta)).getAttemptsAggregate();
-		})
-		.build({ tags: ["Attempts of Exam"] });
-
 	router.endpoint().get("/:testId/participants/aggregate")
 		.schema({
 			meta: CredentialsMetaSchema,

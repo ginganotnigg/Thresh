@@ -1,14 +1,16 @@
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
 import AttemptsAnswerQuestions from "./attempts_answer_questions";
+import { QuestionTypesAsConst } from "../../domain/enum";
+import MCQ_Question from "./mcq_question";
+import LA_Question from "./la_question";
 
 class Question extends Model<InferAttributes<Question>, InferCreationAttributes<Question>> {
 	declare id: CreationOptional<number>;
 	declare testId: string;
 	declare text: string;
-	declare options: string[];
 	declare points: number;
-	declare correctOption: number;
+	declare type: string;
 
 	declare Test?: NonAttribute<Test>;
 	declare Attempts_answer_Questions?: NonAttribute<AttemptsAnswerQuestions[]>;
@@ -36,24 +38,14 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 				type: DataTypes.STRING,
 				allowNull: false,
 			},
-			options: {
-				type: DataTypes.JSON, // Use JSON to store array of strings
-				allowNull: false,
-				validate: {
-					isArrayOfStrings(value: any) {
-						if (!Array.isArray(value) || !value.every(item => typeof item === 'string')) {
-							throw new Error('Options must be an array of strings');
-						}
-					}
-				}
-			},
 			points: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 			},
-			correctOption: {
-				type: DataTypes.INTEGER,
+			type: {
+				type: DataTypes.ENUM(...QuestionTypesAsConst),
 				allowNull: false,
+				defaultValue: "MCQ",
 			},
 		}, {
 			sequelize,
@@ -67,10 +59,15 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 		Question.belongsTo(Test, {
 			foreignKey: 'testId',
 		});
-
 		Question.hasMany(AttemptsAnswerQuestions, {
 			sourceKey: "id",
 			foreignKey: "questionId",
+			onDelete: 'CASCADE',
+		});
+		Question.hasOne(MCQ_Question, {
+			onDelete: 'CASCADE',
+		});
+		Question.hasOne(LA_Question, {
 			onDelete: 'CASCADE',
 		});
 	}

@@ -1,7 +1,7 @@
 import { OpenApiGeneratorV31, OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import { OpenAPIObjectConfigV31 } from "@asteasolutions/zod-to-openapi/dist/v3.1/openapi-generator";
 import { RequestSchema } from "../utils/type";
-import { z } from "zod";
+import { z, ZodTypeAny } from "zod";
 import { ChuoiSecurityBase } from "./security";
 
 function convertExpressPathToOpenAPI(path: string): string {
@@ -11,7 +11,7 @@ function convertExpressPathToOpenAPI(path: string): string {
 export class ChuoiDocument {
 	public static readonly documentRegistry = new OpenAPIRegistry();
 
-	static registerSchema<T extends z.ZodRawShape>(schema: z.ZodObject<T>, name: string) {
+	static registerSchema<T extends ZodTypeAny>(schema: T, name: string) {
 		return this.documentRegistry.register(name, schema);
 	}
 

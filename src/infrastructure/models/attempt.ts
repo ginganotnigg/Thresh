@@ -1,6 +1,7 @@
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
 import AttemptsAnswerQuestions from "./attempts_answer_questions";
+import { AttemptStatusAsConst, AttemptStatusType } from "../../domain/enum";
 
 class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<Attempt>> {
 	declare id: CreationOptional<string>;
@@ -10,6 +11,7 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 	declare hasEnded: CreationOptional<boolean>;
 	declare secondsSpent: CreationOptional<number>;
 	declare score: CreationOptional<number>;
+	declare status: CreationOptional<AttemptStatusType>;
 
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
@@ -58,6 +60,11 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 			score: {
 				type: DataTypes.INTEGER,
 				defaultValue: 0,
+				allowNull: false,
+			},
+			status: {
+				type: DataTypes.ENUM(...AttemptStatusAsConst),
+				defaultValue: "IN_PROGRESS",
 				allowNull: false,
 			},
 			createdAt: DataTypes.DATE,

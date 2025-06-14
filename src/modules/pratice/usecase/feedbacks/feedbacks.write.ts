@@ -33,7 +33,7 @@ export class FeedbacksWrite {
 		try {
 			await Feedback.upsert({
 				...body,
-				practiceTestId: this.test.id,
+				testId: this.test.id,
 			}, { transaction });
 
 			await transaction.commit();

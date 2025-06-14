@@ -12,6 +12,18 @@ export const AttemptIdParamsSchema = z.object({
 	attemptId: z.string(),
 });
 
-export const UserIdParamsSchema = z.object({
-	userId: z.string(),
+export const CandidateIdParamsSchema = z.object({
+	candidateId: z.string(),
+});
+
+export const AnswersIdParamsSchema = z.object({
+	answersId: z.string(),
+});
+
+export const TemplateIdParamsSchema = z.object({
+	templateId: z.string(),
+});
+
+export const FeedbackIdParamsSchema = z.object({
+	feedbackId: z.string(),
 });

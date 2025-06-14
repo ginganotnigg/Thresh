@@ -3,6 +3,7 @@ import Question from "./question";
 import Attempt from "./attempt";
 import PracticeTest from "./practice_test";
 import ExamTest from "./exam_test";
+import { TestModeAsConst } from "../../domain/enum";
 
 class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 	declare id: CreationOptional<string>;
@@ -56,7 +57,7 @@ class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 				defaultValue: "english",
 			},
 			mode: {
-				type: DataTypes.STRING,
+				type: DataTypes.ENUM(...TestModeAsConst),
 				allowNull: false,
 			},
 			createdAt: DataTypes.DATE,
