@@ -1,6 +1,6 @@
 import { db } from "../../configs/orm/kysely/db";
 import sequelize from "../../configs/orm/sequelize/sequelize";
-import { DomainError } from "../../shared/controller/errors/domain.error";
+import { DomainError } from "../../controllers/shared/errors/domain.error";
 import Attempt from "../models/attempt";
 import AttemptsAnswerQuestions from "../models/attempts_answer_questions";
 import { attemptEmitter } from "../../modules/attempts/init/emitter";

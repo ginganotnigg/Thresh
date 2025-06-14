@@ -4,6 +4,7 @@ import Attempt from "./attempt";
 import PracticeTest from "./practice_test";
 import ExamTest from "./exam_test";
 import { TestModeAsConst } from "../../domain/enum";
+import Feedback from "./feedback";
 
 class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 	declare id: CreationOptional<string>;
@@ -18,14 +19,18 @@ class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 
 	declare Questions?: NonAttribute<Question[]>;
 	declare Attempts?: NonAttribute<Attempt[]>;
+	declare Feedbacks?: NonAttribute<Feedback[]>;
 	declare PracticeTest?: NonAttribute<PracticeTest>;
 	declare ExamTest?: NonAttribute<ExamTest>;
+	declare Feedback?: NonAttribute<Feedback[]>;
 
 	declare static associations: {
-		questions: Association<Test, Question>;
-		attempts: Association<Test, Attempt>;
-		practiceTest: Association<Test, PracticeTest>;
-		examTest: Association<Test, ExamTest>;
+		Questions: Association<Test, Question>;
+		Attempts: Association<Test, Attempt>;
+		Feedbacks: Association<Test, Feedback>;
+		PracticeTest: Association<Test, PracticeTest>;
+		ExamTest: Association<Test, ExamTest>;
+		Feedback: Association<Test, Feedback>;
 	}
 
 	static initModel(sequelize: Sequelize) {
@@ -64,32 +69,24 @@ class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 			updatedAt: DataTypes.DATE,
 		}, {
 			sequelize,
-			tableName: "Tests",
-			modelName: "Test",
+			timestamps: true,
 		});
 	}
 
 	static associate() {
 		Test.hasMany(Question, {
-			sourceKey: "id",
-			foreignKey: "testId",
 			onDelete: 'CASCADE',
 		});
 		Test.hasMany(Attempt, {
-			sourceKey: "id",
-			foreignKey: "testId",
 			onDelete: 'CASCADE',
 		});
-		// A Test may have zero or one PracticeTest
+		Test.hasMany(Feedback, {
+			onDelete: 'CASCADE',
+		});
 		Test.hasOne(PracticeTest, {
-			sourceKey: "id",
-			foreignKey: "testId",
 			onDelete: 'CASCADE',
 		});
-		// A Test may have zero or one ExamTest
 		Test.hasOne(ExamTest, {
-			sourceKey: "id",
-			foreignKey: "testId",
 			onDelete: 'CASCADE',
 		});
 	}

@@ -41,6 +41,7 @@ function configSequelize(sequelize: Sequelize) {
 	Feedback.initModel(sequelize);
 	ExamParticipants.initModel(sequelize);
 
+
 	Test.associate();
 	Question.associate();
 	Attempt.associate();

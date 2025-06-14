@@ -31,6 +31,8 @@ const AttemptCoreSchema = z.object({
 
 export const AttemptResourceSchema = ChuoiDocument.registerSchema(AttemptCoreSchema.extend({
 }), "AttemptResourceSchema");
-
 export const AttemptsResourceSchema = ChuoiDocument.registerSchema(PagedSchema(AttemptCoreSchema).extend({
 }), "AttemptsResourceSchema");
+
+export type AttemptResourceSchemaType = z.infer<typeof AttemptResourceSchema>;
+export type AttemptsResourceSchemaType = z.infer<typeof AttemptsResourceSchema>;

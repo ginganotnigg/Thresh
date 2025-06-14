@@ -17,10 +17,7 @@ class AttemptsAnswerMCQQuestions extends Model<InferAttributes<AttemptsAnswerMCQ
 				type: DataTypes.INTEGER,
 				autoIncrement: true,
 				primaryKey: true,
-				references: {
-					model: AttemptsAnswerQuestions,
-					key: "id",
-				}
+				references: { model: AttemptsAnswerQuestions }
 			},
 			chosenOption: {
 				type: DataTypes.INTEGER,
@@ -28,8 +25,7 @@ class AttemptsAnswerMCQQuestions extends Model<InferAttributes<AttemptsAnswerMCQ
 			},
 		}, {
 			sequelize,
-			modelName: "Attempts_answer_MCQ_Questions",
-			tableName: "Attempts_answer_MCQ_Questions",
+			timestamps: false,
 		});
 	}
 

@@ -10,7 +10,7 @@ class LA_Question extends Model<InferAttributes<LA_Question>, InferCreationAttri
 	declare Question?: NonAttribute<Question>;
 
 	declare static associations: {
-		question: Association<LA_Question, Question>;
+		Question: Association<LA_Question, Question>;
 	};
 
 	static initModel(sequelize: Sequelize) {
@@ -19,10 +19,7 @@ class LA_Question extends Model<InferAttributes<LA_Question>, InferCreationAttri
 				type: DataTypes.INTEGER,
 				autoIncrement: true,
 				primaryKey: true,
-				references: {
-					model: Question,
-					key: "id",
-				}
+				references: { model: Question }
 			},
 			imageLinks: {
 				type: DataTypes.JSON, // Use JSON to store array of strings
@@ -47,8 +44,6 @@ class LA_Question extends Model<InferAttributes<LA_Question>, InferCreationAttri
 			},
 		}, {
 			sequelize,
-			modelName: "LA_Question",
-			tableName: "LA_Questions",
 			timestamps: false,
 		});
 	}
@@ -56,7 +51,6 @@ class LA_Question extends Model<InferAttributes<LA_Question>, InferCreationAttri
 	static associate() {
 		LA_Question.belongsTo(Question, {
 			onDelete: 'CASCADE',
-			onUpdate: 'CASCADE',
 		});
 	}
 }

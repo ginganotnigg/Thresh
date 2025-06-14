@@ -19,7 +19,8 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 	declare ExamParticipants?: NonAttribute<ExamParticipants[]>;
 
 	declare static associations: {
-		test: Association<ExamTest, Test>;
+		Test: Association<ExamTest, Test>;
+		ExamParticipants: Association<ExamTest, ExamParticipants>;
 	}
 
 	static initModel(sequelize: Sequelize) {
@@ -29,10 +30,7 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 				type: DataTypes.UUID,
 				allowNull: false,
 				unique: true,
-				references: {
-					model: Test,
-					key: "id",
-				},
+				references: { model: Test },
 			},
 			roomId: {
 				type: DataTypes.STRING,
@@ -69,18 +67,15 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 			updatedAt: DataTypes.DATE,
 		}, {
 			sequelize,
-			tableName: "ExamTests",
-			modelName: "ExamTest",
 		});
 	}
 
 	static associate() {
 		ExamTest.belongsTo(Test, {
-			foreignKey: "testId",
-			targetKey: "id",
+			onDelete: 'CASCADE',
 		});
 		ExamTest.hasMany(ExamParticipants, {
-			foreignKey: "testId",
+			onDelete: 'CASCADE',
 		});
 	}
 }

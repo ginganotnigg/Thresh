@@ -18,6 +18,7 @@ const AttemptQueryCoreSchema = z.object({
 	.merge(AttemptAggregateQuerySchema)
 	.merge(AttemptIncludeQuerySchema);
 
+
 export const AttemptsQuerySchema = PagingSchema.extend({
 	self: QueryBooleanSchema,
 	common_include_test: QueryBooleanSchema,
@@ -25,5 +26,7 @@ export const AttemptsQuerySchema = PagingSchema.extend({
 	candidate_id: z.string().optional(),
 	status: z.enum(AttemptStatusAsConst).optional(),
 }).merge(AttemptQueryCoreSchema);
-
 export const AttemptQuerySchema = AttemptQueryCoreSchema;
+
+export type AttemptsQuerySchemaType = z.infer<typeof AttemptsQuerySchema>;
+export type AttemptQuerySchemaType = z.infer<typeof AttemptQuerySchema>;

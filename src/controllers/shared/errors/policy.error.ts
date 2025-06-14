@@ -1,4 +1,4 @@
-import { DomainError } from "../../../shared/controller/errors/domain.error";
+import { DomainError } from "./domain.error";
 
 export class PolicyError extends DomainError {
 	constructor(message: string) {

@@ -17,10 +17,7 @@ class AttemptsAnswerLAQuestions extends Model<InferAttributes<AttemptsAnswerLAQu
 				type: DataTypes.INTEGER,
 				autoIncrement: true,
 				primaryKey: true,
-				references: {
-					model: AttemptsAnswerQuestions,
-					key: "id",
-				}
+				references: { model: AttemptsAnswerQuestions }
 			},
 			answer: {
 				type: DataTypes.TEXT,
@@ -28,8 +25,7 @@ class AttemptsAnswerLAQuestions extends Model<InferAttributes<AttemptsAnswerLAQu
 			},
 		}, {
 			sequelize,
-			modelName: "Attempts_answer_LA_Questions",
-			tableName: "Attempts_answer_LA_Questions",
+			timestamps: false,
 		});
 	}
 

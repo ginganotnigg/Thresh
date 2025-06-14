@@ -12,7 +12,6 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 	declare secondsSpent: CreationOptional<number>;
 	declare score: CreationOptional<number>;
 	declare status: CreationOptional<AttemptStatusType>;
-
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 
@@ -38,10 +37,7 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 			testId: {
 				type: DataTypes.UUID,
 				allowNull: false,
-				references: {
-					model: Test,
-					key: "id",
-				},
+				references: { model: Test },
 			},
 			candidateId: {
 				type: DataTypes.STRING,
@@ -71,25 +67,22 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 			updatedAt: DataTypes.DATE,
 		}, {
 			sequelize,
-			modelName: "Attempt",
-			tableName: "Attempts",
 			indexes: [
 				{
 					unique: true,
 					fields: ["testId", "order", "candidateId"],
 				},
-			]
+			],
+			timestamps: true,
 		});
 	}
 
 	static associate() {
 		Attempt.hasMany(AttemptsAnswerQuestions, {
-			sourceKey: "id",
-			foreignKey: "attemptId",
 			onDelete: 'CASCADE',
 		});
 		Attempt.belongsTo(Test, {
-			foreignKey: "testId",
+			onDelete: 'CASCADE',
 		});
 	}
 }

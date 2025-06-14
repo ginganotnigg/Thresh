@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Chuoi } from "../../library/caychuoijs";
 import { ControllerBase } from "../../shared/controller/controller.base";
-import { TestIdParamsSchema } from "../../shared/controller/schemas/params";
+import { TestIdParamsSchema } from "../shared/schemas/params";
 import { PostTestBodySchema, PutTestBodySchema } from "./body.schema";
 import { TestQuerySchema, TestsQuerySchema } from "./query.schema";
 import { TestResourceSchema, TestsResourceSchema } from "./resource.schema";

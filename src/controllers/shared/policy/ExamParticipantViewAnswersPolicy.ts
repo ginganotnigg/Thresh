@@ -1,4 +1,4 @@
-import { CredentialsMeta } from "../../../shared/controller/schemas/meta";
+import { CredentialsMeta } from "../schemas/meta";
 import { PolicyError } from "../base/policy-error";
 import { ExamParticipantPolicy } from "./participant/ExamParticipantPolicy";
 

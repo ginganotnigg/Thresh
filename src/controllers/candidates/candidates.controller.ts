@@ -1,6 +1,6 @@
 import { Chuoi } from "../../library/caychuoijs";
 import { ControllerBase } from "../../shared/controller/controller.base";
-import { CandidateIdParamsSchema } from "../../shared/controller/schemas/params";
+import { CandidateIdParamsSchema } from "../shared/schemas/params";
 import { PostCandidateBodySchema } from "./body.schema";
 import { CandidateQuerySchema, CandidatesQuerySchema } from "./query.schema";
 import { CandidateResourceSchema, CandidatesResourceSchema } from "./resource.schema";

@@ -1,6 +1,8 @@
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Optional, Sequelize } from "sequelize";
 import Attempt from "./attempt";
 import Question from "./question";
+import AttemptsAnswerMCQQuestions from "./attempts_answer_mcq_questions";
+import AttemptsAnswerLAQuestions from "./attempts_answer_la_questions";
 
 class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuestions>, InferCreationAttributes<AttemptsAnswerQuestions>> {
 	declare id: CreationOptional<string>;
@@ -11,10 +13,14 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 
 	declare Question?: NonAttribute<Question>;
 	declare Attempt?: NonAttribute<Attempt>;
+	declare AttemptsAnswerMCQQuestions?: NonAttribute<AttemptsAnswerMCQQuestions>;
+	declare AttemptsAnswerLAQuestions?: NonAttribute<AttemptsAnswerLAQuestions>;
 
 	declare static associations: {
 		Question: Association<AttemptsAnswerQuestions, Question>;
 		Attempt: Association<AttemptsAnswerQuestions, Attempt>;
+		AttemptsAnswerMCQQuestions: Association<AttemptsAnswerQuestions, AttemptsAnswerMCQQuestions>;
+		AttemptsAnswerLAQuestions: Association<AttemptsAnswerQuestions, AttemptsAnswerLAQuestions>;
 	}
 
 	static initModel(sequelize: Sequelize) {
@@ -39,8 +45,6 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 			updatedAt: DataTypes.DATE,
 		}, {
 			sequelize,
-			modelName: "Attempts_answer_Questions",
-			tableName: "Attempts_answer_Questions",
 			indexes: [
 				{
 					unique: true,
@@ -53,10 +57,16 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 
 	static associate() {
 		AttemptsAnswerQuestions.belongsTo(Question, {
-			foreignKey: "questionId",
+			onDelete: 'CASCADE',
 		});
 		AttemptsAnswerQuestions.belongsTo(Attempt, {
-			foreignKey: "attemptId",
+			onDelete: 'CASCADE',
+		});
+		AttemptsAnswerQuestions.hasOne(AttemptsAnswerMCQQuestions, {
+			onDelete: 'CASCADE',
+		});
+		AttemptsAnswerQuestions.hasOne(AttemptsAnswerLAQuestions, {
+			onDelete: 'CASCADE',
 		});
 	}
 }

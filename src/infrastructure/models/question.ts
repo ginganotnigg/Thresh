@@ -14,9 +14,14 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 
 	declare Test?: NonAttribute<Test>;
 	declare Attempts_answer_Questions?: NonAttribute<AttemptsAnswerQuestions[]>;
+	declare MCQ_Question?: NonAttribute<MCQ_Question>;
+	declare LA_Question?: NonAttribute<LA_Question>;
 
 	declare static associations: {
-		test: Association<Question, Test>;
+		Test: Association<Question, Test>;
+		Attempts_answer_Questions: Association<Question, AttemptsAnswerQuestions>;
+		MCQ_Question: Association<Question, MCQ_Question>;
+		LA_Question: Association<Question, LA_Question>;
 	};
 
 	static initModel(sequelize: Sequelize) {
@@ -29,10 +34,7 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 			testId: {
 				type: DataTypes.UUID,
 				allowNull: false,
-				references: {
-					model: Test,
-					key: "id",
-				},
+				references: { model: Test },
 			},
 			text: {
 				type: DataTypes.STRING,
@@ -45,12 +47,9 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 			type: {
 				type: DataTypes.ENUM(...QuestionTypesAsConst),
 				allowNull: false,
-				defaultValue: "MCQ",
 			},
 		}, {
 			sequelize,
-			modelName: "Question",
-			tableName: "Questions",
 			timestamps: false,
 		});
 	}
@@ -60,8 +59,6 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 			foreignKey: 'testId',
 		});
 		Question.hasMany(AttemptsAnswerQuestions, {
-			sourceKey: "id",
-			foreignKey: "questionId",
 			onDelete: 'CASCADE',
 		});
 		Question.hasOne(MCQ_Question, {

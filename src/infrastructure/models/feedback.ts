@@ -14,7 +14,7 @@ class Feedback extends Model<InferAttributes<Feedback>, InferCreationAttributes<
 	declare Test?: NonAttribute<Test>;
 
 	declare static associations: {
-		practiceTest: Association<Feedback, Test>;
+		Test: Association<Feedback, Test>;
 	};
 
 	static initModel(sequelize: Sequelize) {
@@ -59,14 +59,14 @@ class Feedback extends Model<InferAttributes<Feedback>, InferCreationAttributes<
 			updatedAt: DataTypes.DATE,
 		}, {
 			sequelize,
-			tableName: "Feedbacks",
-			modelName: "Feedback",
 			timestamps: true,
 		});
 	}
 
 	static associate() {
-		Feedback.belongsTo(Test);
+		Feedback.belongsTo(Test, {
+			onDelete: 'CASCADE',
+		});
 	}
 }
 

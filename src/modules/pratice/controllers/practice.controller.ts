@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { Chuoi } from "../../../library/caychuoijs";
-import { TestIdParamsSchema } from "../../../shared/controller/schemas/params";
+import { TestIdParamsSchema } from "../../../controllers/shared/schemas/params";
 import { PracticeTestInfoSchema } from "../../../shared/resource/practice.schema";
-import { CredentialsMetaSchema } from "../../../shared/controller/schemas/meta";
+import { CredentialsMetaSchema } from "../../../controllers/shared/schemas/meta";
 import { TestsQuerySchema } from "../../../shared/query/filter/test.query-schema";
 import { PagedSchema } from "../../../shared/controller/schemas/base";
 import { PracticesRead } from "../usecase/practice/practices.read";

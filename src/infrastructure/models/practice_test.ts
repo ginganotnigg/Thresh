@@ -1,6 +1,5 @@
 import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
-import Feedback from "./feedback";
 
 class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAttributes<PracticeTest>> {
 	declare testId: string;
@@ -9,14 +8,11 @@ class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAtt
 	declare numberOfQuestions: number;
 	declare numberOfOptions: number;
 	declare outlines: string[];
-	declare createdAt: CreationOptional<Date>;
-	declare updatedAt: CreationOptional<Date>;
 
 	declare Test?: NonAttribute<Test>;
-	declare Feedback?: NonAttribute<Feedback>;
 
 	declare static associations: {
-		test: Association<PracticeTest, Test>;
+		Test: Association<PracticeTest, Test>;
 	};
 
 	static initModel(sequelize: Sequelize) {
@@ -26,10 +22,7 @@ class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAtt
 				type: DataTypes.UUID,
 				unique: true,
 				allowNull: false,
-				references: {
-					model: Test,
-					key: "id",
-				},
+				references: { model: Test },
 			},
 			difficulty: {
 				type: DataTypes.STRING,
@@ -65,26 +58,16 @@ class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAtt
 					}
 				}
 			},
-			createdAt: DataTypes.DATE,
-			updatedAt: DataTypes.DATE,
 		}, {
 			sequelize,
-			tableName: "PracticeTests",
-			modelName: "PracticeTest",
+			timestamps: false,
 		});
 	}
 
 	static associate() {
-		// PracticeTest has a mandatory relation to Test (belongs to a Test)
 		PracticeTest.belongsTo(Test, {
-			foreignKey: 'testId',
-		});
-
-		PracticeTest.hasOne(Feedback, {
-			foreignKey: 'practiceTestId',
 			onDelete: 'CASCADE',
-			onUpdate: 'CASCADE',
-		})
+		});
 	}
 }
 

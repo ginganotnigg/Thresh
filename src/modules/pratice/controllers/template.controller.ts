@@ -4,7 +4,7 @@ import { TemplatesQuerySchema } from "../schema";
 import { TemplateCoreSchema } from "../../../shared/resource/template.schema";
 import { CreateTemplateBodySchema } from "../schema";
 import { UpdateTemplateBodySchema } from "../schema";
-import { CredentialsMetaSchema } from "../../../shared/controller/schemas/meta";
+import { CredentialsMetaSchema } from "../../../controllers/shared/schemas/meta";
 import { PagedSchema } from "../../../shared/controller/schemas/base";
 import { TemplatesRead } from "../usecase/templates/templates.read";
 import { TemplatesWrite } from "../usecase/templates/templates.write";

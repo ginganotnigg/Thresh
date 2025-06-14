@@ -73,8 +73,7 @@ class Template extends Model<InferAttributes<Template>, InferCreationAttributes<
 			updatedAt: DataTypes.DATE,
 		}, {
 			sequelize,
-			tableName: "Templates",
-			modelName: "Template",
+			timestamps: true,
 		});
 	}
 

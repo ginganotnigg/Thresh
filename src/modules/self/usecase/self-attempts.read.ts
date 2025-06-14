@@ -1,7 +1,7 @@
 import { FindAndCountOptions } from "sequelize";
-import { DomainError } from "../../../shared/controller/errors/domain.error";
+import { DomainError } from "../../../controllers/shared/errors/domain.error";
 import { Paged } from "../../../shared/controller/schemas/base";
-import { CredentialsMeta } from "../../../shared/controller/schemas/meta";
+import { CredentialsMeta } from "../../../controllers/shared/schemas/meta";
 import Attempt from "../../../infrastructure/models/attempt";
 import Test from "../../../infrastructure/models/test";
 import { AttemptWithTest } from "../../attempts/schema/history.schema";

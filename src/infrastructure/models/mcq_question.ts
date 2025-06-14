@@ -9,7 +9,7 @@ class MCQ_Question extends Model<InferAttributes<MCQ_Question>, InferCreationAtt
 	declare Question?: NonAttribute<Question>;
 
 	declare static associations: {
-		question: Association<MCQ_Question, Question>;
+		Question: Association<MCQ_Question, Question>;
 	};
 
 	static initModel(sequelize: Sequelize) {
@@ -18,10 +18,7 @@ class MCQ_Question extends Model<InferAttributes<MCQ_Question>, InferCreationAtt
 				type: DataTypes.INTEGER,
 				autoIncrement: true,
 				primaryKey: true,
-				references: {
-					model: Question,
-					key: "id",
-				}
+				references: { model: Question }
 			},
 			options: {
 				type: DataTypes.JSON, // Use JSON to store array of strings
@@ -40,8 +37,6 @@ class MCQ_Question extends Model<InferAttributes<MCQ_Question>, InferCreationAtt
 			},
 		}, {
 			sequelize,
-			modelName: "MCQ_Question",
-			tableName: "MCQ_Questions",
 			timestamps: false,
 		});
 	}
@@ -49,7 +44,6 @@ class MCQ_Question extends Model<InferAttributes<MCQ_Question>, InferCreationAtt
 	static associate() {
 		MCQ_Question.belongsTo(Question, {
 			onDelete: 'CASCADE',
-			onUpdate: 'CASCADE',
 		});
 	}
 }

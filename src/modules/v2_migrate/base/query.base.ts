@@ -1,4 +1,4 @@
-import { CredentialsMeta } from "../../../shared/controller/schemas/meta";
+import { CredentialsMeta } from "../../../controllers/shared/schemas/meta";
 
 export abstract class QueryBase<TParam, TResponse> {
 	abstract query(param: TParam): Promise<TResponse>;

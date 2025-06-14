@@ -1,7 +1,7 @@
 import { db } from "../../../../configs/orm/kysely/db";
-import { DomainError } from "../../../../shared/controller/errors/domain.error";
-import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
 import { PolicyBase } from "../../base/policy.base";
+import { DomainError } from "../../errors/domain.error";
+import { CredentialsMeta } from "../../schemas/meta";
 import { ExamParticipantPolicy } from "./ExamParticipantPolicy";
 import { PracticeParticipantPolicy } from "./PracticeParticipantPolicy";
 

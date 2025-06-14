@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CredentialsMetaSchema } from "../../../shared/controller/schemas/meta";
+import { CredentialsMetaSchema } from "../../../controllers/shared/schemas/meta";
 import { Chuoi } from "../../../library/caychuoijs";
 import { AttemptWithTestSchema } from "../schema/history.schema";
 import { CurrentAttemptRead } from "../usecase/current/current-attempt.read";

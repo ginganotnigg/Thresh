@@ -1,6 +1,6 @@
-import { CredentialsMeta } from "../../../../shared/controller/schemas/meta";
-import { CredentialsPolicyBase } from "../../base/credentials.policy.base";
-import { PolicyError } from "../../base/policy-error";
+import { CredentialsPolicyBase } from "../../base/policy.base";
+import { PolicyError } from "../../errors/policy.error";
+import { CredentialsMeta } from "../../schemas/meta";
 
 export class ExamParticipantPolicy extends CredentialsPolicyBase {
 	constructor(
