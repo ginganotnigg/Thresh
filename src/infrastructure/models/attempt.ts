@@ -1,4 +1,4 @@
-import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
+import { Association, CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
 import AttemptsAnswerQuestions from "./attempts_answer_questions";
 import { AttemptStatusAsConst, AttemptStatusType } from "../../domain/enum";
@@ -6,7 +6,7 @@ import { AttemptStatusAsConst, AttemptStatusType } from "../../domain/enum";
 class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<Attempt>> {
 	declare id: CreationOptional<string>;
 	declare order: number;
-	declare testId: string;
+	declare testId: ForeignKey<Test["id"]>;
 	declare candidateId: string;
 	declare hasEnded: CreationOptional<boolean>;
 	declare secondsSpent: CreationOptional<number>;
@@ -33,11 +33,6 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 			order: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
-			},
-			testId: {
-				type: DataTypes.UUID,
-				allowNull: false,
-				references: { model: Test },
 			},
 			candidateId: {
 				type: DataTypes.STRING,

@@ -1,8 +1,8 @@
-import { Association, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
+import { Association, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import AttemptsAnswerQuestions from "./attempts_answer_questions";
 
 class AttemptsAnswerLAQuestions extends Model<InferAttributes<AttemptsAnswerLAQuestions>, InferCreationAttributes<AttemptsAnswerLAQuestions>> {
-	declare attemptAnswerQuestionId: number;
+	declare attemptAnswerQuestionId: ForeignKey<AttemptsAnswerQuestions["id"]>;
 	declare answer: string;
 
 	declare Attempts_Answer_Questions?: NonAttribute<AttemptsAnswerQuestions>;
@@ -15,9 +15,7 @@ class AttemptsAnswerLAQuestions extends Model<InferAttributes<AttemptsAnswerLAQu
 		AttemptsAnswerLAQuestions.init({
 			attemptAnswerQuestionId: {
 				type: DataTypes.INTEGER,
-				autoIncrement: true,
 				primaryKey: true,
-				references: { model: AttemptsAnswerQuestions }
 			},
 			answer: {
 				type: DataTypes.TEXT,

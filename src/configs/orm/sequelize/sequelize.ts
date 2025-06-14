@@ -10,6 +10,10 @@ import ExamTest from "../../../infrastructure/models/exam_test";
 import Feedback from "../../../infrastructure/models/feedback";
 import Template from "../../../infrastructure/models/template";
 import ExamParticipants from "../../../infrastructure/models/exam_participants";
+import AttemptsAnswerMCQQuestions from "../../../infrastructure/models/attempts_answer_mcq_questions";
+import AttemptsAnswerLAQuestions from "../../../infrastructure/models/attempts_answer_la_questions";
+import MCQQuestion from "../../../infrastructure/models/mcq_question";
+import LAQuestion from "../../../infrastructure/models/la_question";
 
 const sequelize = new Sequelize(
 	env.db.database,
@@ -33,8 +37,12 @@ const sequelize = new Sequelize(
 function configSequelize(sequelize: Sequelize) {
 	Test.initModel(sequelize);
 	Question.initModel(sequelize);
+	MCQQuestion.initModel(sequelize);
+	LAQuestion.initModel(sequelize);
 	Attempt.initModel(sequelize);
 	AttemptsAnswerQuestions.initModel(sequelize);
+	AttemptsAnswerMCQQuestions.initModel(sequelize);
+	AttemptsAnswerLAQuestions.initModel(sequelize);
 	PracticeTest.initModel(sequelize);
 	ExamTest.initModel(sequelize);
 	Template.initModel(sequelize);
@@ -44,8 +52,12 @@ function configSequelize(sequelize: Sequelize) {
 
 	Test.associate();
 	Question.associate();
+	MCQQuestion.associate();
+	LAQuestion.associate();
 	Attempt.associate();
 	AttemptsAnswerQuestions.associate();
+	AttemptsAnswerMCQQuestions.associate();
+	AttemptsAnswerLAQuestions.associate();
 	PracticeTest.associate();
 	ExamTest.associate();
 	Template.associate();

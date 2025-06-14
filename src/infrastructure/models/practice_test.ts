@@ -1,8 +1,8 @@
-import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
+import { Association, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
 
 class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAttributes<PracticeTest>> {
-	declare testId: string;
+	declare testId: ForeignKey<Test["id"]>;
 	declare difficulty: string;
 	declare tags: string[];
 	declare numberOfQuestions: number;
@@ -20,9 +20,6 @@ class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAtt
 			testId: {
 				primaryKey: true,
 				type: DataTypes.UUID,
-				unique: true,
-				allowNull: false,
-				references: { model: Test },
 			},
 			difficulty: {
 				type: DataTypes.STRING,

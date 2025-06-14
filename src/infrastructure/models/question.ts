@@ -1,27 +1,27 @@
-import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
+import { Association, CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
 import AttemptsAnswerQuestions from "./attempts_answer_questions";
 import { QuestionTypesAsConst } from "../../domain/enum";
-import MCQ_Question from "./mcq_question";
-import LA_Question from "./la_question";
+import MCQQuestion from "./mcq_question";
+import LAQuestion from "./la_question";
 
 class Question extends Model<InferAttributes<Question>, InferCreationAttributes<Question>> {
 	declare id: CreationOptional<number>;
-	declare testId: string;
+	declare testId: ForeignKey<Test["id"]>;
 	declare text: string;
 	declare points: number;
 	declare type: string;
 
 	declare Test?: NonAttribute<Test>;
 	declare Attempts_answer_Questions?: NonAttribute<AttemptsAnswerQuestions[]>;
-	declare MCQ_Question?: NonAttribute<MCQ_Question>;
-	declare LA_Question?: NonAttribute<LA_Question>;
+	declare MCQ_Question?: NonAttribute<MCQQuestion>;
+	declare LA_Question?: NonAttribute<LAQuestion>;
 
 	declare static associations: {
 		Test: Association<Question, Test>;
 		Attempts_answer_Questions: Association<Question, AttemptsAnswerQuestions>;
-		MCQ_Question: Association<Question, MCQ_Question>;
-		LA_Question: Association<Question, LA_Question>;
+		MCQ_Question: Association<Question, MCQQuestion>;
+		LA_Question: Association<Question, LAQuestion>;
 	};
 
 	static initModel(sequelize: Sequelize) {
@@ -30,11 +30,6 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 				type: DataTypes.INTEGER,
 				autoIncrement: true,
 				primaryKey: true,
-			},
-			testId: {
-				type: DataTypes.UUID,
-				allowNull: false,
-				references: { model: Test },
 			},
 			text: {
 				type: DataTypes.STRING,
@@ -56,15 +51,15 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 
 	static associate() {
 		Question.belongsTo(Test, {
-			foreignKey: 'testId',
+			onDelete: 'CASCADE',
 		});
 		Question.hasMany(AttemptsAnswerQuestions, {
 			onDelete: 'CASCADE',
 		});
-		Question.hasOne(MCQ_Question, {
+		Question.hasOne(MCQQuestion, {
 			onDelete: 'CASCADE',
 		});
-		Question.hasOne(LA_Question, {
+		Question.hasOne(LAQuestion, {
 			onDelete: 'CASCADE',
 		});
 	}

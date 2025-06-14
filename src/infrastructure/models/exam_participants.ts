@@ -1,9 +1,9 @@
-import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
+import { Association, CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import ExamTest from "./exam_test";
 
 class ExamParticipants extends Model<InferAttributes<ExamParticipants>, InferCreationAttributes<ExamParticipants>> {
 	declare id: CreationOptional<string>;
-	declare testId: string;
+	declare testId: ForeignKey<ExamTest["testId"]>;
 	declare candidateId: string;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
@@ -21,11 +21,6 @@ class ExamParticipants extends Model<InferAttributes<ExamParticipants>, InferCre
 				type: DataTypes.UUID,
 				allowNull: false,
 				defaultValue: DataTypes.UUIDV4,
-			},
-			testId: {
-				type: DataTypes.UUID,
-				allowNull: false,
-				references: { model: ExamTest },
 			},
 			candidateId: {
 				type: DataTypes.STRING,

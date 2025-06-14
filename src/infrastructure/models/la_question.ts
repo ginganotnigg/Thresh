@@ -1,8 +1,8 @@
-import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
+import { Association, CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Question from "./question";
 
-class LA_Question extends Model<InferAttributes<LA_Question>, InferCreationAttributes<LA_Question>> {
-	declare questionId: number;
+class LAQuestion extends Model<InferAttributes<LAQuestion>, InferCreationAttributes<LAQuestion>> {
+	declare questionId: ForeignKey<Question["id"]>;
 	declare imageLinks: CreationOptional<string[] | null>;
 	declare extraText: CreationOptional<string | null>;
 	declare correctAnswer: string;
@@ -10,16 +10,14 @@ class LA_Question extends Model<InferAttributes<LA_Question>, InferCreationAttri
 	declare Question?: NonAttribute<Question>;
 
 	declare static associations: {
-		Question: Association<LA_Question, Question>;
+		Question: Association<LAQuestion, Question>;
 	};
 
 	static initModel(sequelize: Sequelize) {
-		LA_Question.init({
+		LAQuestion.init({
 			questionId: {
 				type: DataTypes.INTEGER,
-				autoIncrement: true,
 				primaryKey: true,
-				references: { model: Question }
 			},
 			imageLinks: {
 				type: DataTypes.JSON, // Use JSON to store array of strings
@@ -49,10 +47,10 @@ class LA_Question extends Model<InferAttributes<LA_Question>, InferCreationAttri
 	}
 
 	static associate() {
-		LA_Question.belongsTo(Question, {
+		LAQuestion.belongsTo(Question, {
 			onDelete: 'CASCADE',
 		});
 	}
 }
 
-export default LA_Question;
+export default LAQuestion;

@@ -1,10 +1,10 @@
 // filepath: d:\Projects\skillsharp\Thresh\src\domain\models\exam_test.ts
-import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
+import { Association, CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
 import ExamParticipants from "./exam_participants";
 
 class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<ExamTest>> {
-	declare testId: string;
+	declare testId: ForeignKey<Test["id"]>;
 	declare roomId: string;
 	declare password: string | null;
 	declare numberOfAttemptsAllowed: number;
@@ -28,9 +28,6 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 			testId: {
 				primaryKey: true,
 				type: DataTypes.UUID,
-				allowNull: false,
-				unique: true,
-				references: { model: Test },
 			},
 			roomId: {
 				type: DataTypes.STRING,

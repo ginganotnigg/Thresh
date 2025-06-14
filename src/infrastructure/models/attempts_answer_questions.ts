@@ -1,4 +1,4 @@
-import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Optional, Sequelize } from "sequelize";
+import { Association, CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Optional, Sequelize } from "sequelize";
 import Attempt from "./attempt";
 import Question from "./question";
 import AttemptsAnswerMCQQuestions from "./attempts_answer_mcq_questions";
@@ -6,8 +6,8 @@ import AttemptsAnswerLAQuestions from "./attempts_answer_la_questions";
 
 class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuestions>, InferCreationAttributes<AttemptsAnswerQuestions>> {
 	declare id: CreationOptional<string>;
-	declare attemptId: string;
-	declare questionId: number;
+	declare attemptId: ForeignKey<Attempt["id"]>;
+	declare questionId: ForeignKey<Question["id"]>;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 
@@ -30,16 +30,6 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 				defaultValue: DataTypes.UUIDV4,
 				allowNull: false,
 				primaryKey: true,
-			},
-			attemptId: {
-				allowNull: false,
-				type: DataTypes.UUID,
-				references: { model: Attempt },
-			},
-			questionId: {
-				allowNull: false,
-				type: DataTypes.INTEGER,
-				references: { model: Question },
 			},
 			createdAt: DataTypes.DATE,
 			updatedAt: DataTypes.DATE,

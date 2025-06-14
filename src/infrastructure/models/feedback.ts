@@ -1,10 +1,10 @@
-import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
+import { Association, CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import { FeedbackProblemsType } from "../../domain/enum";
 import Test from "./test";
 
 class Feedback extends Model<InferAttributes<Feedback>, InferCreationAttributes<Feedback>> {
 	declare id: CreationOptional<string>;
-	declare testId: string;
+	declare testId: ForeignKey<Test["id"]>;
 	declare rating: number;
 	declare problems: FeedbackProblemsType[];
 	declare comment: string;
@@ -24,11 +24,6 @@ class Feedback extends Model<InferAttributes<Feedback>, InferCreationAttributes<
 				defaultValue: DataTypes.UUIDV4,
 				primaryKey: true,
 				allowNull: false,
-			},
-			testId: {
-				type: DataTypes.UUID,
-				allowNull: false,
-				references: { model: Test }
 			},
 			rating: {
 				type: DataTypes.INTEGER,

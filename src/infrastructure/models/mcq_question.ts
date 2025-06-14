@@ -1,24 +1,22 @@
-import { Association, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
+import { Association, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Question from "./question";
 
-class MCQ_Question extends Model<InferAttributes<MCQ_Question>, InferCreationAttributes<MCQ_Question>> {
-	declare questionId: number;
+class MCQQuestion extends Model<InferAttributes<MCQQuestion>, InferCreationAttributes<MCQQuestion>> {
+	declare questionId: ForeignKey<Question["id"]>;
 	declare options: string[];
 	declare correctOption: number;
 
 	declare Question?: NonAttribute<Question>;
 
 	declare static associations: {
-		Question: Association<MCQ_Question, Question>;
+		Question: Association<MCQQuestion, Question>;
 	};
 
 	static initModel(sequelize: Sequelize) {
-		MCQ_Question.init({
+		MCQQuestion.init({
 			questionId: {
 				type: DataTypes.INTEGER,
-				autoIncrement: true,
 				primaryKey: true,
-				references: { model: Question }
 			},
 			options: {
 				type: DataTypes.JSON, // Use JSON to store array of strings
@@ -42,10 +40,10 @@ class MCQ_Question extends Model<InferAttributes<MCQ_Question>, InferCreationAtt
 	}
 
 	static associate() {
-		MCQ_Question.belongsTo(Question, {
+		MCQQuestion.belongsTo(Question, {
 			onDelete: 'CASCADE',
 		});
 	}
 }
 
-export default MCQ_Question;
+export default MCQQuestion;
