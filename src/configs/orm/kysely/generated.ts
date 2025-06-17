@@ -27,18 +27,28 @@ export interface Attempts {
   hasEnded: Generated<number>;
   id: string;
   order: number;
-  score: Generated<number>;
   secondsSpent: Generated<number>;
-  testId: string;
+  status: Generated<"COMPLETED" | "GRADED" | "IN_PROGRESS">;
+  TestId: string | null;
   updatedAt: Date | null;
 }
 
-export interface AttemptsAnswerQuestions {
-  attemptId: string;
+export interface AttemptsAnswerLAQuestions {
+  answer: string;
+  attemptAnswerQuestionId: string;
+}
+
+export interface AttemptsAnswerMCQQuestions {
+  attemptAnswerQuestionId: string;
   chosenOption: number;
+}
+
+export interface AttemptsAnswerQuestions {
+  AttemptId: string | null;
   createdAt: Date | null;
-  id: Generated<number>;
-  questionId: number;
+  id: string;
+  pointsReceived: number | null;
+  QuestionId: number | null;
   updatedAt: Date | null;
 }
 
@@ -66,30 +76,41 @@ export interface ExamTests {
 export interface Feedbacks {
   comment: string;
   createdAt: Date | null;
-  practiceTestId: string;
+  id: string;
   problems: Json;
   rating: number;
+  TestId: string | null;
   updatedAt: Date | null;
 }
 
+export interface LAQuestions {
+  correctAnswer: string;
+  extraText: string | null;
+  imageLinks: Json | null;
+  questionId: number;
+}
+
+export interface MCQQuestions {
+  correctOption: number;
+  options: Json;
+  questionId: number;
+}
+
 export interface PracticeTests {
-  createdAt: Date | null;
   difficulty: string;
   numberOfOptions: number;
   numberOfQuestions: number;
   outlines: Json;
   tags: Json;
   testId: string;
-  updatedAt: Date | null;
 }
 
 export interface Questions {
-  correctOption: number;
   id: Generated<number>;
-  options: Json;
   points: number;
-  testId: string;
+  TestId: string | null;
   text: string;
+  type: "LONG_ANSWER" | "MCQ";
 }
 
 export interface Templates {
@@ -116,17 +137,21 @@ export interface Tests {
   id: string;
   language: Generated<string>;
   minutesToAnswer: number;
-  mode: string;
+  mode: "EXAM" | "PRACTICE";
   title: string;
   updatedAt: Date | null;
 }
 
 export interface DB {
   Attempts: Attempts;
-  Attempts_answer_Questions: AttemptsAnswerQuestions;
+  AttemptsAnswerLAQuestions: AttemptsAnswerLAQuestions;
+  AttemptsAnswerMCQQuestions: AttemptsAnswerMCQQuestions;
+  AttemptsAnswerQuestions: AttemptsAnswerQuestions;
   ExamParticipants: ExamParticipants;
   ExamTests: ExamTests;
   Feedbacks: Feedbacks;
+  LAQuestions: LAQuestions;
+  MCQQuestions: MCQQuestions;
   PracticeTests: PracticeTests;
   Questions: Questions;
   Templates: Templates;

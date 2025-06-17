@@ -1,11 +1,9 @@
-//@ts-nocheck
-
-import { ensureDatabase } from "./configs/orm/database-operations";
+import { recreateDatabase } from "./configs/orm/database-operations";
 import sequelize from "./configs/orm/sequelize/sequelize";
 
-ensureDatabase()
+recreateDatabase()
 	.then(async () => {
-		await sequelize.sync({ logging: false, force: true });
+		await sequelize.sync({ logging: false });
 		await sequelize.authenticate({ logging: false });
 	}).catch((err) => {
 		console.error(err);

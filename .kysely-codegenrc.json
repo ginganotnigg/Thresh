@@ -4,7 +4,7 @@
 	"defaultSchemas": [],
 	"dialect": "mysql",
 	"domains": true,
-	"envFile": ".env",
+	"envFile": ".env.development",
 	"excludePattern": null,
 	"includePattern": null,
 	"logLevel": "warn",

@@ -4,7 +4,8 @@ import { MCQResourceSchema } from "./mcq/resource.schema";
 import { LongAnswerResourceSchema } from "./long-answer/resouce.schema";
 import { NonNegativeNumberSchema } from "../../shared/controller/schemas/base";
 import { TestBaseSchema } from "../tests/base.schema";
-import { AnswerResourceSchema } from "../attempts/answers/resource.schema";
+import { AnswerResourceSchema } from "../attempts/uc_query/get-attempt-answers-query/response";
+import { QuestionCoreSchema } from "./base.schema";
 
 const QuestionAggregateSchema = z.object({
 	numberOfAnswers: NonNegativeNumberSchema,
@@ -21,18 +22,7 @@ const QuestionViewSchema = z.object({
 	viewCorrectAnswers: z.boolean(),
 });
 
-const QuestionCoreSchema = z.object({
-	id: z.string(),
-	testId: z.string(),
-	order: z.number().int().positive(),
-	question: z.string(),
-	points: z.number().int().nonnegative(),
-
-	child: z.discriminatedUnion("type", [
-		MCQResourceSchema,
-		LongAnswerResourceSchema,
-	]),
-
+const QuestionCoreSchema = QuestionCoreSchema.extend({
 	_view: QuestionViewSchema,
 	_include: QuestionIncludeSchema.partial(),
 	_aggregate: QuestionAggregateSchema.partial(),

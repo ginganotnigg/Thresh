@@ -56,12 +56,6 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 		Question.hasMany(AttemptsAnswerQuestions, {
 			onDelete: 'CASCADE',
 		});
-		Question.hasOne(MCQQuestion, {
-			onDelete: 'CASCADE',
-		});
-		Question.hasOne(LAQuestion, {
-			onDelete: 'CASCADE',
-		});
 	}
 }
 

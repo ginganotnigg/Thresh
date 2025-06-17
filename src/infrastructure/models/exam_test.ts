@@ -4,7 +4,7 @@ import Test from "./test";
 import ExamParticipants from "./exam_participants";
 
 class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<ExamTest>> {
-	declare testId: ForeignKey<Test["id"]>;
+	declare testId: string;
 	declare roomId: string;
 	declare password: string | null;
 	declare numberOfAttemptsAllowed: number;
@@ -28,6 +28,10 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 			testId: {
 				primaryKey: true,
 				type: DataTypes.UUID,
+				references: {
+					model: Test,
+					key: 'id',
+				}
 			},
 			roomId: {
 				type: DataTypes.STRING,
@@ -68,12 +72,6 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 	}
 
 	static associate() {
-		ExamTest.belongsTo(Test, {
-			onDelete: 'CASCADE',
-		});
-		ExamTest.hasMany(ExamParticipants, {
-			onDelete: 'CASCADE',
-		});
 	}
 }
 

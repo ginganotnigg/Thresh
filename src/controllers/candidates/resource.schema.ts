@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { NonNegativeNumberSchema, PagedSchema } from "../../shared/controller/schemas/base";
 import { TestResourceSchema } from "../tests/resource.schema";
-import { AttemptResourceSchema } from "../attempts/resource.schema";
+import { GetAttemptQueryResponseSchema } from "../attempts/uc_query/get-attempt-query/response";
 import { ChuoiDocument } from "../../library/caychuoijs/documentation/open-api";
 
 const CandidateAggregateSchema = z.object({
@@ -15,7 +15,7 @@ const CandidateAggregateSchema = z.object({
 
 const CandidateIncludeSchema = z.object({
 	test: TestResourceSchema,
-	attempts: z.array(AttemptResourceSchema),
+	attempts: z.array(GetAttemptQueryResponseSchema),
 }).partial();
 
 const CandidatesCoreSchema = z.object({

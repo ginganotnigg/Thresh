@@ -8,6 +8,7 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 	declare id: CreationOptional<string>;
 	declare attemptId: ForeignKey<Attempt["id"]>;
 	declare questionId: ForeignKey<Question["id"]>;
+	declare pointsReceived: CreationOptional<number>;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 
@@ -27,9 +28,13 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 		AttemptsAnswerQuestions.init({
 			id: {
 				type: DataTypes.UUID,
-				defaultValue: DataTypes.UUIDV4,
+				defaultValue: DataTypes.UUID,
 				allowNull: false,
 				primaryKey: true,
+			},
+			pointsReceived: {
+				type: DataTypes.INTEGER,
+				allowNull: true,
 			},
 			createdAt: DataTypes.DATE,
 			updatedAt: DataTypes.DATE,
@@ -50,12 +55,6 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 			onDelete: 'CASCADE',
 		});
 		AttemptsAnswerQuestions.belongsTo(Attempt, {
-			onDelete: 'CASCADE',
-		});
-		AttemptsAnswerQuestions.hasOne(AttemptsAnswerMCQQuestions, {
-			onDelete: 'CASCADE',
-		});
-		AttemptsAnswerQuestions.hasOne(AttemptsAnswerLAQuestions, {
 			onDelete: 'CASCADE',
 		});
 	}

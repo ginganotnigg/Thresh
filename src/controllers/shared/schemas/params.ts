@@ -27,3 +27,11 @@ export const TemplateIdParamsSchema = z.object({
 export const FeedbackIdParamsSchema = z.object({
 	feedbackId: z.string(),
 });
+
+export type TestIdParamsSchemaType = z.infer<typeof TestIdParamsSchema>;
+export type QuestionIdParamsSchemaType = z.infer<typeof QuestionIdParamsSchema>;
+export type CandidateIdParamsSchemaType = z.infer<typeof CandidateIdParamsSchema>;
+export type AttemptIdParamsSchemaType = z.infer<typeof AttemptIdParamsSchema>;
+export type AnswersIdParamsSchemaType = z.infer<typeof AnswersIdParamsSchema>;
+export type TemplateIdParamsSchemaType = z.infer<typeof TemplateIdParamsSchema>;
+export type FeedbackIdParamsSchemaType = z.infer<typeof FeedbackIdParamsSchema>;

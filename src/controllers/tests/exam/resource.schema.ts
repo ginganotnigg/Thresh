@@ -12,3 +12,5 @@ export const ExamResourceSchema = z.object({
 	openDate: z.string().datetime(),
 	closeDate: z.string().datetime(),
 });
+
+export type ExamResourceSchemaType = z.infer<typeof ExamResourceSchema>;

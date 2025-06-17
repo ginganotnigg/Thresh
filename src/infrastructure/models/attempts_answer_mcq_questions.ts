@@ -14,8 +14,12 @@ class AttemptsAnswerMCQQuestions extends Model<InferAttributes<AttemptsAnswerMCQ
 	static initModel(sequelize: Sequelize) {
 		AttemptsAnswerMCQQuestions.init({
 			attemptAnswerQuestionId: {
-				type: DataTypes.INTEGER,
+				type: DataTypes.UUID,
 				primaryKey: true,
+				references: {
+					model: AttemptsAnswerQuestions,
+					key: "id",
+				},
 			},
 			chosenOption: {
 				type: DataTypes.INTEGER,
@@ -28,9 +32,6 @@ class AttemptsAnswerMCQQuestions extends Model<InferAttributes<AttemptsAnswerMCQ
 	}
 
 	static associate() {
-		AttemptsAnswerMCQQuestions.belongsTo(AttemptsAnswerQuestions, {
-			onDelete: 'CASCADE',
-		});
 	}
 }
 

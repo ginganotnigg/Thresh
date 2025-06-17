@@ -10,7 +10,6 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 	declare candidateId: string;
 	declare hasEnded: CreationOptional<boolean>;
 	declare secondsSpent: CreationOptional<number>;
-	declare score: CreationOptional<number>;
 	declare status: CreationOptional<AttemptStatusType>;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
@@ -44,11 +43,6 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 				allowNull: false,
 			},
 			secondsSpent: {
-				type: DataTypes.INTEGER,
-				defaultValue: 0,
-				allowNull: false,
-			},
-			score: {
 				type: DataTypes.INTEGER,
 				defaultValue: 0,
 				allowNull: false,

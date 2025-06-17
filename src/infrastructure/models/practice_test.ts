@@ -2,7 +2,7 @@ import { Association, DataTypes, ForeignKey, InferAttributes, InferCreationAttri
 import Test from "./test";
 
 class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAttributes<PracticeTest>> {
-	declare testId: ForeignKey<Test["id"]>;
+	declare testId: string;
 	declare difficulty: string;
 	declare tags: string[];
 	declare numberOfQuestions: number;
@@ -20,6 +20,10 @@ class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAtt
 			testId: {
 				primaryKey: true,
 				type: DataTypes.UUID,
+				references: {
+					model: Test,
+					key: 'id',
+				},
 			},
 			difficulty: {
 				type: DataTypes.STRING,
@@ -62,9 +66,6 @@ class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAtt
 	}
 
 	static associate() {
-		PracticeTest.belongsTo(Test, {
-			onDelete: 'CASCADE',
-		});
 	}
 }
 

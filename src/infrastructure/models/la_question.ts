@@ -2,7 +2,7 @@ import { Association, CreationOptional, DataTypes, ForeignKey, InferAttributes, 
 import Question from "./question";
 
 class LAQuestion extends Model<InferAttributes<LAQuestion>, InferCreationAttributes<LAQuestion>> {
-	declare questionId: ForeignKey<Question["id"]>;
+	declare questionId: number;
 	declare imageLinks: CreationOptional<string[] | null>;
 	declare extraText: CreationOptional<string | null>;
 	declare correctAnswer: string;
@@ -18,6 +18,10 @@ class LAQuestion extends Model<InferAttributes<LAQuestion>, InferCreationAttribu
 			questionId: {
 				type: DataTypes.INTEGER,
 				primaryKey: true,
+				references: {
+					model: Question,
+					key: 'id',
+				}
 			},
 			imageLinks: {
 				type: DataTypes.JSON, // Use JSON to store array of strings
@@ -47,9 +51,6 @@ class LAQuestion extends Model<InferAttributes<LAQuestion>, InferCreationAttribu
 	}
 
 	static associate() {
-		LAQuestion.belongsTo(Question, {
-			onDelete: 'CASCADE',
-		});
 	}
 }
 

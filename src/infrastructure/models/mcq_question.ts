@@ -2,7 +2,7 @@ import { Association, DataTypes, ForeignKey, InferAttributes, InferCreationAttri
 import Question from "./question";
 
 class MCQQuestion extends Model<InferAttributes<MCQQuestion>, InferCreationAttributes<MCQQuestion>> {
-	declare questionId: ForeignKey<Question["id"]>;
+	declare questionId: number;
 	declare options: string[];
 	declare correctOption: number;
 
@@ -17,6 +17,10 @@ class MCQQuestion extends Model<InferAttributes<MCQQuestion>, InferCreationAttri
 			questionId: {
 				type: DataTypes.INTEGER,
 				primaryKey: true,
+				references: {
+					model: Question,
+					key: 'id',
+				}
 			},
 			options: {
 				type: DataTypes.JSON, // Use JSON to store array of strings
@@ -40,9 +44,6 @@ class MCQQuestion extends Model<InferAttributes<MCQQuestion>, InferCreationAttri
 	}
 
 	static associate() {
-		MCQQuestion.belongsTo(Question, {
-			onDelete: 'CASCADE',
-		});
 	}
 }
 

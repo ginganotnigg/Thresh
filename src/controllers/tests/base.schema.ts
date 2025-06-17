@@ -18,4 +18,6 @@ export const TestBaseSchema = z.object({
 	updatedAt: z.date(),
 
 	child: TestInheritanceSchema,
-}); 
+});
+
+export type TestBaseSchemaType = z.infer<typeof TestBaseSchema>;

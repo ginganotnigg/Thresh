@@ -14,7 +14,8 @@
 		"seed:prod": "cross-env NODE_ENV=production ts-node src/__scripts__/seed.ts",
 		"test": "cross-env NODE_ENV=test && jest",
 		"test:folder": "cross-env NODE_ENV=test && ts-node cmd/test-folder.ts",
-		"kysely": "kysely-codegen --config-file .kysely-codegenrc.json"
+		"kysely": "kysely-codegen --config-file .kysely-codegenrc.json",
+		"reset-db": "cross-env NODE_ENV=development && ts-node src/reset-db.ts"
 	},
 	"author": "",
 	"license": "ISC",

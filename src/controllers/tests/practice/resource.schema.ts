@@ -9,3 +9,5 @@ export const PracticeResourceSchema = z.object({
 	numberOfOptions: z.number().int().positive(),
 	outlines: z.array(z.string()),
 });
+
+export type PracticeResourceSchemaType = z.infer<typeof PracticeResourceSchema>;

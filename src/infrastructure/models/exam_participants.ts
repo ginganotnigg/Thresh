@@ -3,7 +3,7 @@ import ExamTest from "./exam_test";
 
 class ExamParticipants extends Model<InferAttributes<ExamParticipants>, InferCreationAttributes<ExamParticipants>> {
 	declare id: CreationOptional<string>;
-	declare testId: ForeignKey<ExamTest["testId"]>;
+	declare testId: string;
 	declare candidateId: string;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
@@ -21,6 +21,14 @@ class ExamParticipants extends Model<InferAttributes<ExamParticipants>, InferCre
 				type: DataTypes.UUID,
 				allowNull: false,
 				defaultValue: DataTypes.UUIDV4,
+			},
+			testId: {
+				type: DataTypes.UUID,
+				allowNull: false,
+				references: {
+					model: ExamTest,
+					key: 'testId',
+				},
 			},
 			candidateId: {
 				type: DataTypes.STRING,
@@ -41,9 +49,6 @@ class ExamParticipants extends Model<InferAttributes<ExamParticipants>, InferCre
 	}
 
 	static associate() {
-		ExamParticipants.belongsTo(ExamTest, {
-			onDelete: 'CASCADE',
-		});
 	}
 }
 

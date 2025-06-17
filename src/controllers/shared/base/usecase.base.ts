@@ -1,15 +1,15 @@
 import { CredentialsMeta } from "../schemas/meta";
 
-abstract class UseCaseBase<TParams, TResult> {
+abstract class UseCaseBase<TParams, TResult, TId = string> {
 	private _credentials: CredentialsMeta | undefined = undefined;
-	private _id: string | undefined = undefined;
+	private _id: TId | undefined = undefined;
 
 	withCredentials(credentials: CredentialsMeta): this {
 		this._credentials = credentials;
 		return this;
 	}
 
-	withId(id: string): this {
+	withId(id: TId): this {
 		this._id = id;
 		return this;
 	}
@@ -23,7 +23,7 @@ abstract class UseCaseBase<TParams, TResult> {
 		return this._credentials;
 	}
 
-	protected getId(): string {
+	protected getId(): TId {
 		if (!this._id) {
 			throw new Error("ID is required for this operation.");
 		}

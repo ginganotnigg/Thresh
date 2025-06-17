@@ -83,12 +83,6 @@ class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 		Test.hasMany(Feedback, {
 			onDelete: 'CASCADE',
 		});
-		Test.hasOne(PracticeTest, {
-			onDelete: 'CASCADE',
-		});
-		Test.hasOne(ExamTest, {
-			onDelete: 'CASCADE',
-		});
 	}
 }
 
