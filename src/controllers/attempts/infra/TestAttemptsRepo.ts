@@ -1,13 +1,15 @@
-import { db } from "../../../../configs/orm/kysely/db";
-import { AttemptStatusType } from "../../../../domain/enum";
-import { DomainError } from "../../../shared/errors/domain.error";
-import { TestAttemptsAggregate } from "../test-attempts-agg/TestAttemptsAggregate";
+import { db } from "../../../configs/orm/kysely/db";
+import { AttemptStatusType } from "../../../domain/enum";
+import { DomainError } from "../../shared/errors/domain.error";
+import { TestAttemptsAggregate } from "../domain/test-attempts-agg/TestAttemptsAggregate";
 import { jsonArrayFrom } from "kysely/helpers/mysql"
-import { AttemptEntity } from "../test-attempts-agg/AttemptEntity";
-import { PracticeAttemptsAggregate } from "../test-attempts-agg/PracticeAttemptsAggregate";
-import { ExamAttemptsAggregate } from "../test-attempts-agg/ExamAttemptsAggregate";
+import { AttemptEntity } from "../domain/test-attempts-agg/AttemptEntity";
+import { PracticeAttemptsAggregate } from "../domain/test-attempts-agg/PracticeAttemptsAggregate";
+import { ExamAttemptsAggregate } from "../domain/test-attempts-agg/ExamAttemptsAggregate";
+import sequelize from "../../../configs/orm/sequelize/sequelize";
+import Attempt from "../../../infrastructure/models/attempt";
 
-export class GetTestAttemptsRepo {
+export class TestAttemptsRepo {
 	private static async getAttemptsOfTest(testId: string): Promise<AttemptEntity[]> {
 		const attempts = await db
 			.selectFrom("Attempts as a")
@@ -79,5 +81,31 @@ export class GetTestAttemptsRepo {
 			throw new DomainError(`Test with ID ${testId} has an invalid mode`);
 		}
 		return testAgg;
+	}
+
+	static async save(test: TestAttemptsAggregate): Promise<void> {
+		const { newAttempt, modifedAttmepts, deletedAttempts } = test.getPersistenceData();
+		const transaction = await sequelize.transaction();
+		try {
+			if (newAttempt) {
+				await Attempt.create(newAttempt, { transaction });
+			}
+			if (modifedAttmepts.length > 0) {
+				await Attempt.bulkCreate(modifedAttmepts, {
+					updateOnDuplicate: ["candidateId", "hasEnded", "order", "secondsSpent", "status"],
+					transaction,
+				});
+			}
+			if (deletedAttempts.length > 0) {
+				await Attempt.destroy({
+					where: { id: deletedAttempts },
+					transaction,
+				});
+			}
+			await transaction.commit();
+		} catch (error) {
+			await transaction.rollback();
+			throw error;
+		}
 	}
 }

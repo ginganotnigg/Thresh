@@ -1,5 +1,5 @@
 import { AggregateRoot } from "../../../shared/domain";
-import { TestAttemptsPersistence } from "../dto/persistence";
+import { TestAttemptsPersistence } from "../mappers/TestAttemptsMapper";
 import { AttemptEntity } from "./AttemptEntity";
 
 export abstract class TestAttemptsAggregate extends AggregateRoot {

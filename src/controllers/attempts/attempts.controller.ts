@@ -12,6 +12,9 @@ import { GetAttemptsQueryHandler } from "./uc_query/get-attempts-query/handler";
 import { GetAttemptQueryHandler } from "./uc_query/get-attempt-query/handler";
 import { GetAttemptAnswersResponseSchema } from "./uc_query/get-attempt-answers-query/response";
 import { GetAttemptAnswersQueryHandler } from "./uc_query/get-attempt-answers-query/handler";
+import { PostAttemptsHandler } from "./uc_command/post-attempts/handler";
+import { PostAttemptAnswersHandler } from "./uc_command/post-attempt-answers/handler";
+import { PatchAttemptSubmitHandler } from "./uc_command/patch-attempt-submit/handler";
 
 export class AttemptsController extends ControllerBase {
 	constructRouter(): void {
@@ -74,27 +77,39 @@ export class AttemptsController extends ControllerBase {
 		router.endpoint().post()
 			.schema({
 				meta: CredentialsMetaSchema,
-				params: AttemptIdParamsSchema,
 				body: PostAttemptsBodySchema,
 			})
 			.handle(async (data) => {
+				return await new PostAttemptsHandler()
+					.withCredentials(data.meta)
+					.handle(data.body);
 			})
 			.build({ tags: ["Attempts"] });
 
-		router.endpoint().put("/:attemptId/answers")
+		router.endpoint().post("/:attemptId/answers")
 			.schema({
+				meta: CredentialsMetaSchema,
 				params: AttemptIdParamsSchema,
 				body: PostAttemptAnswersBodySchema,
 			})
 			.handle(async (data) => {
+				return await new PostAttemptAnswersHandler()
+					.withCredentials(data.meta)
+					.withId(data.params.attemptId)
+					.handle(data.body);
 			})
 			.build({ tags: ["Attempts"] });
 
 		router.endpoint().patch("/:attemptId/submit")
 			.schema({
+				meta: CredentialsMetaSchema,
 				params: AttemptIdParamsSchema,
 			})
 			.handle(async (data) => {
+				return await new PatchAttemptSubmitHandler()
+					.withCredentials(data.meta)
+					.withId(data.params.attemptId)
+					.handle();
 			})
 			.build({ tags: ["Attempts"] });
 	}

@@ -1,12 +1,12 @@
 import { Entity } from "../../../shared/domain";
 import { IdentityUtils } from "../../../shared/domain/UniqueEntityId";
-import { AttemptModel } from "../dto/model";
-import { AttemptPersistence } from "../dto/persistence";
+import { AttemptDto } from "../mappers/AttemptMapper";
+import { AttemptPersistence } from "../mappers/AttemptMapper";
 
 export class AttemptEntity extends Entity {
 	private constructor(
 		id: string,
-		private readonly model: AttemptModel,
+		private readonly model: AttemptDto,
 	) { super(id); }
 
 	static createNew(candidateId: string, testId: string, order: number): AttemptEntity {

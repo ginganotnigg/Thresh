@@ -4,12 +4,12 @@ import { ChuoiDocument } from "../../../library/caychuoijs/documentation/open-ap
 import { NonNegativeNumberSchema } from "../../../shared/controller/schemas/base";
 
 const MCQAnswerSchema = z.object({
-	type: z.literal<QuestionTypeType>("MCQ"),
+	type: z.literal("MCQ"),
 	chosenOption: z.number(),
 });
 
 const LongAnswerSchema = z.object({
-	type: z.literal<QuestionTypeType>("LONG_ANSWER"),
+	type: z.literal("LONG_ANSWER"),
 	answer: z.string(),
 });
 

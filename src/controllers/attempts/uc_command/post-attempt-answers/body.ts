@@ -3,6 +3,8 @@ import { ChuoiDocument } from "../../../../library/caychuoijs/documentation/open
 import { AnswerForQuestionTypeSchema } from "../../schemas/answer-resource.schema";
 
 export const PostAttemptAnswersBodySchema = ChuoiDocument.registerSchema(z.object({
-	questionId: z.string(),
+	questionId: z.number(),
 	answer: AnswerForQuestionTypeSchema.nullable(),
 }), "PostAttemptAnswersBodySchema");
+
+export type PostAttemptAnswersBody = z.infer<typeof PostAttemptAnswersBodySchema>;
