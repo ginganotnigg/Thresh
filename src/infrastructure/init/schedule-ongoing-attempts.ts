@@ -1,7 +1,7 @@
-import Attempt from "../../../infrastructure/models/attempt";
-import Test from "../../../infrastructure/models/test";
-import { AttemptRepo } from "../../../infrastructure/write/attempt.repo";
-import { AttemptScheduleService } from "../services/attempt-schedule-service";
+import Attempt from "../models/attempt";
+import Test from "../models/test";
+import { AttemptRepo } from "../write/attempt.repo";
+import { AttemptScheduleService } from "../../modules/attempts/services/attempt-schedule-service";
 
 export async function scheduleOngoingAttempts() {
 	const notEndedAttempts = await Attempt.findAll({

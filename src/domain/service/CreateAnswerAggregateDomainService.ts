@@ -1,5 +1,5 @@
-import { db } from "../../../../configs/orm/kysely/db";
-import { CredentialsBase } from "../../../shared/policy/types";
+import { db } from "../../configs/orm/kysely/db";
+import { CredentialsBase } from "../../shared/policy/types";
 import { AnswerAggregate } from "../AnswerAggregate";
 import { AnswerDto } from "../mappers/AnswerMapper";
 import { AttemptDto } from "../mappers/AttemptMapper";

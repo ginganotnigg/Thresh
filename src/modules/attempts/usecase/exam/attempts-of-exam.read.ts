@@ -1,9 +1,9 @@
 import Test from "../../../../infrastructure/models/test";
 import { AttemptInfo } from "../../../../shared/resource/attempt.schema";
 import { Paged, Paging } from "../../../../shared/controller/schemas/base";
-import { CredentialsMeta } from "../../../../controllers/shared/schemas/meta";
+import { CredentialsMeta } from "../../../../shared/schemas/meta";
 import ExamTest from "../../../../infrastructure/models/exam_test";
-import { DomainError } from "../../../../controllers/shared/errors/domain.error";
+import { DomainError } from "../../../../shared/errors/domain.error";
 import { TestAttemptsQueryRepo } from "../../../../infrastructure/read/test-attemps.query-repo";
 import { AttemptsOfTestAggregate, AttemptsOfTestQuery, AttemptsOfCandidateInTestAggregate } from "../../schema/of-test.schema";
 import { AttemptsQueryRepo } from "../../../../infrastructure/read/attempts.query-repo";

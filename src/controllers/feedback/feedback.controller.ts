@@ -1,6 +1,6 @@
 import { Chuoi } from "../../library/caychuoijs";
 import { ControllerBase } from "../../shared/controller/controller.base";
-import { FeedbackIdParamsSchema } from "../shared/schemas/params";
+import { FeedbackIdParamsSchema } from "../../shared/schemas/params";
 import { PostFeedbackBodySchema, PutFeedbackBodySchema } from "./body.schema";
 import { FeedbacksQuerySchema } from "./query.schema";
 import { FeedbackResourceSchema, FeedbacksResourceSchema } from "./resouce.schema";

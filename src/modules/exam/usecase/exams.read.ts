@@ -1,6 +1,6 @@
-import { DomainError } from "../../../controllers/shared/errors/domain.error";
+import { DomainError } from "../../../shared/errors/domain.error";
 import { Paged } from "../../../shared/controller/schemas/base";
-import { CredentialsMeta } from "../../../controllers/shared/schemas/meta";
+import { CredentialsMeta } from "../../../shared/schemas/meta";
 import ExamTest from "../../../infrastructure/models/exam_test";
 import Test from "../../../infrastructure/models/test";
 import { Op } from "sequelize";

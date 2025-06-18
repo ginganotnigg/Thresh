@@ -1,6 +1,6 @@
-import { AggregateRoot } from "../../shared/domain";
-import { DomainError } from "../../shared/errors/domain.error";
-import { CredentialsBase } from "../../shared/policy/types";
+import { AggregateRoot } from "../shared/domain";
+import { DomainError } from "../shared/errors/domain.error";
+import { CredentialsBase } from "../shared/policy/types";
 import { AttemptDto, AttemptMapper, AttemptPersistence } from "./mappers/AttemptMapper";
 
 export class AttemptAggregate extends AggregateRoot {

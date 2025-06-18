@@ -1,6 +1,6 @@
 import sequelize from "../../../../configs/orm/sequelize/sequelize";
-import { DomainError } from "../../../../controllers/shared/errors/domain.error";
-import { CredentialsMeta } from "../../../../controllers/shared/schemas/meta";
+import { DomainError } from "../../../../shared/errors/domain.error";
+import { CredentialsMeta } from "../../../../shared/schemas/meta";
 import Template from "../../../../infrastructure/models/template";
 import { CreateTemplateBody, UpdateTemplateBody } from "../../schema";
 

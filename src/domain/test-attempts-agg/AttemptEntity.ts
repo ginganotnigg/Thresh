@@ -1,5 +1,5 @@
-import { Entity } from "../../../shared/domain";
-import { IdentityUtils } from "../../../shared/domain/UniqueEntityId";
+import { Entity } from "../../shared/domain";
+import { IdentityUtils } from "../../shared/domain/UniqueEntityId";
 import { AttemptDto } from "../mappers/AttemptMapper";
 import { AttemptPersistence } from "../mappers/AttemptMapper";
 

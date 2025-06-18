@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { Chuoi } from "../../library/caychuoijs";
-import { TestIdParamsSchema } from "../../controllers/shared/schemas/params";
+import { TestIdParamsSchema } from "../../shared/schemas/params";
 import { CreateExamBodySchema, UpdateExamBodySchema } from "./schema";
-import { CredentialsMetaSchema } from "../../controllers/shared/schemas/meta";
+import { CredentialsMetaSchema } from "../../shared/schemas/meta";
 import { ExamsRead } from "./usecase/exams.read";
 import { ExamRead } from "./usecase/exam.read";
 import { PagedSchema } from "../../shared/controller/schemas/base";

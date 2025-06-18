@@ -1,6 +1,6 @@
-import Attempt from "../../../infrastructure/models/attempt";
+import Attempt from "../models/attempt";
 import { attemptEmitter } from "../init/emitter";
-import { AttemptScheduleService } from "../services/attempt-schedule-service";
+import { AttemptScheduleService } from "../../modules/attempts/services/attempt-schedule-service";
 
 attemptEmitter.on("ATTEMPT_SUBMITTED", async (attemptId) => {
 	const attempt = await Attempt.findByPk(attemptId);

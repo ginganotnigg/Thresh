@@ -1,9 +1,9 @@
 import { db } from "../../../configs/orm/kysely/db";
 import sequelize from "../../../configs/orm/sequelize/sequelize";
 import Attempt from "../../../infrastructure/models/attempt";
-import { DomainError } from "../../shared/errors/domain.error";
-import { AttemptAggregate } from "../domain/AttemptAggregate";
-import { AttemptPersistence } from "../domain/mappers/AttemptMapper";
+import { DomainError } from "../../../shared/errors/domain.error";
+import { AttemptAggregate } from "../../../domain/AttemptAggregate";
+import { AttemptPersistence } from "../../../domain/mappers/AttemptMapper";
 
 export class AttemptRepo {
 	static async getById(attemptId: string): Promise<AttemptAggregate> {

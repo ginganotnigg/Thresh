@@ -1,8 +1,8 @@
 import { db } from "../../../../configs/orm/kysely/db";
-import { QueryHandlerBase } from "../../../shared/base/usecase.base";
+import { QueryHandlerBase } from "../../../../shared/base/usecase.base";
 import { GetAttemptsQueryParam } from "./param";
 import { GetAttemptsResourceResponse } from "./response";
-import { paginate } from "../../../shared/common/query";
+import { paginate } from "../../../../shared/common/query";
 
 export class GetAttemptsQueryHandler extends QueryHandlerBase<GetAttemptsQueryParam, GetAttemptsResourceResponse> {
 	async handle(params: GetAttemptsQueryParam): Promise<GetAttemptsResourceResponse> {

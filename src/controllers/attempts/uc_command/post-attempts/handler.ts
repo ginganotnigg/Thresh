@@ -1,4 +1,4 @@
-import { CommandHandlerBase } from "../../../shared/base/usecase.base";
+import { CommandHandlerBase } from "../../../../shared/base/usecase.base";
 import { TestAttemptsRepo } from "../../infra/TestAttemptsRepo";
 import { PostAttemptsBody } from "./body";
 

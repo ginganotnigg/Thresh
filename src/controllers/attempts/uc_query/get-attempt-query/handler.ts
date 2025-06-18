@@ -1,6 +1,6 @@
 import { db } from "../../../../configs/orm/kysely/db";
-import { QueryHandlerBase } from "../../../shared/base/usecase.base";
-import { DomainError } from "../../../shared/errors/domain.error";
+import { QueryHandlerBase } from "../../../../shared/base/usecase.base";
+import { DomainError } from "../../../../shared/errors/domain.error";
 import { GetAttemptQueryParam } from "./param";
 import { GetAttemptQueryResponse } from "./response";
 

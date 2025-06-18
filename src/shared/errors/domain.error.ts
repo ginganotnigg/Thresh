@@ -1,4 +1,4 @@
-import { ErrorResponseBase, ErrorResponseCodes } from "../../../shared/controller/errors/error-response.base";
+import { ErrorResponseBase, ErrorResponseCodes } from "../controller/errors/error-response.base";
 
 export class DomainError extends ErrorResponseBase {
 	constructor(message: string, context?: any) {

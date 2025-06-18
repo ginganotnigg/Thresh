@@ -1,6 +1,6 @@
-import { CommandHandlerBase } from "../../../shared/base/usecase.base";
-import { DomainError } from "../../../shared/errors/domain.error";
-import { CreateAnswerAggregateDomainService } from "../../domain/service/CreateAnswerAggregateDomainService";
+import { CommandHandlerBase } from "../../../../shared/base/usecase.base";
+import { DomainError } from "../../../../shared/errors/domain.error";
+import { CreateAnswerAggregateDomainService } from "../../../../domain/service/CreateAnswerAggregateDomainService";
 import { AnswerRepo } from "../../infra/AnswerRepo";
 import { PostAttemptAnswersBody } from "./body";
 

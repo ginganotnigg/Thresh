@@ -1,7 +1,7 @@
-import Attempt from "../../../infrastructure/models/attempt";
-import Test from "../../../infrastructure/models/test";
+import Attempt from "../models/attempt";
+import Test from "../models/test";
 import { attemptEmitter } from "../init/emitter";
-import { AttemptScheduleService } from "../services/attempt-schedule-service";
+import { AttemptScheduleService } from "../../modules/attempts/services/attempt-schedule-service";
 
 attemptEmitter.addListener("ATTEMPT_CREATED", async (attemptId) => {
 	const attempt = await Attempt.findByPk(attemptId, {

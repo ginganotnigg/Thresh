@@ -1,5 +1,5 @@
-import { DomainError } from "../../../../controllers/shared/errors/domain.error";
-import { CredentialsMeta } from "../../../../controllers/shared/schemas/meta";
+import { DomainError } from "../../../../shared/errors/domain.error";
+import { CredentialsMeta } from "../../../../shared/schemas/meta";
 import Attempt from "../../../../infrastructure/models/attempt";
 import Test from "../../../../infrastructure/models/test";
 import { AnswerCore } from "../../../../shared/resource/attempt.schema";

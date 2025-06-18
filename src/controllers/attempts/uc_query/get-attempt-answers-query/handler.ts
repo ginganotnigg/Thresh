@@ -1,6 +1,6 @@
 import { db } from "../../../../configs/orm/kysely/db";
 import { QuestionTypeType } from "../../../../domain/enum";
-import { QueryHandlerBase } from "../../../shared/base/usecase.base";
+import { QueryHandlerBase } from "../../../../shared/base/usecase.base";
 import { GetAttemptAnswersQueryParam } from "./param";
 import { GetAttemptAnswersResponse } from "./response";
 

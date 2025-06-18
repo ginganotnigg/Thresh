@@ -1,4 +1,4 @@
-import { AggregateRoot } from "../../../shared/domain";
+import { AggregateRoot } from "../../shared/domain";
 import { TestAttemptsPersistence } from "../mappers/TestAttemptsMapper";
 import { AttemptEntity } from "./AttemptEntity";
 

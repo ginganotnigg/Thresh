@@ -1,4 +1,4 @@
-import { CommandHandlerBase } from "../../../shared/base/usecase.base";
+import { CommandHandlerBase } from "../../../../shared/base/usecase.base";
 import { AttemptRepo } from "../../infra/AttemptRepo";
 
 export class PatchAttemptSubmitHandler extends CommandHandlerBase<void> {

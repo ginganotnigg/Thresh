@@ -1,5 +1,5 @@
-import { DomainError } from "../../../controllers/shared/errors/domain.error";
-import { CredentialsMeta } from "../../../controllers/shared/schemas/meta";
+import { DomainError } from "../../../shared/errors/domain.error";
+import { CredentialsMeta } from "../../../shared/schemas/meta";
 import Test from "../../../infrastructure/models/test";
 import { TestQueryRepo } from "../../../infrastructure/read/test.query-repo";
 import { TestAggregate } from "../../../shared/resource/test.schema";

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { CredentialsMetaSchema } from "../../../controllers/shared/schemas/meta";
-import { AttemptIdParamsSchema, TestIdParamsSchema } from "../../../controllers/shared/schemas/params";
+import { CredentialsMetaSchema } from "../../../shared/schemas/meta";
+import { AttemptIdParamsSchema, TestIdParamsSchema } from "../../../shared/schemas/params";
 import { Chuoi } from "../../../library/caychuoijs";
 import { AttemptAggregateSchema, AttemptsListSchema, AttemptsOfTestAggregateSchema, AttemptsOfTestQuerySchema } from "../schema/of-test.schema";
 import { AttemptInfoSchema } from "../../../shared/resource/attempt.schema";
