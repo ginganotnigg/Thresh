@@ -15,6 +15,3 @@ export class GetAttemptsQueryPolicy {
 		}
 	}
 }
-
-// Self => Pass
-// Not self 
