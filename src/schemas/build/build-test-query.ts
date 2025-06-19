@@ -1,7 +1,7 @@
-import { db } from "../../../configs/orm/kysely/db";
-import { DomainError } from "../../../shared/errors/domain.error";
-import { TestDetailCommon } from "../../common/test-detail";
-import { TestCore, TestFull } from "../../core/test";
+import { db } from "../../configs/orm/kysely/db";
+import { DomainError } from "../../shared/errors/domain.error";
+import { TestDetailCommon } from "../common/test-detail";
+import { TestCore, TestFull } from "../core/test";
 
 export function buildTestQuery() {
 	const attemptScores = db

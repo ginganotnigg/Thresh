@@ -5,6 +5,7 @@ const MCQAnswerSchema = z.object({
 	type: z.literal("MCQ"),
 	chosenOption: z.number(),
 });
+
 const LongAnswerSchema = z.object({
 	type: z.literal("LONG_ANSWER"),
 	answer: z.string(),
