@@ -19,6 +19,17 @@ export class TestsController extends ControllerBase {
 			})
 			.build({ tags: ["Tests"] });
 
+		router.endpoint().get("/find-by-roomId")
+			.schema({
+				query: z.object({
+					roomId: z.string().min(1, "Room ID is required")
+				}),
+				response: TestResourceSchema,
+			})
+			.handle(async (data) => {
+			})
+			.build({ tags: ["Tests"] });
+
 		router.endpoint().get("/:testId")
 			.schema({
 				params: TestIdParamsSchema,
@@ -29,12 +40,15 @@ export class TestsController extends ControllerBase {
 			})
 			.build({ tags: ["Tests"] });
 
-		router.endpoint().get("/find-by-roomId")
+		router.endpoint().get("/:testId/attempts")
 			.schema({
-				query: z.object({
-					roomId: z.string().min(1, "Room ID is required")
-				}),
-				response: TestResourceSchema,
+			})
+			.handle(async (data) => {
+			})
+			.build({ tags: ["Tests"] });
+
+		router.endpoint().get("/:testId/candidates")
+			.schema({
 			})
 			.handle(async (data) => {
 			})

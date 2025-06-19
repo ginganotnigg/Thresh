@@ -1,6 +1,4 @@
 import { z } from "zod";
-import { AttemptQueryCoreSchema } from "../../schemas/query.schema";
 
-export const GetAttemptQueryParamSchema = AttemptQueryCoreSchema.extend({
-});
+export const GetAttemptQueryParamSchema = z.void();
 export type GetAttemptQueryParam = z.infer<typeof GetAttemptQueryParamSchema>;

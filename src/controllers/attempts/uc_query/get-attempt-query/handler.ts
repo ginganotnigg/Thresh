@@ -8,21 +8,21 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 	GetAttemptQueryParam,
 	GetAttemptQueryResponse
 > {
-	async handle(data: GetAttemptQueryParam): Promise<GetAttemptQueryResponse> {
+	async handle(): Promise<GetAttemptQueryResponse> {
 		const attemptId = this.getId();
 		if (!attemptId) {
 			throw new DomainError("Attempt ID is required");
 		}
-		const {
-			agg_answered,
-			agg_answeredCorrect,
-			agg_points,
-			include_test,
-		} = data;
 
 		let query = db.selectFrom("Attempts")
 			.where("Attempts.id", "=", attemptId)
+			.innerJoin("Tests", "Attempts.TestId", "Tests.id")
 			.selectAll("Attempts")
+			.selectAll("Tests")
+			.select([
+				"Tests.createdAt as TestCreatedAt",
+				"Tests.updatedAt as TestUpdatedAt",
+			])
 			.select((eb) => [
 				eb
 					.selectFrom("AttemptsAnswerQuestions")
@@ -46,17 +46,7 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 					]).as("pointsReceived"),
 			])
 
-		const newQuery = query.$if(include_test === "1", (eb) => {
-			return eb
-				.innerJoin("Tests", "Attempts.TestId", "Tests.id")
-				.selectAll("Tests")
-				.select([
-					"Tests.createdAt as TestCreatedAt",
-					"Tests.updatedAt as TestUpdatedAt",
-				]);
-		});
-
-		const res = await newQuery.executeTakeFirst();
+		const res = await query.executeTakeFirst();
 		if (!res) {
 			throw new DomainError("Attempt not found");
 		}
@@ -72,12 +62,12 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 			secondsSpent: res.secondsSpent,
 			status: res.status,
 			_aggregate: {
-				answered: agg_answered === "1" ? Number(res.answered) : undefined,
-				answeredCorrect: agg_answeredCorrect === "1" ? Number(res.answeredCorrect) : undefined,
-				points: agg_points === "1" ? Number(res.pointsReceived) : undefined,
+				answered: Number(res.answered),
+				answeredCorrect: Number(res.answeredCorrect),
+				points: Number(res.pointsReceived),
 			},
 			_include: {
-				test: include_test === "1" ? {
+				test: {
 					id: res.TestId!,
 					authorId: res.authorId!,
 					title: res.title!,
@@ -87,7 +77,7 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 					mode: res.mode!,
 					createdAt: res.TestCreatedAt!,
 					updatedAt: res.TestUpdatedAt!,
-				} : undefined,
+				},
 			}
 		};
 		return response;

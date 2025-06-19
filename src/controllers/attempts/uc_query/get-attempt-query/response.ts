@@ -1,6 +1,5 @@
 import { z } from "zod";
-import { ChuoiDocument } from "../../../../library/caychuoijs/documentation/open-api";
-import { AttemptCoreSchema } from "../../schemas/resource.schema";
+import { AttemptCoreSchema } from "../../../../schemas/core/attempt";
 
-export const GetAttemptQueryResponseSchema = ChuoiDocument.registerSchema(AttemptCoreSchema, "GetAttemptQueryResponseSchema");
+export const GetAttemptQueryResponseSchema = AttemptCoreSchema;
 export type GetAttemptQueryResponse = z.infer<typeof GetAttemptQueryResponseSchema>;

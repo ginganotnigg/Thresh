@@ -1,9 +1,5 @@
 import { z } from "zod";
-import { AnswerCoreSchema } from "../../schemas/answer-resource.schema";
-import { ChuoiDocument } from "../../../../library/caychuoijs/documentation/open-api";
+import { AnswerCoreSchema } from "../../../../schemas/core/answer";
 
-export const GetAttemptAnswersResponseSchema = ChuoiDocument.registerSchema(AnswerCoreSchema
-	.extend({})
-	.array()
-	, "GetAttemptAnswersResponseSchema");
+export const GetAttemptAnswersResponseSchema = AnswerCoreSchema.array();
 export type GetAttemptAnswersResponse = z.infer<typeof GetAttemptAnswersResponseSchema>;

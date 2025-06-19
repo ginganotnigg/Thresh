@@ -2,7 +2,7 @@ import sequelize from "../configs/orm/sequelize/sequelize";
 import EventQueueModel from "../infrastructure/models/event_queue";
 import { eventDispatcher } from "./EventDispatcherService";
 import { initializeEventSystem } from "./init/intialize-event-system";
-import { scheduleOngoingAttempts } from "./init/schedule-ongoing-attempts";
+import { scheduleOngoingAttempts } from "../controllers/attempts/init/schedule-ongoing-attempts";
 
 export class InitializeSystemService {
 	static async initialize() {

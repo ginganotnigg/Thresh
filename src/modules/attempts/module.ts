@@ -1,14 +1,9 @@
 import { ModuleBase } from "../../library/cayduajs/module/module.base";
-import { examController } from "./controller/exam.controller";
-import { currentController } from "./controller/current.controller";
-import { practiceController } from "./controller/practice.controller";
-import { scheduleOngoingAttempts } from "../../services/init/schedule-ongoing-attempts";
+import { scheduleOngoingAttempts } from "../../controllers/attempts/init/schedule-ongoing-attempts";
+import { AttemptsController } from "../../controllers/attempts/attempts.controller";
 
 export class AttemptsModule extends ModuleBase {
 	protected async _initialize(): Promise<void> {
-		await scheduleOngoingAttempts();
-		currentController();
-		examController();
-		practiceController();
+
 	}
 }

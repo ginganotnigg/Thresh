@@ -1,11 +1,12 @@
 import { db } from "../../../../configs/orm/kysely/db";
+import { AnswerForQuestionCommon } from "../../../../schemas/common/answer-for-question-type";
 import { QuestionTypeType } from "../../../../shared/enum";
 import { QueryHandlerBase } from "../../../../shared/handler/usecase.base";
 import { GetAttemptAnswersQueryParam } from "./param";
 import { GetAttemptAnswersResponse } from "./response";
 
 export class GetAttemptAnswersQueryHandler extends QueryHandlerBase<GetAttemptAnswersQueryParam, GetAttemptAnswersResponse> {
-	async handle(params: GetAttemptAnswersQueryParam): Promise<GetAttemptAnswersResponse> {
+	async handle(_: GetAttemptAnswersQueryParam): Promise<GetAttemptAnswersResponse> {
 		const attemptId = this.getId();
 		let query = db
 			.selectFrom("AttemptsAnswerQuestions as aaq")
@@ -29,6 +30,14 @@ export class GetAttemptAnswersQueryHandler extends QueryHandlerBase<GetAttemptAn
 					: r.mcqa_AttemptAnswerQuestionId != null
 						? "MCQ"
 						: "MCQ"; // Default to MCQ if neither is present
+
+			const child: AnswerForQuestionCommon = questionType === "MCQ" ? {
+				type: "MCQ",
+				chosenOption: r.chosenOption!,
+			} : {
+				type: "LONG_ANSWER",
+				answer: r.answer!,
+			}
 			return {
 				id: r.id,
 				attemptId: r.AttemptId!,
@@ -36,21 +45,7 @@ export class GetAttemptAnswersQueryHandler extends QueryHandlerBase<GetAttemptAn
 				pointReceived: r.pointsReceived!,
 				createdAt: r.createdAt!,
 				updatedAt: r.updatedAt!,
-				child: {
-					type: questionType,
-					...(questionType === "MCQ"
-						? {
-							chosenOption: r.chosenOption!,
-						}
-						: questionType === "LONG_ANSWER"
-							? {
-								answer: r.answer!,
-							}
-							: {
-								chosenOption: 0, // Default value for MCQ
-							}),
-				},
-
+				child,
 			}
 		});
 		return response;

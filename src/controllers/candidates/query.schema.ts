@@ -15,7 +15,7 @@ const CandidateIncludeQuerySchema = z.object({
 	include_attempts: QueryBooleanSchema,
 });
 
-const CandidateCoreQuerySchema = z.object({})
+export const CandidateCoreQuerySchema = z.object({})
 	.merge(CandidateAggregateQuerySchema)
 	.merge(CandidateIncludeQuerySchema);
 
@@ -23,4 +23,3 @@ export const CandidatesQuerySchema = PagingSchema.extend({
 	testId: z.string().optional(),
 }).merge(CandidateCoreQuerySchema)
 
-export const CandidateQuerySchema = CandidateCoreQuerySchema;
