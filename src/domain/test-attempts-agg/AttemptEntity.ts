@@ -19,6 +19,8 @@ export class AttemptEntity extends Entity {
 			hasEnded: false,
 			secondsSpent: 0,
 			status: "IN_PROGRESS",
+			createdAt: new Date(),
+			updatedAt: new Date(),
 		});
 	}
 
@@ -40,6 +42,10 @@ export class AttemptEntity extends Entity {
 
 	public getOrder(): number {
 		return this.model.order;
+	}
+
+	public getStartedDate(): Date {
+		return this.model.createdAt || new Date();
 	}
 
 	public isActive(): boolean {

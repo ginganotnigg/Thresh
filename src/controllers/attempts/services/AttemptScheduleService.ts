@@ -1,4 +1,6 @@
 import { scheduleJob, cancelJob } from "node-schedule";
+import { AttemptTimeOutEvent } from "../../../domain/events/AttemptTimeOutEvent";
+import { EventDispatcher } from "../../../shared/domain/EventDispatcher";
 
 export class AttemptScheduleService {
 	static scheduleAttempt(attemptId: string, endDate: Date) {
@@ -7,7 +9,7 @@ export class AttemptScheduleService {
 			return;
 		}
 		scheduleJob(`attempt:${attemptId}`, endDate, async () => {
-			await (await AttemptRepo.load(attemptId)).submit();
+			EventDispatcher.getInstance().dispatch(new AttemptTimeOutEvent(attemptId));
 		});
 	}
 

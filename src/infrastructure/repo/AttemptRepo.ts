@@ -4,9 +4,10 @@ import Attempt from "../models/attempt";
 import { DomainError } from "../../shared/errors/domain.error";
 import { AttemptAggregate } from "../../domain/AttemptAggregate";
 import { AttemptPersistence } from "../../domain/mappers/AttemptMapper";
+import { RepoBase } from "./RepoBase";
 
-export class AttemptRepo {
-	static async getById(attemptId: string): Promise<AttemptAggregate> {
+export class AttemptRepo extends RepoBase<AttemptAggregate> {
+	async getById(attemptId: string): Promise<AttemptAggregate> {
 		const attempt = await db
 			.selectFrom("Attempts")
 			.where("id", "=", attemptId)
@@ -31,7 +32,7 @@ export class AttemptRepo {
 		return agg;
 	}
 
-	static async save(agg: AttemptAggregate): Promise<void> {
+	async _save(agg: AttemptAggregate): Promise<void> {
 		const persistence = agg.getPersistenceData();
 		const transaction = await sequelize.transaction();
 		try {

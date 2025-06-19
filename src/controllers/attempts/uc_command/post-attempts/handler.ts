@@ -6,8 +6,9 @@ export class PostAttemptsHandler extends CommandHandlerBase<PostAttemptsBody> {
 	async handle(params: PostAttemptsBody): Promise<void> {
 		const { testId } = params;
 		const { userId } = this.getCredentials();
-		const testAgg = await TestAttemptsRepo.getTest(testId);
+		const repo = new TestAttemptsRepo();
+		const testAgg = await repo.getTest(testId);
 		testAgg.addNewAttempt(userId);
-		await TestAttemptsRepo.save(testAgg);
+		await repo.save(testAgg);
 	}
 }

@@ -8,11 +8,12 @@ export class PostAttemptAnswersHandler extends CommandHandlerBase<PostAttemptAns
 	async handle(params: PostAttemptAnswersBody): Promise<void> {
 		const attemptId = this.getId();
 		const credentials = this.getCredentials();
+		const repo = new AnswerRepo();
 		const { answer, questionId } = params;
 		const agg = await CreateAnswerAggregateDomainService.execute(questionId, attemptId, credentials, answer);
 		if (agg === null) {
 			throw new DomainError("Attempt or question not found");
 		}
-		await AnswerRepo.save(agg);
+		await repo.save(agg);
 	}
 } 

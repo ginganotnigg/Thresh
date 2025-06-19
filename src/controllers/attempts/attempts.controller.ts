@@ -71,15 +71,6 @@ export class AttemptsController extends ControllerBase {
 				body: PostAttemptsBodySchema,
 			})
 			.handle(async (data) => {
-			})
-			.build({ tags: ["Attempts"] });
-
-		router.endpoint().post()
-			.schema({
-				meta: CredentialsMetaSchema,
-				body: PostAttemptsBodySchema,
-			})
-			.handle(async (data) => {
 				return await new PostAttemptsHandler()
 					.withCredentials(data.meta)
 					.handle(data.body);

@@ -5,8 +5,9 @@ export class PatchAttemptSubmitHandler extends CommandHandlerBase<void> {
 	async handle(): Promise<void> {
 		const attemptId = this.getId();
 		const credential = this.getCredentials();
-		const agg = await AttemptRepo.getById(attemptId);
+		const repo = new AttemptRepo();
+		const agg = await repo.getById(attemptId);
 		agg.submit(credential);
-		await AttemptRepo.save(agg);
+		await repo.save(agg);
 	}
 }

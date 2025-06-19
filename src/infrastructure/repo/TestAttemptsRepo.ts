@@ -8,9 +8,10 @@ import { ExamAttemptsAggregate } from "../../domain/test-attempts-agg/ExamAttemp
 import sequelize from "../../configs/orm/sequelize/sequelize";
 import Attempt from "../models/attempt";
 import { AttemptStatusType } from "../../shared/enum";
+import { RepoBase } from "./RepoBase";
 
-export class TestAttemptsRepo {
-	private static async getAttemptsOfTest(testId: string): Promise<AttemptEntity[]> {
+export class TestAttemptsRepo extends RepoBase<TestAttemptsAggregate> {
+	private async getAttemptsOfTest(testId: string): Promise<AttemptEntity[]> {
 		const attempts = await db
 			.selectFrom("Attempts as a")
 			.where("a.TestId", "=", testId)
@@ -31,7 +32,7 @@ export class TestAttemptsRepo {
 		}));
 	}
 
-	static async getTest(testId: string): Promise<TestAttemptsAggregate> {
+	async getTest(testId: string): Promise<TestAttemptsAggregate> {
 		const inprogressStatus: AttemptStatusType = "IN_PROGRESS";
 
 		const test = await db
@@ -64,12 +65,14 @@ export class TestAttemptsRepo {
 		if (test.mode === "PRACTICE") {
 			testAgg = new PracticeAttemptsAggregate(
 				test.id,
+				test.minutesToAnswer,
 				attempts,
 				test.authorId,
 			)
 		} else if (test.mode === "EXAM") {
 			testAgg = new ExamAttemptsAggregate(
 				test.id,
+				test.minutesToAnswer,
 				attempts,
 				new Date(test.openDate!),
 				new Date(test.closeDate!),
@@ -83,7 +86,7 @@ export class TestAttemptsRepo {
 		return testAgg;
 	}
 
-	static async save(test: TestAttemptsAggregate): Promise<void> {
+	async _save(test: TestAttemptsAggregate): Promise<void> {
 		const { newAttempt, modifedAttmepts, deletedAttempts } = test.getPersistenceData();
 		const transaction = await sequelize.transaction();
 		try {

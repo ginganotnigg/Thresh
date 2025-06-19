@@ -4,13 +4,14 @@ import { TestAttemptsAggregate } from "./TestAttemptsAggregate";
 export class ExamAttemptsAggregate extends TestAttemptsAggregate {
 	constructor(
 		id: string,
+		minutesToAnswer: number,
 		attempts: AttemptEntity[],
 		private readonly openDate: Date,
 		private readonly closeDate: Date,
 		private readonly participantList: string[],
 		private readonly numberOfAttemptsAllowed: number,
 	) {
-		super(id, attempts);
+		super(id, minutesToAnswer, attempts);
 	}
 
 	protected _allowToDoTest(candidateId: string): boolean {

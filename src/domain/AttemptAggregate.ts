@@ -1,4 +1,3 @@
-import { AttemptSubmittedEvent } from "../events";
 import { AggregateRoot } from "../shared/domain";
 import { DomainError } from "../shared/errors/domain.error";
 import { CredentialsBase } from "../shared/policy/types";
@@ -28,7 +27,15 @@ export class AttemptAggregate extends AggregateRoot {
 		this.attempt.status = "COMPLETED";
 		this.attempt.hasEnded = true;
 		this.attempt.secondsSpent = Math.floor((Date.now() - this.attempt.createdAt!.getTime()) / 1000);
-		this.addDomainEvent(new AttemptSubmittedEvent(this.id));
+	}
+
+	timeOut(): void {
+		if (this.attempt.status !== "IN_PROGRESS") {
+			throw new DomainError(`Attempt has already ended.`);
+		}
+		this.attempt.status = "COMPLETED";
+		this.attempt.hasEnded = true;
+		this.attempt.secondsSpent = Math.floor((Date.now() - this.attempt.createdAt!.getTime()) / 1000);
 	}
 
 	getPersistenceData(): AttemptPersistence {

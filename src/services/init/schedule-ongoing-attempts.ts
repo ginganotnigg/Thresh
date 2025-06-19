@@ -1,6 +1,6 @@
 import Attempt from "../../infrastructure/models/attempt";
 import Test from "../../infrastructure/models/test";
-import { AttemptScheduleService } from "../../domain/service/AttemptScheduleService";
+import { AttemptScheduleService } from "../../controllers/attempts/services/AttemptScheduleService";
 import { PatchAttemptSubmitHandler } from "../../controllers/attempts/uc_command/patch-attempt-submit/handler";
 
 export async function scheduleOngoingAttempts() {

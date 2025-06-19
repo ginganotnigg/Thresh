@@ -1,3 +1,5 @@
+import { Constructor } from "../../library/caychuoijs/utils/type";
+import { DomainEventBase } from "../domain/DomainEventBase";
 import { DomainError } from "../errors/domain.error";
 import { PolicyError } from "../errors/policy.error";
 import { CredentialsBase } from "../policy/types";
@@ -41,9 +43,11 @@ abstract class UseCaseBase<TParams, TResult, TId = string> {
 }
 
 export abstract class QueryHandlerBase<TParams, TResult extends object> extends UseCaseBase<TParams, TResult> {
-
 }
 
 export abstract class CommandHandlerBase<TParams, TResult = void> extends UseCaseBase<TParams, TResult> {
+}
 
+export abstract class EventHandlerBase<TEvent extends DomainEventBase> extends UseCaseBase<TEvent, void> {
+	abstract registerEvent(event: Constructor<TEvent>): void;
 }

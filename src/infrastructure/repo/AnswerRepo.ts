@@ -3,9 +3,10 @@ import AttemptsAnswerLAQuestions from "../models/attempts_answer_la_questions";
 import AttemptsAnswerMCQQuestions from "../models/attempts_answer_mcq_questions";
 import AttemptsAnswerQuestions from "../models/attempts_answer_questions";
 import { AnswerAggregate } from "../../domain/AnswerAggregate";
+import { RepoBase } from "./RepoBase";
 
-export class AnswerRepo {
-	static async save(answer: AnswerAggregate): Promise<void> {
+export class AnswerRepo extends RepoBase<AnswerAggregate, { questionId: number, attemptId: string }> {
+	async _save(answer: AnswerAggregate): Promise<void> {
 		const answerPersistence = answer.toPersistence();
 		const transaction = await sequelize.transaction();
 		try {
