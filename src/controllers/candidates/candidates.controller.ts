@@ -1,10 +1,10 @@
 import { Chuoi } from "../../library/caychuoijs";
 import { ControllerBase } from "../../shared/controller/controller.base";
 import { CandidateIdParamsSchema } from "../../shared/schemas/params";
-import { PostCandidateBodySchema } from "./body.schema";
-import { CandidatesQuerySchema } from "./query.schema";
-import { CandidateQuerySchema } from "./uc_query/get-candidate-attempts/param";
-import { CandidateResourceSchema, CandidatesResourceSchema } from "../../schemas/candidate/resource";
+import { GetCandidateAttemptsQuerySchema } from "./uc_query/get-candidate-attempts/param";
+import { GetCandidateAttemptsResponseSchema } from "./uc_query/get-candidate-attempts/response";
+import { GetCandidateAttemptsHandler } from "./uc_query/get-candidate-attempts/handler";
+import { CredentialsMetaSchema } from "../../shared/schemas/meta";
 
 export class AnswersController extends ControllerBase {
 	constructRouter(): void {
@@ -12,28 +12,16 @@ export class AnswersController extends ControllerBase {
 
 		router.endpoint().get("/:candidateId/attempts")
 			.schema({
-				query: CandidatesQuerySchema,
-				response: CandidatesResourceSchema,
-			})
-			.handle(async (data) => {
-			})
-			.build({ tags: ["Candidates"] });
-
-		router.endpoint().get("/:candidateId")
-			.schema({
+				meta: CredentialsMetaSchema,
 				params: CandidateIdParamsSchema,
-				query: CandidateQuerySchema,
-				response: CandidateResourceSchema,
+				query: GetCandidateAttemptsQuerySchema,
+				response: GetCandidateAttemptsResponseSchema,
 			})
 			.handle(async (data) => {
-			})
-			.build({ tags: ["Candidates"] });
-
-		router.endpoint().post()
-			.schema({
-				body: PostCandidateBodySchema,
-			})
-			.handle(async (data) => {
+				return await new GetCandidateAttemptsHandler()
+					.withCredentials(data.meta)
+					.withId(data.params.candidateId)
+					.handle(data.query);
 			})
 			.build({ tags: ["Candidates"] });
 	}

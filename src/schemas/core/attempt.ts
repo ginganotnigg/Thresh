@@ -1,14 +1,8 @@
 import { z } from "zod";
 import { NonNegativeNumberSchema } from "../../shared/controller/schemas/base";
 import { AttemptStatusAsConst, TestModeAsConst } from "../../shared/enum";
-import { TestBaseSchema } from "../../controllers/tests/base.schema";
 import { ChuoiDocument } from "../../library/caychuoijs/documentation/open-api";
-
-const TestOfAttemptSchema = TestBaseSchema.omit({
-	child: true,
-}).extend({
-	mode: z.enum(TestModeAsConst)
-});
+import { TestCoreSchema } from "./test";
 
 export const AttemptCoreSchema = ChuoiDocument.registerSchema(z.object({
 	id: z.string(),
@@ -27,7 +21,7 @@ export const AttemptCoreSchema = ChuoiDocument.registerSchema(z.object({
 		answeredCorrect: NonNegativeNumberSchema,
 	}),
 	_include: z.object({
-		test: TestOfAttemptSchema
+		test: TestCoreSchema
 	}),
 }), "AttemptCoreSchema");
 

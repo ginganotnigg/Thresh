@@ -1,11 +1,5 @@
 import { z } from "zod";
-import { AttemptStatusAsConst } from "../../../../shared/enum";
-import { PagingSchema } from "../../../../shared/controller/schemas/base";
+import { QueryAttemptsParamSchema } from "../../../../schemas/params/attempts";
 
-export const GetAttemptsQueryParamSchema = PagingSchema.extend({
-	testId: z.string().optional(),
-	candidateId: z.string().optional(),
-	status: z.enum(AttemptStatusAsConst).optional(),
-});
-
+export const GetAttemptsQueryParamSchema = QueryAttemptsParamSchema;
 export type GetAttemptsQueryParam = z.infer<typeof GetAttemptsQueryParamSchema>;

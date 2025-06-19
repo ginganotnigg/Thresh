@@ -42,10 +42,10 @@ abstract class UseCaseBase<TParams, TResult, TId = string> {
 	}
 }
 
-export abstract class QueryHandlerBase<TParams, TResult extends object> extends UseCaseBase<TParams, TResult> {
+export abstract class QueryHandlerBase<TParams, TResult extends object, TId = string> extends UseCaseBase<TParams, TResult, TId> {
 }
 
-export abstract class CommandHandlerBase<TParams, TResult = void> extends UseCaseBase<TParams, TResult> {
+export abstract class CommandHandlerBase<TParams, TResult = void, TId = string> extends UseCaseBase<TParams, TResult, TId> {
 }
 
 export abstract class EventHandlerBase<TEvent extends DomainEventBase> extends UseCaseBase<TEvent, void> {
