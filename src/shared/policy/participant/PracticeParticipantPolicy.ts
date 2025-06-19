@@ -1,6 +1,6 @@
 import { CredentialsMeta } from "../../schemas/meta";
 import { PolicyError } from "../../errors/policy.error";
-import { CredentialsPolicyBase } from "../../base/policy.base";
+import { CredentialsPolicyBase } from "../../handler/policy.base";
 
 export class PracticeParticipantPolicy extends CredentialsPolicyBase {
 	constructor(

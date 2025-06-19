@@ -1,7 +1,7 @@
 import { Association, CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
 import AttemptsAnswerQuestions from "./attempts_answer_questions";
-import { QuestionTypesAsConst } from "../../domain/enum";
+import { QuestionTypesAsConst } from "../../shared/enum";
 import MCQQuestion from "./mcq_question";
 import LAQuestion from "./la_question";
 

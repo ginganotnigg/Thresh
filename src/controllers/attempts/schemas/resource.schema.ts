@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { NonNegativeNumberSchema } from "../../../shared/controller/schemas/base";
-import { AttemptStatusAsConst, TestModeAsConst } from "../../../domain/enum";
+import { AttemptStatusAsConst, TestModeAsConst } from "../../../shared/enum";
 import { TestBaseSchema } from "../../tests/base.schema";
 
 const TestOfAttemptSchema = TestBaseSchema.omit({

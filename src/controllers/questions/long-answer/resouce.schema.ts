@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { QuestionTypeType } from "../../../domain/enum";
+import { QuestionTypeType } from "../../../shared/enum";
 
 export const LongAnswerResourceSchema = z.object({
 	type: z.literal<QuestionTypeType>("LONG_ANSWER"),

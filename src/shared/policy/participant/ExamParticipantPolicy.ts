@@ -1,4 +1,4 @@
-import { CredentialsPolicyBase } from "../../base/policy.base";
+import { CredentialsPolicyBase } from "../../handler/policy.base";
 import { PolicyError } from "../../errors/policy.error";
 import { CredentialsMeta } from "../../schemas/meta";
 

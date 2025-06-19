@@ -30,7 +30,10 @@ export class CreateAnswerAggregateDomainService {
 		};
 		const attempt: AttemptDto = {
 			...attemptRaw,
+			hasEnded: attemptRaw.hasEnded! === 1,
 			testId: attemptRaw.TestId!,
+			createdAt: attemptRaw.createdAt ?? undefined,
+			updatedAt: attemptRaw.updatedAt ?? undefined,
 		};
 
 		const answerAggregate = AnswerAggregate.create(answer, attempt, question, credential);

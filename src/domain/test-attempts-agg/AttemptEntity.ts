@@ -12,10 +12,11 @@ export class AttemptEntity extends Entity {
 	static createNew(candidateId: string, testId: string, order: number): AttemptEntity {
 		const id = IdentityUtils.create();
 		return new AttemptEntity(id, {
+			id,
 			candidateId,
 			testId,
 			order,
-			hasEnded: 0,
+			hasEnded: false,
 			secondsSpent: 0,
 			status: "IN_PROGRESS",
 		});
@@ -23,10 +24,11 @@ export class AttemptEntity extends Entity {
 
 	static fromPersistence(persistenceData: AttemptPersistence): AttemptEntity {
 		return new AttemptEntity(persistenceData.id, {
+			id: persistenceData.id,
 			candidateId: persistenceData.candidateId,
 			testId: persistenceData.testId,
 			order: persistenceData.order,
-			hasEnded: persistenceData.hasEnded === true ? 1 : 0,
+			hasEnded: persistenceData.hasEnded,
 			secondsSpent: persistenceData.secondsSpent,
 			status: persistenceData.status,
 		});
@@ -34,6 +36,10 @@ export class AttemptEntity extends Entity {
 
 	public getCandidateId(): string {
 		return this.model.candidateId;
+	}
+
+	public getOrder(): number {
+		return this.model.order;
 	}
 
 	public isActive(): boolean {
@@ -45,7 +51,7 @@ export class AttemptEntity extends Entity {
 			id: this.id,
 			candidateId: this.model.candidateId,
 			testId: this.model.testId,
-			hasEnded: this.model.hasEnded === 1 ? true : false,
+			hasEnded: this.model.hasEnded,
 			order: this.model.order,
 			secondsSpent: this.model.secondsSpent,
 			status: this.model.status,

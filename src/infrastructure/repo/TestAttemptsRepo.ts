@@ -1,13 +1,13 @@
-import { db } from "../../../configs/orm/kysely/db";
-import { AttemptStatusType } from "../../../domain/enum";
-import { DomainError } from "../../../shared/errors/domain.error";
-import { TestAttemptsAggregate } from "../../../domain/test-attempts-agg/TestAttemptsAggregate";
+import { db } from "../../configs/orm/kysely/db";
+import { DomainError } from "../../shared/errors/domain.error";
+import { TestAttemptsAggregate } from "../../domain/test-attempts-agg/TestAttemptsAggregate";
 import { jsonArrayFrom } from "kysely/helpers/mysql"
-import { AttemptEntity } from "../../../domain/test-attempts-agg/AttemptEntity";
-import { PracticeAttemptsAggregate } from "../../../domain/test-attempts-agg/PracticeAttemptsAggregate";
-import { ExamAttemptsAggregate } from "../../../domain/test-attempts-agg/ExamAttemptsAggregate";
-import sequelize from "../../../configs/orm/sequelize/sequelize";
-import Attempt from "../../../infrastructure/models/attempt";
+import { AttemptEntity } from "../../domain/test-attempts-agg/AttemptEntity";
+import { PracticeAttemptsAggregate } from "../../domain/test-attempts-agg/PracticeAttemptsAggregate";
+import { ExamAttemptsAggregate } from "../../domain/test-attempts-agg/ExamAttemptsAggregate";
+import sequelize from "../../configs/orm/sequelize/sequelize";
+import Attempt from "../models/attempt";
+import { AttemptStatusType } from "../../shared/enum";
 
 export class TestAttemptsRepo {
 	private static async getAttemptsOfTest(testId: string): Promise<AttemptEntity[]> {

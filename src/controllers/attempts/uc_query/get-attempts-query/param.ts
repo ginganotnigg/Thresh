@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AttemptStatusAsConst } from "../../../../domain/enum";
+import { AttemptStatusAsConst } from "../../../../shared/enum";
 import { PagingSchema, QueryBooleanSchema } from "../../../../shared/controller/schemas/base";
 import { AttemptQueryCoreSchema } from "../../schemas/query.schema";
 

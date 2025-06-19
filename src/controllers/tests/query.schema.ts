@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { PagingSchema, QueryBooleanSchema, QuerySortOptionsSchema } from "../../shared/controller/schemas/base";
-import { TestModeAsConst } from "../../domain/enum";
+import { TestModeAsConst } from "../../shared/enum";
 
 const TestAggregateQuerySchema = z.object({
 	agg_numberOfQuestions: QueryBooleanSchema,

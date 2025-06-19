@@ -1,5 +1,5 @@
-import { IntervalService } from "../shared/services/interval.service";
-import { RandomService } from "../shared/services/random.service";
+import { IntervalService } from "../services/IntervalService";
+import { RandomService } from "../services/RandomService";
 
 export async function appServices() {
 	IntervalService.init();

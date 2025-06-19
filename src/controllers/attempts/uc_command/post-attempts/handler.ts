@@ -1,5 +1,5 @@
-import { CommandHandlerBase } from "../../../../shared/base/usecase.base";
-import { TestAttemptsRepo } from "../../infra/TestAttemptsRepo";
+import { CommandHandlerBase } from "../../../../shared/handler/usecase.base";
+import { TestAttemptsRepo } from "../../../../infrastructure/repo/TestAttemptsRepo";
 import { PostAttemptsBody } from "./body";
 
 export class PostAttemptsHandler extends CommandHandlerBase<PostAttemptsBody> {

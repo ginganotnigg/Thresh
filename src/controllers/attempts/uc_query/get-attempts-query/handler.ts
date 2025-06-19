@@ -1,5 +1,5 @@
 import { db } from "../../../../configs/orm/kysely/db";
-import { QueryHandlerBase } from "../../../../shared/base/usecase.base";
+import { QueryHandlerBase } from "../../../../shared/handler/usecase.base";
 import { GetAttemptsQueryParam } from "./param";
 import { GetAttemptsResourceResponse } from "./response";
 import { paginate } from "../../../../shared/common/query";

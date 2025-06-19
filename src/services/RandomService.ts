@@ -1,4 +1,4 @@
-import Test from "../../infrastructure/models/test";
+import Test from "../infrastructure/models/test";
 import schedule from "node-schedule"
 
 export class RandomService {

@@ -1,5 +1,4 @@
-import { cancelJob, scheduleJob } from "node-schedule";
-import { AttemptRepo } from "../../../infrastructure/write/attempt.repo";
+import { scheduleJob, cancelJob } from "node-schedule";
 
 export class AttemptScheduleService {
 	static scheduleAttempt(attemptId: string, endDate: Date) {

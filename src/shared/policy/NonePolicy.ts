@@ -1,4 +1,4 @@
-import { PolicyBase } from "../base/policy.base";
+import { PolicyBase } from "../handler/policy.base";
 
 export class NonePolicy extends PolicyBase {
 	verify(): Promise<void> {

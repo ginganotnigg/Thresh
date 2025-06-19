@@ -1,5 +1,5 @@
 import { CredentialsMeta } from "../schemas/meta";
-import { PolicyError } from "../base/policy-error";
+import { PolicyError } from "../handler/policy-error";
 import { ExamParticipantPolicy } from "./participant/ExamParticipantPolicy";
 
 

@@ -1,8 +1,8 @@
-import sequelize from "../../../configs/orm/sequelize/sequelize";
-import AttemptsAnswerLAQuestions from "../../../infrastructure/models/attempts_answer_la_questions";
-import AttemptsAnswerMCQQuestions from "../../../infrastructure/models/attempts_answer_mcq_questions";
-import AttemptsAnswerQuestions from "../../../infrastructure/models/attempts_answer_questions";
-import { AnswerAggregate } from "../../../domain/AnswerAggregate";
+import sequelize from "../../configs/orm/sequelize/sequelize";
+import AttemptsAnswerLAQuestions from "../models/attempts_answer_la_questions";
+import AttemptsAnswerMCQQuestions from "../models/attempts_answer_mcq_questions";
+import AttemptsAnswerQuestions from "../models/attempts_answer_questions";
+import { AnswerAggregate } from "../../domain/AnswerAggregate";
 
 export class AnswerRepo {
 	static async save(answer: AnswerAggregate): Promise<void> {

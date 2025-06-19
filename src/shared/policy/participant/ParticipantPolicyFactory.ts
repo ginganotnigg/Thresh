@@ -1,5 +1,5 @@
 import { db } from "../../../configs/orm/kysely/db";
-import { PolicyBase } from "../../base/policy.base";
+import { PolicyBase } from "../../handler/policy.base";
 import { DomainError } from "../../errors/domain.error";
 import { CredentialsMeta } from "../../schemas/meta";
 import { ExamParticipantPolicy } from "./ExamParticipantPolicy";

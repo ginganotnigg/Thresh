@@ -1,5 +1,6 @@
 import { Entity } from './Entity';
 import { IDomainEvent } from './IDomainEvent';
+import { CredentialsMeta } from '../schemas/meta';
 
 export abstract class AggregateRoot<TId = string> extends Entity<TId> {
 	private _domainEvents: IDomainEvent[] = [];
@@ -27,3 +28,4 @@ export abstract class AggregateRoot<TId = string> extends Entity<TId> {
 		}
 	}
 }
+

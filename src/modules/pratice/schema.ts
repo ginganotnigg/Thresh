@@ -2,7 +2,7 @@ import { z } from "zod";
 import { PracticeTestCoreSchema } from "../../shared/resource/practice.schema";
 import { CreateTestBodySchema } from "../../shared/resource/test.schema";
 import { PagingSchema } from "../../shared/controller/schemas/base";
-import { FeedbackProblemsAsConst } from "../../domain/enum";
+import { FeedbackProblemsAsConst } from "../../shared/enum";
 
 export const CreatePracticeBodySchema = CreateTestBodySchema.extend({
 	practice: PracticeTestCoreSchema.omit({

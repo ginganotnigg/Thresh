@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { QuestionTypeType } from "../../../domain/enum";
+import { QuestionTypeType } from "../../../shared/enum";
 
 export const MCQResourceSchema = z.object({
 	type: z.literal<QuestionTypeType>("MCQ"),

@@ -3,7 +3,6 @@ import { PolicyError } from "../errors/policy.error";
 import { CredentialsBase } from "../policy/types";
 import { CredentialsMeta } from "../schemas/meta";
 
-
 abstract class UseCaseBase<TParams, TResult, TId = string> {
 	private _credentials: CredentialsBase | undefined = undefined;
 	private _id: TId | undefined = undefined;

@@ -1,5 +1,5 @@
-import { CommandHandlerBase } from "../../../../shared/base/usecase.base";
-import { AttemptRepo } from "../../infra/AttemptRepo";
+import { CommandHandlerBase } from "../../../../shared/handler/usecase.base";
+import { AttemptRepo } from "../../../../infrastructure/repo/AttemptRepo";
 
 export class PatchAttemptSubmitHandler extends CommandHandlerBase<void> {
 	async handle(): Promise<void> {

@@ -1,5 +1,5 @@
 import { Association, CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
-import { FeedbackProblemsType } from "../../domain/enum";
+import { FeedbackProblemsType } from "../../shared/enum";
 import Test from "./test";
 
 class Feedback extends Model<InferAttributes<Feedback>, InferCreationAttributes<Feedback>> {

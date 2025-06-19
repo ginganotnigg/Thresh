@@ -1,6 +1,4 @@
-import { logTickError } from "../../configs/logger/winston";
-
-// Todo: make global and handlers configurable
+import { logTickError } from "../configs/logger/winston";
 
 const TICK = 1000; // Refresh every 1 second
 
@@ -30,3 +28,4 @@ export class IntervalService {
 		this.jobs.delete(jobId);
 	}
 }
+

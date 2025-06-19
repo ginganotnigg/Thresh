@@ -3,7 +3,7 @@ import Question from "./question";
 import Attempt from "./attempt";
 import PracticeTest from "./practice_test";
 import ExamTest from "./exam_test";
-import { TestModeAsConst } from "../../domain/enum";
+import { TestModeAsConst } from "../../shared/enum";
 import Feedback from "./feedback";
 
 class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {

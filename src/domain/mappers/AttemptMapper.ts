@@ -1,4 +1,4 @@
-import { AttemptStatusType } from "../../../../domain/enum";
+import { AttemptStatusType } from "../../shared/enum";
 
 export class AttemptMapper {
 	static toPersistence(attemptId: string, attempt: AttemptDto): AttemptPersistence {

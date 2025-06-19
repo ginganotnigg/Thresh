@@ -1,4 +1,5 @@
 import { AggregateRoot } from "../../shared/domain";
+import { AttemptCreatedEvent } from "../events/AttemptEvents";
 import { TestAttemptsPersistence } from "../mappers/TestAttemptsMapper";
 import { AttemptEntity } from "./AttemptEntity";
 
@@ -23,6 +24,7 @@ export abstract class TestAttemptsAggregate extends AggregateRoot {
 		const newAttempt = AttemptEntity.createNew(candidateId, testId, this.attempts.length + 1);
 		this.newAttempt = newAttempt;
 		this.attempts.push(newAttempt);
+		this.addDomainEvent(new AttemptCreatedEvent(newAttempt.id, testId, candidateId, newAttempt.getOrder()));
 	}
 
 	public getPersistenceData(): TestAttemptsPersistence {
