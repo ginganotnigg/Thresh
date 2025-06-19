@@ -1,6 +1,6 @@
 import { TestModeType } from "../../shared/enum";
 
-type PracticeTestDto = {
+export type PracticeTestDto = {
 	mode: "PRACTICE";
 	difficulty: string;
 	numberOfOptions: number;
@@ -24,15 +24,12 @@ type ExamTestDto = {
 
 
 export type TestDto = {
-	id: string;
 	title: string;
 	description: string;
 	minutesToAnswer: number;
 	language: string;
 	authorId: string;
 	mode: TestModeType;
-	createdAt?: Date;
-	updatedAt?: Date;
 } & {
 	detail: PracticeTestDto | ExamTestDto;
 };
@@ -79,7 +76,8 @@ export class TestMapper {
 		return persistence;
 	}
 
-	static toPersistence(dto: TestDto): TestPersistence {
-		return dto;
+	static toPersistence(dto: TestDto, id: string): TestPersistence {
+		return { ...dto, id };
 	}
 }
+

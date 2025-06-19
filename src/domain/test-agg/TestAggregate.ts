@@ -1,4 +1,5 @@
 import { AggregateRoot } from "../../shared/domain";
+import { IdentityUtils } from "../../shared/domain/UniqueEntityId";
 import { DomainError } from "../../shared/errors/domain.error";
 import { QuestionDto, QuestionMapper, QuestionPersistence } from "../mappers/QuestionMapper";
 import { TestDto, TestMapper, TestPersistence } from "../mappers/TestMapper";
@@ -8,25 +9,27 @@ export class TestAggregate extends AggregateRoot {
 	private questions: QuestionEntity[] = [];
 
 	private constructor(
+		id: string,
 		private testDto: TestDto,
 		questionDtos: QuestionDto[],
 		private hasAttempts: boolean = false,
 	) {
-		super(testDto.id);
+		super(id);
 		if (questionDtos.length === 0) {
 			throw new DomainError("Test must have at least one question.");
 		}
-		this.questions = questionDtos.map(q => new QuestionEntity(q, testDto.id));
+		this.questions = questionDtos.map(q => QuestionEntity.create(q, id));
 	}
 
 	public static create(testDto: TestDto, questionDtos: QuestionDto[]): TestAggregate {
-		return new TestAggregate(testDto, questionDtos);
+		const id = IdentityUtils.create();
+		return new TestAggregate(id, testDto, questionDtos);
 	}
 
 	public static fromPersistence(persistence: TestPersistence, questions: QuestionPersistence[], hasAttempts: boolean): TestAggregate {
 		const testDto = TestMapper.toDto(persistence);
 		const questionDtos = questions.map(q => QuestionMapper.toDto(q));
-		return new TestAggregate(testDto, questionDtos, hasAttempts);
+		return new TestAggregate(persistence.id, testDto, questionDtos, hasAttempts);
 	}
 
 	public update(testDto: Omit<TestDto, "id">): void {
@@ -59,14 +62,14 @@ export class TestAggregate extends AggregateRoot {
 		if (questions.length === 0) {
 			throw new DomainError("Test must have at least one question.");
 		}
-		this.questions = questions.map(q => new QuestionEntity(q, this.testDto.id));
+		this.questions = questions.map(q => QuestionEntity.create(q, this.id));
 	}
 
 	public toPersistence(): {
 		test: TestPersistence;
 		questions: QuestionPersistence[];
 	} {
-		const testPersistence = TestMapper.toPersistence(this.testDto);
+		const testPersistence = TestMapper.toPersistence(this.testDto, this.id);
 		const questionsPersistence = this.questions.map(q => q.toPersistence());
 		return {
 			test: testPersistence,

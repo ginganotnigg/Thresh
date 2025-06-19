@@ -1,9 +1,7 @@
 import { Chuoi } from "../../library/caychuoijs";
 import { ControllerBase } from "../../shared/controller/controller.base";
 import { FeedbackIdParamsSchema } from "../../shared/schemas/params";
-import { PostFeedbackBodySchema, PutFeedbackBodySchema } from "./body.schema";
-import { FeedbacksQuerySchema } from "./query.schema";
-import { FeedbackResourceSchema, FeedbacksResourceSchema } from "./resouce.schema";
+import { GetFeedbackResponseSchema, GetFeedbacksQuerySchema, GetFeedbacksResponseSchema, PostFeedbackBodySchema, PutFeedbackBodySchema } from "./resouce.schema";
 
 export class FeedbacksController extends ControllerBase {
 	constructRouter(): void {
@@ -11,8 +9,8 @@ export class FeedbacksController extends ControllerBase {
 
 		router.endpoint().get()
 			.schema({
-				query: FeedbacksQuerySchema,
-				response: FeedbacksResourceSchema,
+				query: GetFeedbacksQuerySchema,
+				response: GetFeedbacksResponseSchema,
 			})
 			.handle(async (data) => {
 			})
@@ -21,7 +19,7 @@ export class FeedbacksController extends ControllerBase {
 		router.endpoint().get("/:feedbackId")
 			.schema({
 				params: FeedbackIdParamsSchema,
-				response: FeedbackResourceSchema,
+				response: GetFeedbackResponseSchema,
 			})
 			.handle(async (data) => {
 			})
@@ -30,7 +28,6 @@ export class FeedbacksController extends ControllerBase {
 		router.endpoint().post()
 			.schema({
 				body: PostFeedbackBodySchema,
-				response: FeedbackResourceSchema,
 			})
 			.handle(async (data) => {
 			})

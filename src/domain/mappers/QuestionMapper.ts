@@ -5,16 +5,17 @@ type MCQQuestionDto = {
 	correctOption: number;
 	options: string[];
 };
+
 type LongAnswerQuestionDto = {
 	type: "LONG_ANSWER";
 	correctAnswer: string;
-	extraText?: string;
-	imageLinks?: string[];
+	extraText?: string | null | undefined;
+	imageLinks?: string[] | null | undefined;
 };
 
 export type QuestionDto = {
-	id: number;
 	text: string;
+	points: number;
 	type: QuestionTypeType;
 } & {
 	detail: MCQQuestionDto | LongAnswerQuestionDto;
@@ -23,6 +24,7 @@ export type QuestionDto = {
 export type QuestionPersistence = {
 	id: number;
 	testId: string;
+	points: number;
 	text: string;
 	type: QuestionTypeType;
 } & {
@@ -32,20 +34,21 @@ export type QuestionPersistence = {
 export class QuestionMapper {
 	static toDto(persistence: QuestionPersistence): QuestionDto {
 		return {
-			id: persistence.id,
 			text: persistence.text,
 			type: persistence.type,
 			detail: persistence.detail,
+			points: persistence.points,
 		};
 	}
 
-	static toPersistence(dto: QuestionDto, testId: string): QuestionPersistence {
+	static toPersistence(dto: QuestionDto, id: number, testId: string): QuestionPersistence {
 		return {
-			id: dto.id,
+			id,
+			testId,
 			text: dto.text,
 			type: dto.type,
-			testId: testId,
 			detail: dto.detail,
+			points: dto.points,
 		};
 	}
 }

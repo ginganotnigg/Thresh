@@ -4,7 +4,7 @@ import { ControllerBase } from "../../shared/controller/controller.base";
 import { PagingSchema } from "../../shared/controller/schemas/base";
 import { TemplateIdParamsSchema } from "../../shared/schemas/params";
 import { PostTemplateBodySchema, PutTemplateBodySchema } from "./body.schema";
-import { TemplateResourceSchema, TemplatesResourceSchema } from "./resouce.schema";
+import { TemplateResourceSchema, TemplatesResourceSchema } from "./schema";
 
 export class TemplatesController extends ControllerBase {
 	constructRouter(): void {

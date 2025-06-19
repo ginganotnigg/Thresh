@@ -1,22 +1,24 @@
 import { z } from "zod";
 import { ChuoiDocument } from "../../library/caychuoijs/documentation/open-api";
+import { NonNegativeNumberSchema } from "../../shared/controller/schemas/base";
 
 export const ExamDetailCommonSchema = ChuoiDocument.registerSchema(z.object({
 	mode: z.literal("EXAM"),
 	roomId: z.string(),
 	hasPassword: z.boolean(),
 	password: z.string().nullable().optional(),
-	numberOfAttemptsAllowed: z.number().int().positive(),
+	numberOfAttemptsAllowed: NonNegativeNumberSchema.default(1),
+	numberOfParticipants: NonNegativeNumberSchema.default(0),
 	isAnswerVisible: z.boolean(),
 	isAllowedToSeeOtherResults: z.boolean(),
 	openDate: z.date(),
 	closeDate: z.date(),
 	participants: z.array(z.string()),
+	isPublic: z.boolean().default(false),
 }), "ExamDetailCommonSchema");
 
 export const PracticeDetailCommonSchema = ChuoiDocument.registerSchema(z.object({
 	mode: z.literal("PRACTICE"),
-
 	difficulty: z.string(),
 	tags: z.array(z.string()),
 	numberOfQuestions: z.number().int().positive(),
