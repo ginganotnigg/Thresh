@@ -58,7 +58,7 @@ export function buildTestQuery() {
 type ExecuteQuery = ReturnType<typeof buildTestQuery>["executeTakeFirst"];
 type ResultType = Awaited<ReturnType<ExecuteQuery>>;
 
-export function parseResult(res: ResultType, participants: string[]): TestFull {
+export function parseResult(res: ResultType, participants: string[], hidePassword: boolean = true): TestFull {
 	if (!res) {
 		throw new DomainError("Test not found");
 	}
@@ -67,7 +67,7 @@ export function parseResult(res: ResultType, participants: string[]): TestFull {
 			mode: "EXAM",
 			roomId: res.roomId!,
 			hasPassword: res.password !== null,
-			password: res.password,
+			password: hidePassword ? null : res.password,
 			numberOfAttemptsAllowed: res.numberOfAttemptsAllowed!,
 			isAnswerVisible: res.isAnswerVisible! === 1,
 			isAllowedToSeeOtherResults: res.isAllowedToSeeOtherResults! === 1,

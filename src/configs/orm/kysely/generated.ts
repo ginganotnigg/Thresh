@@ -65,7 +65,9 @@ export interface ExamTests {
   createdAt: Date | null;
   isAllowedToSeeOtherResults: Generated<number>;
   isAnswerVisible: Generated<number>;
+  isPublic: Generated<number>;
   numberOfAttemptsAllowed: Generated<number>;
+  numberOfParticipants: Generated<number>;
   openDate: Date;
   password: string | null;
   roomId: string;

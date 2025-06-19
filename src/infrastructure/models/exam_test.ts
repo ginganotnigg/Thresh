@@ -7,9 +7,11 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 	declare testId: string;
 	declare roomId: string;
 	declare password: string | null;
-	declare numberOfAttemptsAllowed: number;
+	declare numberOfAttemptsAllowed: CreationOptional<number>;
+	declare numberOfParticipants: CreationOptional<number>;
 	declare isAnswerVisible: boolean;
 	declare isAllowedToSeeOtherResults: boolean;
+	declare isPublic: CreationOptional<boolean>;
 	declare openDate: Date;
 	declare closeDate: Date;
 	declare createdAt: CreationOptional<Date>;
@@ -46,6 +48,11 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 				allowNull: false,
 				defaultValue: 1,
 			},
+			numberOfParticipants: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				defaultValue: 0,
+			},
 			isAnswerVisible: {
 				type: DataTypes.BOOLEAN,
 				allowNull: false,
@@ -55,6 +62,11 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 				type: DataTypes.BOOLEAN,
 				allowNull: false,
 				defaultValue: false,
+			},
+			isPublic: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false,
+				defaultValue: true,
 			},
 			openDate: {
 				type: DataTypes.DATE,

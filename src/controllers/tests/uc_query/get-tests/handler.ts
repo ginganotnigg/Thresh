@@ -19,6 +19,8 @@ export class GetTestsQueryHandler extends QueryHandlerBase<GetTestsQueryParam, G
 		} = param;
 
 		let query = buildTestQuery();
+		query.where("et.isPublic", "=", 1);
+
 		if (authorId) {
 			query = query.where("t.authorId", "=", authorId);
 		}
