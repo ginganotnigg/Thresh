@@ -1,5 +1,5 @@
 import { scheduleJob, cancelJob } from "node-schedule";
-import { AttemptTimeOutEvent } from "../../../domain/events/AttemptTimeOutEvent";
+import { AttemptTimeOutEvent } from "../../../domain/_events/AttemptTimeOutEvent";
 import { EventDispatcher } from "../../../shared/domain/EventDispatcher";
 
 export class AttemptScheduleService {

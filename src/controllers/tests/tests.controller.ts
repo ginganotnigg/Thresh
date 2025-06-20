@@ -1,82 +1,140 @@
-import { z } from "zod";
 import { Chuoi } from "../../library/caychuoijs";
 import { ControllerBase } from "../../shared/controller/controller.base";
 import { TestIdParamsSchema } from "../../shared/schemas/params";
+import { GetTestsQuerySchema } from "./uc_query/get-tests/param";
+import { GetTestsResponseSchema } from "./uc_query/get-tests/response";
+import { GetTestsQueryHandler } from "./uc_query/get-tests/handler";
+import { CredentialsMetaSchema } from "../../shared/schemas/meta";
+import { FindTestQuerySchema } from "./uc_query/find-exam/param";
+import { FindTestResponseSchema } from "./uc_query/find-exam/response";
+import { FindTestQueryHandler } from "./uc_query/find-exam/handler";
+import { GetTestQueryParamSchema } from "./uc_query/get-test/param";
+import { GetTestResponseSchema } from "./uc_query/get-test/response";
+import { GetTestQueryHandler } from "./uc_query/get-test/handler";
+import { GetTestAttemptsQuerySchema } from "./uc_query/get-test-attempts/param";
+import { GetTestAttemptsResponseSchema } from "./uc_query/get-test-attempts/response";
+import { GetTestAttemptsQueryHandler } from "./uc_query/get-test-attempts/handler";
+import { GetTestCandidatesQuerySchema } from "./uc_query/get-test-candidates/param";
+import { GetTestCandidatesResponseSchema } from "./uc_query/get-test-candidates/response";
+import { GetTestCandiatesQueryHandler } from "./uc_query/get-test-candidates/handler";
+import { PostTestBodySchema } from "./uc_command/post-test/body";
+import { PostTestHandler } from "./uc_command/post-test/handler";
+import { PutTestBodySchema } from "./uc_command/put-test/body";
+import { PutTestHandler } from "./uc_command/put-test/handler";
+import { DeleteTestHandler } from "./uc_command/delete-test/handler";
 
 export class TestsController extends ControllerBase {
-	constructRouter(): void {
+	async constructRouter(): Promise<void> {
 		const router = Chuoi.newRoute("/tests");
 
 		router.endpoint().get()
 			.schema({
-				query: TestsQuerySchema,
-				response: TestsResourceSchema,
+				meta: CredentialsMetaSchema,
+				query: GetTestsQuerySchema,
+				response: GetTestsResponseSchema,
 			})
 			.handle(async (data) => {
+				return await new GetTestsQueryHandler()
+					.withCredentials(data.meta)
+					.handle(data.query);
 			})
 			.build({ tags: ["Tests"] });
 
-		router.endpoint().get("/find-by-roomId")
+		router.endpoint().get("/find-by-room")
 			.schema({
-				query: z.object({
-					roomId: z.string().min(1, "Room ID is required")
-				}),
-				response: TestResourceSchema,
+				meta: CredentialsMetaSchema,
+				query: FindTestQuerySchema,
+				response: FindTestResponseSchema,
 			})
 			.handle(async (data) => {
+				return await new FindTestQueryHandler()
+					.withCredentials(data.meta)
+					.handle(data.query);
 			})
 			.build({ tags: ["Tests"] });
 
 		router.endpoint().get("/:testId")
 			.schema({
+				meta: CredentialsMetaSchema,
 				params: TestIdParamsSchema,
-				query: TestQuerySchema,
-				response: TestResourceSchema,
+				query: GetTestQueryParamSchema,
+				response: GetTestResponseSchema,
 			})
 			.handle(async (data) => {
+				return await new GetTestQueryHandler()
+					.withCredentials(data.meta)
+					.withId(data.params.testId)
+					.handle(data.query);
 			})
 			.build({ tags: ["Tests"] });
 
 		router.endpoint().get("/:testId/attempts")
 			.schema({
+				meta: CredentialsMetaSchema,
+				params: TestIdParamsSchema,
+				query: GetTestAttemptsQuerySchema,
+				response: GetTestAttemptsResponseSchema,
 			})
 			.handle(async (data) => {
+				return await new GetTestAttemptsQueryHandler()
+					.withCredentials(data.meta)
+					.withId(data.params.testId)
+					.handle(data.query);
 			})
 			.build({ tags: ["Tests"] });
 
 		router.endpoint().get("/:testId/candidates")
 			.schema({
+				meta: CredentialsMetaSchema,
+				params: TestIdParamsSchema,
+				query: GetTestCandidatesQuerySchema,
+				response: GetTestCandidatesResponseSchema,
 			})
 			.handle(async (data) => {
+				return await new GetTestCandiatesQueryHandler()
+					.withCredentials(data.meta)
+					.withId(data.params.testId)
+					.handle(data.query);
 			})
 			.build({ tags: ["Tests"] });
 
 		router.endpoint().post()
 			.schema({
+				meta: CredentialsMetaSchema,
 				body: PostTestBodySchema,
 			})
 			.handle(async (data) => {
+				return await new PostTestHandler()
+					.withCredentials(data.meta)
+					.handle(data.body);
 			})
 			.build({ tags: ["Tests"] });
 
 		router.endpoint().put("/:testId")
 			.schema({
+				meta: CredentialsMetaSchema,
 				params: TestIdParamsSchema,
 				body: PutTestBodySchema,
 			})
 			.handle(async (data) => {
+				return await new PutTestHandler()
+					.withCredentials(data.meta)
+					.withId(data.params.testId)
+					.handle(data.body);
 			})
 			.build({ tags: ["Tests"] });
 
 		router.endpoint().delete("/:testId")
 			.schema({
+				meta: CredentialsMetaSchema,
 				params: TestIdParamsSchema,
 			})
 			.handle(async (data) => {
+				return await new DeleteTestHandler()
+					.withCredentials(data.meta)
+					.withId(data.params.testId)
+					.handle();
 			})
 			.build({ tags: ["Tests"] });
-
-
-
 	}
 }

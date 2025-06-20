@@ -4,8 +4,9 @@ import { DomainError } from "../../../../shared/errors/domain.error";
 import { PutTestBody } from "./body";
 
 export class PutTestHandler extends CommandHandlerBase<PutTestBody & { testId: string }, { success: boolean }> {
-	async handle(params: PutTestBody & { testId: string }): Promise<{ success: boolean; }> {
-		const { testId, questions, ...testDto } = params;
+	async handle(params: PutTestBody): Promise<{ success: boolean; }> {
+		const testId = this.getId();
+		const { questions, ...testDto } = params;
 		const repo = new TestRepo();
 
 		// Get existing test

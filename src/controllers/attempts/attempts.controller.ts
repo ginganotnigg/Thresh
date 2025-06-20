@@ -15,9 +15,12 @@ import { GetAttemptAnswersQueryHandler } from "./uc_query/get-attempt-answers-qu
 import { PostAttemptsHandler } from "./uc_command/post-attempts/handler";
 import { PostAttemptAnswersHandler } from "./uc_command/post-attempt-answers/handler";
 import { PatchAttemptSubmitHandler } from "./uc_command/patch-attempt-submit/handler";
+import { scheduleOngoingAttempts } from "./init/schedule-ongoing-attempts";
 
 export class AttemptsController extends ControllerBase {
-	constructRouter(): void {
+	async constructRouter(): Promise<void> {
+		scheduleOngoingAttempts();
+
 		const router = Chuoi.newRoute("/attempts");
 
 		router.endpoint().get()
@@ -37,17 +40,13 @@ export class AttemptsController extends ControllerBase {
 			.schema({
 				meta: CredentialsMetaSchema,
 				params: AttemptIdParamsSchema,
-				query: GetAttemptQueryParamSchema,
 				response: GetAttemptQueryResponseSchema,
 			})
 			.handle(async (data) => {
 				return await new GetAttemptQueryHandler()
 					.withId(data.params.attemptId)
 					.withCredentials(data.meta)
-					.handle({
-						...data.params,
-						...data.query,
-					});
+					.handle();
 			})
 			.build({ tags: ["Attempts"] });
 

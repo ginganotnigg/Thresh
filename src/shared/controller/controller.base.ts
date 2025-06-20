@@ -1,3 +1,3 @@
 export abstract class ControllerBase {
-	abstract constructRouter(): void;
+	abstract constructRouter(): Promise<void>;
 }

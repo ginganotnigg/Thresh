@@ -6,7 +6,7 @@ import { Paged } from "../../shared/controller/schemas/base";
 import Template from "../../infrastructure/models/template";
 import {
 	TemplateCore,
-	TemplatesQuery,
+	GetTemplatesQuery,
 	PostTemplateBody,
 	PutTemplateBody,
 	GetTemplateResponse,
@@ -67,7 +67,7 @@ export class TemplateCrudService {
 	/**
 	 * Get paginated list of templates with filters and sorting
 	 */
-	async getAll(query: TemplatesQuery): Promise<GetTemplatesResponse> {
+	async getAll(query: GetTemplatesQuery): Promise<GetTemplatesResponse> {
 		if (!this.credentials.userId) {
 			throw new DomainError("User ID is required to fetch templates");
 		}
@@ -214,7 +214,7 @@ export class TemplateCrudService {
 	/**
 	 * Get templates by user ID (for admin purposes)
 	 */
-	async getByUserId(userId: string, query: TemplatesQuery): Promise<GetTemplatesResponse> {
+	async getByUserId(userId: string, query: GetTemplatesQuery): Promise<GetTemplatesResponse> {
 		const {
 			page = 1,
 			perPage = 10,

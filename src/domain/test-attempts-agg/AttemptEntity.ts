@@ -1,7 +1,7 @@
 import { Entity } from "../../shared/domain";
 import { IdentityUtils } from "../../shared/domain/UniqueEntityId";
-import { AttemptDto } from "../mappers/AttemptMapper";
-import { AttemptPersistence } from "../mappers/AttemptMapper";
+import { AttemptDto, AttemptLoad, AttemptMapper } from "../_mappers/AttemptMapper";
+import { AttemptPersistence } from "../_mappers/AttemptMapper";
 
 export class AttemptEntity extends Entity {
 	private constructor(
@@ -12,7 +12,6 @@ export class AttemptEntity extends Entity {
 	static createNew(candidateId: string, testId: string, order: number): AttemptEntity {
 		const id = IdentityUtils.create();
 		return new AttemptEntity(id, {
-			id,
 			candidateId,
 			testId,
 			order,
@@ -20,20 +19,12 @@ export class AttemptEntity extends Entity {
 			secondsSpent: 0,
 			status: "IN_PROGRESS",
 			createdAt: new Date(),
-			updatedAt: new Date(),
 		});
 	}
 
-	static fromPersistence(persistenceData: AttemptPersistence): AttemptEntity {
-		return new AttemptEntity(persistenceData.id, {
-			id: persistenceData.id,
-			candidateId: persistenceData.candidateId,
-			testId: persistenceData.testId,
-			order: persistenceData.order,
-			hasEnded: persistenceData.hasEnded,
-			secondsSpent: persistenceData.secondsSpent,
-			status: persistenceData.status,
-		});
+	static load(load: AttemptLoad): AttemptEntity {
+		const dto = AttemptMapper.toDto(load);
+		return new AttemptEntity(load.id, dto);
 	}
 
 	public getCandidateId(): string {
@@ -53,14 +44,6 @@ export class AttemptEntity extends Entity {
 	}
 
 	public getPerisistenceData(): AttemptPersistence {
-		return {
-			id: this.id,
-			candidateId: this.model.candidateId,
-			testId: this.model.testId,
-			hasEnded: this.model.hasEnded,
-			order: this.model.order,
-			secondsSpent: this.model.secondsSpent,
-			status: this.model.status,
-		};
+		return AttemptMapper.toPersistence(this.id, this.model, []);
 	}
 }

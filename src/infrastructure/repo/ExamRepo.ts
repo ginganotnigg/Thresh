@@ -3,7 +3,7 @@ import { RepoBase } from "./RepoBase";
 import { db } from "../../configs/orm/kysely/db";
 import sequelize from "../../configs/orm/sequelize/sequelize";
 import { DomainError } from "../../shared/errors/domain.error";
-import { ExamPersistence } from "../../domain/mappers/ExamMapper";
+import { ExamPersistence } from "../../domain/_mappers/ExamMapper";
 import ExamTest from "../models/exam_test";
 import ExamParticipants from "../models/exam_participants";
 

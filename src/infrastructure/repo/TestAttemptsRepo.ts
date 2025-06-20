@@ -21,7 +21,7 @@ export class TestAttemptsRepo extends RepoBase<TestAttemptsAggregate> {
 		if (attempts.length === 0) {
 			throw new DomainError(`No attempts found for test with ID ${testId}`);
 		}
-		return attempts.map((attempt) => AttemptEntity.fromPersistence({
+		return attempts.map((attempt) => AttemptEntity.load({
 			id: attempt.id,
 			candidateId: attempt.candidateId,
 			testId: attempt.TestId!,
@@ -29,6 +29,8 @@ export class TestAttemptsRepo extends RepoBase<TestAttemptsAggregate> {
 			order: attempt.order,
 			secondsSpent: attempt.secondsSpent,
 			status: attempt.status,
+			answers: [], // Assuming answers are not needed here, or you can fetch them if required
+			createdAt: attempt.createdAt!,
 		}));
 	}
 

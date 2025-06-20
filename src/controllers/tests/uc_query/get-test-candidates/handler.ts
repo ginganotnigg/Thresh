@@ -1,11 +1,11 @@
 import { sql } from "kysely";
 import { db } from "../../../../configs/orm/kysely/db";
-import { paginate } from "../../../../shared/common/query";
+import { paginate } from "../../../../shared/handler/query";
 import { QueryHandlerBase } from "../../../../shared/handler/usecase.base";
 import { GetTestCandidatesQuery } from "./param";
 import { GetTestCandidatesResponse } from "./response";
 
-export class GetCanddiatesQueryHandler extends QueryHandlerBase<GetTestCandidatesQuery, GetTestCandidatesResponse> {
+export class GetTestCandiatesQueryHandler extends QueryHandlerBase<GetTestCandidatesQuery, GetTestCandidatesResponse> {
 	async handle(param: GetTestCandidatesQuery): Promise<GetTestCandidatesResponse> {
 		const testId = this.getId();
 		const {

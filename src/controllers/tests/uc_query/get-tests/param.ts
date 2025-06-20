@@ -2,7 +2,7 @@ import { z } from "zod";
 import { PagingSchema, QuerySortOptionsSchema } from "../../../../shared/controller/schemas/base";
 import { TestModeAsConst } from "../../../../shared/enum";
 
-export const GetTestsQueryParamSchema = PagingSchema.extend({
+export const GetTestsQuerySchema = PagingSchema.extend({
 	mode: z.enum(TestModeAsConst).optional(),
 	authorId: z.string().optional(),
 	candidateId: z.string().optional(),
@@ -10,4 +10,4 @@ export const GetTestsQueryParamSchema = PagingSchema.extend({
 	sortCreatedAt: QuerySortOptionsSchema,
 	sortTitle: QuerySortOptionsSchema,
 });
-export type GetTestsQueryParam = z.infer<typeof GetTestsQueryParamSchema>;
+export type GetTestsQuery = z.infer<typeof GetTestsQuerySchema>;

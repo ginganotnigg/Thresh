@@ -1,4 +1,4 @@
-import { AttemptTimeOutEvent } from "../../../domain/events/AttemptTimeOutEvent";
+import { AttemptTimeOutEvent } from "../../../domain/_events/AttemptTimeOutEvent";
 import { AttemptRepo } from "../../../infrastructure/repo/AttemptRepo";
 import { Constructor } from "../../../library/caychuoijs/utils/type";
 import { EventDispatcher } from "../../../shared/domain/EventDispatcher";

@@ -1,11 +1,10 @@
 import { TestRepo } from "../../../../infrastructure/repo/TestRepo";
 import { CommandHandlerBase } from "../../../../shared/handler/usecase.base";
 import { DomainError } from "../../../../shared/errors/domain.error";
-import { DeleteTestBody } from "./body";
 
-export class DeleteTestHandler extends CommandHandlerBase<DeleteTestBody, { success: boolean }> {
-	async handle(params: DeleteTestBody): Promise<{ success: boolean; }> {
-		const { testId } = params;
+export class DeleteTestHandler extends CommandHandlerBase<void, { success: boolean }> {
+	async handle(): Promise<{ success: boolean; }> {
+		const testId = this.getId();
 		const repo = new TestRepo();
 
 		// Check if test exists and has attempts

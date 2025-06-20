@@ -1,10 +1,11 @@
 import { Chuoi } from "../../library/caychuoijs";
 import { ControllerBase } from "../../shared/controller/controller.base";
 import { FeedbackIdParamsSchema } from "../../shared/schemas/params";
+import { FeedbackCrudService } from "./crud";
 import { GetFeedbackResponseSchema, GetFeedbacksQuerySchema, GetFeedbacksResponseSchema, PostFeedbackBodySchema, PutFeedbackBodySchema } from "./resouce.schema";
 
 export class FeedbacksController extends ControllerBase {
-	constructRouter(): void {
+	async constructRouter(): Promise<void> {
 		const router = Chuoi.newRoute("/feedbacks");
 
 		router.endpoint().get()
@@ -13,6 +14,7 @@ export class FeedbacksController extends ControllerBase {
 				response: GetFeedbacksResponseSchema,
 			})
 			.handle(async (data) => {
+				return await FeedbackCrudService.getFeedbacks(data.query)
 			})
 			.build({ tags: ["Feedbacks"] });
 
@@ -22,6 +24,7 @@ export class FeedbacksController extends ControllerBase {
 				response: GetFeedbackResponseSchema,
 			})
 			.handle(async (data) => {
+				return await FeedbackCrudService.getFeedbackById(data.params.feedbackId);
 			})
 			.build({ tags: ["Feedbacks"] });
 
@@ -30,6 +33,7 @@ export class FeedbacksController extends ControllerBase {
 				body: PostFeedbackBodySchema,
 			})
 			.handle(async (data) => {
+				return await FeedbackCrudService.createFeedback(data.body);
 			})
 			.build({ tags: ["Feedbacks"] });
 
@@ -39,6 +43,7 @@ export class FeedbacksController extends ControllerBase {
 				body: PutFeedbackBodySchema,
 			})
 			.handle(async (data) => {
+				return await FeedbackCrudService.updateFeedback(data.params.feedbackId, data.body);
 			})
 			.build({ tags: ["Feedbacks"] });
 
@@ -47,6 +52,7 @@ export class FeedbacksController extends ControllerBase {
 				params: FeedbackIdParamsSchema,
 			})
 			.handle(async (data) => {
+				return await FeedbackCrudService.deleteFeedback(data.params.feedbackId);
 			})
 			.build({ tags: ["Feedbacks"] });
 	}

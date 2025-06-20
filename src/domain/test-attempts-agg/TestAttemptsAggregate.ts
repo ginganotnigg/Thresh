@@ -1,6 +1,6 @@
 import { AggregateRoot } from "../../shared/domain";
-import { AttemptCreatedEvent } from "../events/AttemptCreatedEvent";
-import { TestAttemptsPersistence } from "../mappers/TestAttemptsMapper";
+import { AttemptCreatedEvent } from "../_events/AttemptCreatedEvent";
+import { TestAttemptsPersistence } from "../_mappers/TestAttemptsMapper";
 import { AttemptEntity } from "./AttemptEntity";
 
 export abstract class TestAttemptsAggregate extends AggregateRoot {

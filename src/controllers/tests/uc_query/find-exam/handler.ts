@@ -1,11 +1,11 @@
 import { db } from "../../../../configs/orm/kysely/db";
 import { buildTestQuery, parseResult } from "../../../../schemas/build/build-test-query";
 import { QueryHandlerBase } from "../../../../shared/handler/usecase.base";
-import { FindExamParam } from "./param";
-import { FindExamResponse } from "./response";
+import { FindTestQuery } from "./param";
+import { FindTestResponse } from "./response";
 
-export class FindExamQueryHandler extends QueryHandlerBase<FindExamParam, FindExamResponse> {
-	async handle(param: FindExamParam): Promise<FindExamResponse> {
+export class FindTestQueryHandler extends QueryHandlerBase<FindTestQuery, FindTestResponse> {
+	async handle(param: FindTestQuery): Promise<FindTestResponse> {
 		const { userId } = this.getCredentials();
 		const { roomId } = param;
 		let query = buildTestQuery();

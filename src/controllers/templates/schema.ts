@@ -19,7 +19,7 @@ const TemplateCoreSchema = ChuoiDocument.registerSchema(z.object({
 	updatedAt: z.date(),
 }), "TemplateCoreSchema");
 
-export const TemplatesQuerySchema = PagingSchema.extend({
+export const GetTemplatesQuerySchema = PagingSchema.extend({
 	search: z.string().optional(),
 	sortByCreatedAt: QuerySortOptionsSchema,
 	sortByName: QuerySortOptionsSchema,
@@ -38,12 +38,14 @@ export const PutTemplateBodySchema = PostTemplateBodySchema.extend({
 	id: z.string(),
 });
 
-export const GetTemplateResponse = TemplateCoreSchema;
-export const GetTemplatesResponse = PagedSchema(TemplateCoreSchema);
+export const GetTemplateResponseSchema = TemplateCoreSchema;
+export const GetTemplatesResponseSchema = PagedSchema(TemplateCoreSchema);
+
 
 export type TemplateCore = z.infer<typeof TemplateCoreSchema>;
-export type TemplatesQuery = z.infer<typeof TemplatesQuerySchema>;
+
+export type GetTemplatesQuery = z.infer<typeof GetTemplatesQuerySchema>;
 export type PostTemplateBody = z.infer<typeof PostTemplateBodySchema>;
 export type PutTemplateBody = z.infer<typeof PutTemplateBodySchema>;
-export type GetTemplateResponse = z.infer<typeof GetTemplateResponse>;
-export type GetTemplatesResponse = z.infer<typeof GetTemplatesResponse>;
+export type GetTemplateResponse = z.infer<typeof GetTemplateResponseSchema>;
+export type GetTemplatesResponse = z.infer<typeof GetTemplatesResponseSchema>;

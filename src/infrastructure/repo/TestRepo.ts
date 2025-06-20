@@ -2,8 +2,8 @@ import sequelize from "../../configs/orm/sequelize/sequelize";
 import { Op } from "sequelize";
 import { db } from "../../configs/orm/kysely/db";
 import { DomainError } from "../../shared/errors/domain.error";
-import { QuestionPersistence } from "../../domain/mappers/QuestionMapper";
-import { TestPersistence } from "../../domain/mappers/TestMapper";
+import { QuestionPersistence } from "../../domain/_mappers/QuestionMapper";
+import { TestPersistence } from "../../domain/_mappers/TestMapper";
 import { TestAggregate } from "../../domain/test-agg/TestAggregate";
 import { LongAnswerDetailCommon, MCQDetailCommon } from "../../schemas/common/question-detail";
 import ExamTest from "../models/exam_test";
@@ -32,52 +32,36 @@ export class TestRepo extends RepoBase<TestAggregate> {
 					...test.detail,
 				}, { transaction });
 			}
+
 			await Question.destroy({
 				where: { testId: test.id },
 				cascade: true,
 				transaction,
 			});
-			await Question.bulkCreate(questions.map(q => ({
-				points: q.points,
-				text: q.text,
-				type: q.type,
-				id: q.id,
-				testId: q.testId,
-			})),
-				{ transaction }
-			);
-			const mcqs = questions
-				.map(q => q.detail.type === "MCQ" ? {
-					id: q.id,
-					type: q.detail.type,
-					correctOption: q.detail.correctOption,
-					options: q.detail.options,
-				} : null)
-				.filter(q => q !== null);
 
-			const laqs = questions
-				.map(q => q.detail.type === "LONG_ANSWER" ? {
-					id: q.id,
-					type: q.detail.type,
-					correctAnswer: q.detail.correctAnswer,
-					imageLinks: q.detail.imageLinks,
-					extraText: q.detail.extraText,
-				} : null)
-				.filter(q => q !== null);
-			await MCQQuestion.bulkCreate(mcqs.map(q => ({
-				questionId: q.id,
-				correctOption: q.correctOption,
-				options: q.options,
-				type: q.type,
-			}), { transaction }));
-
-			await LAQuestion.bulkCreate(laqs.map(q => ({
-				questionId: q.id,
-				correctAnswer: q.correctAnswer,
-				imageLinks: q.imageLinks ?? null,
-				extraText: q.extraText ?? null,
-				type: q.type,
-			})), { transaction });
+			for (const q of questions) {
+				const newQuestion = await Question.create({
+					points: q.points,
+					text: q.text,
+					type: q.type,
+					testId: q.testId,
+				}, { transaction });
+				if (q.detail.type === "MCQ") {
+					await MCQQuestion.create({
+						questionId: newQuestion.id,
+						correctOption: q.detail.correctOption,
+						options: q.detail.options,
+					}, { transaction });
+				}
+				else if (q.detail.type === "LONG_ANSWER") {
+					await LAQuestion.create({
+						questionId: newQuestion.id,
+						correctAnswer: q.detail.correctAnswer,
+						imageLinks: q.detail.imageLinks ?? null,
+						extraText: q.detail.extraText ?? null,
+					}, { transaction });
+				}
+			}
 
 			await transaction.commit();
 		} catch (error) {
@@ -85,6 +69,56 @@ export class TestRepo extends RepoBase<TestAggregate> {
 			throw error;
 		}
 	}
+
+	async getQuestion(questionId: number): Promise<QuestionPersistence> {
+		const question = await db
+			.selectFrom("Questions")
+			.where("id", "=", questionId)
+			.selectAll()
+			.executeTakeFirst();
+
+		if (!question) {
+			throw new DomainError(`Question with id ${questionId} not found`);
+		}
+
+		let detail: any;
+		if (question.type === "MCQ") {
+			const mcqDetail = await db
+				.selectFrom("MCQQuestions")
+				.where("questionId", "=", questionId)
+				.selectAll()
+				.executeTakeFirst();
+
+			detail = {
+				type: "MCQ" as const,
+				correctOption: mcqDetail?.correctOption || 0,
+				options: (mcqDetail?.options as string[]) || [],
+			};
+		} else {
+			const laDetail = await db
+				.selectFrom("LAQuestions")
+				.where("questionId", "=", questionId)
+				.selectAll()
+				.executeTakeFirst();
+
+			detail = {
+				type: "LONG_ANSWER" as const,
+				correctAnswer: laDetail?.correctAnswer || "",
+				imageLinks: (laDetail?.imageLinks as string[]) || null,
+				extraText: laDetail?.extraText || null,
+			};
+		}
+
+		return {
+			id: question.id,
+			testId: question.TestId!,
+			text: question.text,
+			type: question.type,
+			points: question.points,
+			detail
+		};
+	}
+
 	async getById(testId: string): Promise<TestAggregate> {
 		const test = await db
 			.selectFrom("Tests")

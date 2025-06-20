@@ -1,8 +1,8 @@
 import { AggregateRoot } from "../../shared/domain";
 import { IdentityUtils } from "../../shared/domain/UniqueEntityId";
 import { DomainError } from "../../shared/errors/domain.error";
-import { QuestionDto, QuestionMapper, QuestionPersistence } from "../mappers/QuestionMapper";
-import { TestDto, TestMapper, TestPersistence } from "../mappers/TestMapper";
+import { QuestionDto, QuestionMapper, QuestionPersistence } from "../_mappers/QuestionMapper";
+import { TestDto, TestMapper, TestPersistence } from "../_mappers/TestMapper";
 import { QuestionEntity } from "./QuestionEntity";
 
 export class TestAggregate extends AggregateRoot {

@@ -1,7 +1,7 @@
 import { AggregateRoot } from "../shared/domain";
 import { IdentityUtils } from "../shared/domain/UniqueEntityId";
 import { DomainError } from "../shared/errors/domain.error";
-import { ExamDto, ExamMapper, ExamPersistence } from "./mappers/ExamMapper";
+import { ExamDto, ExamMapper, ExamPersistence } from "./_mappers/ExamMapper";
 
 export class ExamAggregate extends AggregateRoot {
 	private addedParticipants: string[] = [];

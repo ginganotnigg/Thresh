@@ -1,6 +1,4 @@
 import http from "http";
-import { ModuleBase } from "../library/cayduajs/module/module.base";
-import { AttemptsModule } from "../modules/attempts/module";
 import { Chuoi } from "../library/caychuoijs";
 import { env } from "../configs/env";
 import { AllExceptionFilter } from "../shared/controller/defaults/all-exception.filter";
@@ -8,10 +6,13 @@ import { LoggerMiddleware } from "../shared/controller/defaults/http-logger.mdw"
 import { securityDocument } from "../shared/controller/documents/security";
 import app from "./servers/app";
 import io from "./servers/io";
-import { ExamModule } from "../modules/exam/module";
-import { PracticeModule } from "../modules/pratice/module";
 import { DecoderMiddleware } from "../shared/controller/defaults/decoder.mdw";
-import { SelfModule } from "../modules/self/module";
+import { ControllerBase } from "../shared/controller/controller.base";
+import { AttemptsController } from "../controllers/attempts/attempts.controller";
+import { CandidatesController } from "../controllers/candidates/candidates.controller";
+import { FeedbacksController } from "../controllers/feedback/feedback.controller";
+import { TemplatesController } from "../controllers/templates/templates.controller";
+import { TestsController } from "../controllers/tests/tests.controller";
 
 export async function main() {
 	Chuoi.init(app, {
@@ -29,15 +30,14 @@ export async function main() {
 	// Modules
 	// =====================
 
-	const modules: ModuleBase[] = [
-		new AttemptsModule(),
-		new ExamModule(),
-		new PracticeModule(),
-		new SelfModule(),
+	const controllers: ControllerBase[] = [
+		new AttemptsController(),
+		new CandidatesController(),
+		new FeedbacksController(),
+		new TemplatesController(),
+		new TestsController(),
 	];
-	for (const m of modules) {
-		await m.initialize();
-	}
+	await Promise.all(controllers.map(controller => controller.constructRouter()));
 
 	// =====================
 	// Documentation

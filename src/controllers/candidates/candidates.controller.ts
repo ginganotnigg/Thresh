@@ -6,8 +6,8 @@ import { GetCandidateAttemptsResponseSchema } from "./uc_query/get-candidate-att
 import { GetCandidateAttemptsHandler } from "./uc_query/get-candidate-attempts/handler";
 import { CredentialsMetaSchema } from "../../shared/schemas/meta";
 
-export class AnswersController extends ControllerBase {
-	constructRouter(): void {
+export class CandidatesController extends ControllerBase {
+	async constructRouter(): Promise<void> {
 		const router = Chuoi.newRoute("/candidates");
 
 		router.endpoint().get("/:candidateId/attempts")

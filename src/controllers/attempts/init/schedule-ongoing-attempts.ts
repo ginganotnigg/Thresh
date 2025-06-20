@@ -1,5 +1,5 @@
-import { AttemptCreatedEvent } from "../../../domain/events/AttemptCreatedEvent";
-import { AttemptTimeOutEvent } from "../../../domain/events/AttemptTimeOutEvent";
+import { AttemptCreatedEvent } from "../../../domain/_events/AttemptCreatedEvent";
+import { AttemptTimeOutEvent } from "../../../domain/_events/AttemptTimeOutEvent";
 import Attempt from "../../../infrastructure/models/attempt";
 import Test from "../../../infrastructure/models/test";
 import { EventDispatcher } from "../../../shared/domain/EventDispatcher";

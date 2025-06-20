@@ -1,12 +1,12 @@
 import { db } from "../../../../configs/orm/kysely/db";
 import { buildTestQuery, parseResult } from "../../../../schemas/build/build-test-query";
-import { paginate } from "../../../../shared/common/query";
+import { paginate } from "../../../../shared/handler/query";
 import { QueryHandlerBase } from "../../../../shared/handler/usecase.base";
-import { GetTestsQueryParam } from "./param";
+import { GetTestsQuery } from "./param";
 import { GetTestsResponse } from "./response";
 
-export class GetTestsQueryHandler extends QueryHandlerBase<GetTestsQueryParam, GetTestsResponse> {
-	async handle(param: GetTestsQueryParam): Promise<GetTestsResponse> {
+export class GetTestsQueryHandler extends QueryHandlerBase<GetTestsQuery, GetTestsResponse> {
+	async handle(param: GetTestsQuery): Promise<GetTestsResponse> {
 		const {
 			page,
 			perPage,

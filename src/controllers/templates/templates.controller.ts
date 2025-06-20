@@ -1,56 +1,64 @@
 import { Chuoi } from "../../library/caychuoijs";
-import { TemplatesQuerySchema } from "../../modules/pratice/schema";
 import { ControllerBase } from "../../shared/controller/controller.base";
-import { PagingSchema } from "../../shared/controller/schemas/base";
+import { CredentialsMetaSchema } from "../../shared/schemas/meta";
 import { TemplateIdParamsSchema } from "../../shared/schemas/params";
-import { PostTemplateBodySchema, PutTemplateBodySchema } from "./body.schema";
-import { TemplateResourceSchema, TemplatesResourceSchema } from "./schema";
+import { TemplateCrudService } from "./crud";
+import { GetTemplateResponseSchema, GetTemplatesQuerySchema, GetTemplatesResponseSchema, PostTemplateBodySchema, PutTemplateBodySchema } from "./schema";
 
 export class TemplatesController extends ControllerBase {
-	constructRouter(): void {
+	async constructRouter(): Promise<void> {
 		const router = Chuoi.newRoute("/templates");
 
 		router.endpoint().get()
 			.schema({
-				query: TemplatesQuerySchema,
-				response: TemplatesResourceSchema,
+				meta: CredentialsMetaSchema,
+				query: GetTemplatesQuerySchema,
+				response: GetTemplatesResponseSchema,
 			})
 			.handle(async (data) => {
+				return await TemplateCrudService.load(data.meta).getAll(data.query);
 			})
 			.build({ tags: ["Templates"] });
 
 		router.endpoint().get("/:templateId")
 			.schema({
+				meta: CredentialsMetaSchema,
 				params: TemplateIdParamsSchema,
-				response: TemplateResourceSchema,
+				response: GetTemplateResponseSchema,
 			})
 			.handle(async (data) => {
+				return await TemplateCrudService.load(data.meta).getById(data.params.templateId);
 			})
 			.build({ tags: ["Templates"] });
 
 		router.endpoint().post()
 			.schema({
+				meta: CredentialsMetaSchema,
 				body: PostTemplateBodySchema,
-				response: TemplateIdParamsSchema,
 			})
 			.handle(async (data) => {
+				return await TemplateCrudService.load(data.meta).create(data.body);
 			})
 			.build({ tags: ["Templates"] });
 
 		router.endpoint().put("/:templateId")
 			.schema({
+				meta: CredentialsMetaSchema,
 				params: TemplateIdParamsSchema,
 				body: PutTemplateBodySchema,
 			})
 			.handle(async (data) => {
+				return await TemplateCrudService.load(data.meta).update(data.params.templateId, data.body);
 			})
 			.build({ tags: ["Templates"] });
 
 		router.endpoint().delete("/:templateId")
 			.schema({
+				meta: CredentialsMetaSchema,
 				params: TemplateIdParamsSchema,
 			})
 			.handle(async (data) => {
+				return await TemplateCrudService.load(data.meta).delete(data.params.templateId);
 			})
 			.build({ tags: ["Templates"] });
 	}

@@ -1,5 +1,5 @@
 import { Entity } from "../../shared/domain";
-import { QuestionDto, QuestionMapper, QuestionPersistence } from "../mappers/QuestionMapper";
+import { QuestionDto, QuestionMapper, QuestionPersistence } from "../_mappers/QuestionMapper";
 
 export class QuestionEntity extends Entity<number> {
 	private constructor(

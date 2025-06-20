@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { db } from "../../configs/orm/kysely/db";
 import { GetAttemptsResourceResponse } from "../../controllers/attempts/uc_query/get-attempts-query/response";
-import { paginate } from "../../shared/common/query";
+import { paginate } from "../../shared/handler/query";
 import { PagedSchema } from "../../shared/controller/schemas/base";
 import { AttemptCoreSchema } from "../core/attempt";
 import { QueryAttemptsParam } from "../params/attempts";
