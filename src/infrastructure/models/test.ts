@@ -74,15 +74,6 @@ class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 	}
 
 	static associate() {
-		Test.hasMany(Question, {
-			onDelete: 'CASCADE',
-		});
-		Test.hasMany(Attempt, {
-			onDelete: 'CASCADE',
-		});
-		Test.hasMany(Feedback, {
-			onDelete: 'CASCADE',
-		});
 	}
 }
 

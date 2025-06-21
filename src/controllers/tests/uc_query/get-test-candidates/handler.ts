@@ -19,14 +19,14 @@ export class GetTestCandiatesQueryHandler extends QueryHandlerBase<GetTestCandid
 			.leftJoin(eb => eb
 				.selectFrom("AttemptsAnswerQuestions as aaq")
 				.select(eb => [
-					"aaq.AttemptId",
+					"aaq.attemptId",
 					eb.fn.sum<number>("aaq.pointsReceived").as("points"),
 				])
 				.as("aaqStats")
 				,
-				(join) => join.onRef("aaqStats.AttemptId", "=", "a.id")
+				(join) => join.onRef("aaqStats.attemptId", "=", "a.id")
 			)
-			.where("a.TestId", "=", testId)
+			.where("a.testId", "=", testId)
 			.groupBy("a.candidateId")
 			.select(eb => [
 				"a.candidateId",

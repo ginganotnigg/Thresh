@@ -29,7 +29,7 @@ export interface Attempts {
   order: number;
   secondsSpent: Generated<number>;
   status: Generated<"COMPLETED" | "GRADED" | "IN_PROGRESS">;
-  TestId: string | null;
+  testId: string;
   updatedAt: Date | null;
 }
 
@@ -44,11 +44,11 @@ export interface AttemptsAnswerMCQQuestions {
 }
 
 export interface AttemptsAnswerQuestions {
-  AttemptId: string | null;
+  attemptId: string;
   createdAt: Date | null;
   id: string;
   pointsReceived: number | null;
-  QuestionId: number | null;
+  questionId: number;
   updatedAt: Date | null;
 }
 
@@ -62,7 +62,7 @@ export interface ExamParticipants {
 
 export interface ExamTests {
   closeDate: Date;
-  createdAt: Date | null;
+  createdAt: Date;
   isAllowedToSeeOtherResults: Generated<number>;
   isAnswerVisible: Generated<number>;
   isPublic: Generated<number>;
@@ -72,7 +72,7 @@ export interface ExamTests {
   password: string | null;
   roomId: string;
   testId: string;
-  updatedAt: Date | null;
+  updatedAt: Date;
 }
 
 export interface Feedbacks {
@@ -81,7 +81,7 @@ export interface Feedbacks {
   id: string;
   problems: Json;
   rating: number;
-  TestId: string | null;
+  testId: string;
   updatedAt: Date | null;
 }
 
@@ -110,7 +110,7 @@ export interface PracticeTests {
 export interface Questions {
   id: Generated<number>;
   points: number;
-  TestId: string | null;
+  testId: string;
   text: string;
   type: "LONG_ANSWER" | "MCQ";
 }

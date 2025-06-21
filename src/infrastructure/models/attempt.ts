@@ -6,7 +6,7 @@ import { AttemptStatusAsConst, AttemptStatusType } from "../../shared/enum";
 class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<Attempt>> {
 	declare id: CreationOptional<string>;
 	declare order: number;
-	declare testId: ForeignKey<Test["id"]>;
+	declare testId: string;
 	declare candidateId: string;
 	declare hasEnded: CreationOptional<boolean>;
 	declare secondsSpent: CreationOptional<number>;
@@ -28,6 +28,15 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 				type: DataTypes.UUID,
 				defaultValue: DataTypes.UUIDV4,
 				primaryKey: true,
+			},
+			testId: {
+				type: DataTypes.UUID,
+				allowNull: false,
+				onDelete: 'CASCADE',
+				references: {
+					model: Test,
+					key: 'id',
+				},
 			},
 			order: {
 				type: DataTypes.INTEGER,
@@ -67,12 +76,6 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 	}
 
 	static associate() {
-		Attempt.hasMany(AttemptsAnswerQuestions, {
-			onDelete: 'CASCADE',
-		});
-		Attempt.belongsTo(Test, {
-			onDelete: 'CASCADE',
-		});
 	}
 }
 

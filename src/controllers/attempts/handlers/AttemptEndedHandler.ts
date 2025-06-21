@@ -19,7 +19,7 @@ export class AttemptEndedHandler extends EventHandlerBase<AttemptEndedEvent> {
 		const data = agg.getEvaluationData();
 		await Promise.all(
 			data.map(async ({ answerId, answer, correctAnswer, points }) => {
-				const point = await ScoreLongAnswerQueue.score(answer, correctAnswer, points);
+				const point = await ScoreLongAnswerQueue.score(answerId, answer, correctAnswer, points);
 				return {
 					answerId,
 					point,

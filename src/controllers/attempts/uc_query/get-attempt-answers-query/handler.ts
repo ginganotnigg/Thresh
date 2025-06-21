@@ -10,7 +10,7 @@ export class GetAttemptAnswersQueryHandler extends QueryHandlerBase<GetAttemptAn
 		const attemptId = this.getId();
 		let query = db
 			.selectFrom("AttemptsAnswerQuestions as aaq")
-			.where("aaq.AttemptId", "=", attemptId)
+			.where("aaq.attemptId", "=", attemptId)
 			.leftJoin("AttemptsAnswerMCQQuestions as mcqa", "mcqa.attemptAnswerQuestionId", "aaq.id")
 			.leftJoin("AttemptsAnswerLAQuestions as laqa", "laqa.attemptAnswerQuestionId", "aaq.id")
 			.selectAll("aaq")
@@ -40,8 +40,8 @@ export class GetAttemptAnswersQueryHandler extends QueryHandlerBase<GetAttemptAn
 			}
 			return {
 				id: r.id,
-				attemptId: r.AttemptId!,
-				questionId: r.QuestionId!,
+				attemptId: r.attemptId!,
+				questionId: r.questionId!,
 				pointReceived: r.pointsReceived!,
 				createdAt: r.createdAt!,
 				updatedAt: r.updatedAt!,

@@ -14,8 +14,6 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 	declare isPublic: CreationOptional<boolean>;
 	declare openDate: Date;
 	declare closeDate: Date;
-	declare createdAt: CreationOptional<Date>;
-	declare updatedAt: CreationOptional<Date>;
 
 	declare Test?: NonAttribute<Test>;
 	declare ExamParticipants?: NonAttribute<ExamParticipants[]>;
@@ -76,8 +74,6 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 				type: DataTypes.DATE,
 				allowNull: false,
 			},
-			createdAt: DataTypes.DATE,
-			updatedAt: DataTypes.DATE,
 		}, {
 			sequelize,
 		});

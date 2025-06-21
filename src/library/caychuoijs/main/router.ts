@@ -94,10 +94,6 @@ class ChuoiEndpointBuilder {
 			case "post":
 				statusCode = 201;
 				break;
-			case "put":
-			case "patch":
-				statusCode = 204;
-				break;
 			case "delete":
 				statusCode = 204;
 				break;

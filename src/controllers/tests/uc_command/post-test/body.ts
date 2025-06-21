@@ -6,6 +6,7 @@ import { LongAnswerDetailCommonSchema, MCQDetailCommonSchema } from "../../../..
 
 export const PostTestBodySchema = TestCoreSchema.omit({
 	id: true,
+	authorId: true,
 	createdAt: true,
 	updatedAt: true
 }).extend({

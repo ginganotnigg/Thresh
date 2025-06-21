@@ -1,7 +1,13 @@
+import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
+import { z, ZodTypeAny } from "zod";
+
+// Extend Zod with OpenAPI support
+// Must be done before using any Zod schemas
+extendZodWithOpenApi(z);
+
 import { OpenApiGeneratorV31, OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import { OpenAPIObjectConfigV31 } from "@asteasolutions/zod-to-openapi/dist/v3.1/openapi-generator";
 import { RequestSchema } from "../utils/type";
-import { z, ZodTypeAny } from "zod";
 import { ChuoiSecurityBase } from "./security";
 
 function convertExpressPathToOpenAPI(path: string): string {

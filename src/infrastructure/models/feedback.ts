@@ -4,7 +4,7 @@ import Test from "./test";
 
 class Feedback extends Model<InferAttributes<Feedback>, InferCreationAttributes<Feedback>> {
 	declare id: CreationOptional<string>;
-	declare testId: ForeignKey<Test["id"]>;
+	declare testId: string;
 	declare rating: number;
 	declare problems: FeedbackProblemsType[];
 	declare comment: string;
@@ -24,6 +24,15 @@ class Feedback extends Model<InferAttributes<Feedback>, InferCreationAttributes<
 				defaultValue: DataTypes.UUIDV4,
 				primaryKey: true,
 				allowNull: false,
+			},
+			testId: {
+				type: DataTypes.UUID,
+				allowNull: false,
+				onDelete: 'CASCADE',
+				references: {
+					model: Test,
+					key: 'id',
+				},
 			},
 			rating: {
 				type: DataTypes.INTEGER,
@@ -59,9 +68,6 @@ class Feedback extends Model<InferAttributes<Feedback>, InferCreationAttributes<
 	}
 
 	static associate() {
-		Feedback.belongsTo(Test, {
-			onDelete: 'CASCADE',
-		});
 	}
 }
 

@@ -26,9 +26,7 @@ export const PostFeedbackBodySchema = FeedbackCoreSchema.omit({
 	updatedAt: true,
 });
 
-export const PutFeedbackBodySchema = PostFeedbackBodySchema.extend({
-	id: z.string(),
-})
+export const PutFeedbackBodySchema = PostFeedbackBodySchema;
 
 export const GetFeedbackResponseSchema = FeedbackCoreSchema;
 export const GetFeedbacksResponseSchema = PagedSchema(FeedbackCoreSchema);

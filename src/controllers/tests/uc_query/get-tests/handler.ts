@@ -26,7 +26,7 @@ export class GetTestsQueryHandler extends QueryHandlerBase<GetTestsQuery, GetTes
 		}
 		if (candidateId) {
 			query = query
-				.innerJoin("Attempts", "Attempts.TestId", "t.id")
+				.innerJoin("Attempts", "Attempts.testId", "t.id")
 				.where("Attempts.candidateId", "=", candidateId);
 			;
 		}

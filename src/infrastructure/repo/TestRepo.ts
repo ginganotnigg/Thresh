@@ -111,7 +111,7 @@ export class TestRepo extends RepoBase<TestAggregate> {
 
 		return {
 			id: question.id,
-			testId: question.TestId!,
+			testId: question.testId!,
 			text: question.text,
 			type: question.type,
 			points: question.points,
@@ -133,14 +133,14 @@ export class TestRepo extends RepoBase<TestAggregate> {
 		// Get questions for this test
 		const questions = await db
 			.selectFrom("Questions")
-			.where("TestId", "=", testId)
+			.where("testId", "=", testId)
 			.selectAll()
 			.execute();
 
 		// Check if test has attempts to determine hasAttempts flag
 		const attemptCount = await db
 			.selectFrom("Attempts")
-			.where("TestId", "=", testId)
+			.where("testId", "=", testId)
 			.select((eb) => eb.fn.count<number>("id").as("count"))
 			.executeTakeFirst();
 
@@ -231,7 +231,7 @@ export class TestRepo extends RepoBase<TestAggregate> {
 
 			questionsPersistence.push({
 				id: q.id,
-				testId: q.TestId!,
+				testId: q.testId!,
 				text: q.text,
 				type: q.type as "MCQ" | "LONG_ANSWER",
 				points: q.points,

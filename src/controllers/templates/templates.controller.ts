@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { Chuoi } from "../../library/caychuoijs";
 import { ControllerBase } from "../../shared/controller/controller.base";
 import { CredentialsMetaSchema } from "../../shared/schemas/meta";
@@ -35,6 +36,9 @@ export class TemplatesController extends ControllerBase {
 			.schema({
 				meta: CredentialsMetaSchema,
 				body: PostTemplateBodySchema,
+				response: z.object({
+					templateId: z.string(),
+				}),
 			})
 			.handle(async (data) => {
 				return await TemplateCrudService.load(data.meta).create(data.body);

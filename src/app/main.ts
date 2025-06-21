@@ -13,8 +13,17 @@ import { CandidatesController } from "../controllers/candidates/candidates.contr
 import { FeedbacksController } from "../controllers/feedback/feedback.controller";
 import { TemplatesController } from "../controllers/templates/templates.controller";
 import { TestsController } from "../controllers/tests/tests.controller";
+import { initServices } from "./init/initServices";
+import { MessageBrokerService } from "../services/MessageBrokerService";
+import { ensureDatabase } from "../configs/orm/database-operations";
+import sequelize from "../configs/orm/sequelize/sequelize";
 
 export async function main() {
+	await ensureDatabase();
+	await sequelize.sync({ logging: false });
+	await sequelize.authenticate({ logging: false });
+	await initServices();
+
 	Chuoi.init(app, {
 		basePath: '/api',
 		title: "API",
@@ -68,15 +77,22 @@ export async function main() {
 	// =====================
 
 	const socketServer = http.createServer(app);
-	const restServer = http.createServer(app);
-
 	io.attach(socketServer);
+	// socketServer.listen(+env.socketPort, () => {
+	// 	console.log(`Socket server running on port: ${env.socketPort}`);
+	// });
 
-	socketServer.listen(+env.socketPort, () => {
-		console.log(`Socket server running on port: ${env.socketPort}`);
-	});
+	const restServer = http.createServer(app);
 	restServer.listen(+env.port, () => {
 		console.log(`Rest server running on port: ${env.port}`);
+	});
+
+	// =====================
+	// Process exit handling
+	// =====================
+
+	process.on("beforeExit", async (_) => {
+		await MessageBrokerService.close();
 	});
 
 	return { socketServer, restServer };

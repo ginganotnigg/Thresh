@@ -1,8 +1,6 @@
 import { Application, NextFunction, Request, Response, Router } from "express";
 import { Constructor } from "./utils/type";
 import { IChuoiExceptionHandler, IChuoiMiddleware } from "./main/contracts";
-import { z } from "zod";
-import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { ChuoiRouter } from "./main/router";
 import { ChuoiDocument } from "./documentation/open-api";
 import { writeFileSync } from "fs";
@@ -32,7 +30,6 @@ export class Chuoi {
 		title: string;
 		version: string;
 	}): void {
-		extendZodWithOpenApi(z);
 		const router = Router();
 		app.use(basePath, router);
 		this._baseRouter = router;

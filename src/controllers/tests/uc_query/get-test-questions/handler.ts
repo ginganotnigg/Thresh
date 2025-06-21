@@ -10,21 +10,21 @@ export class GetTestQuestionsHandler extends QueryHandlerBase<GetTestQuestionsPa
 		const testId = this.getId();
 		const query = db
 			.selectFrom("Questions as q")
-			.where("q.TestId", "=", testId)
+			.where("q.testId", "=", testId)
 			.leftJoin("MCQQuestions as mcq", "mcq.questionId", "q.id")
 			.leftJoin("LAQuestions as laq", "laq.questionId", "q.id")
 			.selectAll()
 			.select(eb => [
 				eb
 					.selectFrom("AttemptsAnswerQuestions as aaq")
-					.whereRef("aaq.QuestionId", "=", "q.id")
+					.whereRef("aaq.questionId", "=", "q.id")
 					.select(eb => [
 						eb.fn.count<number>("aaq.id").as("numberOfAnswers"),
 					]).as("numberOfAnswers")
 				,
 				eb
 					.selectFrom("AttemptsAnswerQuestions as aaq")
-					.whereRef("aaq.QuestionId", "=", "q.id")
+					.whereRef("aaq.questionId", "=", "q.id")
 					.whereRef("aaq.pointsReceived", "=", "q.points")
 					.select(eb => [
 						eb.fn.count<number>("aaq.id").as("numberOfCorrectAnswers"),
@@ -32,7 +32,7 @@ export class GetTestQuestionsHandler extends QueryHandlerBase<GetTestQuestionsPa
 				,
 				eb
 					.selectFrom("AttemptsAnswerQuestions as aaq")
-					.whereRef("aaq.QuestionId", "=", "q.id")
+					.whereRef("aaq.questionId", "=", "q.id")
 					.select(eb => [
 						eb.fn.avg<number>("aaq.pointsReceived").as("averageScore"),
 					]).as("averageScore")
@@ -66,7 +66,7 @@ export class GetTestQuestionsHandler extends QueryHandlerBase<GetTestQuestionsPa
 			}
 			return {
 				id: raw.id,
-				testId: raw.TestId!,
+				testId: raw.testId!,
 				text: raw.text,
 				points: raw.points,
 				type: raw.type,

@@ -34,13 +34,9 @@ export const PostTemplateBodySchema = TemplateCoreSchema.omit({
 	updatedAt: true,
 });
 
-export const PutTemplateBodySchema = PostTemplateBodySchema.extend({
-	id: z.string(),
-});
-
+export const PutTemplateBodySchema = PostTemplateBodySchema;
 export const GetTemplateResponseSchema = TemplateCoreSchema;
 export const GetTemplatesResponseSchema = PagedSchema(TemplateCoreSchema);
-
 
 export type TemplateCore = z.infer<typeof TemplateCoreSchema>;
 

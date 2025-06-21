@@ -11,8 +11,8 @@ export const ExamDetailCommonSchema = ChuoiDocument.registerSchema(z.object({
 	numberOfParticipants: NonNegativeNumberSchema.default(0),
 	isAnswerVisible: z.boolean(),
 	isAllowedToSeeOtherResults: z.boolean(),
-	openDate: z.date(),
-	closeDate: z.date(),
+	openDate: z.coerce.date(),
+	closeDate: z.coerce.date(),
 	participants: z.array(z.string()),
 	isPublic: z.boolean().default(false),
 }), "ExamDetailCommonSchema");

@@ -1,4 +1,4 @@
-import { Association, CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
+import { Association, CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import Test from "./test";
 import AttemptsAnswerQuestions from "./attempts_answer_questions";
 import { QuestionTypesAsConst } from "../../shared/enum";
@@ -7,7 +7,7 @@ import LAQuestion from "./la_question";
 
 class Question extends Model<InferAttributes<Question>, InferCreationAttributes<Question>> {
 	declare id: CreationOptional<number>;
-	declare testId: ForeignKey<Test["id"]>;
+	declare testId: string;
 	declare text: string;
 	declare points: number;
 	declare type: string;
@@ -31,6 +31,15 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 				autoIncrement: true,
 				primaryKey: true,
 			},
+			testId: {
+				type: DataTypes.UUID,
+				allowNull: false,
+				onDelete: 'CASCADE',
+				references: {
+					model: Test,
+					key: 'id',
+				},
+			},
 			text: {
 				type: DataTypes.STRING,
 				allowNull: false,
@@ -50,12 +59,6 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 	}
 
 	static associate() {
-		Question.belongsTo(Test, {
-			onDelete: 'CASCADE',
-		});
-		Question.hasMany(AttemptsAnswerQuestions, {
-			onDelete: 'CASCADE',
-		});
 	}
 }
 

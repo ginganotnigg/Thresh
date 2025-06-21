@@ -1,22 +1,22 @@
 import { db } from "../../configs/orm/kysely/db";
 import { DomainError } from "../../shared/errors/domain.error";
 import { TestDetailCommon } from "../common/test-detail";
-import { TestCore, TestFull } from "../core/test";
+import { TestFull } from "../core/test";
 
 export function buildTestQuery() {
 	const attemptScores = db
 		.selectFrom("AttemptsAnswerQuestions as aaq")
 		.select([
-			"aaq.AttemptId",
+			"aaq.attemptId",
 			eb => eb.fn.sum<number>("aaq.pointsReceived").as("totalPoints"),
 		])
-		.groupBy("aaq.AttemptId")
+		.groupBy("aaq.attemptId")
 		.as("attempt_scores");
 
 	const attemptStats = db
 		.selectFrom(["Attempts as a", attemptScores])
 		.select([
-			"a.TestId",
+			"a.testId",
 			eb => eb.fn.count<number>("a.id").as("totalAttempts"),
 			eb => eb.fn.count<number>("a.candidateId").distinct().as("totalCandidates"),
 			eb => eb.fn.sum<number>("attempt_scores.totalPoints").as("totalScore"),
@@ -25,8 +25,8 @@ export function buildTestQuery() {
 			eb => eb.fn.avg<number>("attempt_scores.totalPoints").as("averageScore"),
 			eb => eb.fn.avg<number>("a.secondsSpent").as("averageTime"),
 		])
-		.whereRef("attempt_scores.AttemptId", "=", "a.id")
-		.groupBy("a.TestId")
+		.whereRef("attempt_scores.attemptId", "=", "a.id")
+		.groupBy("a.testId")
 		.as("astats");
 
 	const query = db
@@ -37,19 +37,21 @@ export function buildTestQuery() {
 			db
 				.selectFrom("Questions as q")
 				.select([
-					"q.TestId",
+					"q.testId",
 					eb => eb.fn.count<number>("q.id").as("agg_numberOfQuestions"),
 					eb => eb.fn.sum<number>("q.points").as("agg_totalPoints"),
 				])
-				.groupBy("q.TestId")
+				.groupBy("q.testId")
 				.as("qstats"),
-			"qstats.TestId",
+			"qstats.testId",
 			"t.id"
 		)
-		.leftJoin(attemptStats, "astats.TestId", "t.id")
+		.leftJoin(attemptStats, "astats.testId", "t.id")
 		.selectAll()
 		.select([
 			"t.id as id",
+			"t.createdAt as createdAt",
+			"t.updatedAt as updatedAt",
 		])
 		;
 	return query;

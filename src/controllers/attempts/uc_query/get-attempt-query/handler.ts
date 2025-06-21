@@ -16,7 +16,7 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 
 		let query = db.selectFrom("Attempts")
 			.where("Attempts.id", "=", attemptId)
-			.innerJoin("Tests", "Attempts.TestId", "Tests.id")
+			.innerJoin("Tests", "Attempts.testId", "Tests.id")
 			.selectAll("Attempts")
 			.selectAll("Tests")
 			.select([
@@ -26,21 +26,21 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 			.select((eb) => [
 				eb
 					.selectFrom("AttemptsAnswerQuestions")
-					.where("AttemptsAnswerQuestions.AttemptId", "=", attemptId)
+					.where("AttemptsAnswerQuestions.attemptId", "=", attemptId)
 					.select(eb => [
 						eb.fn.count("AttemptsAnswerQuestions.id").as("answered"),
 					]).as("answered"),
 				eb
 					.selectFrom("AttemptsAnswerQuestions")
-					.innerJoin("Questions", "AttemptsAnswerQuestions.QuestionId", "Questions.id")
-					.where("AttemptsAnswerQuestions.AttemptId", "=", attemptId)
+					.innerJoin("Questions", "AttemptsAnswerQuestions.questionId", "Questions.id")
+					.where("AttemptsAnswerQuestions.attemptId", "=", attemptId)
 					.whereRef("AttemptsAnswerQuestions.pointsReceived", "=", "Questions.points")
 					.select(eb => [
 						eb.fn.count("AttemptsAnswerQuestions.id").as("answeredCorrect"),
 					]).as("answeredCorrect"),
 				eb
 					.selectFrom("AttemptsAnswerQuestions")
-					.where("AttemptsAnswerQuestions.AttemptId", "=", attemptId)
+					.where("AttemptsAnswerQuestions.attemptId", "=", attemptId)
 					.select(eb => [
 						eb.fn.sum("AttemptsAnswerQuestions.pointsReceived").as("pointsReceived"),
 					]).as("pointsReceived"),
@@ -54,7 +54,7 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 		const response: GetAttemptQueryResponse = {
 			id: res.id,
 			candidateId: res.candidateId,
-			testId: res.TestId!,
+			testId: res.testId!,
 			createdAt: res.createdAt!,
 			updatedAt: res.updatedAt!,
 			hasEnded: Boolean(res.hasEnded),
@@ -68,7 +68,7 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 			},
 			_include: {
 				test: {
-					id: res.TestId!,
+					id: res.testId!,
 					authorId: res.authorId!,
 					title: res.title!,
 					description: res.description!,

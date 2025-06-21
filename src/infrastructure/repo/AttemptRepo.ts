@@ -17,10 +17,10 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 			.selectFrom("AttemptsAnswerQuestions as aaq")
 			.leftJoin("AttemptsAnswerMCQQuestions as aaqmcq", "aaq.id", "aaqmcq.attemptAnswerQuestionId")
 			.leftJoin("AttemptsAnswerLAQuestions as aaqla", "aaq.id", "aaqla.attemptAnswerQuestionId")
-			.innerJoin("Questions as q", "aaq.QuestionId", "q.id")
+			.innerJoin("Questions as q", "aaq.questionId", "q.id")
 			.leftJoin("MCQQuestions as mcq", "q.id", "mcq.questionId")
 			.leftJoin("LAQuestions as laq", "q.id", "laq.questionId")
-			.where("aaq.AttemptId", "=", attemptId)
+			.where("aaq.attemptId", "=", attemptId)
 			.selectAll()
 			.select([
 				"aaqmcq.attemptAnswerQuestionId as aaqmcq_attemptAnswerQuestionId",
@@ -35,7 +35,7 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 					pointRecieved: row.pointsReceived,
 					type: "MCQ",
 					question: {
-						id: row.QuestionId!,
+						id: row.questionId!,
 						text: row.text!,
 						points: row.points!,
 						type: "MCQ",
@@ -45,7 +45,7 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 							options: row.options ? JSON.parse(row.options.toString()) : [],
 						},
 					},
-					attemptId: row.AttemptId!,
+					attemptId: row.attemptId!,
 					chosenOption: row.chosenOption!,
 				}
 			}
@@ -55,7 +55,7 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 					pointRecieved: row.pointsReceived,
 					type: "LONG_ANSWER",
 					question: {
-						id: row.QuestionId!,
+						id: row.questionId!,
 						text: row.text!,
 						points: row.points!,
 						type: "LONG_ANSWER",
@@ -64,7 +64,7 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 							correctAnswer: row.correctAnswer!,
 						},
 					},
-					attemptId: row.AttemptId!,
+					attemptId: row.attemptId!,
 					answer: row.answer!,
 				}
 			} else {
@@ -91,7 +91,7 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 		const load: AttemptLoad = {
 			id: attempt.id,
 			candidateId: attempt.candidateId,
-			testId: attempt.TestId!,
+			testId: attempt.testId!,
 			hasEnded: attempt.hasEnded === 1,
 			order: attempt.order,
 			secondsSpent: attempt.secondsSpent,

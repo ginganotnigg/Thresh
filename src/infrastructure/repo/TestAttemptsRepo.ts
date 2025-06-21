@@ -14,7 +14,7 @@ export class TestAttemptsRepo extends RepoBase<TestAttemptsAggregate> {
 	private async getAttemptsOfTest(testId: string): Promise<AttemptEntity[]> {
 		const attempts = await db
 			.selectFrom("Attempts as a")
-			.where("a.TestId", "=", testId)
+			.where("a.testId", "=", testId)
 			.selectAll()
 			.execute();
 
@@ -24,7 +24,7 @@ export class TestAttemptsRepo extends RepoBase<TestAttemptsAggregate> {
 		return attempts.map((attempt) => AttemptEntity.load({
 			id: attempt.id,
 			candidateId: attempt.candidateId,
-			testId: attempt.TestId!,
+			testId: attempt.testId!,
 			hasEnded: attempt.hasEnded === 1 ? true : false,
 			order: attempt.order,
 			secondsSpent: attempt.secondsSpent,
@@ -46,7 +46,7 @@ export class TestAttemptsRepo extends RepoBase<TestAttemptsAggregate> {
 			.select((eb) => [
 				eb
 					.selectFrom("Attempts as a")
-					.where("a.TestId", "=", "t.id")
+					.where("a.testId", "=", "t.id")
 					.where("a.status", "=", inprogressStatus)
 					.select("a.id")
 					.as("activeAttemptId"),

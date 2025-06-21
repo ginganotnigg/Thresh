@@ -6,6 +6,7 @@ import { PutTestBody } from "./body";
 export class PutTestHandler extends CommandHandlerBase<PutTestBody & { testId: string }, { success: boolean }> {
 	async handle(params: PutTestBody): Promise<{ success: boolean; }> {
 		const testId = this.getId();
+		const credentials = this.getCredentials();
 		const { questions, ...testDto } = params;
 		const repo = new TestRepo();
 
@@ -16,7 +17,7 @@ export class PutTestHandler extends CommandHandlerBase<PutTestBody & { testId: s
 		}
 
 		// Update the test data and questions
-		existingAgg.update(testDto);
+		existingAgg.update({ ...testDto, authorId: credentials.userId });
 		existingAgg.updateQuestions(questions);
 
 		// Save the updated aggregate

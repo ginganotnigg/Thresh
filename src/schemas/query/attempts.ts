@@ -20,9 +20,9 @@ export async function queryAttempts(params: QueryAttemptsParam): Promise<QueryAt
 
 	let query = db
 		.selectFrom("Attempts")
-		.leftJoin("Tests as t", "t.id", "Attempts.TestId")
+		.leftJoin("Tests as t", "t.id", "Attempts.testId")
 		.select([
-			"t.id as TestId",
+			"t.id as testId",
 			"t.authorId",
 			"t.title",
 			"t.description",
@@ -35,13 +35,13 @@ export async function queryAttempts(params: QueryAttemptsParam): Promise<QueryAt
 		.selectAll()
 		.select(eb => [
 			eb.selectFrom("AttemptsAnswerQuestions as aaq")
-				.whereRef("aaq.AttemptId", "=", "Attempts.id")
+				.whereRef("aaq.attemptId", "=", "Attempts.id")
 				.select(eb => [
 					eb.fn.count<number>("aaq.id").as("answered")
 				]).as("answered")
 			,
 			eb.selectFrom("Questions as q")
-				.whereRef("q.TestId", "=", "Attempts.TestId")
+				.whereRef("q.testId", "=", "Attempts.testId")
 				.select(eb => [
 					eb.fn.sum<number>("q.points").as("points")
 				]).as("points")
@@ -50,16 +50,16 @@ export async function queryAttempts(params: QueryAttemptsParam): Promise<QueryAt
 				.innerJoin(
 					"Questions as q",
 					(join) => join
-						.onRef("q.id", "=", "aaq.QuestionId")
+						.onRef("q.id", "=", "aaq.questionId")
 						.onRef("q.points", "=", "aaq.pointsReceived")
 				)
 				.select(eb => [
-					eb.fn.count<number>("aaq.AttemptId").as("answeredCorrect")
+					eb.fn.count<number>("aaq.attemptId").as("answeredCorrect")
 				]).as("answeredCorrect")
 		])
 
 	if (testId) {
-		query = query.where("Attempts.TestId", "=", testId);
+		query = query.where("Attempts.testId", "=", testId);
 	}
 	if (candidateId) {
 		query = query.where("Attempts.candidateId", "=", candidateId);
@@ -75,7 +75,7 @@ export async function queryAttempts(params: QueryAttemptsParam): Promise<QueryAt
 		const attemptData: GetAttemptsResourceResponse["data"][number] = {
 			id: r.id!,
 			order: r.order,
-			testId: r.TestId!,
+			testId: r.testId!,
 			candidateId: r.candidateId,
 			hasEnded: r.hasEnded === 1,
 			status: r.status,
@@ -89,7 +89,7 @@ export async function queryAttempts(params: QueryAttemptsParam): Promise<QueryAt
 			},
 			_include: {
 				test: {
-					id: r.TestId!,
+					id: r.testId!,
 					authorId: r.authorId!,
 					title: r.title!,
 					description: r.description!,

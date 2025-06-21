@@ -78,7 +78,6 @@ class Template extends Model<InferAttributes<Template>, InferCreationAttributes<
 	}
 
 	static associate() {
-		// Add associations when needed
 	}
 }
 
