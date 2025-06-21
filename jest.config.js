@@ -10,5 +10,6 @@ module.exports = {
 	transform: {
 		"^.+.tsx?$": ["ts-jest", {}],
 	},
-	testTimeout: 120000 // 2 minutes,
+	testTimeout: 120000, // 2 minutes,
+	bail: true, // Stop running tests after the first failure
 };

@@ -1,25 +1,29 @@
+import { db } from "../../../configs/orm/kysely/db";
 import { AttemptCreatedEvent } from "../../../domain/_events/AttemptCreatedEvent";
 import { AttemptTimeOutEvent } from "../../../domain/_events/AttemptTimeOutEvent";
-import Attempt from "../../../infrastructure/models/attempt";
-import Test from "../../../infrastructure/models/test";
 import { EventDispatcher } from "../../../shared/domain/EventDispatcher";
 
 export async function scheduleOngoingAttempts() {
-	const notEndedAttempts = await Attempt.findAll({
-		where: {
-			hasEnded: false,
-		},
-		include: [Test]
-	});
+	const notEndedAttemptsOfTest = await db
+		.selectFrom("Attempts")
+		.where("status", "=", "IN_PROGRESS")
+		.innerJoin("Tests", "Tests.id", "Attempts.testId")
+		.selectAll()
+		.select([
+			"Attempts.createdAt as createdAt",
+			"Attempts.id as id",
+		])
+		.execute();
+	;
 
 	const now = new Date();
-	for (const attempt of notEndedAttempts) {
-		const endDate = new Date(attempt.createdAt.getTime() + (attempt.Test!.minutesToAnswer * 60 * 1000));
+	for (const aot of notEndedAttemptsOfTest) {
+		const endDate = new Date(aot.createdAt!.getTime() + (aot.minutesToAnswer * 60 * 1000));
 		if (endDate <= now) {
-			EventDispatcher.getInstance().dispatch(new AttemptTimeOutEvent(attempt.id));
+			EventDispatcher.getInstance().dispatch(new AttemptTimeOutEvent(aot.id));
 		}
 		else {
-			EventDispatcher.getInstance().dispatch(new AttemptCreatedEvent(attempt.id, endDate));
+			EventDispatcher.getInstance().dispatch(new AttemptCreatedEvent(aot.id, endDate));
 		}
 	}
 }

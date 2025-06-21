@@ -14,14 +14,19 @@ import { GetTestQueryHandler } from "./uc_query/get-test/handler";
 import { GetTestAttemptsQuerySchema } from "./uc_query/get-test-attempts/param";
 import { GetTestAttemptsResponseSchema } from "./uc_query/get-test-attempts/response";
 import { GetTestAttemptsQueryHandler } from "./uc_query/get-test-attempts/handler";
-import { GetTestCandidatesQuerySchema } from "./uc_query/get-test-candidates/param";
-import { GetTestCandidatesResponseSchema } from "./uc_query/get-test-candidates/response";
-import { GetTestCandiatesQueryHandler } from "./uc_query/get-test-candidates/handler";
+import { GetTestParticipantsQuerySchema } from "./uc_query/get-test-participants/param";
+import { GetTestParticipantsResponseSchema } from "./uc_query/get-test-participants/response";
+import { GetTestParticipantsQueryHandler } from "./uc_query/get-test-participants/handler";
 import { PostTestBodySchema } from "./uc_command/post-test/body";
 import { PostTestHandler } from "./uc_command/post-test/handler";
 import { PutTestBodySchema } from "./uc_command/put-test/body";
 import { PutTestHandler } from "./uc_command/put-test/handler";
 import { DeleteTestHandler } from "./uc_command/delete-test/handler";
+import { PostExamParticipantBodySchema } from "./uc_command/post-exam-participant/body";
+import { PostExamParticipantHandler } from "./uc_command/post-exam-participant/handler";
+import { DeleteExamParticipantBodySchema } from "./uc_command/delete-exam-participant/body";
+import { DeleteExamParticipantHandler } from "./uc_command/delete-exam-participant/handler";
+import { z } from "zod";
 
 export class TestsController extends ControllerBase {
 	async constructRouter(): Promise<void> {
@@ -83,15 +88,15 @@ export class TestsController extends ControllerBase {
 			})
 			.build({ tags: ["Tests"] });
 
-		router.endpoint().get("/:testId/candidates")
+		router.endpoint().get("/:testId/participants")
 			.schema({
 				meta: CredentialsMetaSchema,
 				params: TestIdParamsSchema,
-				query: GetTestCandidatesQuerySchema,
-				response: GetTestCandidatesResponseSchema,
+				query: GetTestParticipantsQuerySchema,
+				response: GetTestParticipantsResponseSchema,
 			})
 			.handle(async (data) => {
-				return await new GetTestCandiatesQueryHandler()
+				return await new GetTestParticipantsQueryHandler()
 					.withCredentials(data.meta)
 					.withId(data.params.testId)
 					.handle(data.query);
@@ -102,6 +107,9 @@ export class TestsController extends ControllerBase {
 			.schema({
 				meta: CredentialsMetaSchema,
 				body: PostTestBodySchema,
+				response: z.object({
+					testId: z.string(),
+				})
 			})
 			.handle(async (data) => {
 				return await new PostTestHandler()
@@ -136,5 +144,39 @@ export class TestsController extends ControllerBase {
 					.handle();
 			})
 			.build({ tags: ["Tests"] });
+
+		router.endpoint().post("/:testId/participants")
+			.schema({
+				meta: CredentialsMetaSchema,
+				params: TestIdParamsSchema,
+				body: PostExamParticipantBodySchema,
+			})
+			.handle(async (data) => {
+				return await new PostExamParticipantHandler()
+					.withCredentials(data.meta)
+					.withId(data.params.testId)
+					.handle(data.body);
+			})
+			.build({
+				tags: ["Tests"],
+				description: "Add a participant to an exam",
+			});
+
+		router.endpoint().delete("/:testId/participants")
+			.schema({
+				meta: CredentialsMetaSchema,
+				params: TestIdParamsSchema,
+				body: DeleteExamParticipantBodySchema,
+			})
+			.handle(async (data) => {
+				return await new DeleteExamParticipantHandler()
+					.withCredentials(data.meta)
+					.withId(data.params.testId)
+					.handle(data.body);
+			})
+			.build({
+				tags: ["Tests"],
+				description: "Remove a participant from an exam",
+			});
 	}
 }

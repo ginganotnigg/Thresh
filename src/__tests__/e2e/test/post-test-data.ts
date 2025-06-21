@@ -184,3 +184,5 @@ export const postTestData: PostTestBody[] = [
 		],
 	},
 ];
+
+export const examPostTestData: PostTestBody = postTestData.find(test => test.detail.mode === "EXAM" && test.detail.roomId === "room-1")!;

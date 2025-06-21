@@ -8,22 +8,28 @@ export class FindTestQueryHandler extends QueryHandlerBase<FindTestQuery, FindTe
 	async handle(param: FindTestQuery): Promise<FindTestResponse> {
 		const { userId } = this.getCredentials();
 		const { roomId } = param;
+		const now = new Date();
+		const utcNow = new Date(now.getTime() + now.getTimezoneOffset() * 60000); // Convert to UTC
 		let query = buildTestQuery();
 		query = query
 			.where("t.mode", "=", "EXAM")
 			.where("et.roomId", "=", roomId)
-			.where("et.openDate", "<=", new Date())
-			.where("et.closeDate", ">=", new Date())
-			.where(eb => eb(
-				"et.numberOfParticipants",
-				"<",
-				eb
-					.selectFrom("ExamParticipants as ep")
-					.whereRef("ep.testId", "=", "et.testId")
-					.select(eb2 => eb2.fn.count<number>("ep.candidateId").distinct().as("participantCount")
-					))
+			.where("et.openDate", "<=", utcNow)
+			.where("et.closeDate", ">=", utcNow)
+			.where(eb => eb.or([
+				eb(
+					"et.numberOfParticipants",
+					">",
+					eb
+						.selectFrom("ExamParticipants as ep")
+						.whereRef("ep.testId", "=", "et.testId")
+						.select(eb2 => eb2.fn.count<number>("ep.candidateId").distinct().as("participantCount")
+						)
+				),
+				eb("et.numberOfParticipants", "=", 0),
+			])
 			)
-			.selectAll();
+			;
 		const exam = await query.executeTakeFirst();
 		if (!exam) {
 			return {

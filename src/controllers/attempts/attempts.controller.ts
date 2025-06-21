@@ -19,7 +19,7 @@ import { scheduleOngoingAttempts } from "./init/schedule-ongoing-attempts";
 
 export class AttemptsController extends ControllerBase {
 	async constructRouter(): Promise<void> {
-		scheduleOngoingAttempts();
+		await scheduleOngoingAttempts();
 
 		const router = Chuoi.newRoute("/attempts");
 

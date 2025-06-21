@@ -2,7 +2,7 @@ import { main } from '../../../app/main';
 import http from 'http';
 import { requestWithCredentials } from '../helper/credentials-mock';
 import { recreateDatabase } from '../../../configs/orm/database-operations';
-import { postTestData } from './data';
+import { postTestData } from './post-test-data';
 
 describe('Tests API Endpoints', () => {
 	let app: http.Server;

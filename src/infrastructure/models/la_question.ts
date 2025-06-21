@@ -18,6 +18,7 @@ class LAQuestion extends Model<InferAttributes<LAQuestion>, InferCreationAttribu
 			questionId: {
 				type: DataTypes.INTEGER,
 				primaryKey: true,
+				onDelete: 'CASCADE',
 				references: {
 					model: Question,
 					key: 'id',

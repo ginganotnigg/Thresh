@@ -17,6 +17,7 @@ class MCQQuestion extends Model<InferAttributes<MCQQuestion>, InferCreationAttri
 			questionId: {
 				type: DataTypes.INTEGER,
 				primaryKey: true,
+				onDelete: 'CASCADE',
 				references: {
 					model: Question,
 					key: 'id',
