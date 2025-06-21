@@ -1,6 +1,6 @@
 import { AggregateRoot } from "../../shared/domain";
 import { DomainError } from "../../shared/errors/domain.error";
-import { CredentialsBase } from "../../shared/policy/types";
+import { CredentialsBase } from "../../shared/types/credentials";
 import { AttemptEndedEvent } from "../_events/AttemptSubmittedEvent";
 import { AttemptDto, AttemptLoad, AttemptMapper, AttemptPersistence } from "../_mappers/AttemptMapper";
 import { AnswerDto, AnswerPersistence } from "../_mappers/AnswerMapper";

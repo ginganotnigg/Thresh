@@ -69,6 +69,8 @@ export function parseResult(res: ResultType, participants: string[], hidePasswor
 			hasPassword: res.password !== null,
 			password: hidePassword ? null : res.password,
 			numberOfAttemptsAllowed: res.numberOfAttemptsAllowed!,
+			numberOfParticipants: res.numberOfParticipants!,
+			isPublic: res.isPublic! === 1,
 			isAnswerVisible: res.isAnswerVisible! === 1,
 			isAllowedToSeeOtherResults: res.isAllowedToSeeOtherResults! === 1,
 			openDate: res.openDate!,

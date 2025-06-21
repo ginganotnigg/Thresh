@@ -27,6 +27,9 @@ const env = {
 	socketPort: process.env.SOCKET_PORT || 3001,
 	logLevel: process.env.LOG_LEVEL || "http",
 
+	// Message Broker
+	rabbitmqUrl: process.env.RABBITMQ_URL || "amqp://localhost:5672",
+
 	// Development
 
 	testDir: process.env.TEST_DIR,

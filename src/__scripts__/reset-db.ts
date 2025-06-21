@@ -1,5 +1,5 @@
-import { recreateDatabase } from "./configs/orm/database-operations";
-import sequelize from "./configs/orm/sequelize/sequelize";
+import { recreateDatabase } from "../configs/orm/database-operations";
+import sequelize from "../configs/orm/sequelize/sequelize";
 
 recreateDatabase()
 	.then(async () => {

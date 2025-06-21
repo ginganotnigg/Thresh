@@ -2,7 +2,7 @@ import { Constructor } from "../../library/caychuoijs/utils/type";
 import { DomainEventBase } from "../domain/DomainEventBase";
 import { DomainError } from "../errors/domain.error";
 import { PolicyError } from "../errors/policy.error";
-import { CredentialsBase } from "../policy/types";
+import { CredentialsBase } from "../types/credentials";
 import { CredentialsMeta } from "../schemas/meta";
 
 abstract class UseCaseBase<TParams, TResult, TId = string> {
