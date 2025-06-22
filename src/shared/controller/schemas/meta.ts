@@ -1,13 +1,14 @@
 import { z } from "zod";
-import { RoleNamesAsConst } from "../../types/credentials";
+import { RoleNamesAsConst, Roles } from "../../types/credentials";
 
 export const CredentialsMetaSchema = z.object({
 	userId: z.coerce.string().optional(),
-	role: z.enum(["1", "2"]).optional().transform((val) => {
-		if (val === undefined) {
+	role: z.coerce.string().transform((val) => {
+		const enumRole = val as Roles;
+		if (val == null || enumRole == null) {
 			return undefined;
 		}
-		return RoleNamesAsConst[val];
+		return RoleNamesAsConst[enumRole];
 	}).optional(),
 });
 
