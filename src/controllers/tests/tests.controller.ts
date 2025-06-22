@@ -1,10 +1,10 @@
 import { Chuoi } from "../../library/caychuoijs";
 import { ControllerBase } from "../../shared/controller/controller.base";
-import { TestIdParamsSchema } from "../../shared/schemas/params";
+import { TestIdParamsSchema } from "../../shared/controller/schemas/params";
 import { GetTestsQuerySchema } from "./uc_query/get-tests/param";
 import { GetTestsResponseSchema } from "./uc_query/get-tests/response";
 import { GetTestsQueryHandler } from "./uc_query/get-tests/handler";
-import { CredentialsMetaSchema } from "../../shared/schemas/meta";
+import { CredentialsMetaSchema } from "../../shared/controller/schemas/meta";
 import { FindTestQuerySchema } from "./uc_query/find-exam/param";
 import { FindTestResponseSchema } from "./uc_query/find-exam/response";
 import { FindTestQueryHandler } from "./uc_query/find-exam/handler";

@@ -13,13 +13,15 @@ export class AttemptEndedHandler extends EventHandlerBase<AttemptEndedEvent> {
 
 	async handle(params: AttemptEndedEvent): Promise<void> {
 		const { attemptId } = params;
+		const credentials = this.getCredentials();
+
 		AttemptScheduleService.cancelAttempt(attemptId);
 		const repo = new AttemptRepo();
 		const agg = await repo.getById(attemptId);
 		const data = agg.getEvaluationData();
 		await Promise.all(
-			data.map(async ({ answerId, answer, correctAnswer, points }) => {
-				const point = await ScoreLongAnswerQueue.score(answerId, answer, correctAnswer, points);
+			data.map(async ({ questionText, answerId, answer, correctAnswer, points }) => {
+				const point = await ScoreLongAnswerQueue.score(questionText, answerId, answer, correctAnswer, points, credentials);
 				return {
 					answerId,
 					point,

@@ -2,7 +2,7 @@ import { Association, DataTypes, ForeignKey, InferAttributes, InferCreationAttri
 import AttemptsAnswerQuestions from "./attempts_answer_questions";
 
 class AttemptsAnswerMCQQuestions extends Model<InferAttributes<AttemptsAnswerMCQQuestions>, InferCreationAttributes<AttemptsAnswerMCQQuestions>> {
-	declare attemptAnswerQuestionId: ForeignKey<AttemptsAnswerQuestions["id"]>;
+	declare attemptAnswerQuestionId: string;
 	declare chosenOption: number;
 
 	declare Attempts_Answer_Questions?: NonAttribute<AttemptsAnswerQuestions>;

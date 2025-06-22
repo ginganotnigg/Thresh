@@ -1,7 +1,7 @@
 import { Chuoi } from "../../library/caychuoijs";
 import { ControllerBase } from "../../shared/controller/controller.base";
-import { CredentialsMetaSchema } from "../../shared/schemas/meta";
-import { AttemptIdParamsSchema } from "../../shared/schemas/params";
+import { CredentialsMetaSchema } from "../../shared/controller/schemas/meta";
+import { AttemptIdParamsSchema } from "../../shared/controller/schemas/params";
 import { PostAttemptsBodySchema } from "./uc_command/post-attempts/body";
 import { PostAttemptAnswersBodySchema } from "./uc_command/post-attempt-answers/body";
 import { GetAttemptQueryParamSchema } from "./uc_query/get-attempt-query/param";
@@ -61,7 +61,7 @@ export class AttemptsController extends ControllerBase {
 				return await new GetAttemptAnswersQueryHandler()
 					.withId(data.params.attemptId)
 					.withCredentials(data.meta)
-					.handle({});
+					.handle();
 			})
 			.build({ tags: ["Attempts"] });
 

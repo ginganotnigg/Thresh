@@ -1,10 +1,10 @@
 import { Chuoi } from "../../library/caychuoijs";
 import { ControllerBase } from "../../shared/controller/controller.base";
-import { CandidateIdParamsSchema } from "../../shared/schemas/params";
+import { CandidateIdParamsSchema } from "../../shared/controller/schemas/params";
 import { GetCandidateAttemptsQuerySchema } from "./uc_query/get-candidate-attempts/param";
 import { GetCandidateAttemptsResponseSchema } from "./uc_query/get-candidate-attempts/response";
 import { GetCandidateAttemptsHandler } from "./uc_query/get-candidate-attempts/handler";
-import { CredentialsMetaSchema } from "../../shared/schemas/meta";
+import { CredentialsMetaSchema } from "../../shared/controller/schemas/meta";
 
 export class CandidatesController extends ControllerBase {
 	async constructRouter(): Promise<void> {

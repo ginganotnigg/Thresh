@@ -3,7 +3,7 @@ import { DomainEventBase } from "../domain/DomainEventBase";
 import { DomainError } from "../errors/domain.error";
 import { PolicyError } from "../errors/policy.error";
 import { CredentialsBase } from "../types/credentials";
-import { CredentialsMeta } from "../schemas/meta";
+import { CredentialsMeta } from "../controller/schemas/meta";
 
 abstract class UseCaseBase<TParams, TResult, TId = string> {
 	private _credentials: CredentialsBase | undefined = undefined;

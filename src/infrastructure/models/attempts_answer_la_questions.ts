@@ -2,7 +2,7 @@ import { Association, DataTypes, ForeignKey, InferAttributes, InferCreationAttri
 import AttemptsAnswerQuestions from "./attempts_answer_questions";
 
 class AttemptsAnswerLAQuestions extends Model<InferAttributes<AttemptsAnswerLAQuestions>, InferCreationAttributes<AttemptsAnswerLAQuestions>> {
-	declare attemptAnswerQuestionId: ForeignKey<AttemptsAnswerQuestions["id"]>;
+	declare attemptAnswerQuestionId: string;
 	declare answer: string;
 
 	declare Attempts_Answer_Questions?: NonAttribute<AttemptsAnswerQuestions>;

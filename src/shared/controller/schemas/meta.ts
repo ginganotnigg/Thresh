@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { RoleNamesAsConst } from "../types/credentials";
+import { RoleNamesAsConst } from "../../types/credentials";
 
 export const CredentialsMetaSchema = z.object({
 	userId: z.coerce.string().optional(),

@@ -59,6 +59,7 @@ export class AttemptAggregate extends AggregateRoot {
 	}
 
 	getEvaluationData(): {
+		questionText: string;
 		answerId: string;
 		answer: string;
 		correctAnswer: string;

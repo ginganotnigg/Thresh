@@ -37,6 +37,7 @@ export class AnswerEntity extends Entity {
 	}
 
 	getLongAnswerContentForEvaluation(): {
+		questionText: string;
 		answerId: string;
 		answer: string;
 		correctAnswer: string;
@@ -44,6 +45,7 @@ export class AnswerEntity extends Entity {
 	} | null {
 		if (this.dto?.type === "LONG_ANSWER" && this.question.detail.type === "LONG_ANSWER") {
 			return {
+				questionText: this.question.text,
 				answerId: this.id,
 				answer: this.dto.answer,
 				correctAnswer: this.question.detail.correctAnswer,

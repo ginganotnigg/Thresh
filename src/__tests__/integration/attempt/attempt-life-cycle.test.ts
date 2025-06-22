@@ -7,7 +7,7 @@ import { PostExamParticipantHandler } from "../../../controllers/tests/uc_comman
 import { PostTestHandler } from "../../../controllers/tests/uc_command/post-test/handler";
 import { GetTestQuestionsHandler } from "../../../controllers/tests/uc_query/get-test-questions/handler";
 import { GetTestQueryHandler } from "../../../controllers/tests/uc_query/get-test/handler";
-import { CredentialsMeta } from "../../../shared/schemas/meta";
+import { CredentialsMeta } from "../../../shared/controller/schemas/meta";
 import { postExamData } from "../../data/post-test-data";
 import { setupAfterAll, setupBeforeAll } from "../setup";
 

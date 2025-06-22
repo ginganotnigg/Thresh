@@ -1,7 +1,7 @@
 import { Op, Transaction, WhereOptions } from "sequelize";
 import sequelize from "../../configs/orm/sequelize/sequelize";
 import { DomainError } from "../../shared/errors/domain.error";
-import { CredentialsMeta } from "../../shared/schemas/meta";
+import { CredentialsMeta } from "../../shared/controller/schemas/meta";
 import { Paged } from "../../shared/controller/schemas/base";
 import Template from "../../infrastructure/models/template";
 import {

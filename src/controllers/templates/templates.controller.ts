@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { Chuoi } from "../../library/caychuoijs";
 import { ControllerBase } from "../../shared/controller/controller.base";
-import { CredentialsMetaSchema } from "../../shared/schemas/meta";
-import { TemplateIdParamsSchema } from "../../shared/schemas/params";
+import { CredentialsMetaSchema } from "../../shared/controller/schemas/meta";
+import { TemplateIdParamsSchema } from "../../shared/controller/schemas/params";
 import { TemplateCrudService } from "./crud";
 import { GetTemplateResponseSchema, GetTemplatesQuerySchema, GetTemplatesResponseSchema, PostTemplateBodySchema, PutTemplateBodySchema } from "./schema";
 

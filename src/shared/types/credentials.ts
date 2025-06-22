@@ -11,6 +11,10 @@ export const RoleNamesAsConst = {
 export type Roles = (typeof RolesAsConst)[number];
 export type RoleNames = (typeof RoleNamesAsConst)[keyof typeof RoleNamesAsConst];
 
+export const ReverseRoleNames = Object.fromEntries(
+	Object.entries(RoleNamesAsConst).map(([key, value]) => [value, key])
+) as Record<RoleNames, Roles>;
+
 export type CredentialsBase = {
 	userId: string;
 	role: RoleNames;
