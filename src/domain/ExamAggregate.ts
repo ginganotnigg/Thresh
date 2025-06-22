@@ -15,7 +15,7 @@ export class ExamAggregate extends AggregateRoot {
 
 	private checkOpen(): void {
 		const now = new Date();
-		if (this.dto.openDate <= now && this.dto.closeDate >= now) {
+		if ((this.dto.openDate <= now && this.dto.closeDate >= now) === false) {
 			throw new DomainError("Exam is not open for participation.");
 		}
 	}

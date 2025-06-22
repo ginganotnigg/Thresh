@@ -9,13 +9,13 @@ export class FindTestQueryHandler extends QueryHandlerBase<FindTestQuery, FindTe
 		const { userId } = this.getCredentials();
 		const { roomId } = param;
 		const now = new Date();
-		const utcNow = new Date(now.getTime() + now.getTimezoneOffset() * 60000); // Convert to UTC
+		// const utcNow = new Date(now.getTime() + now.getTimezoneOffset() * 60000); // Convert to UTC
 		let query = buildTestQuery();
 		query = query
 			.where("t.mode", "=", "EXAM")
 			.where("et.roomId", "=", roomId)
-			.where("et.openDate", "<=", utcNow)
-			.where("et.closeDate", ">=", utcNow)
+			.where("et.openDate", "<=", now)
+			.where("et.closeDate", ">=", now)
 			.where(eb => eb.or([
 				eb(
 					"et.numberOfParticipants",

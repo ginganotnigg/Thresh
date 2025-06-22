@@ -42,7 +42,7 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 						detail: {
 							type: "MCQ",
 							correctOption: row.correctOption!,
-							options: row.options ? JSON.parse(row.options.toString()) : [],
+							options: row.options as string[],
 						},
 					},
 					attemptId: row.attemptId!,

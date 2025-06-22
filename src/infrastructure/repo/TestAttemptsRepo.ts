@@ -17,10 +17,6 @@ export class TestAttemptsRepo extends RepoBase<TestAttemptsAggregate> {
 			.where("a.testId", "=", testId)
 			.selectAll()
 			.execute();
-
-		if (attempts.length === 0) {
-			throw new DomainError(`No attempts found for test with ID ${testId}`);
-		}
 		return attempts.map((attempt) => AttemptEntity.load({
 			id: attempt.id,
 			candidateId: attempt.candidateId,
@@ -50,11 +46,6 @@ export class TestAttemptsRepo extends RepoBase<TestAttemptsAggregate> {
 					.where("a.status", "=", inprogressStatus)
 					.select("a.id")
 					.as("activeAttemptId"),
-				jsonArrayFrom(eb
-					.selectFrom("ExamParticipants as ep")
-					.where("ep.testId", "=", "t.id")
-					.select("ep.candidateId")
-				).as("participantList"),
 			])
 			.executeTakeFirst();
 		if (!test) {
@@ -72,13 +63,18 @@ export class TestAttemptsRepo extends RepoBase<TestAttemptsAggregate> {
 				test.authorId,
 			)
 		} else if (test.mode === "EXAM") {
+			const participantList = await db
+				.selectFrom("ExamParticipants as ep")
+				.where("ep.testId", "=", test.id)
+				.select("ep.candidateId")
+				.execute();
 			testAgg = new ExamAttemptsAggregate(
 				test.id,
 				test.minutesToAnswer,
 				attempts,
 				new Date(test.openDate!),
 				new Date(test.closeDate!),
-				test.participantList.map((p) => p.candidateId),
+				participantList.map((p) => p.candidateId),
 				test.numberOfAttemptsAllowed!
 			)
 		}

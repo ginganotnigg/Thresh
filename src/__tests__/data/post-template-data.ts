@@ -1,4 +1,4 @@
-import { PostTemplateBody } from "../../../controllers/templates/schema";
+import { PostTemplateBody } from "../../controllers/templates/schema";
 
 export const postTemplates: PostTemplateBody[] = [
 	{

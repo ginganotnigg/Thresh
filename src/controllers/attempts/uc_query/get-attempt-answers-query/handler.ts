@@ -6,7 +6,7 @@ import { GetAttemptAnswersQueryParam } from "./param";
 import { GetAttemptAnswersResponse } from "./response";
 
 export class GetAttemptAnswersQueryHandler extends QueryHandlerBase<GetAttemptAnswersQueryParam, GetAttemptAnswersResponse> {
-	async handle(_: GetAttemptAnswersQueryParam): Promise<GetAttemptAnswersResponse> {
+	async handle(): Promise<GetAttemptAnswersResponse> {
 		const attemptId = this.getId();
 		let query = db
 			.selectFrom("AttemptsAnswerQuestions as aaq")

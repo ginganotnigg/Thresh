@@ -44,7 +44,7 @@ export class GetTestQuestionsHandler extends QueryHandlerBase<GetTestQuestionsPa
 			if (raw.type === "MCQ") {
 				detail = {
 					type: "MCQ",
-					options: JSON.parse(raw.options!.toString()) as string[] || [],
+					options: raw.options! as string[],
 					correctOption: raw.correctOption!,
 				}
 			}
@@ -53,7 +53,7 @@ export class GetTestQuestionsHandler extends QueryHandlerBase<GetTestQuestionsPa
 					type: "LONG_ANSWER",
 					correctAnswer: raw.correctAnswer!,
 					extraText: raw.extraText,
-					imageLinks: raw.imageLinks ? (JSON.parse(raw.imageLinks.toString()) as string[]) || [] : [],
+					imageLinks: raw.imageLinks as string[],
 				}
 			}
 			if (viewCorrectAnswer === "0") {

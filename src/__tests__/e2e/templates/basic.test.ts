@@ -1,5 +1,5 @@
 import { main } from '../../../app/main';
-import { postTemplates } from './data';
+import { postTemplates } from '../../data/post-template-data';
 import http from 'http';
 import { requestWithCredentials } from '../helper/credentials-mock';
 import { recreateDatabase } from '../../../configs/orm/database-operations';

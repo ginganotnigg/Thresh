@@ -16,6 +16,7 @@ import { PostAttemptsHandler } from "./uc_command/post-attempts/handler";
 import { PostAttemptAnswersHandler } from "./uc_command/post-attempt-answers/handler";
 import { PatchAttemptSubmitHandler } from "./uc_command/patch-attempt-submit/handler";
 import { scheduleOngoingAttempts } from "./init/schedule-ongoing-attempts";
+import { z } from "zod";
 
 export class AttemptsController extends ControllerBase {
 	async constructRouter(): Promise<void> {
@@ -68,6 +69,7 @@ export class AttemptsController extends ControllerBase {
 			.schema({
 				meta: CredentialsMetaSchema,
 				body: PostAttemptsBodySchema,
+				response: z.object({ attemptId: z.string() })
 			})
 			.handle(async (data) => {
 				return await new PostAttemptsHandler()

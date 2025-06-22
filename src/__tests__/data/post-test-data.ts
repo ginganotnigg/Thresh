@@ -1,6 +1,10 @@
-import { PostTestBody } from "../../../controllers/tests/uc_command/post-test/body";
+import { PostTestBody } from "../../controllers/tests/uc_command/post-test/body";
 
-export const postTestData: PostTestBody[] = [
+const now = new Date();
+const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+const oneHourBefore = new Date(now.getTime() - 60 * 60 * 1000);
+
+export const postTestsData: PostTestBody[] = [
 	{
 		title: "Practice Test 1",
 		mode: "PRACTICE",
@@ -70,8 +74,8 @@ export const postTestData: PostTestBody[] = [
 			numberOfParticipants: 30,
 			isAnswerVisible: false,
 			isAllowedToSeeOtherResults: false,
-			openDate: new Date("2025-06-01T09:00:00Z"),
-			closeDate: new Date("2025-06-01T12:00:00Z"),
+			openDate: oneHourBefore,
+			closeDate: oneHourLater,
 			isPublic: false,
 		},
 		questions: [
@@ -185,4 +189,4 @@ export const postTestData: PostTestBody[] = [
 	},
 ];
 
-export const examPostTestData: PostTestBody = postTestData.find(test => test.detail.mode === "EXAM" && test.detail.roomId === "room-1")!;
+export const postExamData: PostTestBody = postTestsData.find(test => test.detail.mode === "EXAM" && test.detail.roomId === "room-1")!;

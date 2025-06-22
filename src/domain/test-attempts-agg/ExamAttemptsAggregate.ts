@@ -21,7 +21,7 @@ export class ExamAttemptsAggregate extends TestAttemptsAggregate {
 		const isCandidateRegistered = this.participantList.includes(candidateId);
 
 		const numberOfAttempts = this.attempts.filter(attempt => attempt.getCandidateId() === candidateId).length;
-		const hasNotReachedMaxAttempt = numberOfAttempts < this.numberOfAttemptsAllowed;
+		const hasNotReachedMaxAttempt = numberOfAttempts === 0 ? true : numberOfAttempts < this.numberOfAttemptsAllowed;
 
 		return super._allowToDoTest(candidateId) &&
 			isOpen === true &&

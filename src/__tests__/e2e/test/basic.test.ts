@@ -2,7 +2,7 @@ import { main } from '../../../app/main';
 import http from 'http';
 import { requestWithCredentials } from '../helper/credentials-mock';
 import { recreateDatabase } from '../../../configs/orm/database-operations';
-import { postTestData } from './post-test-data';
+import { postTestsData } from '../../data/post-test-data';
 
 describe('Tests API Endpoints', () => {
 	let app: http.Server;
@@ -23,7 +23,7 @@ describe('Tests API Endpoints', () => {
 
 	it('CRUD operations', async () => {
 		// POST /api/tests for each test data
-		for (const testData of postTestData) {
+		for (const testData of postTestsData) {
 			const createResponse = await requestWithCredentials(app)
 				.post('/api/tests')
 				.send(testData)
@@ -34,8 +34,8 @@ describe('Tests API Endpoints', () => {
 		}
 
 		// GET /api/tests/:testId for each created test
-		for (let i = 0; i < postTestData.length; i++) {
-			const testData = postTestData[i];
+		for (let i = 0; i < postTestsData.length; i++) {
+			const testData = postTestsData[i];
 			const id = createdTestIds[i];
 			const getResponse = await requestWithCredentials(app)
 				.get(`/api/tests/${id}`)
@@ -53,7 +53,7 @@ describe('Tests API Endpoints', () => {
 
 		// PUT /api/tests/:testId (update the first test)
 		const id = createdTestIds[0];
-		const updatedTest = { ...postTestData[0], title: postTestData[0].title + ' - Updated' };
+		const updatedTest = { ...postTestsData[0], title: postTestsData[0].title + ' - Updated' };
 		await requestWithCredentials(app)
 			.put(`/api/tests/${id}`)
 			.send(updatedTest)

@@ -1,4 +1,5 @@
 import { AggregateRoot } from "../../shared/domain";
+import { DomainError } from "../../shared/errors/domain.error";
 import { AttemptCreatedEvent } from "../_events/AttemptCreatedEvent";
 import { TestAttemptsPersistence } from "../_mappers/TestAttemptsMapper";
 import { AttemptEntity } from "./AttemptEntity";
@@ -17,16 +18,17 @@ export abstract class TestAttemptsAggregate extends AggregateRoot {
 		return hasActiveAttempt === false;
 	}
 
-	public addNewAttempt(candidateId: string): void {
+	public addNewAttempt(candidateId: string): string {
 		const testId = this.id;
 		if (this._allowToDoTest(candidateId) === false) {
-			throw new Error(`Candidate ${candidateId} is not allowed to take the test ${testId}`);
+			throw new DomainError(`Candidate ${candidateId} is not allowed to take the test ${testId}`);
 		}
 		const newAttempt = AttemptEntity.createNew(candidateId, testId, this.attempts.length + 1);
 		this.newAttempt = newAttempt;
 		this.attempts.push(newAttempt);
 		const endDate = new Date(newAttempt.getStartedDate().getTime() + this.miniutesToAnswer * 1000 * 60);
 		this.addDomainEvent(new AttemptCreatedEvent(newAttempt.id, endDate));
+		return newAttempt.id;
 	}
 
 	public getPersistenceData(): TestAttemptsPersistence {
