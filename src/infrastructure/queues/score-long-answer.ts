@@ -12,7 +12,7 @@ export class ScoreLongAnswerQueue {
 		const roleId = ReverseRoleNames[credentials.role];
 
 		broker.sendToQueue(this.QUEUE_NAME, JSON.stringify({
-			questionText: "",
+			questionText,
 			answer,
 			correctAnswer,
 			points,

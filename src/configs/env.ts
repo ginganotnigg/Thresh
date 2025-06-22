@@ -28,7 +28,7 @@ const env = {
 	logLevel: process.env.LOG_LEVEL || "http",
 
 	// Message Broker
-	rabbitmqUrl: process.env.RABBITMQ_URL || "amqp://localhost:5672",
+	rabbitmqHost: process.env.RABBITMQ_HOST || "amqp://localhost:5672",
 
 	// Development
 

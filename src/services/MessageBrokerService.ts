@@ -1,9 +1,6 @@
 import * as amqp from 'amqplib';
 import { env } from '../configs/env';
 
-// Test URL: amqps://whqcbaxw:2epbweKANPJKHcCQW0kux70dp7Pesk0y@armadillo.rmq.cloudamqp.com/whqcbaxw
-const TEST_URL = 'amqps://whqcbaxw:2epbweKANPJKHcCQW0kux70dp7Pesk0y@armadillo.rmq.cloudamqp.com/whqcbaxw';
-
 export class MessageBrokerService {
 	private readonly channelModel: amqp.ChannelModel;
 	private readonly channel: amqp.Channel;
@@ -20,8 +17,7 @@ export class MessageBrokerService {
 			return this.instance;
 		}
 		try {
-			const _url = env.rabbitmqUrl;
-			const url = TEST_URL; // Use test URL for demonstration
+			const url = env.rabbitmqHost;
 			const channelModel = await amqp.connect(url);
 			const channel = await channelModel.createChannel();
 			console.log('MessageBrokerService instance created successfully');
