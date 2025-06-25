@@ -3,7 +3,7 @@ import { AnswerForQuestionCommonSchema } from "../../../../schemas/common/answer
 
 export const PostAttemptAnswersBodySchema = z.object({
 	questionId: z.number(),
-	answer: AnswerForQuestionCommonSchema.nullable(),
+	answer: AnswerForQuestionCommonSchema.optional(),
 });
 
 export type PostAttemptAnswersBody = z.infer<typeof PostAttemptAnswersBodySchema>;

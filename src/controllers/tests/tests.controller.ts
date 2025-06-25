@@ -27,6 +27,9 @@ import { PostExamParticipantHandler } from "./uc_command/post-exam-participant/h
 import { DeleteExamParticipantBodySchema } from "./uc_command/delete-exam-participant/body";
 import { DeleteExamParticipantHandler } from "./uc_command/delete-exam-participant/handler";
 import { z } from "zod";
+import { GetTestQuestionsParamSchema } from "./uc_query/get-test-questions/param";
+import { GetTestQuestionsResponseSchema } from "./uc_query/get-test-questions/response";
+import { GetTestQuestionsHandler } from "./uc_query/get-test-questions/handler";
 
 export class TestsController extends ControllerBase {
 	async constructRouter(): Promise<void> {
@@ -67,6 +70,21 @@ export class TestsController extends ControllerBase {
 			})
 			.handle(async (data) => {
 				return await new GetTestQueryHandler()
+					.withCredentials(data.meta)
+					.withId(data.params.testId)
+					.handle(data.query);
+			})
+			.build({ tags: ["Tests"] });
+
+		router.endpoint().get("/:testId/questions")
+			.schema({
+				meta: CredentialsMetaSchema,
+				params: TestIdParamsSchema,
+				query: GetTestQuestionsParamSchema,
+				response: GetTestQuestionsResponseSchema,
+			})
+			.handle(async (data) => {
+				return await new GetTestQuestionsHandler()
 					.withCredentials(data.meta)
 					.withId(data.params.testId)
 					.handle(data.query);
