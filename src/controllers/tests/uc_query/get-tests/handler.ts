@@ -47,7 +47,6 @@ export class GetTestsQueryHandler extends QueryHandlerBase<GetTestsQuery, GetTes
 		const examIds = res.data.map(raw => raw.mode === "EXAM" ? raw.id : null).filter(id => id !== null);
 		let participantsQuery = db
 			.selectFrom("ExamParticipants")
-			.where("testId", "in", examIds)
 			.selectAll()
 			;
 		if (examIds.length > 0) {
