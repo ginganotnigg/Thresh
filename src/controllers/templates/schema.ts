@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { PagedSchema, PagingSchema, QuerySortOptionsSchema } from "../../shared/controller/schemas/base";
+import { PagedSchema, PagingSchema } from "../../shared/controller/schemas/base";
+import { QuerySortOptionsSchema } from '../../shared/controller/schemas/query';
 import { ChuoiDocument } from "../../library/caychuoijs/documentation/open-api";
 
 const TemplateCoreSchema = ChuoiDocument.registerSchema(z.object({

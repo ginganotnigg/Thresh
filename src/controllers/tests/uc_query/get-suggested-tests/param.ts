@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { NonNegativeNumberSchema, PagingSchema } from "../../../../shared/controller/schemas/base";
+import { QueryNumberSchema } from "../../../../shared/controller/schemas/query";
 
 export const GetSuggestedTestsQuerySchema = z.object({
-	numberOfTests: NonNegativeNumberSchema.optional().default(5),
+	numberOfTests: QueryNumberSchema.default(5),
 });
 export type GetSuggestedTestsQuery = z.infer<typeof GetSuggestedTestsQuerySchema>;

@@ -44,8 +44,3 @@ export const sortBy = (sortField: string) => {
 	return { field, order: order as 'asc' | 'desc' };
 };
 
-// New Schemas
-
-export const QueryBooleanSchema = z.enum(["1", "0"]).optional().default("0");
-export const NonNegativeNumberSchema = z.coerce.number().int().nonnegative();
-export const QuerySortOptionsSchema = z.enum(["asc", "desc"]).optional();

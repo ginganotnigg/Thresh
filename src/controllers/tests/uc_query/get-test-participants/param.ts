@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { PagingSchema, QuerySortOptionsSchema } from "../../../../shared/controller/schemas/base";
+import { PagingSchema } from "../../../../shared/controller/schemas/base";
+import { QuerySortOptionsSchema } from '../../../../shared/controller/schemas/query';
 
 export const GetTestParticipantsQuerySchema = PagingSchema.extend({
 	sortByRank: QuerySortOptionsSchema,

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { NonNegativeNumberSchema } from "../../shared/controller/schemas/base";
+import { NonNegativeNumberSchema } from '../../shared/controller/schemas/response';
 import { ChuoiDocument } from "../../library/caychuoijs/documentation/open-api";
 import { TestModeAsConst } from "../../shared/enum";
 import { TestDetailCommonSchema } from "../common/test-detail";

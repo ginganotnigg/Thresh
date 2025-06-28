@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { FeedbackProblemsAsConst } from "../../shared/enum";
-import { PagedSchema, QuerySortOptionsSchema } from "../../shared/controller/schemas/base";
+import { PagedSchema } from "../../shared/controller/schemas/base";
+import { QuerySortOptionsSchema } from '../../shared/controller/schemas/query';
 import { ChuoiDocument } from "../../library/caychuoijs/documentation/open-api";
 
 const FeedbackCoreSchema = ChuoiDocument.registerSchema(z.object({
