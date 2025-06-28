@@ -45,11 +45,15 @@ export class GetTestsQueryHandler extends QueryHandlerBase<GetTestsQuery, GetTes
 
 		const res = await paginate(query, page, perPage);
 		const examIds = res.data.map(raw => raw.mode === "EXAM" ? raw.id : null).filter(id => id !== null);
-		const participants = await db
+		let participantsQuery = db
 			.selectFrom("ExamParticipants")
-			.where("ExamParticipants.testId", "in", examIds)
+			.where("testId", "in", examIds)
 			.selectAll()
-			.execute();
+			;
+		if (examIds.length > 0) {
+			participantsQuery = participantsQuery.where("testId", "in", examIds);
+		}
+		const participants = await participantsQuery.execute();
 		const participantMap = new Map<string, string[]>();
 		for (const participant of participants) {
 			if (!participantMap.has(participant.testId)) {
