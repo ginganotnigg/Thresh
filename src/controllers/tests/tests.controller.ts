@@ -30,6 +30,9 @@ import { z } from "zod";
 import { GetTestQuestionsParamSchema } from "./uc_query/get-test-questions/param";
 import { GetTestQuestionsResponseSchema } from "./uc_query/get-test-questions/response";
 import { GetTestQuestionsHandler } from "./uc_query/get-test-questions/handler";
+import { GetSuggestedTestsQuerySchema } from "./uc_query/get-suggested-tests/param";
+import { GetSuggestedTestsResponseSchema } from "./uc_query/get-suggested-tests/response";
+import { GetSuggestedTestsQueryHandler } from "./uc_query/get-suggested-tests/handler";
 
 export class TestsController extends ControllerBase {
 	async constructRouter(): Promise<void> {
@@ -43,6 +46,19 @@ export class TestsController extends ControllerBase {
 			})
 			.handle(async (data) => {
 				return await new GetTestsQueryHandler()
+					.withCredentials(data.meta)
+					.handle(data.query);
+			})
+			.build({ tags: ["Tests"] });
+
+		router.endpoint().get("/suggested")
+			.schema({
+				meta: CredentialsMetaSchema,
+				query: GetSuggestedTestsQuerySchema,
+				response: GetSuggestedTestsResponseSchema,
+			})
+			.handle(async (data) => {
+				return await new GetSuggestedTestsQueryHandler()
 					.withCredentials(data.meta)
 					.handle(data.query);
 			})
