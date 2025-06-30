@@ -22,6 +22,7 @@ export class EventDispatcher {
 			this.handlers.set(eventName, []);
 		}
 		this.handlers.get(eventName)?.push(handler);
+		console.log(`Registered handler ${handler.constructor.name} for event: ${eventName}`);
 	}
 
 	public async dispatch<T extends DomainEventBase>(event: T): Promise<void> {

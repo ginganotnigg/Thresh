@@ -17,8 +17,35 @@ import { PostAttemptAnswersHandler } from "./uc_command/post-attempt-answers/han
 import { PatchAttemptSubmitHandler } from "./uc_command/patch-attempt-submit/handler";
 import { scheduleOngoingAttempts } from "./init/schedule-ongoing-attempts";
 import { z } from "zod";
+import { AttemptTimeoutHandler } from "./handlers/AttemptTimeoutHandler";
+import { AttemptTimeOutEvent } from "../../domain/_events/AttemptTimeOutEvent";
+import { EventHandlerBase } from "../../shared/handler/usecase.base";
+import { AttemptCreatedHandler } from "./handlers/AttemptCreatedHandler";
+import { AttemptCreatedEvent } from "../../domain/_events/AttemptCreatedEvent";
+import { AttemptSubmittedEvent } from "../../domain/_events/AttemptSubmittedEvent";
+import { ScoreLongAnswerEvent } from "../../domain/_events/ScoreLongAnswer";
+import { ScoreLongAnswerHandler } from "./handlers/ScoreLongAnswerHandler";
+import { AttemptSubmittedHandler } from "./handlers/AttemptSubmittedHandler";
 
 export class AttemptsController extends ControllerBase {
+	private readonly attemptTimeoutHandler: EventHandlerBase<AttemptTimeOutEvent>;
+	private readonly attemptCreatedHandler: EventHandlerBase<AttemptCreatedEvent>;
+	private readonly attemptEndedHandler: EventHandlerBase<AttemptSubmittedEvent>;
+	private readonly scoreLongAnswerHandler: EventHandlerBase<ScoreLongAnswerEvent>;
+
+	constructor() {
+		super();
+		this.attemptTimeoutHandler = new AttemptTimeoutHandler();
+		this.attemptTimeoutHandler.registerEvent(AttemptTimeOutEvent);
+		this.attemptCreatedHandler = new AttemptCreatedHandler();
+		this.attemptCreatedHandler.registerEvent(AttemptCreatedEvent);
+		this.attemptEndedHandler = new AttemptSubmittedHandler();
+		this.attemptEndedHandler.registerEvent(AttemptSubmittedEvent);
+		this.scoreLongAnswerHandler = new ScoreLongAnswerHandler();
+		this.scoreLongAnswerHandler.registerEvent(ScoreLongAnswerEvent);
+
+	}
+
 	async constructRouter(): Promise<void> {
 		await scheduleOngoingAttempts();
 

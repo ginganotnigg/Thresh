@@ -1,7 +1,7 @@
 import { AggregateRoot } from "../../shared/domain";
 import { DomainError } from "../../shared/errors/domain.error";
 import { CredentialsBase } from "../../shared/types/credentials";
-import { AttemptEndedEvent } from "../_events/AttemptSubmittedEvent";
+import { AttemptSubmittedEvent } from "../_events/AttemptSubmittedEvent";
 import { AttemptDto, AttemptLoad, AttemptMapper, AttemptPersistence } from "../_mappers/AttemptMapper";
 import { AnswerDto, AnswerPersistence } from "../_mappers/AnswerMapper";
 import { AnswerEntity } from "./AnswerEntity";
@@ -23,7 +23,7 @@ export class AttemptAggregate extends AggregateRoot {
 		this.attempt.status = "COMPLETED";
 		this.attempt.hasEnded = true;
 		this.attempt.secondsSpent = Math.floor((Date.now() - this.attempt.createdAt.getTime()) / 1000);
-		this.addDomainEvent(new AttemptEndedEvent(this.id));
+		this.addDomainEvent(new AttemptSubmittedEvent(this.id));
 	}
 
 	static load(load: AttemptLoad): AttemptAggregate {
@@ -68,6 +68,10 @@ export class AttemptAggregate extends AggregateRoot {
 		return this.answersToUpdate
 			.map((answer) => answer.getLongAnswerContentForEvaluation())
 			.filter(x => x !== null);
+	}
+
+	getCandidateId(): string {
+		return this.attempt.candidateId;
 	}
 
 	setEvaluatedPoints(poinstOfAnswers: {
