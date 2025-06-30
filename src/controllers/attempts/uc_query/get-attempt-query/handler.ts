@@ -14,12 +14,15 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 			throw new DomainError("Attempt ID is required");
 		}
 
-		let query = db.selectFrom("Attempts")
+		let query = db
+			.selectFrom("Attempts")
 			.where("Attempts.id", "=", attemptId)
 			.innerJoin("Tests", "Attempts.testId", "Tests.id")
-			.selectAll("Attempts")
-			.selectAll("Tests")
+			.selectAll(["Attempts", "Tests"])
 			.select([
+				"Attempts.id as id",
+				"Attempts.createdAt as createdAt",
+				"Attempts.updatedAt as updatedAt",
 				"Tests.createdAt as TestCreatedAt",
 				"Tests.updatedAt as TestUpdatedAt",
 			])

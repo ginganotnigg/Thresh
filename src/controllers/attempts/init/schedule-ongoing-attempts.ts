@@ -27,6 +27,7 @@ async function _scheduleOngoingAttempts() {
 		.selectAll(["Attempts", "Tests"])
 		.select([
 			"Attempts.createdAt as createdAt",
+			"Attempts.updatedAt as updatedAt",
 			"Attempts.id as id",
 		])
 		.execute()
