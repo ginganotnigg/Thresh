@@ -21,6 +21,7 @@ export async function queryAttempts(params: QueryAttemptsParam): Promise<QueryAt
 	let query = db
 		.selectFrom("Attempts")
 		.leftJoin("Tests as t", "t.id", "Attempts.testId")
+		.selectAll(["Attempts"])
 		.select([
 			"t.id as testId",
 			"t.authorId",
@@ -32,7 +33,6 @@ export async function queryAttempts(params: QueryAttemptsParam): Promise<QueryAt
 			"t.updatedAt as TestUpdatedAt",
 			"t.mode",
 		])
-		.selectAll()
 		.select(eb => [
 			eb.selectFrom("AttemptsAnswerQuestions as aaq")
 				.whereRef("aaq.attemptId", "=", "Attempts.id")
