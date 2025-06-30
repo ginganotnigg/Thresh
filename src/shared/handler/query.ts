@@ -14,12 +14,13 @@ export async function paginate<TOut>(qb: SelectQueryBuilder<any, any, TOut>, pag
 	const [res, total] = await Promise.all([
 		qb.offset(offset).limit(limit).execute(),
 		qb.clearSelect().select(eb => [eb.fn.countAll<number>().as('count')]).executeTakeFirst(),
-	])
+	]);
+	const totalPages = Math.ceil((total?.count || 0) / limit);
 	return {
 		data: res,
 		total: total?.count ?? 0,
 		page,
 		perPage,
-		totalPages: Math.ceil(total?.count ?? 0 / limit),
+		totalPages
 	}
 }
