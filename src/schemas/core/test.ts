@@ -6,13 +6,13 @@ import { TestDetailCommonSchema } from "../common/test-detail";
 
 const TestAggregateSchema = z.object({
 	numberOfQuestions: NonNegativeNumberSchema,
-	totalPoints: NonNegativeNumberSchema,
+	totalPoints: z.number().nonnegative(),
 	totalCandidates: NonNegativeNumberSchema,
 	totalAttempts: NonNegativeNumberSchema,
-	averageScore: NonNegativeNumberSchema,
-	highestScore: NonNegativeNumberSchema,
-	lowestScore: NonNegativeNumberSchema,
-	averageTime: NonNegativeNumberSchema,
+	averageScore: z.number().nonnegative(),
+	highestScore: z.number().nonnegative(),
+	lowestScore: z.number().nonnegative(),
+	averageTime: z.number().nonnegative(),
 });
 
 export const TestCoreSchema = ChuoiDocument.registerSchema(z.object({

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { NonNegativeNumberSchema } from '../../shared/controller/schemas/response';
-import { AttemptStatusAsConst, TestModeAsConst } from "../../shared/enum";
+import { AttemptStatusAsConst } from "../../shared/enum";
 import { ChuoiDocument } from "../../library/caychuoijs/documentation/open-api";
 import { TestCoreSchema } from "./test";
 
@@ -16,7 +16,7 @@ export const AttemptCoreSchema = ChuoiDocument.registerSchema(z.object({
 	updatedAt: z.date(),
 
 	_aggregate: z.object({
-		points: NonNegativeNumberSchema,
+		points: z.number().nonnegative(),
 		answered: NonNegativeNumberSchema,
 		answeredCorrect: NonNegativeNumberSchema,
 	}),
