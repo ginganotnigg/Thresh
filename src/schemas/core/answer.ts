@@ -7,7 +7,7 @@ export const AnswerCoreSchema = ChuoiDocument.registerSchema(z.object({
 	id: z.string(),
 	attemptId: z.string(),
 	questionId: z.number(),
-	pointReceived: NonNegativeNumberSchema.default(0),
+	pointReceived: z.number().nullish(),
 	createdAt: z.date(),
 	updatedAt: z.date(),
 	child: AnswerForQuestionCommonSchema,

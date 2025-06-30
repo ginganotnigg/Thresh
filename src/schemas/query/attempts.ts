@@ -83,9 +83,9 @@ export async function queryAttempts(params: QueryAttemptsParam): Promise<QueryAt
 			createdAt: r.createdAt!,
 			updatedAt: r.updatedAt!,
 			_aggregate: {
-				points: r.points ?? 0,
-				answered: r.answered ?? 0,
-				answeredCorrect: r.answeredCorrect ?? 0,
+				points: Number(r.points) ?? 0,
+				answered: Number(r.answered) ?? 0,
+				answeredCorrect: Number(r.answeredCorrect) ?? 0,
 			},
 			_include: {
 				test: {

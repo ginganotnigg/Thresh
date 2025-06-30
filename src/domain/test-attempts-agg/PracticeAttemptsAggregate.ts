@@ -1,3 +1,4 @@
+import { DomainError } from "../../shared/errors/domain.error";
 import { AttemptEntity } from "./AttemptEntity";
 import { TestAttemptsAggregate } from "./TestAttemptsAggregate";
 
@@ -12,6 +13,11 @@ export class PracticeAttemptsAggregate extends TestAttemptsAggregate {
 	}
 
 	protected _allowToDoTest(candidateId: string): boolean {
-		return super._allowToDoTest(candidateId) && candidateId !== this.authorId;
+		super._allowToDoTest(candidateId);
+		const practiceCheck = candidateId === this.authorId;
+		if (practiceCheck === false) {
+			throw new DomainError(`Candidate is not the author of this Practice Test.`);
+		}
+		return true;
 	}
 }

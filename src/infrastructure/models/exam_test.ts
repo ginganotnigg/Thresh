@@ -31,7 +31,9 @@ class ExamTest extends Model<InferAttributes<ExamTest>, InferCreationAttributes<
 				references: {
 					model: Test,
 					key: 'id',
-				}
+				},
+				onDelete: "CASCADE",
+				onUpdate: "CASCADE",
 			},
 			roomId: {
 				type: DataTypes.STRING,

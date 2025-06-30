@@ -34,11 +34,12 @@ class Question extends Model<InferAttributes<Question>, InferCreationAttributes<
 			testId: {
 				type: DataTypes.UUID,
 				allowNull: false,
-				onDelete: 'CASCADE',
 				references: {
 					model: Test,
 					key: 'id',
 				},
+				onDelete: 'CASCADE',
+				onUpdate: 'CASCADE',
 			},
 			text: {
 				type: DataTypes.STRING,

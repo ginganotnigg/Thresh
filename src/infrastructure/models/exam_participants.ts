@@ -29,6 +29,8 @@ class ExamParticipants extends Model<InferAttributes<ExamParticipants>, InferCre
 					model: ExamTest,
 					key: 'testId',
 				},
+				onDelete: "CASCADE",
+				onUpdate: "CASCADE",
 			},
 			candidateId: {
 				type: DataTypes.STRING,

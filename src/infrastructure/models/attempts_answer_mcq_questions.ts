@@ -20,6 +20,8 @@ class AttemptsAnswerMCQQuestions extends Model<InferAttributes<AttemptsAnswerMCQ
 					model: AttemptsAnswerQuestions,
 					key: "id",
 				},
+				onDelete: "CASCADE",
+				onUpdate: "CASCADE",
 			},
 			chosenOption: {
 				type: DataTypes.INTEGER,

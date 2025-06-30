@@ -35,20 +35,22 @@ class AttemptsAnswerQuestions extends Model<InferAttributes<AttemptsAnswerQuesti
 			attemptId: {
 				type: DataTypes.UUID,
 				allowNull: false,
-				onDelete: 'CASCADE',
 				references: {
 					model: Attempt,
 					key: 'id',
 				},
+				onDelete: 'CASCADE',
+				onUpdate: 'CASCADE',
 			},
 			questionId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
-				onDelete: 'CASCADE',
 				references: {
 					model: Question,
 					key: 'id',
 				},
+				onDelete: 'CASCADE',
+				onUpdate: 'CASCADE',
 			},
 			pointsReceived: {
 				type: DataTypes.INTEGER,

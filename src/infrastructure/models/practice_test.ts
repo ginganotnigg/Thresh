@@ -24,6 +24,8 @@ class PracticeTest extends Model<InferAttributes<PracticeTest>, InferCreationAtt
 					model: Test,
 					key: 'id',
 				},
+				onDelete: "CASCADE",
+				onUpdate: "CASCADE",
 			},
 			difficulty: {
 				type: DataTypes.STRING,

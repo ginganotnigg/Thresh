@@ -17,11 +17,12 @@ class MCQQuestion extends Model<InferAttributes<MCQQuestion>, InferCreationAttri
 			questionId: {
 				type: DataTypes.INTEGER,
 				primaryKey: true,
-				onDelete: 'CASCADE',
 				references: {
 					model: Question,
 					key: 'id',
-				}
+				},
+				onDelete: 'CASCADE',
+				onUpdate: 'CASCADE',
 			},
 			options: {
 				type: DataTypes.JSON, // Use JSON to store array of strings

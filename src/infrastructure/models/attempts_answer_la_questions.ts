@@ -20,6 +20,8 @@ class AttemptsAnswerLAQuestions extends Model<InferAttributes<AttemptsAnswerLAQu
 					model: AttemptsAnswerQuestions,
 					key: "id",
 				},
+				onDelete: "CASCADE",
+				onUpdate: "CASCADE",
 			},
 			answer: {
 				type: DataTypes.TEXT,

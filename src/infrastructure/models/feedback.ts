@@ -28,11 +28,12 @@ class Feedback extends Model<InferAttributes<Feedback>, InferCreationAttributes<
 			testId: {
 				type: DataTypes.UUID,
 				allowNull: false,
-				onDelete: 'CASCADE',
 				references: {
 					model: Test,
 					key: 'id',
 				},
+				onUpdate: 'CASCADE',
+				onDelete: 'CASCADE',
 			},
 			rating: {
 				type: DataTypes.INTEGER,

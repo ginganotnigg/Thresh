@@ -15,13 +15,16 @@ export abstract class TestAttemptsAggregate extends AggregateRoot {
 
 	protected _allowToDoTest(candidateId: string): boolean {
 		const hasActiveAttempt = this.attempts.some(attempt => attempt.getCandidateId() === candidateId && attempt.isActive());
-		return hasActiveAttempt === false;
+		if (hasActiveAttempt === true) {
+			throw new DomainError(`Candidate already has an ongoing attempt.`);
+		}
+		return true;
 	}
 
 	public addNewAttempt(candidateId: string): string {
 		const testId = this.id;
 		if (this._allowToDoTest(candidateId) === false) {
-			throw new DomainError(`Candidate ${candidateId} is not allowed to take the test ${testId}`);
+			throw new DomainError(`Candidate is not allowed to take the test.`);
 		}
 		const newAttempt = AttemptEntity.createNew(candidateId, testId, this.attempts.length + 1);
 		this.newAttempt = newAttempt;
