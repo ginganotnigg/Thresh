@@ -16,7 +16,7 @@ export const QuestionCoreSchema = ChuoiDocument.registerSchema(z.object({
 	_aggregate_test: z.object({
 		numberOfAnswers: NonNegativeNumberSchema,
 		numberOfCorrectAnswers: NonNegativeNumberSchema,
-		averageScore: NonNegativeNumberSchema,
+		averageScore: z.number().nonnegative(),
 	}),
 }), "QuestionCoreSchema");
 

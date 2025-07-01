@@ -16,6 +16,9 @@ export async function queryAttempts(params: QueryAttemptsParam): Promise<QueryAt
 		status,
 		page,
 		perPage,
+		sortByPoints,
+		sortByCreatedAt,
+		sortBySecondsSpent,
 	} = params;
 
 	let query = db
@@ -41,12 +44,6 @@ export async function queryAttempts(params: QueryAttemptsParam): Promise<QueryAt
 				]).as("answered")
 			,
 			eb.selectFrom("AttemptsAnswerQuestions as aaq")
-				.whereRef("aaq.attemptId", "=", "Attempts.id")
-				.select(eb => [
-					eb.fn.sum<number>("aaq.pointsReceived").as("points")
-				]).as("points")
-			,
-			eb.selectFrom("AttemptsAnswerQuestions as aaq")
 				.innerJoin(
 					"Questions as q",
 					(join) => join
@@ -57,6 +54,18 @@ export async function queryAttempts(params: QueryAttemptsParam): Promise<QueryAt
 					eb.fn.count<number>("aaq.attemptId").as("answeredCorrect")
 				]).as("answeredCorrect")
 		])
+		.leftJoin(eb => eb
+			.selectFrom("AttemptsAnswerQuestions as aaq")
+			.select(eb => [
+				"aaq.attemptId",
+				eb.fn.sum<number>("aaq.pointsReceived").as("points")
+			])
+			.groupBy("aaq.attemptId")
+			.as("attemptPoints")
+			, join => join
+				.onRef("Attempts.id", "=", "attemptPoints.attemptId")
+		)
+		.select("attemptPoints.points")
 
 	if (testId) {
 		query = query.where("Attempts.testId", "=", testId);
@@ -66,6 +75,15 @@ export async function queryAttempts(params: QueryAttemptsParam): Promise<QueryAt
 	}
 	if (status) {
 		query = query.where("Attempts.status", "=", status);
+	}
+	if (sortByPoints) {
+		query = query.orderBy("attemptPoints.points", sortByPoints);
+	}
+	if (sortByCreatedAt) {
+		query = query.orderBy("Attempts.createdAt", sortByCreatedAt);
+	}
+	if (sortBySecondsSpent) {
+		query = query.orderBy("Attempts.secondsSpent", sortBySecondsSpent);
 	}
 
 	const result = await paginate(query, page, perPage);

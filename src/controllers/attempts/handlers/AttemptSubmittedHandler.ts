@@ -17,16 +17,31 @@ export class AttemptSubmittedHandler extends EventHandlerBase<AttemptSubmittedEv
 		AttemptScheduleService.cancelAttempt(attemptId);
 		const repo = new AttemptRepo();
 		const agg = await repo.getById(attemptId);
+
+		// If the attempt is in EXAM mode, we do not score long answers, let the author do it.
+		if (agg.getTestMode() === "EXAM") {
+			return;
+		}
+
 		const data = agg.getEvaluationData();
 		const candidateId = agg.getCandidateId();
-		await Promise.all(
-			data.map(async ({ questionText, answerId, answer, correctAnswer, points }) => {
-				const point = await ScoreLongAnswerQueue.score(questionText, answerId, answer, correctAnswer, points, candidateId);
-				return {
-					answerId,
-					point,
-				}
-			}),
+
+		data.map(({
+			questionText,
+			answerId,
+			answer,
+			correctAnswer,
+			points
+		}) => ScoreLongAnswerQueue.score(
+			attemptId,
+			questionText,
+			answerId,
+			answer,
+			correctAnswer,
+			points,
+			candidateId)
 		);
+
+		// We don't save the attempt here, its status only be updated when the long answers are scored.
 	}
 }

@@ -78,8 +78,13 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 		const attempt = await db
 			.selectFrom("Attempts as a")
 			.where("id", "=", attemptId)
+			.innerJoin("Tests as t", "t.id", "a.testId")
 			.groupBy("a.id")
-			.selectAll()
+			.selectAll("a")
+			.select([
+				"t.mode",
+				"t.id as testId",
+			])
 			.executeTakeFirst()
 			;
 		if (!attempt) {
@@ -98,6 +103,9 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 			status: attempt.status,
 			createdAt: attempt.createdAt!,
 			answers: answers,
+			test: {
+				mode: attempt.mode
+			}
 		}
 		const agg = AttemptAggregate.load(load);
 		return agg;

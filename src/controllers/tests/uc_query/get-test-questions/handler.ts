@@ -72,9 +72,9 @@ export class GetTestQuestionsHandler extends QueryHandlerBase<GetTestQuestionsPa
 				type: raw.type,
 				detail,
 				_aggregate_test: {
-					averageScore: raw.averageScore || 0,
-					numberOfAnswers: raw.numberOfAnswers || 0,
-					numberOfCorrectAnswers: raw.numberOfCorrectAnswers || 0,
+					averageScore: Number(raw.averageScore) || 0,
+					numberOfAnswers: Number(raw.numberOfAnswers) || 0,
+					numberOfCorrectAnswers: Number(raw.numberOfCorrectAnswers) || 0,
 				}
 			}
 		})

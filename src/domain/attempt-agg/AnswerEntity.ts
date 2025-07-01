@@ -1,5 +1,6 @@
 import { Entity } from "../../shared/domain";
 import { IdentityUtils } from "../../shared/domain/UniqueEntityId";
+import { DomainError } from "../../shared/errors/domain.error";
 import { AnswerDto, AnswerLoad, AnswerPersistence } from "../_mappers/AnswerMapper";
 import { AnswerMapper } from "../_mappers/AnswerMapper";
 import { QuestionDto, QuestionMapper } from "../_mappers/QuestionMapper";
@@ -55,9 +56,35 @@ export class AnswerEntity extends Entity {
 		return null;
 	}
 
-	setPoints(points: number): void {
+	getMCQPointsForEvaluation(): number | null {
+		if (this.dto?.type === "MCQ" && this.question.detail.type === "MCQ") {
+			if (this.dto.chosenOption == null) {
+				return 0; // No option chosen, no points.
+			}
+			const correctOption = this.question.detail.correctOption;
+			return this.dto.chosenOption === correctOption ? this.question.points : 0;
+		}
+		return null;
+	}
+
+	/**
+	 * Checks if the answer is graded.
+	 * @returns true if the answer is graded, false otherwise.
+	 */
+	getIsGraded(): boolean {
+		// If the answer is mark as cleared, it can also be count as graded (0 points).
 		if (this.dto === null) {
-			throw new Error("Cannot set points on a cleared answer");
+			return true;
+		}
+		return this.dto.pointsRecieved != null;
+	}
+
+	updatePoints(points: number): void {
+		if (this.dto === null) {
+			throw new DomainError("Cannot set points on a cleared answer");
+		}
+		if (points < 0) {
+			throw new DomainError("Points cannot be negative");
 		}
 		this.dto.pointsRecieved = points;
 	}

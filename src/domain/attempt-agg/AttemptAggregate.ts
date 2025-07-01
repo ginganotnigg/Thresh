@@ -6,15 +6,30 @@ import { AttemptDto, AttemptLoad, AttemptMapper, AttemptPersistence } from "../_
 import { AnswerDto, AnswerPersistence } from "../_mappers/AnswerMapper";
 import { AnswerEntity } from "./AnswerEntity";
 import { QuestionDto } from "../_mappers/QuestionMapper";
+import { TestModeType } from "../../shared/enum";
 
 export class AttemptAggregate extends AggregateRoot {
 	private readonly answersToUpdate: AnswerEntity[] = [];
 
 	private constructor(
 		id: string,
+		private readonly testMode: TestModeType,
 		private readonly attempt: AttemptDto,
 		private readonly answers: AnswerEntity[],
 	) { super(id); }
+
+	private updateStatusAfterPointsEvaluation() {
+		let isGradedAll = true;
+		for (const answer of this.answers) {
+			if (answer.getIsGraded() === false) {
+				isGradedAll = false;
+				break;
+			}
+		}
+		if (isGradedAll) {
+			this.attempt.status = "GRADED";
+		}
+	}
 
 	private endTest() {
 		if (this.attempt.status !== "IN_PROGRESS") {
@@ -24,17 +39,24 @@ export class AttemptAggregate extends AggregateRoot {
 		this.attempt.hasEnded = true;
 		this.attempt.secondsSpent = Math.floor((Date.now() - this.attempt.createdAt.getTime()) / 1000);
 
-		console.log("Test");
-		console.log(Date.now());
-		console.log(this.attempt.createdAt.getTime());
-
+		// Automatically grade all MCQ questions that are not graded yet
+		for (const answer of this.answers) {
+			if (answer.getIsGraded() === false) {
+				const getMcqPoints = answer.getMCQPointsForEvaluation();
+				if (getMcqPoints !== null) {
+					answer.updatePoints(getMcqPoints);
+					this.answersToUpdate.push(answer);
+				}
+			}
+		}
+		this.updateStatusAfterPointsEvaluation();
 		this.addDomainEvent(new AttemptSubmittedEvent(this.id));
 	}
 
 	static load(load: AttemptLoad): AttemptAggregate {
 		const dto = AttemptMapper.toDto(load);
 		const answerEntities = load.answers.map((answer) => AnswerEntity.load(answer));
-		return new AttemptAggregate(load.id, dto, answerEntities);
+		return new AttemptAggregate(load.id, load.test.mode, dto, answerEntities);
 	}
 
 	submit(credentials: CredentialsBase): void {
@@ -79,17 +101,17 @@ export class AttemptAggregate extends AggregateRoot {
 		return this.attempt.candidateId;
 	}
 
-	setEvaluatedPoints(poinstOfAnswers: {
-		point: number;
-		answerId: string;
-	}[]): void {
-		for (const poa of poinstOfAnswers) {
-			const foundAnswer = this.answers.find((a) => a.id === poa.answerId);
-			if (!foundAnswer) {
-				throw new Error(`Answer with id ${poa.answerId} not found in attempt ${this.id}`);
-			}
-			foundAnswer.setPoints(poa.point);
-			this.answersToUpdate.push(foundAnswer);
+	getTestMode(): TestModeType {
+		return this.testMode;
+	}
+
+	updateAnswerEvaluation(point: number, answerId: string): void {
+		const foundAnswer = this.answers.find((a) => a.id === answerId);
+		if (!foundAnswer) {
+			throw new DomainError(`Answer not found for this Attempt`);
 		}
+		foundAnswer.updatePoints(point);
+		this.answersToUpdate.push(foundAnswer);
+		this.updateStatusAfterPointsEvaluation();
 	}
 }

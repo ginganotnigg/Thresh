@@ -5,7 +5,15 @@ import { EventDispatcher } from "../../shared/domain/EventDispatcher";
 export class ScoreLongAnswerQueue {
 	static readonly QUEUE_NAME = 'score-long-answer';
 
-	static async score(questionText: string, answerId: string, answer: string, correctAnswer: string, points: number, userId: string): Promise<void> {
+	static async score(
+		attemptId: string,
+		questionText: string,
+		answerId: string,
+		answer: string,
+		correctAnswer: string,
+		points: number,
+		userId: string
+	): Promise<void> {
 		const broker = await MessageBrokerService.getInstance();
 
 		broker.sendToQueue(this.QUEUE_NAME, JSON.stringify({
@@ -24,7 +32,7 @@ export class ScoreLongAnswerQueue {
 					score,
 					comment,
 				} = data;
-				EventDispatcher.getInstance().dispatch(new ScoreLongAnswerEvent(answerId, score));
+				EventDispatcher.getInstance().dispatch(new ScoreLongAnswerEvent(attemptId, answerId, score));
 			}
 		});
 	}

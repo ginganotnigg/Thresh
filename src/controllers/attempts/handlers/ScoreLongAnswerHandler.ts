@@ -1,5 +1,6 @@
 import { ScoreLongAnswerEvent } from "../../../domain/_events/ScoreLongAnswer";
 import AttemptsAnswerQuestions from "../../../infrastructure/models/attempts_answer_questions";
+import { AttemptRepo } from "../../../infrastructure/repo/AttemptRepo";
 import { Constructor } from "../../../library/caychuoijs/utils/type";
 import { EventDispatcher } from "../../../shared/domain/EventDispatcher";
 import { EventHandlerBase } from "../../../shared/handler/usecase.base";
@@ -10,13 +11,12 @@ export class ScoreLongAnswerHandler extends EventHandlerBase<ScoreLongAnswerEven
 	}
 
 	async handle(params: ScoreLongAnswerEvent): Promise<void> {
-		await AttemptsAnswerQuestions.update({
-			pointsReceived: params.score,
-		}, {
-			where: {
-				id: params.answerId,
-			},
-		});
-		console.log(`Scored long answer with ID ${params.answerId} with ${params.score} points.`);
+		const { answerId, score } = params;
+		const repo = new AttemptRepo();
+		const agg = await repo.getById(answerId);
+
+		agg.updateAnswerEvaluation([{ point: score, answerId }]);
+
+		console.log(`Scored long answer with ID ${answerId} with ${score} points.`);
 	}
 }

@@ -1,4 +1,4 @@
-import { AttemptStatusType } from "../../shared/enum";
+import { AttemptStatusType, TestModeType } from "../../shared/enum";
 import { AnswerLoad, AnswerPersistence } from "./AnswerMapper";
 
 export type AttemptDto = {
@@ -13,6 +13,9 @@ export type AttemptDto = {
 
 export type AttemptLoad = AttemptDto & {
 	id: string;
+	test: {
+		mode: TestModeType;
+	},
 	answers: AnswerLoad[];
 }
 
