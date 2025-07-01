@@ -18,7 +18,7 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 			.selectFrom("Attempts")
 			.where("Attempts.id", "=", attemptId)
 			.innerJoin("Tests", "Attempts.testId", "Tests.id")
-			.selectAll(["Tests", "Attempts"])
+			.selectAll(["Attempts", "Tests"])
 			.select([
 				"Attempts.id as id",
 				"Attempts.createdAt as createdAt",
