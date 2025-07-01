@@ -77,7 +77,7 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 	async getById(attemptId: string): Promise<AttemptAggregate> {
 		const attempt = await db
 			.selectFrom("Attempts as a")
-			.where("id", "=", attemptId)
+			.where("a.id", "=", attemptId)
 			.innerJoin("Tests as t", "t.id", "a.testId")
 			.groupBy("a.id")
 			.selectAll("a")
