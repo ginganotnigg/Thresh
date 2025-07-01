@@ -15,37 +15,41 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 		}
 
 		let query = db
-			.selectFrom("Attempts")
-			.where("Attempts.id", "=", attemptId)
-			.innerJoin("Tests", "Attempts.testId", "Tests.id")
-			.selectAll(["Attempts", "Tests"])
+			.selectFrom("Attempts as a")
+			.where("a.id", "=", attemptId)
+			.innerJoin("Tests as t", "a.testId", "t.id")
+			.selectAll(["a"])
 			.select([
-				"Attempts.id as id",
-				"Attempts.createdAt as createdAt",
-				"Attempts.updatedAt as updatedAt",
-				"Tests.createdAt as TestCreatedAt",
-				"Tests.updatedAt as TestUpdatedAt",
+				"t.authorId",
+				"t.id as testId",
+				"t.title",
+				"t.description",
+				"t.language",
+				"t.minutesToAnswer",
+				"t.mode",
+				"t.createdAt as TestCreatedAt",
+				"t.updatedAt as TestUpdatedAt",
 			])
 			.select((eb) => [
 				eb
-					.selectFrom("AttemptsAnswerQuestions")
-					.where("AttemptsAnswerQuestions.attemptId", "=", attemptId)
+					.selectFrom("AttemptsAnswerQuestions as aaq")
+					.where("aaq.attemptId", "=", attemptId)
 					.select(eb => [
-						eb.fn.count("AttemptsAnswerQuestions.id").as("answered"),
+						eb.fn.count("aaq.id").as("answered"),
 					]).as("answered"),
 				eb
-					.selectFrom("AttemptsAnswerQuestions")
-					.innerJoin("Questions", "AttemptsAnswerQuestions.questionId", "Questions.id")
-					.where("AttemptsAnswerQuestions.attemptId", "=", attemptId)
-					.whereRef("AttemptsAnswerQuestions.pointsReceived", "=", "Questions.points")
+					.selectFrom("AttemptsAnswerQuestions as aaq")
+					.innerJoin("Questions as q", "aaq.questionId", "q.id")
+					.where("aaq.attemptId", "=", attemptId)
+					.whereRef("aaq.pointsReceived", "=", "q.points")
 					.select(eb => [
-						eb.fn.count("AttemptsAnswerQuestions.id").as("answeredCorrect"),
+						eb.fn.count("aaq.id").as("answeredCorrect"),
 					]).as("answeredCorrect"),
 				eb
-					.selectFrom("AttemptsAnswerQuestions")
-					.where("AttemptsAnswerQuestions.attemptId", "=", attemptId)
+					.selectFrom("AttemptsAnswerQuestions as aaq")
+					.where("aaq.attemptId", "=", attemptId)
 					.select(eb => [
-						eb.fn.sum("AttemptsAnswerQuestions.pointsReceived").as("pointsReceived"),
+						eb.fn.sum("aaq.pointsReceived").as("pointsReceived"),
 					]).as("pointsReceived"),
 			])
 
