@@ -12,21 +12,27 @@ import { RepoBase } from "./RepoBase";
 
 export class TestAttemptsRepo extends RepoBase<TestAttemptsAggregate> {
 	private async getAttemptsOfTest(testId: string): Promise<AttemptEntity[]> {
-		const attempts = await db
+		const raws = await db
 			.selectFrom("Attempts as a")
+			.innerJoin("Tests as t", "t.id", "a.testId")
 			.where("a.testId", "=", testId)
-			.selectAll()
+			.select(["t.mode as mode"])
+			.selectAll("a")
 			.execute();
-		return attempts.map((attempt) => AttemptEntity.load({
-			id: attempt.id,
-			candidateId: attempt.candidateId,
-			testId: attempt.testId!,
-			hasEnded: attempt.hasEnded === 1 ? true : false,
-			order: attempt.order,
-			secondsSpent: attempt.secondsSpent,
-			status: attempt.status,
+		return raws.map((raw) => AttemptEntity.load({
+			id: raw.id,
+			candidateId: raw.candidateId,
+			testId: raw.testId!,
+			hasEnded: raw.hasEnded === 1 ? true : false,
+			order: raw.order,
+			secondsSpent: raw.secondsSpent,
+			status: raw.status,
 			answers: [], // Assuming answers are not needed here, or you can fetch them if required
-			createdAt: attempt.createdAt!,
+			createdAt: raw.createdAt!,
+
+			test: {
+				mode: raw.mode,
+			},
 		}));
 	}
 
