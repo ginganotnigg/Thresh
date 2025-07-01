@@ -23,6 +23,11 @@ export class AttemptAggregate extends AggregateRoot {
 		this.attempt.status = "COMPLETED";
 		this.attempt.hasEnded = true;
 		this.attempt.secondsSpent = Math.floor((Date.now() - this.attempt.createdAt.getTime()) / 1000);
+
+		console.log("Test");
+		console.log(Date.now());
+		console.log(this.attempt.createdAt.getTime());
+
 		this.addDomainEvent(new AttemptSubmittedEvent(this.id));
 	}
 
