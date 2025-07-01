@@ -21,17 +21,29 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 			.leftJoin("MCQQuestions as mcq", "q.id", "mcq.questionId")
 			.leftJoin("LAQuestions as laq", "q.id", "laq.questionId")
 			.where("aaq.attemptId", "=", attemptId)
-			.selectAll()
+			.selectAll(["aaq"])
+			.select([
+				"q.id as questionId",
+				"q.text as text",
+				"q.points as points",
+				"mcq.correctOption as correctOption",
+				"mcq.options as options",
+				"laq.correctAnswer as correctAnswer",
+				"laq.extraText as extraText",
+				"laq.imageLinks as imageLinks",
+			])
 			.select([
 				"aaqmcq.attemptAnswerQuestionId as aaqmcq_attemptAnswerQuestionId",
+				"aaqmcq.chosenOption as chosenOption",
 				"aaqla.attemptAnswerQuestionId as aaqla_attemptAnswerQuestionId",
+				"aaqla.answer as answer",
 			])
 			.execute();
 		;
 		const answers: AnswerLoad[] = raw.map((row): AnswerLoad | null => {
 			if (row.aaqmcq_attemptAnswerQuestionId != null) {
 				return {
-					id: row.attemptAnswerQuestionId!,
+					id: row.id,
 					pointRecieved: row.pointsReceived,
 					type: "MCQ",
 					question: {
@@ -51,7 +63,7 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 			}
 			else if (row.aaqla_attemptAnswerQuestionId != null) {
 				return {
-					id: row.attemptAnswerQuestionId!,
+					id: row.id,
 					pointRecieved: row.pointsReceived,
 					type: "LONG_ANSWER",
 					question: {

@@ -13,6 +13,7 @@ const dialect = new MysqlDialect({
 		database: env.db.database || 'skillsharp',
 		port: env.db.port || 3306,
 		connectionLimit: 10,
+		timezone: 'Z', // Use UTC timezone
 	})
 });
 
