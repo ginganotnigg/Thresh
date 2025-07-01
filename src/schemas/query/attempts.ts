@@ -40,10 +40,10 @@ export async function queryAttempts(params: QueryAttemptsParam): Promise<QueryAt
 					eb.fn.count<number>("aaq.id").as("answered")
 				]).as("answered")
 			,
-			eb.selectFrom("Questions as q")
-				.whereRef("q.testId", "=", "Attempts.testId")
+			eb.selectFrom("AttemptsAnswerQuestions as aaq")
+				.whereRef("aaq.attemptId", "=", "Attempts.id")
 				.select(eb => [
-					eb.fn.sum<number>("q.points").as("points")
+					eb.fn.sum<number>("aaq.pointsReceived").as("points")
 				]).as("points")
 			,
 			eb.selectFrom("AttemptsAnswerQuestions as aaq")
