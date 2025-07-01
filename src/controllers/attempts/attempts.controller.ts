@@ -26,6 +26,7 @@ import { AttemptSubmittedEvent } from "../../domain/_events/AttemptSubmittedEven
 import { ScoreLongAnswerEvent } from "../../domain/_events/ScoreLongAnswer";
 import { ScoreLongAnswerHandler } from "./handlers/ScoreLongAnswerHandler";
 import { AttemptSubmittedHandler } from "./handlers/AttemptSubmittedHandler";
+import { scheduleForceScoreAttempt } from "./init/cron-force-score-attempt";
 
 export class AttemptsController extends ControllerBase {
 	private readonly attemptTimeoutHandler: EventHandlerBase<AttemptTimeOutEvent>;
@@ -48,6 +49,7 @@ export class AttemptsController extends ControllerBase {
 
 	async constructRouter(): Promise<void> {
 		await scheduleOngoingAttempts();
+		await scheduleForceScoreAttempt();
 
 		const router = Chuoi.newRoute("/attempts");
 

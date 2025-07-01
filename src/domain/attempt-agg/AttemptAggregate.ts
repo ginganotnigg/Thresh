@@ -114,4 +114,17 @@ export class AttemptAggregate extends AggregateRoot {
 		this.answersToUpdate.push(foundAnswer);
 		this.updateStatusAfterPointsEvaluation();
 	}
+
+	forceScore(): void {
+		if (this.attempt.status !== "COMPLETED") {
+			throw new DomainError(`Can only force score a completed attempt.`);
+		}
+		for (const answer of this.answers) {
+			if (answer.getIsGraded() === false) {
+				answer.updatePoints(0);
+				this.answersToUpdate.push(answer);
+			}
+		}
+		this.updateStatusAfterPointsEvaluation();
+	}
 }
