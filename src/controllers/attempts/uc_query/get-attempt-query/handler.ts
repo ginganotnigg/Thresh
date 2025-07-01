@@ -18,7 +18,7 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 			.selectFrom("Attempts")
 			.where("Attempts.id", "=", attemptId)
 			.innerJoin("Tests", "Attempts.testId", "Tests.id")
-			.selectAll(["Attempts", "Tests"])
+			.selectAll(["Tests", "Attempts"])
 			.select([
 				"Attempts.id as id",
 				"Attempts.createdAt as createdAt",
@@ -53,7 +53,6 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 		if (!res) {
 			throw new DomainError("Attempt not found");
 		}
-
 
 		const response: GetAttemptQueryResponse = {
 			id: res.id,
