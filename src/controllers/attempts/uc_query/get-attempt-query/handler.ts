@@ -54,6 +54,7 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 			throw new DomainError("Attempt not found");
 		}
 
+
 		const response: GetAttemptQueryResponse = {
 			id: res.id,
 			candidateId: res.candidateId,
