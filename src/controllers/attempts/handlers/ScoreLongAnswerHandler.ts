@@ -12,11 +12,11 @@ export class ScoreLongAnswerHandler extends EventHandlerBase<ScoreLongAnswerEven
 
 	async handle(params: ScoreLongAnswerEvent): Promise<void> {
 		const { answerId, score } = params;
+		console.log(`Scored long answer with ID ${answerId} with ${score} points.`);
+
 		const repo = new AttemptRepo();
 		const agg = await repo.getById(answerId);
-
-		agg.updateAnswerEvaluation([{ point: score, answerId }]);
-
-		console.log(`Scored long answer with ID ${answerId} with ${score} points.`);
+		agg.updateAnswerEvaluation(score, answerId);
+		await repo.save(agg);
 	}
 }

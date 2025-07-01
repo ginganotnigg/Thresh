@@ -43,5 +43,6 @@ export class AttemptSubmittedHandler extends EventHandlerBase<AttemptSubmittedEv
 		);
 
 		// We don't save the attempt here, its status only be updated when the long answers are scored.
+		// Notice how we only use getters of the aggregate, we do not modify it.
 	}
 }
