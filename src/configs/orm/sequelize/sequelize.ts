@@ -30,7 +30,6 @@ const sequelize = new Sequelize(
 		define: {
 			timestamps: true,
 		},
-		timezone: "+07:00",
 	}
 );
 
