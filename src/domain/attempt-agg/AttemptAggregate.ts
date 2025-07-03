@@ -92,7 +92,7 @@ export class AttemptAggregate extends AggregateRoot {
 		correctAnswer: string;
 		points: number;
 	}[] {
-		return this.answersToUpdate
+		return this.answers
 			.map((answer) => answer.getLongAnswerContentForEvaluation())
 			.filter(x => x !== null);
 	}

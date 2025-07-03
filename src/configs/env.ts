@@ -29,6 +29,10 @@ const env = {
 
 	// Message Broker
 	rabbitmqHost: process.env.RABBITMQ_HOST || "amqp://localhost:5672",
+	rabbitQueues: {
+		scoreLongAnswerReq: process.env.RABBITMQ_SCORE_LONG_ANSWER_REQ || "score-long-answer-req",
+		scoreLongAnswerRes: process.env.RABBITMQ_SCORE_LONG_ANSWER_RES || "score-long-answer-res",
+	},
 
 	// Development
 

@@ -12,7 +12,7 @@ export class MessageBrokerService {
 
 	private static instance: MessageBrokerService | null = null;
 
-	static async getInstance(): Promise<MessageBrokerService> {
+	static async getInstance(): Promise<MessageBrokerService | null> {
 		if (this.instance !== null) {
 			return this.instance;
 		}
@@ -25,7 +25,8 @@ export class MessageBrokerService {
 			return this.instance;
 		} catch (error) {
 			console.error('Failed to create MessageBrokerService:', error);
-			throw error;
+			this.instance = null;
+			return null;
 		}
 	}
 
