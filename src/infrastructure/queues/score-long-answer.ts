@@ -15,6 +15,7 @@ export class ScoreLongAnswerQueue {
 		userId: string
 	): Promise<void> {
 		const broker = await MessageBrokerService.getInstance();
+		console.log(`Sending to queue ${this.QUEUE_NAME} with attemptId: ${attemptId}, answerId: ${answerId}`);
 
 		broker.sendToQueue(this.QUEUE_NAME, JSON.stringify({
 			questionText,
@@ -26,6 +27,7 @@ export class ScoreLongAnswerQueue {
 		}));
 
 		broker.consume(this.QUEUE_NAME, async (msg) => {
+			console.log(`Received message from queue ${this.QUEUE_NAME} for attemptId: ${attemptId}, answerId: ${answerId}: ${msg?.content.toString()}`);
 			if (msg !== null) {
 				const data = JSON.parse(msg.content.toString());
 				const {
