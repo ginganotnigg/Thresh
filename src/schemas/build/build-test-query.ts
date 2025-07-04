@@ -19,7 +19,6 @@ export function buildTestQuery() {
 			"a.testId",
 			eb => eb.fn.count<number>("a.id").as("totalAttempts"),
 			eb => eb.fn.count<number>("a.candidateId").distinct().as("totalCandidates"),
-			eb => eb.fn.sum<number>("attempt_scores.totalPoints").as("totalScore"),
 			eb => eb.fn.max<number>("attempt_scores.totalPoints").as("highestScore"),
 			eb => eb.fn.min<number>("attempt_scores.totalPoints").as("lowestScore"),
 			eb => eb.fn.avg<number>("attempt_scores.totalPoints").as("averageScore"),

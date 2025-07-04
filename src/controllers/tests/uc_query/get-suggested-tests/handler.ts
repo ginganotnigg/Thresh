@@ -16,7 +16,7 @@ export class GetSuggestedTestsQueryHandler extends QueryHandlerBase<GetSuggested
 		query = query
 			.where("t.authorId", "=", userId)
 			.where("t.mode", "=", "PRACTICE")
-			.where("totalAttempts", "=", 0)
+			.where("astats.totalAttempts", "is", null)
 			.orderBy("t.updatedAt", "desc")
 			.limit(numberOfTests); // Default to 10 if not specified
 		;
@@ -27,10 +27,10 @@ export class GetSuggestedTestsQueryHandler extends QueryHandlerBase<GetSuggested
 			query2 = query2
 				.where("t.authorId", "=", userId)
 				.where("t.mode", "=", "PRACTICE")
-				.orderBy("averageScore", "asc")
+				.orderBy("astats.highestScore", "asc")
 				.orderBy("t.updatedAt", "desc")
 				.limit(numberOfTestsLeft);
-			const lowScoreTests = await query.execute();
+			const lowScoreTests = await query2.execute();
 			res.push(...lowScoreTests);
 		}
 
