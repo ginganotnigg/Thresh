@@ -10,5 +10,7 @@ export const GetTestsQuerySchema = PagingSchema.extend({
 	searchTitle: z.string().optional(),
 	sortCreatedAt: QuerySortOptionsSchema,
 	sortTitle: QuerySortOptionsSchema,
+	actions: z.enum(["manage", "view"]).optional().default("manage"),
 });
+
 export type GetTestsQuery = z.infer<typeof GetTestsQuerySchema>;

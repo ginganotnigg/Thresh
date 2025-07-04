@@ -13,12 +13,12 @@ export async function queryAttempts(params: QueryAttemptsParam): Promise<QueryAt
 	const {
 		testId,
 		candidateId,
-		status,
 		page,
 		perPage,
 		sortByPoints,
 		sortByCreatedAt,
 		sortBySecondsSpent,
+		statusFilters,
 	} = params;
 
 	let query = db
@@ -73,8 +73,8 @@ export async function queryAttempts(params: QueryAttemptsParam): Promise<QueryAt
 	if (candidateId) {
 		query = query.where("Attempts.candidateId", "=", candidateId);
 	}
-	if (status) {
-		query = query.where("Attempts.status", "=", status);
+	if (statusFilters && statusFilters.length > 0) {
+		query = query.where("Attempts.status", "in", statusFilters);
 	}
 	if (sortByPoints) {
 		query = query.orderBy("attemptPoints.points", sortByPoints);

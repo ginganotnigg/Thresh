@@ -16,6 +16,7 @@ export class GetTestsQueryHandler extends QueryHandlerBase<GetTestsQuery, GetTes
 			searchTitle,
 			sortCreatedAt,
 			sortTitle,
+			actions,
 		} = param;
 
 		let query = buildTestQuery();
@@ -41,6 +42,21 @@ export class GetTestsQueryHandler extends QueryHandlerBase<GetTestsQuery, GetTes
 		}
 		if (sortTitle) {
 			query = query.orderBy("t.title", sortTitle);
+		}
+		if (actions === "view") {
+			const userId = this.getCredentials().userId;
+			const now = new Date();
+			query = query
+				.where((eb) => eb.or([
+					eb("t.mode", "=", "PRACTICE")
+						.and("t.authorId", "=", userId)
+					,
+					eb("t.mode", "=", "EXAM")
+						.and("et.isPublic", "=", 1)
+						.and("et.openDate", "<=", now)
+						.and("et.closeDate", ">=", now)
+					,
+				]));
 		}
 
 		const res = await paginate(query, page, perPage);

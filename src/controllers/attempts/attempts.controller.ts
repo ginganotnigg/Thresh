@@ -27,6 +27,8 @@ import { ScoreLongAnswerEvent } from "../../domain/_events/ScoreLongAnswer";
 import { ScoreLongAnswerHandler } from "./handlers/ScoreLongAnswerHandler";
 import { AttemptSubmittedHandler } from "./handlers/AttemptSubmittedHandler";
 import { scheduleForceScoreAttempt } from "./init/cron-force-score-attempt";
+import { PatchAttemptScoreBodySchema } from "./uc_command/patch-attempt-score/body";
+import { PatchAttemptScoreHandler } from "./uc_command/patch-attempt-score/handler";
 
 export class AttemptsController extends ControllerBase {
 	private readonly attemptTimeoutHandler: EventHandlerBase<AttemptTimeOutEvent>;
@@ -131,6 +133,20 @@ export class AttemptsController extends ControllerBase {
 					.withCredentials(data.meta)
 					.withId(data.params.attemptId)
 					.handle();
+			})
+			.build({ tags: ["Attempts"] });
+
+		router.endpoint().patch("/:attemptId/score")
+			.schema({
+				meta: CredentialsMetaSchema,
+				params: AttemptIdParamsSchema,
+				body: PatchAttemptScoreBodySchema,
+			})
+			.handle(async (data) => {
+				return await new PatchAttemptScoreHandler()
+					.withCredentials(data.meta)
+					.withId(data.params.attemptId)
+					.handle(data.body);
 			})
 			.build({ tags: ["Attempts"] });
 	}
