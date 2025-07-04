@@ -10,11 +10,11 @@ export class GetTestCandidateAttemptsQueryHandler extends QueryHandlerBase<
 > {
 	async handle(param: GetTestCandidateAttemptsQuery): Promise<GetTestCandidateAttemptsResponse> {
 		const { testId, candidateId } = this.getId();
-		const { status, page, perPage } = param;
+		const { statusFilters, page, perPage } = param;
 		const query = await queryAttempts({
 			testId,
 			candidateId,
-			status,
+			statusFilters,
 			page,
 			perPage,
 		});

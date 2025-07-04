@@ -7,10 +7,10 @@ MessageBrokerService.getInstance().then(async (broker) => {
 		const message = 'Hello, RabbitMQ!';
 
 		// Send a message to the queue
-		await broker.sendToQueue(queueName, message);
+		await broker?.sendToQueue(queueName, message);
 		console.log(`[x] Sent '${message}' to queue '${queueName}'`);
 
-		await broker.consume("cac", (msg) => {
+		await broker?.consume("cac", (msg) => {
 			if (msg !== null) {
 				const content = msg.content.toString();
 				console.log(`[x] Received '${content}' from queue '${queueName}'`);
