@@ -12,12 +12,11 @@ export class PracticeAttemptsAggregate extends TestAttemptsAggregate {
 		super(id, minutesToAnswer, attempts);
 	}
 
-	protected _allowToDoTest(candidateId: string): boolean {
-		super._allowToDoTest(candidateId);
+	protected _checkAllowToDoTest(candidateId: string): void {
+		super._checkAllowToDoTest(candidateId);
 		const practiceCheck = candidateId === this.authorId;
 		if (practiceCheck === false) {
-			throw new DomainError(`Candidate is not the author of this Practice Test.`);
+			throw new DomainError(`You are not the author of this Test.`);
 		}
-		return true;
 	}
 }

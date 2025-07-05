@@ -1,3 +1,4 @@
+import { DomainError } from "../../shared/errors/domain.error";
 import { AttemptEntity } from "./AttemptEntity";
 import { TestAttemptsAggregate } from "./TestAttemptsAggregate";
 
@@ -14,19 +15,24 @@ export class ExamAttemptsAggregate extends TestAttemptsAggregate {
 		super(id, minutesToAnswer, attempts);
 	}
 
-	protected _allowToDoTest(candidateId: string): boolean {
+	protected _checkAllowToDoTest(candidateId: string): void {
+		super._checkAllowToDoTest(candidateId);
 		const now = new Date();
-		const isOpen = this.openDate <= now && now <= this.closeDate;
-
+		if (this.openDate > now) {
+			throw new DomainError(`Exam is not started yet.`);
+		}
+		if (this.closeDate < now) {
+			throw new DomainError(`Exam is already closed.`);
+		}
 		const isCandidateRegistered = this.participantList.includes(candidateId);
-
-		const numberOfAttempts = this.attempts.filter(attempt => attempt.getCandidateId() === candidateId).length;
-		const hasNotReachedMaxAttempt = numberOfAttempts === 0 ? true : numberOfAttempts < this.numberOfAttemptsAllowed;
-
-		return super._allowToDoTest(candidateId) &&
-			isOpen === true &&
-			isCandidateRegistered === true &&
-			hasNotReachedMaxAttempt === true
-			;
+		if (isCandidateRegistered === false) {
+			throw new DomainError(`Candidate is not participated in this exam.`);
+		}
+		if (this.numberOfAttemptsAllowed > 0 && this.numberOfAttemptsAllowed != null) {
+			const numberOfAttempts = this.attempts.filter(attempt => attempt.getCandidateId() === candidateId).length;
+			if (numberOfAttempts >= this.numberOfAttemptsAllowed) {
+				throw new DomainError(`Candidate has reached the maximum number of attempts allowed for this exam.`);
+			}
+		}
 	}
 }
