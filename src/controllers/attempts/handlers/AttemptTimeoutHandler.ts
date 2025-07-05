@@ -10,9 +10,14 @@ export class AttemptTimeoutHandler extends EventHandlerBase<AttemptTimeOutEvent>
 	}
 
 	async handle(params: AttemptTimeOutEvent): Promise<void> {
-		const repo = new AttemptRepo();
-		const agg = await repo.getById(params.attemptId);
-		agg.timeOut();
-		await repo.save(agg);
+		try {
+			const repo = new AttemptRepo();
+			const agg = await repo.getById(params.attemptId);
+			agg.timeOut();
+			await repo.save(agg); // Now includes retry logic
+		} catch (error) {
+			console.error(`Failed to timeout attempt ${params.attemptId} after retries:`, error);
+			throw error; // Re-throw for event handling framework
+		}
 	}
 }

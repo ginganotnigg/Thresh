@@ -13,6 +13,7 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 	declare status: CreationOptional<AttemptStatusType>;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
+	declare version?: CreationOptional<number>;
 
 	declare Attempts_answer_Questions?: NonAttribute<AttemptsAnswerQuestions[]>;
 	declare Test?: NonAttribute<Test>;
@@ -59,6 +60,11 @@ class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<At
 			status: {
 				type: DataTypes.ENUM(...AttemptStatusAsConst),
 				defaultValue: "IN_PROGRESS",
+				allowNull: false,
+			},
+			version: {
+				type: DataTypes.INTEGER,
+				defaultValue: 0,
 				allowNull: false,
 			},
 			createdAt: DataTypes.DATE,

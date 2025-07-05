@@ -51,6 +51,8 @@ export class AttemptAggregate extends AggregateRoot {
 		}
 		this.updateStatusAfterPointsEvaluation();
 		this.addDomainEvent(new AttemptSubmittedEvent(this.id));
+
+		console.log(`Answer to update:`, this.answersToUpdate.map(a => a.toPersistence()));
 	}
 
 	static load(load: AttemptLoad): AttemptAggregate {

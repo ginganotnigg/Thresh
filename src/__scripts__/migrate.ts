@@ -4,7 +4,7 @@ async function main() {
 	await sequelize.sync({
 		logging: true,
 		force: false,
-		alter: false,
+		alter: true,
 	});
 }
 

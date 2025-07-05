@@ -27,10 +27,14 @@ async function _scheduleForceScoreAttempt() {
 		;
 	const repo = new AttemptRepo();
 	for (const attempt of completedFor1HourAttempts) {
-		console.log("Force scored attempt:", attempt.id);
-		const agg = await repo.getById(attempt.id);
-		agg.forceScore();
-		await repo.save(agg);
+		try {
+			console.log("Force scored attempt:", attempt.id);
+			const agg = await repo.getById(attempt.id);
+			agg.forceScore();
+			await repo.save(agg); // Now includes retry logic
+		} catch (error) {
+			console.error(`Failed to force score attempt ${attempt.id} after retries:`, error);
+		}
 	}
 }
 

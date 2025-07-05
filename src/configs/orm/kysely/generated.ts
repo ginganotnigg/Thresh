@@ -31,6 +31,7 @@ export interface Attempts {
   status: Generated<"COMPLETED" | "GRADED" | "IN_PROGRESS">;
   testId: string;
   updatedAt: Date | null;
+  version: Generated<number>;
 }
 
 export interface AttemptsAnswerLAQuestions {

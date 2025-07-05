@@ -7,11 +7,14 @@ import { AttemptLoad } from "../../domain/_mappers/AttemptMapper";
 import { AnswerLoad, AnswerPersistence } from "../../domain/_mappers/AnswerMapper";
 import { RepoBase } from "./RepoBase";
 import AttemptsAnswerQuestions from "../models/attempts_answer_questions";
-import { Op } from "sequelize";
+import { Op, OptimisticLockError } from "sequelize";
 import AttemptsAnswerMCQQuestions from "../models/attempts_answer_mcq_questions";
 import AttemptsAnswerLAQuestions from "../models/attempts_answer_la_questions";
+import { OptimisticError } from "../../shared/errors/optimistic.error";
 
 export class AttemptRepo extends RepoBase<AttemptAggregate> {
+	private version: number = 0;
+
 	private async getAnswers(attemptId: string): Promise<AnswerLoad[]> {
 		const raw = await db
 			.selectFrom("AttemptsAnswerQuestions as aaq")
@@ -120,6 +123,7 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 			}
 		}
 		const agg = AttemptAggregate.load(load);
+		this.version = attempt.version ?? 0;
 		return agg;
 	}
 
@@ -127,6 +131,11 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 		const persistence = agg.getPersistenceData();
 		const transaction = await sequelize.transaction();
 		try {
+			const attempt = await Attempt.findByPk(persistence.id);
+			if (attempt && attempt.version !== this.version) {
+				throw new OptimisticError(`Attempt with id ${persistence.id} has been modified by another process.`);
+			}
+
 			await Attempt.upsert({
 				id: persistence.id,
 				candidateId: persistence.candidateId,
@@ -135,6 +144,7 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 				order: persistence.order,
 				secondsSpent: persistence.secondsSpent,
 				status: persistence.status,
+				version: this.version + 1,
 			}, {
 				transaction,
 			});
