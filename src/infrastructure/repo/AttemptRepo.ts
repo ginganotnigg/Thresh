@@ -44,7 +44,7 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 			if (row.aaqmcq_attemptAnswerQuestionId != null) {
 				return {
 					id: row.id,
-					pointRecieved: row.pointsReceived,
+					pointsReceived: row.pointsReceived,
 					type: "MCQ",
 					question: {
 						id: row.questionId!,
@@ -64,7 +64,7 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 			else if (row.aaqla_attemptAnswerQuestionId != null) {
 				return {
 					id: row.id,
-					pointRecieved: row.pointsReceived,
+					pointsReceived: row.pointsReceived,
 					type: "LONG_ANSWER",
 					question: {
 						id: row.questionId!,

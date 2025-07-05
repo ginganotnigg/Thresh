@@ -1,7 +1,7 @@
 import { QuestionLoad } from "./QuestionMapper";
 
 export type AnswerDto = {
-	pointsRecieved?: number | null;
+	pointsReceived?: number | null;
 } & ({
 	type: "MCQ";
 	chosenOption: number;
@@ -30,7 +30,7 @@ export type AnswerLoad = {
 	id: string;
 	attemptId: string;
 	question: QuestionLoad;
-	pointRecieved: number | null;
+	pointsReceived: number | null;
 } & ({
 	type: "MCQ";
 	chosenOption: number;
@@ -55,7 +55,7 @@ export class AnswerMapper {
 			questionId,
 			attemptId,
 			...answer,
-			pointsReceived: answer.pointsRecieved ?? null,
+			pointsReceived: answer.pointsReceived ?? null,
 		};
 	}
 

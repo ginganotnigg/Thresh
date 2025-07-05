@@ -76,7 +76,7 @@ export class AnswerEntity extends Entity {
 		if (this.dto === null) {
 			return true;
 		}
-		return this.dto.pointsRecieved != null;
+		return this.dto.pointsReceived != null;
 	}
 
 	updatePoints(points: number): void {
@@ -86,6 +86,6 @@ export class AnswerEntity extends Entity {
 		if (points < 0) {
 			throw new DomainError("Points cannot be negative");
 		}
-		this.dto.pointsRecieved = points;
+		this.dto.pointsReceived = points;
 	}
 }
