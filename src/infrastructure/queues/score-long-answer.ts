@@ -59,22 +59,7 @@ export class ScoreLongAnswerQueue {
 				const {
 					score,
 					comment,
-					timestamp: responseTimestamp,
-					answerId: responseAnswerId,
 				} = data;
-
-				if (responseAnswerId !== answerId) {
-					console.warn(`Response answerId ${responseAnswerId} does not match request answerId ${answerId}`);
-					return;
-				}
-				if (timestamp !== responseTimestamp) {
-					console.warn(`Response timestamp ${responseTimestamp} does not match request timestamp ${timestamp}`);
-					return;
-				}
-				if (score === undefined || score === null) {
-					console.warn(`Received undefined or null score for attemptId: ${attemptId}, answerId: ${answerId}`);
-					return;
-				}
 
 				try {
 					EventDispatcher.getInstance().dispatch(new ScoreLongAnswerEvent(attemptId, answerId, score || 0, comment));
