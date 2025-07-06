@@ -14,11 +14,15 @@ export class AttemptTimeoutHandler extends EventHandlerBase<AttemptTimeOutEvent>
 	}
 
 	async handle(params: AttemptTimeOutEvent): Promise<void> {
-		const repo = new AttemptRepo();
-		const agg = await repo.getById(params.attemptId);
-		ScoreAttemptQueryService.score(agg);
-		const result = await ScoreAttemptQueryService.score(agg);
-		agg.timeOut(result.questions, result.testLanguage);
-		await repo.save(agg);
+		try {
+			const repo = new AttemptRepo();
+			const agg = await repo.getById(params.attemptId);
+			ScoreAttemptQueryService.score(agg);
+			const result = await ScoreAttemptQueryService.score(agg);
+			agg.timeOut(result.questions, result.testLanguage);
+			await repo.save(agg);
+		} catch (error) {
+			console.error("Error handling attempt timeout:", error);
+		}
 	}
 }

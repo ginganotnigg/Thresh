@@ -10,7 +10,11 @@ export class AttemptCreatedHandler extends EventHandlerBase<AttemptCreatedEvent>
 	}
 
 	async handle(params: AttemptCreatedEvent): Promise<void> {
-		const { attemptId, endDate } = params;
-		AttemptScheduleService.scheduleAttempt(attemptId, endDate);
+		try {
+			const { attemptId, endDate } = params;
+			AttemptScheduleService.scheduleAttempt(attemptId, endDate);
+		} catch (error) {
+			console.error("Error handling attempt creation:", error);
+		}
 	}
 }
