@@ -17,6 +17,7 @@ export class GetTestsQueryHandler extends QueryHandlerBase<GetTestsQuery, GetTes
 			sortCreatedAt,
 			sortTitle,
 			actions,
+			filterStatuses,
 		} = param;
 
 		let query = buildTestQuery();
@@ -57,6 +58,20 @@ export class GetTestsQueryHandler extends QueryHandlerBase<GetTestsQuery, GetTes
 						.and("et.closeDate", ">=", now)
 					,
 				]));
+		}
+		if (filterStatuses.length > 0) {
+			const now = new Date();
+			if (filterStatuses.includes("UPCOMING")) {
+				query = query.where("et.openDate", ">", now);
+			}
+			if (filterStatuses.includes("OPEN")) {
+				query = query
+					.where("et.openDate", "<=", now)
+					.where("et.closeDate", ">=", now);
+			}
+			if (filterStatuses.includes("CLOSED")) {
+				query = query.where("et.closeDate", "<", now);
+			}
 		}
 
 		const res = await paginate(query, page, perPage);

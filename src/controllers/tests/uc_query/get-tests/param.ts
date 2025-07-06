@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { PagingSchema } from "../../../../shared/controller/schemas/base";
-import { QuerySortOptionsSchema } from '../../../../shared/controller/schemas/query';
+import { QueryArraySchema, QuerySortOptionsSchema } from '../../../../shared/controller/schemas/query';
 import { TestModeAsConst } from "../../../../shared/enum";
 
 export const GetTestsQuerySchema = PagingSchema.extend({
@@ -11,6 +11,7 @@ export const GetTestsQuerySchema = PagingSchema.extend({
 	sortCreatedAt: QuerySortOptionsSchema,
 	sortTitle: QuerySortOptionsSchema,
 	actions: z.enum(["manage", "view"]).optional().default("manage"),
+	filterStatuses: QueryArraySchema(z.enum(["UPCOMING", "OPEN", "CLOSED"])).optional().default([]),
 });
 
 export type GetTestsQuery = z.infer<typeof GetTestsQuerySchema>;
