@@ -29,7 +29,6 @@ import { AttemptSubmittedHandler } from "./handlers/AttemptSubmittedHandler";
 import { scheduleForceScoreAttempt } from "./init/cron-force-score-attempt";
 import { PatchAttemptScoreBodySchema } from "./uc_command/patch-attempt-score/body";
 import { PatchAttemptScoreHandler } from "./uc_command/patch-attempt-score/handler";
-import { AttemptAnsweredHandler } from "./handlers/AttemptAnswerHandler";
 import { AttemptAnsweredEvent } from "./events/AttemptAnsweredEvent";
 
 export class AttemptsController extends ControllerBase {
@@ -37,7 +36,6 @@ export class AttemptsController extends ControllerBase {
 	private readonly attemptCreatedHandler: EventHandlerBase<AttemptCreatedEvent>;
 	private readonly attemptEndedHandler: EventHandlerBase<AttemptSubmittedEvent>;
 	private readonly scoreLongAnswerHandler: EventHandlerBase<ScoreLongAnswerEvent>;
-	private readonly attemptAnsweredHandler: EventHandlerBase<AttemptAnsweredEvent>;
 
 	constructor() {
 		super();
@@ -49,8 +47,6 @@ export class AttemptsController extends ControllerBase {
 		this.attemptEndedHandler.registerEvent(AttemptSubmittedEvent);
 		this.scoreLongAnswerHandler = new ScoreLongAnswerHandler();
 		this.scoreLongAnswerHandler.registerEvent(ScoreLongAnswerEvent);
-		this.attemptAnsweredHandler = new AttemptAnsweredHandler();
-		this.attemptAnsweredHandler.registerEvent(AttemptAnsweredEvent);
 	}
 
 	async constructRouter(): Promise<void> {

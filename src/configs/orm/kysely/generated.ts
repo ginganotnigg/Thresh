@@ -37,6 +37,7 @@ export interface Attempts {
 export interface AttemptsAnswerLAQuestions {
   answer: string;
   attemptAnswerQuestionId: string;
+  comment: string | null;
 }
 
 export interface AttemptsAnswerMCQQuestions {

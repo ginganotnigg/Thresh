@@ -40,6 +40,7 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 				"aaqmcq.chosenOption as chosenOption",
 				"aaqla.attemptAnswerQuestionId as aaqla_attemptAnswerQuestionId",
 				"aaqla.answer as answer",
+				"aaqla.comment as comment",
 			])
 			.execute();
 		;
@@ -47,40 +48,21 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 			if (row.aaqmcq_attemptAnswerQuestionId != null) {
 				return {
 					id: row.id,
+					questionId: row.questionId!,
 					pointsReceived: row.pointsReceived,
 					type: "MCQ",
-					question: {
-						id: row.questionId!,
-						text: row.text!,
-						points: row.points!,
-						type: "MCQ",
-						detail: {
-							type: "MCQ",
-							correctOption: row.correctOption!,
-							options: row.options as string[],
-						},
-					},
 					attemptId: row.attemptId!,
 					chosenOption: row.chosenOption!,
 				}
-			}
-			else if (row.aaqla_attemptAnswerQuestionId != null) {
+			} else if (row.aaqla_attemptAnswerQuestionId != null) {
 				return {
 					id: row.id,
+					questionId: row.questionId!,
 					pointsReceived: row.pointsReceived,
 					type: "LONG_ANSWER",
-					question: {
-						id: row.questionId!,
-						text: row.text!,
-						points: row.points!,
-						type: "LONG_ANSWER",
-						detail: {
-							type: "LONG_ANSWER",
-							correctAnswer: row.correctAnswer!,
-						},
-					},
 					attemptId: row.attemptId!,
 					answer: row.answer!,
+					comment: row.comment!,
 				}
 			} else {
 				return null;
@@ -131,10 +113,10 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 		const persistence = agg.getPersistenceData();
 		const transaction = await sequelize.transaction();
 		try {
-			const attempt = await Attempt.findByPk(persistence.id);
-			if (attempt && attempt.version !== this.version) {
-				throw new OptimisticError(`Attempt with id ${persistence.id} has been modified by another process.`);
-			}
+			// const attempt = await Attempt.findByPk(persistence.id);
+			// if (attempt && attempt.version !== this.version) {
+			// 	throw new OptimisticError(`Attempt with id ${persistence.id} has been modified by another process.`);
+			// }
 
 			await Attempt.upsert({
 				id: persistence.id,
@@ -191,6 +173,7 @@ export class AttemptRepo extends RepoBase<AttemptAggregate> {
 					return {
 						attemptAnswerQuestionId: a.id,
 						answer: a.answer,
+						comment: a.comment,
 					}
 				}),
 				{ transaction },

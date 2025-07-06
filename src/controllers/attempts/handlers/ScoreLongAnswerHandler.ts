@@ -16,7 +16,7 @@ export class ScoreLongAnswerHandler extends EventHandlerBase<ScoreLongAnswerEven
 
 		const repo = new AttemptRepo();
 		const agg = await repo.getById(answerId);
-		agg.updateAnswerEvaluation(score, answerId);
+		agg.updateAnswerEvaluation(score, answerId, params.comment);
 		await repo.save(agg);
 	}
 }

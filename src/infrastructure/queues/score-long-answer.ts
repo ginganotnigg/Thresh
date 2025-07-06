@@ -8,13 +8,25 @@ export class ScoreLongAnswerQueue {
 	private static readonly RES_QUEUE = env.rabbitQueues.scoreLongAnswerRes || "score-long-answer-res";
 
 	static async score(
-		attemptId: string,
-		questionText: string,
-		answerId: string,
-		answer: string,
-		correctAnswer: string,
-		points: number,
-		userId: string
+		{
+			attemptId,
+			questionText,
+			answerId,
+			answer,
+			correctAnswer,
+			points,
+			userId,
+			language,
+		}: {
+			attemptId: string,
+			questionText: string,
+			answerId: string,
+			answer: string,
+			correctAnswer: string,
+			points: number,
+			userId: string,
+			language: string,
+		}
 	): Promise<void> {
 		const broker = await MessageBrokerService.getInstance();
 		if (!broker) {
@@ -28,6 +40,7 @@ export class ScoreLongAnswerQueue {
 			answer,
 			correctAnswer,
 			points,
+			language,
 
 			// Extra information
 			x_user_id: userId,
@@ -64,7 +77,7 @@ export class ScoreLongAnswerQueue {
 				}
 
 				try {
-					EventDispatcher.getInstance().dispatch(new ScoreLongAnswerEvent(attemptId, answerId, score || 0));
+					EventDispatcher.getInstance().dispatch(new ScoreLongAnswerEvent(attemptId, answerId, score || 0, comment));
 				} catch (error) {
 					console.error(`Error dispatching ScoreLongAnswerEvent for attemptId: ${attemptId}, answerId: ${answerId}`, error);
 				}

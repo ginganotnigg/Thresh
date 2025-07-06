@@ -8,6 +8,7 @@ export type AnswerDto = {
 } | {
 	type: "LONG_ANSWER";
 	answer: string;
+	comment?: string | null;
 });
 
 export type AnswerPersistence = {
@@ -24,12 +25,13 @@ export type AnswerPersistence = {
 	type: "LONG_ANSWER";
 	answer: string;
 	pointsReceived: number | null;
+	comment?: string | null;
 });
 
 export type AnswerLoad = {
 	id: string;
 	attemptId: string;
-	question: QuestionLoad;
+	questionId: number;
 	pointsReceived: number | null;
 } & ({
 	type: "MCQ";
@@ -37,6 +39,7 @@ export type AnswerLoad = {
 } | {
 	type: "LONG_ANSWER";
 	answer: string;
+	comment?: string | null;
 });
 
 export class AnswerMapper {
@@ -60,9 +63,9 @@ export class AnswerMapper {
 	}
 
 	static toDto(load: AnswerLoad): AnswerDto {
-		const { question, ...answer } = load;
+		const { questionId, ...answer } = load;
 		return {
-			...answer,
+			...answer
 		};
 	}
 }

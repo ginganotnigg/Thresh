@@ -3,8 +3,8 @@ import { db } from "../../configs/orm/kysely/db";
 import { GetAttemptsResourceResponse } from "../../controllers/attempts/uc_query/get-attempts-query/response";
 import { paginate } from "../../shared/handler/query";
 import { PagedSchema } from "../../shared/controller/schemas/base";
-import { AttemptCoreSchema } from "../core/attempt";
-import { QueryAttemptsParam } from "../params/attempts";
+import { AttemptCoreSchema } from "../../schemas/core/attempt";
+import { QueryAttemptsParam } from "../../schemas/params/attempts";
 
 const QueryAttemptsResponseSchema = PagedSchema(AttemptCoreSchema);
 export type QueryAttemptsResponse = z.infer<typeof QueryAttemptsResponseSchema>;

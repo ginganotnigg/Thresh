@@ -1,4 +1,4 @@
-import { queryAttempts } from "../../../../schemas/query/attempts";
+import { queryAttempts } from "../../../../infrastructure/query/attempts";
 import { QueryHandlerBase } from "../../../../shared/handler/usecase.base";
 import { GetCandidateAttemptsQuery } from "./param";
 import { GetCandidateAttemptsResponse } from "./response";

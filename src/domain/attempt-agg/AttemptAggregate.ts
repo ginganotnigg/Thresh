@@ -5,7 +5,7 @@ import { AttemptSubmittedEvent } from "../_events/AttemptSubmittedEvent";
 import { AttemptDto, AttemptLoad, AttemptMapper, AttemptPersistence } from "../_mappers/AttemptMapper";
 import { AnswerDto, AnswerPersistence } from "../_mappers/AnswerMapper";
 import { AnswerEntity } from "./AnswerEntity";
-import { QuestionDto } from "../_mappers/QuestionMapper";
+import { QuestionDto, QuestionLoad } from "../_mappers/QuestionMapper";
 import { TestModeType } from "../../shared/enum";
 
 export class AttemptAggregate extends AggregateRoot {
@@ -31,26 +31,32 @@ export class AttemptAggregate extends AggregateRoot {
 		}
 	}
 
-	private endTest() {
+	private endTest(questions: QuestionLoad[], testLanguage: string): void {
 		if (this.attempt.status !== "IN_PROGRESS") {
-			throw new DomainError(`Attempt has ended.`);
+			return; // No need to end if already completed or graded
 		}
 		this.attempt.status = "COMPLETED";
 		this.attempt.hasEnded = true;
 		this.attempt.secondsSpent = Math.floor((Date.now() - this.attempt.createdAt.getTime()) / 1000);
+		const pointsMap: Map<number, QuestionLoad> = new Map();
 
-		// Automatically grade all MCQ questions that are not graded yet
+		// Map question IDs to their points
+		for (const question of questions) {
+			pointsMap.set(question.id, question);
+		}
+
+		// Grade all MCQ questions that are not graded yet
 		for (const answer of this.answers) {
 			if (answer.getIsGraded() === false) {
-				const getMcqPoints = answer.getMCQPointsForEvaluation();
-				if (getMcqPoints !== null) {
-					answer.updatePoints(getMcqPoints);
+				const question = pointsMap.get(answer.getQuestionId());
+				if (question !== undefined && question.detail.type === "MCQ") {
+					answer.scoreMCQ(question.detail.correctOption, question.points);
 					this.answersToUpdate.push(answer);
 				}
 			}
 		}
 		this.updateStatusAfterPointsEvaluation();
-		this.addDomainEvent(new AttemptSubmittedEvent(this.id));
+		this.addDomainEvent(new AttemptSubmittedEvent(this.id, this.attempt.testId, questions, testLanguage));
 
 		console.log(`Answer to update:`, this.answersToUpdate.map(a => a.toPersistence()));
 	}
@@ -61,25 +67,33 @@ export class AttemptAggregate extends AggregateRoot {
 		return new AttemptAggregate(load.id, load.test.mode, dto, answerEntities);
 	}
 
-	submit(credentials: CredentialsBase): void {
+	submit(credentials: CredentialsBase, questions: QuestionLoad[], testLanguage: string): void {
 		if (this.attempt.candidateId !== credentials.userId) {
 			throw new DomainError(`This is not your attempt`);
 		}
-		this.endTest();
+		if (this.attempt.status !== "IN_PROGRESS") {
+			throw new DomainError(`Attempt has already ended.`);
+		}
+		this.endTest(questions, testLanguage);
 	}
 
-	answerQuestion(credentials: CredentialsBase, questionId: number, question: QuestionDto, answer: AnswerDto | null): void {
+	timeOut(questions: QuestionLoad[], testLanguage: string): void {
+		this.endTest(questions, testLanguage);
+	}
+
+	answerQuestions(credentials: CredentialsBase, answersWithQuestions: {
+		questionId: number;
+		answer: AnswerDto | null;
+	}[]): void {
 		if (this.attempt.status !== "IN_PROGRESS") {
 			throw new DomainError(`Attempt has ended.`);
 		}
 		if (this.attempt.candidateId !== credentials.userId) {
 			throw new DomainError(`This is not your attempt`);
 		}
-		this.answersToUpdate.push(AnswerEntity.create(this.id, questionId, question, answer));
-	}
-
-	timeOut(): void {
-		this.endTest();
+		for (const { questionId, answer } of answersWithQuestions) {
+			this.answersToUpdate.push(AnswerEntity.create(this.id, questionId, answer));
+		}
 	}
 
 	getPersistenceData(): AttemptPersistence {
@@ -88,11 +102,9 @@ export class AttemptAggregate extends AggregateRoot {
 	}
 
 	getEvaluationData(): {
-		questionText: string;
+		questionId: number;
 		answerId: string;
 		answer: string;
-		correctAnswer: string;
-		points: number;
 	}[] {
 		return this.answers
 			.map((answer) => answer.getLongAnswerContentForEvaluation())
@@ -103,16 +115,20 @@ export class AttemptAggregate extends AggregateRoot {
 		return this.attempt.candidateId;
 	}
 
+	getTestId(): string {
+		return this.attempt.testId;
+	}
+
 	getTestMode(): TestModeType {
 		return this.testMode;
 	}
 
-	updateAnswerEvaluation(point: number, answerId: string): void {
+	updateAnswerEvaluation(point: number, answerId: string, comment?: string): void {
 		const foundAnswer = this.answers.find((a) => a.id === answerId);
 		if (!foundAnswer) {
 			throw new DomainError(`Answer not found for this Attempt`);
 		}
-		foundAnswer.updatePoints(point);
+		foundAnswer.scoreLongAnswer(point, comment);
 		this.answersToUpdate.push(foundAnswer);
 		this.updateStatusAfterPointsEvaluation();
 	}
@@ -123,7 +139,7 @@ export class AttemptAggregate extends AggregateRoot {
 		}
 		for (const answer of this.answers) {
 			if (answer.getIsGraded() === false) {
-				answer.updatePoints(0);
+				answer.scoreLongAnswer(0, "Auto-graded: No points received");
 				this.answersToUpdate.push(answer);
 			}
 		}

@@ -56,7 +56,7 @@ const logger = createLogger({
 	level: env.logLevel,
 	format: httpFormat,
 	transports: [
-		new transports.Console({ level: 'error' }),
+		new transports.Console({ level: 'info' }),
 		new transports.File({ filename: 'logs/error.log', level: 'error', options: { flags: 'w' } }),
 		new transports.File({ filename: 'logs/combined.log', options: { flags: 'w' } }),
 	],

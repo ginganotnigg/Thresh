@@ -7,6 +7,7 @@
 	"scripts": {
 		"build": "tsc",
 		"prod": "node --require ./dist/configs/openapi/extends-zod.js ./dist/index.js",
+		"migrate": "cross-env NODE_ENV=development && ts-node src/__scripts__/migrate.ts",
 		"start": "ts-node --require ./src/configs/openapi/extends-zod.ts src/index.ts",
 		"start:prod": "cross-env NODE_ENV=production npm run start",
 		"seed": "ts-node src/__scripts__/seed.ts",

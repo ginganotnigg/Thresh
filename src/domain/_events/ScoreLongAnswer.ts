@@ -5,5 +5,6 @@ export class ScoreLongAnswerEvent extends DomainEventBase {
 		public readonly attemptId: string,
 		public readonly answerId: string,
 		public readonly score: number,
+		public readonly comment?: string,
 	) { super(); }
 }

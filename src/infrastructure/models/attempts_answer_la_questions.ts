@@ -1,9 +1,10 @@
-import { Association, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
+import { Association, CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from "sequelize";
 import AttemptsAnswerQuestions from "./attempts_answer_questions";
 
 class AttemptsAnswerLAQuestions extends Model<InferAttributes<AttemptsAnswerLAQuestions>, InferCreationAttributes<AttemptsAnswerLAQuestions>> {
 	declare attemptAnswerQuestionId: string;
 	declare answer: string;
+	declare comment?: CreationOptional<string | null>;
 
 	declare Attempts_Answer_Questions?: NonAttribute<AttemptsAnswerQuestions>;
 
@@ -26,6 +27,11 @@ class AttemptsAnswerLAQuestions extends Model<InferAttributes<AttemptsAnswerLAQu
 			answer: {
 				type: DataTypes.TEXT,
 				allowNull: false,
+			},
+			comment: {
+				type: DataTypes.TEXT,
+				allowNull: true,
+				defaultValue: null,
 			},
 		}, {
 			sequelize,

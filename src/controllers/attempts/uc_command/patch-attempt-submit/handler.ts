@@ -1,28 +1,17 @@
-import { RetryableCommandHandlerBase } from "../../../../shared/handler/retryable-command.base";
 import { AttemptRepo } from "../../../../infrastructure/repo/AttemptRepo";
-import { AnswerQueueService } from "../../services/AnswerQueueService";
-import { AnswerQueueService2 } from "../../services/AnswerQueueService2";
+import { ScoreAttemptQueryService } from "../../services/ScoreLongAnswerService";
+import { CommandHandlerBase } from "../../../../shared/handler/usecase.base";
 
-export class PatchAttemptSubmitHandler extends RetryableCommandHandlerBase<void> {
+export class PatchAttemptSubmitHandler extends CommandHandlerBase<void> {
 	async handle(): Promise<void> {
-		console.log("[Req ##] Handling attempt submission");
-
 		const attemptId = this.getId();
 		const credential = this.getCredentials();
-		// const answerQueue = AnswerQueueService.getInstance();
-		const answerQueue = AnswerQueueService2.getInstance();
-		await answerQueue.waitForPendingAnswers(attemptId);
 
-		// Create repository instance once outside the retry loop
 		const repo = new AttemptRepo();
 
-		await this.executeWithRetry(async () => {
-			const agg = await repo.getById(attemptId);
-
-			agg.submit(credential);
-			await repo.save(agg);
-		});
-
-		console.log(`[$$ Resp] Attempt ${attemptId} submitted successfully`);
+		const agg = await repo.getById(attemptId);
+		const result = await ScoreAttemptQueryService.score(agg);
+		agg.submit(credential, result.questions, result.testLanguage);
+		await repo.save(agg);
 	}
 }

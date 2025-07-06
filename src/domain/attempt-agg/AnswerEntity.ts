@@ -3,31 +3,27 @@ import { IdentityUtils } from "../../shared/domain/UniqueEntityId";
 import { DomainError } from "../../shared/errors/domain.error";
 import { AnswerDto, AnswerLoad, AnswerPersistence } from "../_mappers/AnswerMapper";
 import { AnswerMapper } from "../_mappers/AnswerMapper";
-import { QuestionDto, QuestionMapper } from "../_mappers/QuestionMapper";
 
 export class AnswerEntity extends Entity {
 	private constructor(
 		id: string,
 		private readonly attemptId: string,
 		private readonly questionId: number,
-		private readonly question: QuestionDto,
-		private dto: AnswerDto | null,
+		private readonly dto: AnswerDto | null,
 	) { super(id); }
 
 	static create(
 		attemptId: string,
 		questionId: number,
-		question: QuestionDto,
 		answer: AnswerDto | null,
 	): AnswerEntity {
 		const id = IdentityUtils.create();
-		return new AnswerEntity(id, attemptId, questionId, question, answer);
+		return new AnswerEntity(id, attemptId, questionId, answer);
 	}
 
 	static load(load: AnswerLoad): AnswerEntity {
 		const dto = AnswerMapper.toDto(load);
-		const questionDto = QuestionMapper.toDto(load.question);
-		return new AnswerEntity(load.id, load.attemptId, load.question.id, questionDto, dto);
+		return new AnswerEntity(load.id, load.attemptId, load.questionId, dto);
 	}
 
 	toPersistence(): AnswerPersistence {
@@ -37,32 +33,21 @@ export class AnswerEntity extends Entity {
 		return AnswerMapper.toPersistence(this.id, this.attemptId, this.questionId, this.dto);
 	}
 
-	getLongAnswerContentForEvaluation(): {
-		questionText: string;
-		answerId: string;
-		answer: string;
-		correctAnswer: string;
-		points: number;
-	} | null {
-		if (this.dto?.type === "LONG_ANSWER" && this.question.detail.type === "LONG_ANSWER") {
-			return {
-				questionText: this.question.text,
-				answerId: this.id,
-				answer: this.dto.answer,
-				correctAnswer: this.question.detail.correctAnswer,
-				points: this.question.points,
-			};
-		}
-		return null;
+	getQuestionId(): number {
+		return this.questionId;
 	}
 
-	getMCQPointsForEvaluation(): number | null {
-		if (this.dto?.type === "MCQ" && this.question.detail.type === "MCQ") {
-			if (this.dto.chosenOption == null) {
-				return 0; // No option chosen, no points.
-			}
-			const correctOption = this.question.detail.correctOption;
-			return this.dto.chosenOption === correctOption ? this.question.points : 0;
+	getLongAnswerContentForEvaluation(): {
+		questionId: number;
+		answerId: string;
+		answer: string;
+	} | null {
+		if (this.dto?.type === "LONG_ANSWER") {
+			return {
+				questionId: this.questionId,
+				answerId: this.id,
+				answer: this.dto.answer,
+			};
 		}
 		return null;
 	}
@@ -79,13 +64,38 @@ export class AnswerEntity extends Entity {
 		return this.dto.pointsReceived != null;
 	}
 
-	updatePoints(points: number): void {
+	scoreMCQ(correctOption: number, points: number): void {
 		if (this.dto === null) {
 			throw new DomainError("Cannot set points on a cleared answer");
 		}
 		if (points < 0) {
 			throw new DomainError("Points cannot be negative");
 		}
+		if (this.dto.type !== "MCQ") {
+			throw new DomainError("Score MCQ Points can only be set on MCQ answers");
+		}
+		if (this.dto.chosenOption !== correctOption) {
+			this.dto.pointsReceived = 0;
+		}
+		else {
+			this.dto.pointsReceived = points;
+		}
+	}
+
+	scoreLongAnswer(points: number, comment?: string): void {
+		if (this.dto === null) {
+			throw new DomainError("Cannot set points on a cleared answer");
+		}
+		if (this.dto.type !== "LONG_ANSWER") {
+			throw new DomainError("Score Long Answer Points can only be set on long answers");
+		}
+		if (this.dto.type !== "LONG_ANSWER") {
+			throw new DomainError("Comment can only be set on long answers");
+		}
+		if (points < 0) {
+			throw new DomainError("Points cannot be negative");
+		}
 		this.dto.pointsReceived = points;
+		this.dto.comment = comment || undefined;
 	}
 }
