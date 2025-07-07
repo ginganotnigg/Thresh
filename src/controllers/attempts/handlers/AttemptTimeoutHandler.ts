@@ -1,10 +1,7 @@
-import { db } from "../../../configs/orm/kysely/db";
 import { AttemptTimeOutEvent } from "../../../domain/_events/AttemptTimeOutEvent";
-import { queryQuestions } from "../../../infrastructure/query/questions";
 import { AttemptRepo } from "../../../infrastructure/repo/AttemptRepo";
 import { Constructor } from "../../../library/caychuoijs/utils/type";
 import { EventDispatcher } from "../../../shared/domain/EventDispatcher";
-import { DomainError } from "../../../shared/errors/domain.error";
 import { EventHandlerBase } from "../../../shared/handler/usecase.base";
 import { ScoreAttemptQueryService } from "../services/ScoreLongAnswerService";
 
