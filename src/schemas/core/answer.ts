@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { ChuoiDocument } from "../../library/caychuoijs/documentation/open-api";
-import { NonNegativeNumberSchema } from '../../shared/controller/schemas/response';
 import { AnswerForQuestionCommonSchema } from "../common/answer-for-question-type";
 
 export const AnswerCoreSchema = ChuoiDocument.registerSchema(z.object({
@@ -8,6 +7,7 @@ export const AnswerCoreSchema = ChuoiDocument.registerSchema(z.object({
 	attemptId: z.string(),
 	questionId: z.number(),
 	pointReceived: z.number().nullish(),
+	comment: z.string().nullish(),
 	createdAt: z.date(),
 	updatedAt: z.date(),
 	child: AnswerForQuestionCommonSchema,

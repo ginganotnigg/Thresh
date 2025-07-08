@@ -19,6 +19,7 @@ export class GetAttemptAnswersQueryHandler extends QueryHandlerBase<GetAttemptAn
 				"mcqa.chosenOption as chosenOption",
 				"laqa.attemptAnswerQuestionId as laqa_AttemptAnswerQuestionId",
 				"laqa.answer as answer",
+				"laqa.comment as comment",
 			])
 			;
 
@@ -43,6 +44,7 @@ export class GetAttemptAnswersQueryHandler extends QueryHandlerBase<GetAttemptAn
 				attemptId: r.attemptId!,
 				questionId: r.questionId!,
 				pointReceived: r.pointsReceived!,
+				comment: r.comment ?? null,
 				createdAt: r.createdAt!,
 				updatedAt: r.updatedAt!,
 				child,
