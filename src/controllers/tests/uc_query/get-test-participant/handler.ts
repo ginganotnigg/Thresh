@@ -2,18 +2,15 @@ import { sql } from "kysely";
 import { db } from "../../../../configs/orm/kysely/db";
 import { paginate } from "../../../../shared/handler/query";
 import { QueryHandlerBase } from "../../../../shared/handler/usecase.base";
-import { GetTestParticipantsQuery } from "./param";
-import { GetTestParticipantsResponse } from "./response";
+import { GetTestParticipantResponse } from "./response";
+import { DomainError } from "../../../../shared/errors/domain.error";
 
-export class GetTestParticipantsQueryHandler extends QueryHandlerBase<GetTestParticipantsQuery, GetTestParticipantsResponse> {
-	async handle(param: GetTestParticipantsQuery): Promise<GetTestParticipantsResponse> {
-		const testId = this.getId();
-		const {
-			page,
-			perPage,
-			sortByRank,
-		} = param;
-
+export class GetTestParticipantsQueryHandler extends QueryHandlerBase<void, GetTestParticipantResponse, {
+	testId: string;
+	candidateId: string;
+}> {
+	async handle(): Promise<GetTestParticipantResponse> {
+		const { testId, candidateId } = this.getId();
 		const innerQuery = db
 			.selectFrom('ExamParticipants as ep')
 			.leftJoin('Attempts as a', join =>
@@ -34,6 +31,7 @@ export class GetTestParticipantsQueryHandler extends QueryHandlerBase<GetTestPar
 				'a.id'
 			)
 			.where('ep.testId', '=', testId)
+			.where('ep.candidateId', '=', candidateId)
 			.groupBy('ep.candidateId')
 			.select([
 				'ep.candidateId as candidateId',
@@ -45,7 +43,7 @@ export class GetTestParticipantsQueryHandler extends QueryHandlerBase<GetTestPar
 			])
 			.as('stats');
 
-		const rankedQuery = db
+		let query = db
 			.selectFrom(innerQuery)
 			.select([
 				'candidateId',
@@ -57,36 +55,18 @@ export class GetTestParticipantsQueryHandler extends QueryHandlerBase<GetTestPar
 				sql<number>`RANK() OVER (ORDER BY highestScore DESC, averageTime ASC)`.as('rank'),
 			]);
 
-		let query = db
-			.selectFrom(rankedQuery.as('ranked'))
-			.select([
-				'candidateId',
-				'totalAttempts',
-				'highestScore',
-				'lowestScore',
-				'averageScore',
-				'averageTime',
-				'rank',
-			]);
-
-		if (sortByRank != null) {
-			query = query.orderBy('rank', sortByRank === 'asc' ? 'asc' : 'desc');
-		}
-
-		const res = await paginate(query, page, perPage);
+		const res = await query.executeTakeFirst();
+		if (!res) throw new DomainError('Test participant not found');
 		return {
-			...res,
-			data: res.data.map(item => ({
-				candidateId: item.candidateId,
-				_aggregate: {
-					averageScore: Number(item.averageScore) || 0,
-					highestScore: Number(item.highestScore) || 0,
-					lowestScore: Number(item.lowestScore) || 0,
-					averageTime: Number(item.averageTime) || 0,
-					rank: Number(item.rank) || 0,
-					totalAttempts: Number(item.totalAttempts) || 0,
-				}
-			})),
+			candidateId: res.candidateId,
+			_aggregate: {
+				averageScore: Number(res.averageScore) || 0,
+				highestScore: Number(res.highestScore) || 0,
+				lowestScore: Number(res.lowestScore) || 0,
+				averageTime: Number(res.averageTime) || 0,
+				rank: Number(res.rank) || 0,
+				totalAttempts: Number(res.totalAttempts) || 0,
+			}
 		}
 	}
 }
