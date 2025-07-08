@@ -3,12 +3,12 @@ import { NonNegativeNumberSchema } from '../../shared/controller/schemas/respons
 import { ChuoiDocument } from "../../library/caychuoijs/documentation/open-api";
 
 const TestCandidateAggregateSchema = z.object({
-	rank: NonNegativeNumberSchema,
-	totalAttempts: NonNegativeNumberSchema,
-	averageScore: NonNegativeNumberSchema,
-	highestScore: NonNegativeNumberSchema,
-	lowestScore: NonNegativeNumberSchema,
-	averageTime: NonNegativeNumberSchema,
+	rank: z.number().int().nonnegative(),
+	totalAttempts: z.number().int().nonnegative(),
+	averageScore: z.number().nonnegative(),
+	highestScore: z.number().nonnegative(),
+	lowestScore: z.number().nonnegative(),
+	averageTime: z.number().nonnegative(),
 });
 
 export const TestCandidateCoreSchema = ChuoiDocument.registerSchema(z.object({

@@ -134,9 +134,6 @@ export class AttemptAggregate extends AggregateRoot {
 	}
 
 	forceScore(): void {
-		if (this.attempt.status !== "COMPLETED") {
-			throw new DomainError(`Can only force score a completed attempt.`);
-		}
 		for (const answer of this.answers) {
 			if (answer.getIsGraded() === false) {
 				answer.score(0, "Auto-graded: No points received");
