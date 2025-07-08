@@ -128,7 +128,7 @@ export class AttemptAggregate extends AggregateRoot {
 		if (!foundAnswer) {
 			throw new DomainError(`Answer not found for this Attempt`);
 		}
-		foundAnswer.scoreLongAnswer(point, comment);
+		foundAnswer.score(point, comment);
 		this.answersToUpdate.push(foundAnswer);
 		this.updateStatusAfterPointsEvaluation();
 	}
@@ -139,7 +139,7 @@ export class AttemptAggregate extends AggregateRoot {
 		}
 		for (const answer of this.answers) {
 			if (answer.getIsGraded() === false) {
-				answer.scoreLongAnswer(0, "Auto-graded: No points received");
+				answer.score(0, "Auto-graded: No points received");
 				this.answersToUpdate.push(answer);
 			}
 		}

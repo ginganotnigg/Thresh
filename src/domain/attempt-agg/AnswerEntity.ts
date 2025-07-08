@@ -82,20 +82,16 @@ export class AnswerEntity extends Entity {
 		}
 	}
 
-	scoreLongAnswer(points: number, comment?: string): void {
+	score(points: number, comment?: string): void {
 		if (this.dto === null) {
 			throw new DomainError("Cannot set points on a cleared answer");
-		}
-		if (this.dto.type !== "LONG_ANSWER") {
-			throw new DomainError("Score Long Answer Points can only be set on long answers");
-		}
-		if (this.dto.type !== "LONG_ANSWER") {
-			throw new DomainError("Comment can only be set on long answers");
 		}
 		if (points < 0) {
 			throw new DomainError("Points cannot be negative");
 		}
 		this.dto.pointsReceived = points;
-		this.dto.comment = comment || undefined;
+		if (this.dto.type === "LONG_ANSWER") {
+			this.dto.comment = comment || undefined;
+		}
 	}
 }

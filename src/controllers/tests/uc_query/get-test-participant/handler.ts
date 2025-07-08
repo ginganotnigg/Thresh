@@ -1,11 +1,10 @@
 import { sql } from "kysely";
 import { db } from "../../../../configs/orm/kysely/db";
-import { paginate } from "../../../../shared/handler/query";
 import { QueryHandlerBase } from "../../../../shared/handler/usecase.base";
 import { GetTestParticipantResponse } from "./response";
 import { DomainError } from "../../../../shared/errors/domain.error";
 
-export class GetTestParticipantsQueryHandler extends QueryHandlerBase<void, GetTestParticipantResponse, {
+export class GetTestParticipantQueryHandler extends QueryHandlerBase<void, GetTestParticipantResponse, {
 	testId: string;
 	candidateId: string;
 }> {

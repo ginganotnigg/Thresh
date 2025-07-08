@@ -33,6 +33,8 @@ import { GetTestQuestionsHandler } from "./uc_query/get-test-questions/handler";
 import { GetSuggestedTestsQuerySchema } from "./uc_query/get-suggested-tests/param";
 import { GetSuggestedTestsResponseSchema } from "./uc_query/get-suggested-tests/response";
 import { GetSuggestedTestsQueryHandler } from "./uc_query/get-suggested-tests/handler";
+import { GetTestParticipantResponseSchema } from "./uc_query/get-test-participant/response";
+import { GetTestParticipantQueryHandler } from "./uc_query/get-test-participant/handler";
 
 export class TestsController extends ControllerBase {
 	async constructRouter(): Promise<void> {
@@ -134,6 +136,26 @@ export class TestsController extends ControllerBase {
 					.withCredentials(data.meta)
 					.withId(data.params.testId)
 					.handle(data.query);
+			})
+			.build({ tags: ["Tests"] });
+
+		router.endpoint().get("/:testId/participants/:participantId")
+			.schema({
+				meta: CredentialsMetaSchema,
+				params: z.object({
+					testId: z.string(),
+					participantId: z.string(),
+				}),
+				response: GetTestParticipantResponseSchema,
+			})
+			.handle(async (data) => {
+				return await new GetTestParticipantQueryHandler()
+					.withCredentials(data.meta)
+					.withId({
+						testId: data.params.testId,
+						candidateId: data.params.participantId,
+					})
+					.handle();
 			})
 			.build({ tags: ["Tests"] });
 
