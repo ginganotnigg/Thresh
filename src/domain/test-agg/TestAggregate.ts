@@ -32,6 +32,10 @@ export class TestAggregate extends AggregateRoot {
 			if (closeDate <= openDate) {
 				throw new DomainError("Close date must be after open date.");
 			}
+			const distance = closeDate.getTime() - openDate.getTime();
+			if (distance > 1000 * 60 * 60 * 24 * 60) {
+				throw new DomainError("Exam cannot be longer than 60 days.");
+			}
 		}
 		if (questions.length === 0) {
 			throw new DomainError("Test must have at least one question.");
@@ -58,9 +62,12 @@ export class TestAggregate extends AggregateRoot {
 		);
 	}
 
-	public update(testDto: Omit<TestDto, "id">): void {
+	public update(testDto: TestDto): void {
 		if (testDto.detail.mode === "EXAM" && this.testDto.detail.mode === "EXAM") {
 			const newExamData = testDto.detail;
+			if (newExamData.roomId !== this.testDto.detail.roomId) {
+				throw new DomainError("Cannot change room ID of an exam test.");
+			}
 			if (this.hasAttempts === true) {
 				if (newExamData.openDate >= this.testDto.detail.openDate) {
 					throw new DomainError("Cannot change open date to a later date than the current one after attempts have been made.");
@@ -79,14 +86,10 @@ export class TestAggregate extends AggregateRoot {
 			}
 
 			if (this.hasParticipants === true) {
-				if (newExamData.roomId !== this.testDto.detail.roomId) {
-					throw new DomainError("Cannot change room after participants have joined.");
-				}
 				if (newExamData.numberOfParticipants !== this.testDto.detail.numberOfParticipants) {
 					throw new DomainError("Cannot change number of participants after participants have joined.");
 				}
 			}
-
 			this.testDto = {
 				...this.testDto,
 				...testDto,

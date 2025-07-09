@@ -3,9 +3,8 @@ import { Op } from "sequelize";
 import { db } from "../../configs/orm/kysely/db";
 import { DomainError } from "../../shared/errors/domain.error";
 import { QuestionPersistence } from "../../domain/_mappers/QuestionMapper";
-import { TestLoad, TestPersistence } from "../../domain/_mappers/TestMapper";
+import { TestLoad } from "../../domain/_mappers/TestMapper";
 import { TestAggregate } from "../../domain/test-agg/TestAggregate";
-import { LongAnswerDetailCommon, MCQDetailCommon } from "../../schemas/common/question-detail";
 import ExamTest from "../models/exam_test";
 import LAQuestion from "../models/la_question";
 import MCQQuestion from "../models/mcq_question";
@@ -15,12 +14,25 @@ import Test from "../models/test";
 import { RepoBase } from "./RepoBase";
 
 export class TestRepo extends RepoBase<TestAggregate> {
+
 	protected async _save(agg: TestAggregate): Promise<void> {
 		const { test, questions } = agg.toPersistence();
 		const transaction = await sequelize.transaction();
 		try {
 			const [res] = await Test.upsert(test, { transaction });
 			if (test.mode === "EXAM" && test.detail.mode === "EXAM") {
+				const checkRoomId = await ExamTest.findOne({
+					where: {
+						roomId: test.detail.roomId,
+					},
+					transaction,
+				});
+
+				// Replace the Unique constraint check with a custom logic
+				if (checkRoomId != null) {
+					throw new DomainError(`Room ID ${test.detail.roomId} already exists for another exam.`);
+				}
+
 				await ExamTest.upsert({
 					testId: res.id,
 					...test.detail,
@@ -194,8 +206,6 @@ export class TestRepo extends RepoBase<TestAggregate> {
 
 			hasParticipants = Number(participantCount?.count ?? 0) > 0;
 		}
-
-
 
 		// Build test persistence object
 		const testPersistence: TestLoad = {
