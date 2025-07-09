@@ -4,7 +4,7 @@ import { NonNegativeNumberSchema } from '../../shared/controller/schemas/respons
 
 export const ExamDetailCommonSchema = ChuoiDocument.registerSchema(z.object({
 	mode: z.literal("EXAM"),
-	roomId: z.string(),
+	roomId: z.string().min(1, "Room ID must not be empty."),
 	hasPassword: z.boolean(),
 	password: z.string().nullable().optional(),
 	numberOfAttemptsAllowed: NonNegativeNumberSchema.default(1),

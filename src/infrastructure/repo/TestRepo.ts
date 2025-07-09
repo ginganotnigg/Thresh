@@ -3,7 +3,7 @@ import { Op } from "sequelize";
 import { db } from "../../configs/orm/kysely/db";
 import { DomainError } from "../../shared/errors/domain.error";
 import { QuestionPersistence } from "../../domain/_mappers/QuestionMapper";
-import { TestPersistence } from "../../domain/_mappers/TestMapper";
+import { TestLoad, TestPersistence } from "../../domain/_mappers/TestMapper";
 import { TestAggregate } from "../../domain/test-agg/TestAggregate";
 import { LongAnswerDetailCommon, MCQDetailCommon } from "../../schemas/common/question-detail";
 import ExamTest from "../models/exam_test";
@@ -184,8 +184,21 @@ export class TestRepo extends RepoBase<TestAggregate> {
 			};
 		}
 
+		let hasParticipants = true;
+		if (test.mode === "EXAM") {
+			const participantCount = await db
+				.selectFrom("ExamParticipants")
+				.where("testId", "=", testId)
+				.select((eb) => eb.fn.count<number>("id").as("count"))
+				.executeTakeFirst();
+
+			hasParticipants = Number(participantCount?.count ?? 0) > 0;
+		}
+
+
+
 		// Build test persistence object
-		const testPersistence: TestPersistence = {
+		const testPersistence: TestLoad = {
 			id: test.id,
 			authorId: test.authorId,
 			title: test.title,
@@ -195,7 +208,9 @@ export class TestRepo extends RepoBase<TestAggregate> {
 			mode: test.mode as "EXAM" | "PRACTICE",
 			createdAt: test.createdAt!,
 			updatedAt: test.updatedAt!,
-			detail: testDetail
+			detail: testDetail,
+			hasAttempts: hasAttempts,
+			hasParticipants: hasParticipants,
 		};
 
 		// Get question details and convert to persistence format
@@ -239,7 +254,10 @@ export class TestRepo extends RepoBase<TestAggregate> {
 			});
 		}
 
-		return TestAggregate.fromPersistence(testPersistence, questionsPersistence, hasAttempts);
+		return TestAggregate.fromPersistence(
+			testPersistence,
+			questionsPersistence,
+		);
 	}
 
 	async delete(testId: string): Promise<void> {

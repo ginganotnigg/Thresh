@@ -71,13 +71,27 @@ export type TestPersistence = {
 	detail: PracticeTestPersistence | ExamTestPersistence;
 }
 
+export type TestLoad = TestPersistence & {
+	hasAttempts: boolean;
+	hasParticipants: boolean;
+}
+
 export class TestMapper {
-	static toDto(persistence: TestPersistence): TestDto {
+	static toDto(persistence: TestLoad): TestDto {
 		return persistence;
 	}
 
-	static toPersistence(dto: TestDto, id: string): TestPersistence {
-		return { ...dto, id };
+	static toPersistence(
+		dto: TestDto,
+		id: string,
+	): TestPersistence {
+		return {
+			...dto,
+			id,
+			detail: {
+				...dto.detail,
+			} as PracticeTestPersistence | ExamTestPersistence
+		};
 	}
 }
 

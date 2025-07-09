@@ -76,6 +76,7 @@ export class GetTestsQueryHandler extends QueryHandlerBase<GetTestsQuery, GetTes
 
 		const res = await paginate(query, page, perPage);
 		const examIds = res.data.map(raw => raw.mode === "EXAM" ? raw.id : null).filter(id => id !== null);
+
 		let participantsQuery = db
 			.selectFrom("ExamParticipants")
 			.selectAll()
