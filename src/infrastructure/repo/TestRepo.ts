@@ -18,21 +18,33 @@ export class TestRepo extends RepoBase<TestAggregate> {
 	protected async _save(agg: TestAggregate): Promise<void> {
 		const { test, questions } = agg.toPersistence();
 		const transaction = await sequelize.transaction();
+
+		// Repo level validation
+		// 2 exams with the same roomId cannot exist at the same time
+		if (test.detail.mode === "EXAM") {
+			const {
+				roomId,
+				closeDate,
+				openDate,
+			} = test.detail;
+			const exists = await db
+				.selectFrom("ExamTests")
+				.where("roomId", "=", roomId)
+				.where(eb => eb(
+					"openDate", "<=", closeDate
+				).and(
+					"closeDate", ">=", openDate
+				))
+				.selectAll()
+				.executeTakeFirst();
+			if (exists != null) {
+				throw new DomainError(`Room ID ${roomId} already exists for another exam.`);
+			}
+		}
+
 		try {
 			const [res] = await Test.upsert(test, { transaction });
 			if (test.mode === "EXAM" && test.detail.mode === "EXAM") {
-				const checkRoomId = await ExamTest.findOne({
-					where: {
-						roomId: test.detail.roomId,
-					},
-					transaction,
-				});
-
-				// Replace the Unique constraint check with a custom logic
-				if (checkRoomId != null) {
-					throw new DomainError(`Room ID ${test.detail.roomId} already exists for another exam.`);
-				}
-
 				await ExamTest.upsert({
 					testId: res.id,
 					...test.detail,
