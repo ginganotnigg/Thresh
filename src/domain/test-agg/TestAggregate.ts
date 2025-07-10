@@ -112,10 +112,8 @@ export class TestAggregate extends AggregateRoot {
 		if (this.hasAttempts) {
 			throw new DomainError("Cannot update questions after attempts have been made.");
 		}
-		if (questions.length === 0) {
-			throw new DomainError("Test must have at least one question.");
-		}
 		this.questions = questions.map(q => QuestionEntity.create(q, this.id));
+		this.validate();
 	}
 
 	public toPersistence(): {
@@ -132,6 +130,4 @@ export class TestAggregate extends AggregateRoot {
 			questions: questionsPersistence,
 		};
 	}
-
-
 }

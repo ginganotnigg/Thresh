@@ -16,7 +16,7 @@ export class SuggestRoomIdHandler extends QueryHandlerBase<{
 		let maxAttempts = 10; // Limit to avoid infinite loop
 
 		while (true) {
-			roomId = `room-${Math.random().toString(36).substring(2, 15)}`;
+			roomId = `${Math.random().toString(36).substring(2, 15)}`;
 			const isRoomIdUnique = await UniqueExamCheck.isRoomIdUnique(
 				roomId,
 				startDate,

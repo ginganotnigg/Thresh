@@ -81,6 +81,25 @@ export class TestsController extends ControllerBase {
 			})
 			.build({ tags: ["Tests"] });
 
+		router.endpoint().get("/suggest-roomid")
+			.schema({
+				query: z.object({
+					startDate: z.coerce.date(),
+					endDate: z.coerce.date(),
+				}),
+				response: z.object({
+					roomId: z.string(),
+				}),
+			})
+			.handle(async (data) => {
+				return await new SuggestRoomIdHandler()
+					.handle(data.query);
+			})
+			.build({
+				tags: ["Tests"],
+				description: "Suggest a unique roomId for an exam based on the provided date range",
+			});
+
 		router.endpoint().get("/:testId")
 			.schema({
 				meta: CredentialsMetaSchema,
@@ -235,25 +254,6 @@ export class TestsController extends ControllerBase {
 			.build({
 				tags: ["Tests"],
 				description: "Remove a participant from an exam",
-			});
-
-		router.endpoint().get("/suggest-roomid")
-			.schema({
-				query: z.object({
-					startDate: z.coerce.date(),
-					endDate: z.coerce.date(),
-				}),
-				response: z.object({
-					roomId: z.string(),
-				}),
-			})
-			.handle(async (data) => {
-				return await new SuggestRoomIdHandler()
-					.handle(data.query);
-			})
-			.build({
-				tags: ["Tests"],
-				description: "Suggest a unique roomId for an exam based on the provided date range",
 			});
 	}
 }
