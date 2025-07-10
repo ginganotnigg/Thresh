@@ -17,7 +17,6 @@ export class TestAggregate extends AggregateRoot {
 	) {
 		super(id);
 		this.questions = questionDtos.map(q => QuestionEntity.create(q, id));
-		this.validate();
 	}
 
 	private validate(): void {
@@ -47,7 +46,9 @@ export class TestAggregate extends AggregateRoot {
 
 	public static create(testDto: TestDto, questionDtos: QuestionDto[]): TestAggregate {
 		const id = IdentityUtils.create();
-		return new TestAggregate(id, testDto, questionDtos, false, false);
+		const newExam = new TestAggregate(id, testDto, questionDtos, false, false);
+		newExam.validate();
+		return newExam;
 	}
 
 	public static fromPersistence(persistence: TestLoad, questions: QuestionPersistence[]): TestAggregate {
