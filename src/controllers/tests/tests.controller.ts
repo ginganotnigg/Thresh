@@ -35,6 +35,8 @@ import { GetSuggestedTestsResponseSchema } from "./uc_query/get-suggested-tests/
 import { GetSuggestedTestsQueryHandler } from "./uc_query/get-suggested-tests/handler";
 import { GetTestParticipantResponseSchema } from "./uc_query/get-test-participant/response";
 import { GetTestParticipantQueryHandler } from "./uc_query/get-test-participant/handler";
+import e from "express";
+import { SuggestRoomIdHandler } from "./uc_query/suggest-roomid/handler";
 
 export class TestsController extends ControllerBase {
 	async constructRouter(): Promise<void> {
@@ -233,6 +235,25 @@ export class TestsController extends ControllerBase {
 			.build({
 				tags: ["Tests"],
 				description: "Remove a participant from an exam",
+			});
+
+		router.endpoint().get("/suggest-roomid")
+			.schema({
+				query: z.object({
+					startDate: z.coerce.date(),
+					endDate: z.coerce.date(),
+				}),
+				response: z.object({
+					roomId: z.string(),
+				}),
+			})
+			.handle(async (data) => {
+				return await new SuggestRoomIdHandler()
+					.handle(data.query);
+			})
+			.build({
+				tags: ["Tests"],
+				description: "Suggest a unique roomId for an exam based on the provided date range",
 			});
 	}
 }

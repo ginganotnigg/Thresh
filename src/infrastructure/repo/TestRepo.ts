@@ -12,6 +12,7 @@ import PracticeTest from "../models/practice_test";
 import Question from "../models/question";
 import Test from "../models/test";
 import { RepoBase } from "./RepoBase";
+import { UniqueExamCheck } from "../../controllers/tests/services/unique-exam-check";
 
 export class TestRepo extends RepoBase<TestAggregate> {
 
@@ -22,23 +23,13 @@ export class TestRepo extends RepoBase<TestAggregate> {
 		// Repo level validation
 		// 2 exams with the same roomId cannot exist at the same time
 		if (test.detail.mode === "EXAM") {
-			const {
-				roomId,
-				closeDate,
-				openDate,
-			} = test.detail;
-			const exists = await db
-				.selectFrom("ExamTests")
-				.where("roomId", "=", roomId)
-				.where(eb => eb(
-					"openDate", "<=", closeDate
-				).and(
-					"closeDate", ">=", openDate
-				))
-				.selectAll()
-				.executeTakeFirst();
-			if (exists != null) {
-				throw new DomainError(`Room ID ${roomId} already exists for another exam.`);
+			const isRoomIdUnique = await UniqueExamCheck.isRoomIdUnique(
+				test.detail.roomId,
+				test.detail.openDate,
+				test.detail.closeDate,
+			);
+			if (!isRoomIdUnique) {
+				throw new DomainError(`Room ID ${test.detail.roomId} already exists for another exam.`);
 			}
 		}
 

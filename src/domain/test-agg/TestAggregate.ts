@@ -16,8 +16,8 @@ export class TestAggregate extends AggregateRoot {
 		private hasParticipants: boolean,
 	) {
 		super(id);
-		this.validate();
 		this.questions = questionDtos.map(q => QuestionEntity.create(q, id));
+		this.validate();
 	}
 
 	private validate(): void {
