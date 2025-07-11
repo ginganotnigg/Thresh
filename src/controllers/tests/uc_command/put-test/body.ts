@@ -33,7 +33,7 @@ export const PutTestBodySchema = TestCoreSchema.omit({
 				}),
 			])
 		}),
-	),
+	).optional(),
 });
 
 export type PutTestBody = z.infer<typeof PutTestBodySchema>;

@@ -70,10 +70,10 @@ export class TestAggregate extends AggregateRoot {
 				throw new DomainError("Cannot change room ID of an exam test.");
 			}
 			if (this.hasAttempts === true) {
-				if (newExamData.openDate >= this.testDto.detail.openDate) {
+				if (newExamData.openDate > this.testDto.detail.openDate) {
 					throw new DomainError("Cannot change open date to a later date than the current one after attempts have been made.");
 				}
-				if (newExamData.closeDate <= this.testDto.detail.closeDate) {
+				if (newExamData.closeDate < this.testDto.detail.closeDate) {
 					throw new DomainError("Cannot change close date to an earlier date than the current one after attempts have been made.");
 				}
 				if (

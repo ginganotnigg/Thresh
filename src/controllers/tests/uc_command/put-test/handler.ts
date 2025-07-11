@@ -18,7 +18,9 @@ export class PutTestHandler extends CommandHandlerBase<PutTestBody & { testId: s
 
 		// Update the test data and questions
 		existingAgg.update({ ...testDto, authorId: credentials.userId });
-		existingAgg.updateQuestions(questions);
+		if (questions != null && questions.length > 0) {
+			existingAgg.updateQuestions(questions);
+		}
 
 		// Save the updated aggregate
 		await repo.save(existingAgg);

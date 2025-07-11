@@ -27,6 +27,7 @@ export class TestRepo extends RepoBase<TestAggregate> {
 				test.detail.roomId,
 				test.detail.openDate,
 				test.detail.closeDate,
+				test.id, // Pass current test ID to allow updates
 			);
 			if (!isRoomIdUnique) {
 				throw new DomainError(`Room ID ${test.detail.roomId} already exists for another exam.`);
