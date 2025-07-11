@@ -64,17 +64,24 @@ export class GetTestsQueryHandler extends QueryHandlerBase<GetTestsQuery, GetTes
 		}
 		if (filterStatuses.length > 0) {
 			const now = new Date();
-			if (filterStatuses.includes("UPCOMING")) {
-				query = query.where("et.openDate", ">", now);
-			}
-			if (filterStatuses.includes("OPEN")) {
-				query = query
-					.where("et.openDate", "<=", now)
-					.where("et.closeDate", ">=", now);
-			}
-			if (filterStatuses.includes("CLOSED")) {
-				query = query.where("et.closeDate", "<", now);
-			}
+			query = query.where((eb) => {
+				const conditions = [];
+
+				if (filterStatuses.includes("UPCOMING")) {
+					conditions.push(eb("et.openDate", ">", now));
+				}
+				if (filterStatuses.includes("OPEN")) {
+					conditions.push(
+						eb("et.openDate", "<=", now)
+							.and("et.closeDate", ">=", now)
+					);
+				}
+				if (filterStatuses.includes("CLOSED")) {
+					conditions.push(eb("et.closeDate", "<", now));
+				}
+
+				return eb.or(conditions);
+			});
 		}
 
 		const res = await paginate(query, page, perPage);
