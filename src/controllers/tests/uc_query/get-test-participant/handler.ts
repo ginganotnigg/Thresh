@@ -10,7 +10,9 @@ export class GetTestParticipantQueryHandler extends QueryHandlerBase<void, GetTe
 }> {
 	async handle(): Promise<GetTestParticipantResponse> {
 		const { testId, candidateId } = this.getId();
-		const innerQuery = db
+
+		// First, get stats for all participants in the test
+		const allParticipantsStatsQuery = db
 			.selectFrom('ExamParticipants as ep')
 			.leftJoin('Attempts as a', join =>
 				join
@@ -30,7 +32,6 @@ export class GetTestParticipantQueryHandler extends QueryHandlerBase<void, GetTe
 				'a.id'
 			)
 			.where('ep.testId', '=', testId)
-			.where('ep.candidateId', '=', candidateId)
 			.groupBy('ep.candidateId')
 			.select([
 				'ep.candidateId as candidateId',
@@ -39,11 +40,11 @@ export class GetTestParticipantQueryHandler extends QueryHandlerBase<void, GetTe
 				sql<number>`COALESCE(MIN(aaqStats.points), 0)`.as('lowestScore'),
 				sql<number>`COALESCE(AVG(aaqStats.points), 0)`.as('averageScore'),
 				sql<number>`COALESCE(AVG(a.secondsSpent), 0)`.as('averageTime'),
-			])
-			.as('stats');
+			]);
 
-		let query = db
-			.selectFrom(innerQuery)
+		// Create a subquery that calculates ranks for ALL participants
+		const rankedParticipantsQuery = db
+			.selectFrom(allParticipantsStatsQuery.as('stats'))
 			.select([
 				'candidateId',
 				'totalAttempts',
@@ -52,7 +53,14 @@ export class GetTestParticipantQueryHandler extends QueryHandlerBase<void, GetTe
 				'averageScore',
 				'averageTime',
 				sql<number>`RANK() OVER (ORDER BY highestScore DESC, averageTime ASC)`.as('rank'),
-			]);
+			])
+			.as('rankedStats');
+
+		// Now filter for the specific candidate from the ranked results
+		const query = db
+			.selectFrom(rankedParticipantsQuery)
+			.selectAll()
+			.where('candidateId', '=', candidateId);
 
 		const res = await query.executeTakeFirst();
 		if (!res) throw new DomainError('Test participant not found');
