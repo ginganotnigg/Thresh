@@ -24,7 +24,7 @@ export abstract class TestAttemptsAggregate extends AggregateRoot {
 		const testId = this.id;
 		this._checkAllowToDoTest(candidateId);
 		const orderOfCandidate = this.attempts.filter(attempt => attempt.getCandidateId() === candidateId).length;
-		const newAttempt = AttemptEntity.createNew(candidateId, testId, orderOfCandidate);
+		const newAttempt = AttemptEntity.createNew(candidateId, testId, orderOfCandidate + 1);
 		this.newAttempt = newAttempt;
 		this.attempts.push(newAttempt);
 		const endDate = new Date(newAttempt.getStartedDate().getTime() + this.miniutesToAnswer * 1000 * 60);
