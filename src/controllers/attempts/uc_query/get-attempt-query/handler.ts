@@ -10,6 +10,8 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 > {
 	async handle(): Promise<GetAttemptQueryResponse> {
 		const attemptId = this.getId();
+		const credential = this.getCredentials();
+
 		if (!attemptId) {
 			throw new DomainError("Attempt ID is required");
 		}
@@ -56,6 +58,23 @@ export class GetAttemptQueryHandler extends QueryHandlerBase<
 		const res = await query.executeTakeFirst();
 		if (!res) {
 			throw new DomainError("Attempt not found");
+		}
+
+		// Not the author
+		if (credential.userId !== res.authorId) {
+			// Not the one who took the attempt
+			if (credential.userId !== res.candidateId) {
+				const hasMadeAttempt = await db
+					.selectFrom("Attempts")
+					.where("candidateId", "=", credential.userId)
+					.where("testId", "=", res.testId)
+					.select("id")
+					.executeTakeFirst()
+					;
+				if (!hasMadeAttempt) {
+					throw new DomainError("You can only view other people's attempts if you have made an attempt on this test.");
+				}
+			}
 		}
 
 		const response: GetAttemptQueryResponse = {
