@@ -47,8 +47,8 @@ export class TestAggregate extends AggregateRoot {
 	public static create(testDto: TestDto, questionDtos: QuestionDto[]): TestAggregate {
 		const id = IdentityUtils.create();
 		const newExam = new TestAggregate(id, testDto, [], false, false);
-		newExam.validate();
 		newExam.updateQuestions(questionDtos);
+		newExam.validate();
 		return newExam;
 	}
 
