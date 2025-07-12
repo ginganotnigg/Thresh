@@ -16,7 +16,7 @@ export class TestAggregate extends AggregateRoot {
 		private hasParticipants: boolean,
 	) {
 		super(id);
-		this.questions = questionDtos.map(q => QuestionEntity.create(q, id));
+		this.questions = questionDtos.map(q => QuestionEntity.create(q, id, false));
 	}
 
 	private validate(): void {
@@ -46,8 +46,9 @@ export class TestAggregate extends AggregateRoot {
 
 	public static create(testDto: TestDto, questionDtos: QuestionDto[]): TestAggregate {
 		const id = IdentityUtils.create();
-		const newExam = new TestAggregate(id, testDto, questionDtos, false, false);
+		const newExam = new TestAggregate(id, testDto, [], false, false);
 		newExam.validate();
+		newExam.updateQuestions(questionDtos);
 		return newExam;
 	}
 
@@ -113,7 +114,7 @@ export class TestAggregate extends AggregateRoot {
 		if (this.hasAttempts) {
 			throw new DomainError("Cannot update questions after attempts have been made.");
 		}
-		this.questions = questions.map(q => QuestionEntity.create(q, this.id));
+		this.questions = questions.map(q => QuestionEntity.create(q, this.id, true));
 		this.validate();
 	}
 
@@ -125,7 +126,7 @@ export class TestAggregate extends AggregateRoot {
 			this.testDto,
 			this.id,
 		);
-		const questionsPersistence = this.questions.map(q => q.toPersistence());
+		const questionsPersistence = this.questions.map(q => q.toOptionalPersistence()).filter(q => q !== null) as QuestionPersistence[];
 		return {
 			test: testPersistence,
 			questions: questionsPersistence,

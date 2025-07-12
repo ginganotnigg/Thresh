@@ -49,33 +49,40 @@ export class TestRepo extends RepoBase<TestAggregate> {
 				}, { transaction });
 			}
 
-			await Question.destroy({
-				where: { testId: test.id },
-				cascade: true,
-				transaction,
-			});
+			if (questions.length > 0) {
+				const questionIds = questions.map(q => q.id);
+				await Question.destroy({
+					where: {
+						id: {
+							[Op.in]: questionIds.length > 0 ? questionIds : [-1] // Use -1 to avoid deleting all questions if none are provided (but it should not happen)
+						}
+					},
+					cascade: true,
+					transaction,
+				});
 
-			for (const q of questions) {
-				const newQuestion = await Question.create({
-					points: q.points,
-					text: q.text,
-					type: q.type,
-					testId: q.testId,
-				}, { transaction });
-				if (q.detail.type === "MCQ") {
-					await MCQQuestion.create({
-						questionId: newQuestion.id,
-						correctOption: q.detail.correctOption,
-						options: q.detail.options,
+				for (const q of questions) {
+					const newQuestion = await Question.create({
+						points: q.points,
+						text: q.text,
+						type: q.type,
+						testId: q.testId,
 					}, { transaction });
-				}
-				else if (q.detail.type === "LONG_ANSWER") {
-					await LAQuestion.create({
-						questionId: newQuestion.id,
-						correctAnswer: q.detail.correctAnswer,
-						imageLinks: q.detail.imageLinks ?? null,
-						extraText: q.detail.extraText ?? null,
-					}, { transaction });
+					if (q.detail.type === "MCQ") {
+						await MCQQuestion.create({
+							questionId: newQuestion.id,
+							correctOption: q.detail.correctOption,
+							options: q.detail.options,
+						}, { transaction });
+					}
+					else if (q.detail.type === "LONG_ANSWER") {
+						await LAQuestion.create({
+							questionId: newQuestion.id,
+							correctAnswer: q.detail.correctAnswer,
+							imageLinks: q.detail.imageLinks ?? null,
+							extraText: q.detail.extraText ?? null,
+						}, { transaction });
+					}
 				}
 			}
 
