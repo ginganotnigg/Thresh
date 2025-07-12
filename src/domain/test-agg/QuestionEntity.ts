@@ -1,4 +1,5 @@
 import { Entity } from "../../shared/domain";
+import { DomainError } from "../../shared/errors/domain.error";
 import { QuestionDto, QuestionMapper, QuestionPersistence } from "../_mappers/QuestionMapper";
 
 export class QuestionEntity extends Entity<number> {
@@ -6,17 +7,20 @@ export class QuestionEntity extends Entity<number> {
 		id: number,
 		private readonly dto: QuestionDto,
 		private readonly testId: string,
-		private readonly isPersisted: boolean,
+		private readonly isToUpdate: boolean,
 	) { super(id); }
 
-	public static create(dto: QuestionDto, testId: string, isPersisted: boolean): QuestionEntity {
-		const id = -1; // Use -1 to indicate a new question that hasn't been persisted yet
+	public static load(id: number, dto: QuestionDto, testId: string, isToUpdate: boolean): QuestionEntity {
 		if (dto.detail.type === "MCQ") {
 			if (dto.detail.correctOption < 0 || dto.detail.correctOption >= dto.detail.options.length) {
-				throw new Error("Correct option index is out of bounds.");
+				throw new DomainError("Correct option index is out of bounds.");
 			}
 		}
-		return new QuestionEntity(id, dto, testId, isPersisted);
+		return new QuestionEntity(id, dto, testId, isToUpdate);
+	}
+
+	public static create(dto: QuestionDto, testId: string, isToUpdate: boolean): QuestionEntity {
+		return this.load(-1, dto, testId, isToUpdate);
 	}
 
 	private toPersistence(): QuestionPersistence {
@@ -25,7 +29,7 @@ export class QuestionEntity extends Entity<number> {
 	}
 
 	public toOptionalPersistence(): QuestionPersistence | null {
-		if (this.isPersisted) {
+		if (this.isToUpdate) {
 			return this.toPersistence();
 		}
 		return null;

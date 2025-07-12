@@ -49,13 +49,11 @@ export class TestRepo extends RepoBase<TestAggregate> {
 				}, { transaction });
 			}
 
+			// We update the questions (will delete old ones and insert new ones)
 			if (questions.length > 0) {
-				const questionIds = questions.map(q => q.id);
 				await Question.destroy({
 					where: {
-						id: {
-							[Op.in]: questionIds.length > 0 ? questionIds : [-1] // Use -1 to avoid deleting all questions if none are provided (but it should not happen)
-						}
+						testId: res.id,
 					},
 					cascade: true,
 					transaction,

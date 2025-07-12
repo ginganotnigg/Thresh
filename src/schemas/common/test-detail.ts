@@ -7,7 +7,7 @@ export const ExamDetailCommonSchema = ChuoiDocument.registerSchema(z.object({
 	roomId: z.string().min(1, "Room ID must not be empty."),
 	hasPassword: z.boolean(),
 	password: z.string().nullable().optional(),
-	numberOfAttemptsAllowed: NonNegativeNumberSchema.default(1),
+	numberOfAttemptsAllowed: NonNegativeNumberSchema.default(0),
 	numberOfParticipants: NonNegativeNumberSchema.default(0),
 	isAnswerVisible: z.boolean(),
 	isAllowedToSeeOtherResults: z.boolean(),
