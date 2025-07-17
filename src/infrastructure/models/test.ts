@@ -45,7 +45,7 @@ class Test extends Model<InferAttributes<Test>, InferCreationAttributes<Test>> {
 				allowNull: false,
 			},
 			description: {
-				type: DataTypes.STRING,
+				type: DataTypes.TEXT,
 				allowNull: false,
 			},
 			minutesToAnswer: {
