@@ -17,6 +17,7 @@ import { initServices } from "./init/initServices";
 import { MessageBrokerService } from "../services/MessageBrokerService";
 import { ensureDatabase } from "../configs/orm/database-operations";
 import sequelize from "../configs/orm/sequelize/sequelize";
+import { AuthController } from "../controllers/auth/auth.controller";
 
 export async function main() {
 	await ensureDatabase();
@@ -45,6 +46,7 @@ export async function main() {
 		new FeedbacksController(),
 		new TemplatesController(),
 		new TestsController(),
+		new AuthController(),
 	];
 	await Promise.all(controllers.map(controller => controller.constructRouter()));
 

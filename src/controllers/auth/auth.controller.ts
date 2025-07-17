@@ -20,7 +20,6 @@ export class AuthController extends ControllerBase {
 				}),
 			})
 			.handle(async (data) => {
-				const { token } = data.body;
 				const userId = data.meta.userId;
 				const roleId = data.meta.role;
 				const isValid = userId != null && roleId != null;
