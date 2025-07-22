@@ -14,7 +14,8 @@ export function buildTestQuery() {
 		.as("attempt_scores");
 
 	const attemptStats = db
-		.selectFrom(["Attempts as a", attemptScores])
+		.selectFrom("Attempts as a")
+		.leftJoin(attemptScores, "attempt_scores.attemptId", "a.id")
 		.select([
 			"a.testId",
 			eb => eb.fn.count<number>("a.id").as("totalAttempts"),
@@ -24,7 +25,6 @@ export function buildTestQuery() {
 			eb => eb.fn.avg<number>("attempt_scores.totalPoints").as("averageScore"),
 			eb => eb.fn.avg<number>("a.secondsSpent").as("averageTime"),
 		])
-		.whereRef("attempt_scores.attemptId", "=", "a.id")
 		.groupBy("a.testId")
 		.as("astats");
 
